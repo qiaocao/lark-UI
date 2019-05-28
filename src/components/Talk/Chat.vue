@@ -2,7 +2,7 @@
   <a-layout v-if="Object.keys(chatInfo).length" class="conv-box">
 
     <!-- 聊天设置选项的抽屉组件 -->
-    <talk-history :activeOption="activeOption" @closeDrawer="triggerDrawer()"></talk-history>
+    <talk-history :activeOption="activeOption" @closeDrawer="triggerDrawer"></talk-history>
 
     <a-layout-header class="conv-box-header">
       <a-row type="flex" justify="space-between">
@@ -153,7 +153,8 @@ export default {
     /** 聊天对话框的基本信息 */
     chatInfo: {
       type: Object,
-      default: () => ({})
+      default: () => ({}),
+      required: true
     },
     /** 是否为弹框式的聊天窗口 */
     isPopup: {
@@ -167,10 +168,9 @@ export default {
     return {
       // 被激活的抽屉
       activeOption: '',
+
       facesVisible: false,
       pack: packData,
-      visible: false,
-      wrapClass: 'talk-setting',
       host: conf.getHostUrl(),
       count: 0,
       pageSize: 20,
@@ -290,6 +290,7 @@ export default {
      * @author jihainan
      */
     optionFilter (isGroup) {
+      // 聊天操作选项
       const optionList = [
         { group: true, name: 'groupNotice', message: '群公告', type: 'notification' },
         { group: true, name: 'markMessage', message: '标记信息', type: 'tags' },
@@ -304,7 +305,6 @@ export default {
      */
     triggerDrawer (drawerName) {
       this.activeOption = drawerName
-      console.log(drawerName)
     },
     talkItemEnter () {
       this.activeItemHandle = true
@@ -314,12 +314,6 @@ export default {
     },
     onSelectEmoji (dataEmoji) {
       this.messageContent += dataEmoji.emoji
-    },
-    showSetting () {
-      this.visible = true
-    },
-    onClose () {
-      this.visible = false
     },
     showChat (user) {
       const self = this
