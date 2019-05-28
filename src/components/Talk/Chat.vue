@@ -153,7 +153,8 @@ export default {
     /** 聊天对话框的基本信息 */
     chatInfo: {
       type: Object,
-      default: () => ({})
+      default: () => ({}),
+      required: true
     },
     /** 是否为弹框式的聊天窗口 */
     isPopup: {
@@ -167,10 +168,9 @@ export default {
     return {
       // 被激活的抽屉
       activeOption: '',
+
       facesVisible: false,
       pack: packData,
-      visible: false,
-      wrapClass: 'talk-setting',
       host: conf.getHostUrl(),
       count: 0,
       pageSize: 20,
@@ -314,12 +314,6 @@ export default {
     },
     onSelectEmoji (dataEmoji) {
       this.messageContent += dataEmoji.emoji
-    },
-    showSetting () {
-      this.visible = true
-    },
-    onClose () {
-      this.visible = false
     },
     showChat (user) {
       const self = this
