@@ -1,57 +1,6 @@
 import Vue from 'vue'
 import { ErrorType } from '@/utils/constants'
 
-// 格式化时间
-export function formatDateTime (date) {
-  const y = date.getFullYear()
-  let m = date.getMonth() + 1
-  m = m < 10 ? '0' + m : m
-  let d = date.getDate()
-  d = d < 10 ? '0' + d : d
-  let h = date.getHours()
-  h = h < 10 ? '0' + h : h
-  let minute = date.getMinutes()
-  minute = minute < 10 ? '0' + minute : minute
-  let second = date.getSeconds()
-  second = second < 10 ? '0' + second : second
-  return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second
-}
-
-/**
- * 毫秒转换友好的显示格式
- * 输出格式：21小时前
- * @param  {[type]} date 日期
- */
-export function dateStr (date) {
-  // 获取js 时间戳
-  let time = new Date().getTime()
-  // 去掉 js 时间戳后三位
-  time = parseInt((time - date * 1000) / 1000)
-
-  // 存储转换值
-  let s
-  if (time < 60 * 10) {
-    // 十分钟内
-    return '刚刚'
-  } else if (time < 60 * 60 && time >= 60 * 10) {
-    // 超过十分钟少于1小时
-    s = Math.floor(time / 60)
-    return s + '分钟前'
-  } else if (time < 60 * 60 * 24 && time >= 60 * 60) {
-    // 超过1小时少于24小时
-    s = Math.floor(time / 60 / 60)
-    return s + '小时前'
-  } else if (time < 60 * 60 * 24 * 3 && time >= 60 * 60 * 24) {
-    // 超过1天少于3天内
-    s = Math.floor(time / 60 / 60 / 24)
-    return s + '天前'
-  } else {
-    // 超过3天
-    const dateTemp = new Date(parseInt(date) * 1000)
-    return dateTemp.getFullYear() + '/' + (dateTemp.getMonth() + 1) + '/' + dateTemp.getDate()
-  }
-}
-
 /**
  * 研讨会话
  */
