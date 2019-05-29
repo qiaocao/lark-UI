@@ -2,7 +2,7 @@
  * 研讨相关的工具
  * @author jihainan
  */
-
+import SocketApi from './SocketApi'
 /**
  * 消息体类
  */
@@ -47,5 +47,6 @@ class Tweet {
 }
 
 export {
-  Tweet
+  Tweet,
+  SocketApi
 }
