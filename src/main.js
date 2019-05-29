@@ -10,6 +10,8 @@ import bootstrap from './core/bootstrap'
 import '@/permission' // permission control
 import '@/utils/filter' // global filter
 
+
+
 Vue.config.productionTip = false
 
 Vue.use(VueAxios, router)
@@ -23,3 +25,7 @@ new Vue({
   },
   render: h => h(App)
 }).$mount('#app')
+
+//定义全局变量 SocketGlobal
+import socketApi from './api/socketApi'
+Vue.prototype.SocketGlobal = new socketApi()
