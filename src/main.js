@@ -11,7 +11,7 @@ import '@/permission' // permission control
 import '@/utils/filter'
 
 // 定义全局变量 SocketGlobal
-import SocketApi from './api/socketApi' // global filter
+import { SocketApi } from '@/utils/talk' // global filter
 
 Vue.config.productionTip = false
 

@@ -17,8 +17,8 @@ class SocketApi {
   constructor (wsProtocol, ip, port, paramStr, param, heartbeatTimeout, reconnInterval, binaryType) {
     this.wsProtocol = wsProtocol
     this.ip = ip || '127.0.0.1'
-    this.port = port || '9326'
-    this.url = 'ws://127.0.0.1:9326'
+    this.port = port || '8181'
+    this.url = 'ws://127.0.0.1:8181'
     this.binaryType = binaryType || 'arraybuffer'
 
     if (paramStr) {

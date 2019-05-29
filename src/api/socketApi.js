@@ -36,7 +36,6 @@ const SocketApi = function (wsProtocol, ip, port, paramStr, param, heartbeatTime
   this.connect = function () {
     const ws = new WebSocket(this.url)
     this.ws = ws
-    ws.
     ws.binaryType = this.binaryType // 'arraybuffer'; // 'blob' or 'arraybuffer';//arraybuffer是字节
     const self = this
     ws.onopen = function (event) {
