@@ -4,7 +4,20 @@
  */
 import SocketApi from './SocketApi'
 
-class SocketMessage {}
+/**
+ * 用于websocket通信的消息体
+ */
+class SocketMessage {
+  /**
+   * websocket通信消息体构造器
+   * @param {Number} code 消息类型码
+   * @param {*} data 数据对象
+   */
+  constructor (code, data) {
+    if (code instanceof Number) { this.code = code }
+    if (data instanceof Object) { this.data = data }
+  }
+}
 
 /**
  * 消息体类
