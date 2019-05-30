@@ -3,6 +3,9 @@
  * @author jihainan
  */
 import SocketApi from './SocketApi'
+
+class SocketMessage {}
+
 /**
  * 消息体类
  */
@@ -19,7 +22,7 @@ class Tweet {
    * @param {Number} type 消息类型 1 - 文本消息，2 - 文件消息，3 - 图片消息
    * @param {String | Object} content 消息的内容
    * @param {Date} time 消息发送时间
-   * @param {Number} code 消息分类 1 - 系统消息，2 - 群消息，3 - 私聊消息
+   * @param {Number} code 消息分类 0 - 群消息， - 私聊消息
    */
   constructor (id, username, avatar, fromId, toId, atId, secretLevel, type, content, time, code) {
     if (id instanceof String) { this.id = id } else { throw Error('id 数据类型错误') }
@@ -48,5 +51,6 @@ class Tweet {
 
 export {
   Tweet,
-  SocketApi
+  SocketApi,
+  SocketMessage
 }

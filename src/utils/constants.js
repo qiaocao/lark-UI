@@ -19,7 +19,20 @@ const ErrorType = {
   SERVER_ERROR: 500 // 刷新token错误
 }
 
+// 登陆状态常量 同websocket的readyState
+const LandingStatus = {
+  /** 正在登陆 */
+  LANDING: 0,
+  /** 在线 */
+  ONLINE: 1,
+  /** 正在退出 */
+  EXITING: 2,
+  /** 离线 */
+  OFFLINE: 3
+}
+
 export {
   SECRETLEVEL_ENUM,
-  ErrorType
+  ErrorType,
+  LandingStatus
 }

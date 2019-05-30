@@ -247,9 +247,6 @@ export default {
       get: function () {
         return this.chatInfo.id
       }
-    },
-    chatState () {
-      return this.SocketGlobal.ws.readyState
     }
   },
   mounted () {

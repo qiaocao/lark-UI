@@ -2,6 +2,7 @@
  * websocket接口类
  * @author jihainan
  */
+import store from '@/store'
 class SocketApi {
   /**
    * 构造函数
@@ -46,6 +47,8 @@ class SocketApi {
    */
   connect () {
     const ws = new WebSocket(this.url)
+    // 设置在线状态为重连中
+    store.commit('SET_ONLINE_STATE', ws.CONNECTING)
     this.ws = ws
 
     ws.binaryType = this.binaryType
@@ -55,6 +58,11 @@ class SocketApi {
     // websocket连接打开
     ws.onopen = openEvent => {
       self.lastInteractionTime(new Date().getTime())
+
+      // 设置在线状态为已连接
+      store.commit('SET_ONLINE_STATE', ws.OPEN)
+
+      // 定时发送心跳
       self.pingIntervalId = setInterval(() => {
         self.ping(self)
       }, self.heartbeatSendInterval)
@@ -74,11 +82,15 @@ class SocketApi {
     ws.onclose = closeEvent => {
       clearInterval(self.pingIntervalId)
 
+      // 设置在线状态为已断开
+      store.commit('SET_ONLINE_STATE', ws.CLOSED)
+
       // 重连的处理逻辑
-      // ···
+      self.reconn()
     }
 
     ws.onerror = errorEvent => {
+      self.colse(4001, '连接出现错误')
       // 出错的处理逻辑
       // ···
     }
@@ -121,6 +133,9 @@ class SocketApi {
    * @param {String} reason 关闭原因描述
    */
   colse (code, reason) {
+    // 设置登陆状态为正在断开
+    store.commit('SET_ONLINE_STATE', this.ws.CLOSING)
+
     this.ws.close(code, reason)
   }
 
