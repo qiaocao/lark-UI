@@ -90,9 +90,6 @@ const user = {
           // commit('SET_RECENT_CHAT_LIST', result.chat.chatList)
           // ChatListUtils.setChatList(user.state.info.id, result.chat.chatList)
           resolve(response)
-        }).then(() => {
-          // 进行websocket连接
-          Vue.prototype.SocketGlobal.connect()
         }).catch(error => {
           reject(error)
         })
