@@ -10,7 +10,7 @@ const talk = {
     /** 用户的在线状态
      *  0-离线，1-重连，2-在线
      */
-    onlineState: 0,
+    onlineState: 3,
     /** 最新联系人列表 */
     recentContacts: [],
     /** 群组列表 */
@@ -18,7 +18,9 @@ const talk = {
     /** 联系人树 */
     contactsTree: [],
     /** 存储研讨消息的Map */
-    talkMap: new Map()
+    talkMap: new Map(),
+    /** 当前正在进行的聊天 */
+    currentTalk: {}
   },
 
   mutations: {
@@ -36,6 +38,9 @@ const talk = {
     },
     SET_TALK_MAP (state, talkMap) {
       state.talkMap = talkMap
+    },
+    SET_CURRENT_TALK (state, currentTalk) {
+      state.currentTalk = currentTalk
     }
   },
 
