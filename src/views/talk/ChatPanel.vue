@@ -89,7 +89,7 @@
     <a-layout class="talk-layout-content">
 
       <div v-show="activeKey == '1'" class="chat-area">
-        <user-chat :chatInfo="currentChat" />
+        <user-chat :chatInfo="currentTalk" />
       </div>
 
       <div v-show="activeKey == '2'" class="info-area">
@@ -166,28 +166,28 @@ export default {
     }
   },
   computed: {
-    currentChat: {
+    currentTalk: {
       get: function () {
-        console.log(this.$store.state.chat.currentChat)
-        return this.$store.state.chat.currentChat
+        console.log(this.$store.state.talk.currentTalk)
+        return this.$store.state.talk.currentTalk
       },
-      set: function (currentChat) {
-        this.$store.commit('SET_CURRENT_CHAT', currentChat)
+      set: function (currentTalk) {
+        this.$store.commit('SET_CURRENT_TALK', currentTalk)
       }
     },
     chatList: {
       get: function () {
-        return this.$store.state.chat.recentChatList
+        return this.$store.state.talk.recentContacts
       },
-      set: function (recentChatList) {
-        this.$store.commit('SET_RECENT_CHAT_LIST', recentChatList)
+      set: function (recentContacts) {
+        this.$store.commit('SET_RECENT_CONTACTS', recentContacts)
       }
     },
     groupList () {
-      return this.$store.state.chat.groupList
+      return this.$store.state.talk.groupList
     },
     contactsTree () {
-      return this.$store.state.chat.contactsTree
+      return this.$store.state.talk.contactsTree
     }
   },
   created () {
@@ -200,37 +200,35 @@ export default {
     changePane (activeKey) {
       this.activeKey = activeKey
     },
-    handleSaveOk () {
-
-    },
-    handleSaveClose () {
-
-    },
+    handleSaveOk () {},
+    handleSaveClose () {},
+    // TODO:
     showChat: function (chat) {
-      const self = this
-      self.isShowWelcome = false
-      self.isShowPanel = true
-      const chatList = ChatListUtils.getChatList(self.$store.state.user.info.id)
-
-      // 重新添加会话，放到第一个
-      const firstChat = new Chat(chat.id, chat.name, conf.getHostUrl() + chat.avatar, 0, '', '', '', MessageTargetType.CHAT_GROUP)
-
-      // 存储到localStorage 的 chatList
-      ChatListUtils.setChatList(self.$store.state.user.info.id, chatList)
-
-      this.$store.commit('RESET_UNREAD')
-      this.currentChat = chat
-      // 当前聊天室
-      if (firstChat) {
-        self.$store.commit('SET_CURRENT_CHAT', firstChat)
-      }
-      // 重新设置chatList
-      self.$store.commit('SET_RECENT_CHAT_LIST', ChatListUtils.getChatList(self.$store.state.user.info.id))
-      // Chat会话框中的研讨信息每次滚动到最底部
-      this.$nextTick(() => {
-        // imageLoad('message-box')
-      })
       this.activeChat = chat.id
+      console.log(chat)
+      // const self = this
+      // self.isShowWelcome = false
+      // self.isShowPanel = true
+      // const chatList = ChatListUtils.getChatList(self.$store.state.user.info.id)
+
+      // // 重新添加会话，放到第一个
+      // const firstChat = new Chat(chat.id, chat.name, conf.getHostUrl() + chat.avatar, 0, '', '', '', MessageTargetType.CHAT_GROUP)
+
+      // // 存储到localStorage 的 chatList
+      // ChatListUtils.setChatList(self.$store.state.user.info.id, chatList)
+
+      // this.$store.commit('RESET_UNREAD')
+      // this.currentTalk = chat
+      // // 当前聊天室
+      // if (firstChat) {
+      //   self.$store.commit('SET_CURRENT_CHAT', firstChat)
+      // }
+      // // 重新设置chatList
+      // self.$store.commit('SET_RECENT_CHAT_LIST', ChatListUtils.getChatList(self.$store.state.user.info.id))
+      // // Chat会话框中的研讨信息每次滚动到最底部
+      // this.$nextTick(() => {
+      //   // imageLoad('message-box')
+      // })
     },
     delChat (chat) {
       this.$store.commit('DEL_CHAT', chat)
@@ -245,7 +243,6 @@ export default {
     },
     /**
      * 加载群组列表
-     * @author jihainan
      */
     getGroupList () {
       this.groupLoading = true
@@ -255,7 +252,6 @@ export default {
     },
     /**
      * 加载联系人树
-     * @author jihainan
      */
     getContactsTree () {
       this.contactsLoading = true
@@ -265,7 +261,6 @@ export default {
     },
     /**
      * 获取最近联系列表
-     * @author jihainan
      */
     getRecentContacts () {
       this.recentLoading = true
@@ -280,21 +275,21 @@ export default {
 
   },
   activated: function () {
-    const self = this
-    if (this.$route.query.chat) {
-      self.isShowPanel = true
-      self.isShowWelcome = false
-    }
-    // 当前研讨室
-    if (self.$route.query.chat) {
-      self.$store.commit('SET_CURRENT_CHAT', this.$route.query.chat)
-    }
-    // 重新设置chatList
-    self.$store.commit('SET_RECENT_CHAT_LIST', ChatListUtils.getChatList(self.$store.state.user.info.id))
-    // 每次滚动到最底部
-    this.$nextTick(() => {
-      imageLoad('message-box')
-    })
+    // const self = this
+    // if (this.$route.query.chat) {
+    //   self.isShowPanel = true
+    //   self.isShowWelcome = false
+    // }
+    // // 当前研讨室
+    // if (self.$route.query.chat) {
+    //   self.$store.commit('SET_CURRENT_CHAT', this.$route.query.chat)
+    // }
+    // // 重新设置chatList
+    // self.$store.commit('SET_RECENT_CHAT_LIST', ChatListUtils.getChatList(self.$store.state.user.info.id))
+    // // 每次滚动到最底部
+    // this.$nextTick(() => {
+    //   imageLoad('message-box')
+    // })
   }
 }
 </script>

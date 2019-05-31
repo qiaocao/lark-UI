@@ -107,7 +107,7 @@
                 </template>
                 <a-icon type="question-circle" style="margin-right: 6px; cursor: pointer;"/>
               </a-tooltip>
-              <a-dropdown-button @click="mineSend()" type="primary">
+              <a-dropdown-button @click="sendMessage(60)" type="primary">
                 发送(<strong>非密</strong>)
                 <a-menu slot="overlay">
                   <a-menu-item key="1">标记为<strong>秘密</strong>并发送</a-menu-item>
@@ -140,6 +140,10 @@ import VEmojiPicker from 'v-emoji-picker'
 import packData from 'v-emoji-picker/data/emojis.json'
 // 引入密级常量
 import { mixinSecret } from '@/utils/mixin'
+import { SocketMessage, Tweet } from '@/utils/talk'
+import { mapGetters } from 'vuex'
+// 生成随机uuid
+import uuidv4 from 'uuid/v4'
 
 export default {
   components: {
@@ -168,6 +172,10 @@ export default {
     return {
       // 被激活的抽屉
       activeOption: '',
+      // 所有被at用的id
+      atId: [],
+      // 消息类型
+      messageType: 1,
 
       facesVisible: false,
       pack: packData,
@@ -232,6 +240,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['onlineState', 'userInfo']),
     emojisNative () {
       return packData
     },
@@ -241,11 +250,6 @@ export default {
       },
       set: function (messageList) {
         this.$store.commit('SET_MESSAGE_LIST', messageList)
-      }
-    },
-    talkId: {
-      get: function () {
-        return this.chatInfo.id
       }
     }
   },
@@ -260,6 +264,8 @@ export default {
     console.log('this.chatInfo', this.chatInfo)
   },
   updated () {
+    console.log(uuidv4())
+    // uuidv4()
   },
   filters: {
     // 将日期过滤为 hour:minutes
@@ -305,6 +311,38 @@ export default {
      */
     triggerDrawer (drawerName) {
       this.activeOption = drawerName
+    },
+    /**
+     * 发送消息
+     * @author jihainan
+     */
+    sendMessage (secretLevel) {
+      let tweet = {}
+      const uuid = uuidv4()
+
+      if (this.messageContent === '') {
+        this.$message.warning('消息内容不能为空')
+      } else if (this.messageContent.length > 2000) {
+        this.$message.warning('消息内容不能超过2000个字符')
+      } else {
+        tweet = new Tweet(
+          uuid,
+          this.userInfo.name,
+          this.userInfo.avatar,
+          this.userInfo.id,
+          this.chatInfo.id,
+          this.atId,
+          secretLevel,
+          this.messageType,
+          this.messageContent,
+          new Date(),
+          this.chatInfo.isGroup
+        )
+      }
+
+      const code = this.chatInfo.isGroup ? 0 : 1
+      const baseMessage = new SocketMessage(code, tweet)
+      console.log(baseMessage)
     },
     talkItemEnter () {
       this.activeItemHandle = true
