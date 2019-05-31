@@ -54,10 +54,10 @@ export default {
   data () {
     return {
       statusMap: new Map([
-        [LandingStatus.LANDING, 'processing'],
+        [LandingStatus.LANDING, 'warning'],
         [LandingStatus.ONLINE, 'success'],
-        [LandingStatus.EXITING, 'warning'],
-        [LandingStatus.OFFLINE, 'default'],
+        [LandingStatus.EXITING, 'error'],
+        [LandingStatus.OFFLINE, 'default']
       ])
     }
   },
