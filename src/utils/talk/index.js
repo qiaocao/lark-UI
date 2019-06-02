@@ -14,7 +14,7 @@ class SocketMessage {
    * @param {*} data 数据对象
    */
   constructor (code, data) {
-    if (code instanceof Number) { this.code = code }
+    if (typeof code === 'number') { this.code = code }
     if (data instanceof Object) { this.data = data }
   }
 }

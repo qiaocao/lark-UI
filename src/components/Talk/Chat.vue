@@ -93,7 +93,6 @@
             size="large"
             class="textarea-input"
             v-model="messageContent"
-            @keyup.enter="mineSend()"
           ></textarea>
           <!-- 发送键 -->
           <div class="send-toolbar">
@@ -209,20 +208,50 @@ export default {
       }
     }
   },
-  watch: {
-    // 监听每次 user 的变化
-    chatInfo: function () {
-      const self = this
-      self.messageList = []
-      // 从内存中取研讨信息
-      const cacheMessages = self.$store.state.chat.messageListMap.get(self.chatInfo.id)
-      if (cacheMessages) {
-        self.messageList = cacheMessages
+  computed: {
+    ...mapGetters(['onlineState', 'userInfo']),
+    messageList: {
+      get: function () {
+        return this.$store.state.talk.curMessageList
+      },
+      set: function (messageList) {
+        this.$store.commit('SET_CUR_MESSAGE_LIST', messageList)
       }
+    },
+    emojisNative () {
+      return packData
+    }
+  },
+  watch: {
+    // 监听当前研讨id的变化
+    'chatInfo.id': function () {
+      // 用当前研讨的id从store中获取消息列表
+      const cacheMessage = this.$store.state.talk.talkMap.get(this.chatInfo.id)
+      if (cacheMessage) {
+        this.messageList = cacheMessage
+      }
+      // 消息加载完成后滚动到最下方
+      this.scrollToBottom()
+    },
+    messageList: function (newValue) {
+      // 消息列表发生变化，更新缓存
+      this.$store.state.talk.talkMap.set(this.chatInfo.id, newValue)
+      // TODO: 需要同时更新最近联系人列表
+      // ···
+    }
+    // 监听每次 user 的变化
+    // chatInfo: function () {
+      // const self = this
+      // self.messageList = []
+      // 从内存中取研讨信息
+      // const cacheMessages = self.$store.state.chat.messageListMap.get(self.chatInfo.id)
+      // if (cacheMessages) {
+      //   self.messageList = cacheMessages
+      // }
       // 每次滚动到最底部
-      this.$nextTick(() => {
-        imageLoad('conv-box-editor')
-      })
+      // this.$nextTick(() => {
+      //   imageLoad('conv-box-editor')
+      // })
       // if (self.chat.type === '1') {
       //   const param = new FormData()
       //   param.set('chatId', self.chat.id)
@@ -236,22 +265,8 @@ export default {
       //   )
       // }
       // 滚动到最新一条消息
-      this.scrollToBottom()
-    }
-  },
-  computed: {
-    ...mapGetters(['onlineState', 'userInfo']),
-    emojisNative () {
-      return packData
-    },
-    messageList: {
-      get: function () {
-        return this.$store.state.chat.messageList
-      },
-      set: function (messageList) {
-        this.$store.commit('SET_MESSAGE_LIST', messageList)
-      }
-    }
+      // this.scrollToBottom()
+    // }
   },
   mounted () {
     // 页面创建时，消息滚动到最近一条
@@ -264,19 +279,8 @@ export default {
     console.log('this.chatInfo', this.chatInfo)
   },
   updated () {
-    console.log(uuidv4())
-    // uuidv4()
   },
-  filters: {
-    // 将日期过滤为 hour:minutes
-    // time (date) {
-    // if (typeof date === 'string') {
-    //   date = new Date(date)
-    // }
-    // date = new Date(date)
-    // return date.getHours() + ':' + date.getMinutes()
-    // }
-  },
+  filters: {},
   methods: {
     /**
      * 聊天消息滚到到最新一条
@@ -317,32 +321,37 @@ export default {
      * @author jihainan
      */
     sendMessage (secretLevel) {
-      let tweet = {}
+      let tweet = new Tweet()
       const uuid = uuidv4()
+      const content = this.messageContent
 
-      if (this.messageContent === '') {
+      if (content.replace(/\n/g, '').trim() === '') {
         this.$message.warning('消息内容不能为空')
       } else if (this.messageContent.length > 2000) {
-        this.$message.warning('消息内容不能超过2000个字符')
+        this.$message.warning('消息内容不能超过2000个字符,以文件发送')
       } else {
-        tweet = new Tweet(
-          uuid,
-          this.userInfo.name,
-          this.userInfo.avatar,
-          this.userInfo.id,
-          this.chatInfo.id,
-          this.atId,
-          secretLevel,
-          this.messageType,
-          this.messageContent,
-          new Date(),
-          this.chatInfo.isGroup
-        )
-      }
+        tweet.id = uuid
+        tweet.username = this.userInfo.name
+        tweet.avatar = this.userInfo.avatar
+        tweet.fromId = this.userInfo.id
+        tweet.toId = this.chatInfo.id
+        tweet.atId = []
+        tweet.secretLevel = secretLevel
+        tweet.type = 1
+        tweet.content = content
+        tweet.time = new Date()
+        tweet.isGroup = this.chatInfo.isGroup
 
-      const code = this.chatInfo.isGroup ? 0 : 1
-      const baseMessage = new SocketMessage(code, tweet)
-      console.log(baseMessage)
+        // 形成基本websocket消息体
+        const baseMessage = new SocketMessage(this.chatInfo.isGroup ? 1 : 0, tweet)
+
+        // TODO: 通过websoket向服务端发送消息
+        // ···
+        // 将消息加入当前消息列表(栈操作)
+        this.messageList.push(tweet)
+        // 发完消息滚动到最下方
+        this.scrollToBottom()
+      }
     },
     talkItemEnter () {
       this.activeItemHandle = true
