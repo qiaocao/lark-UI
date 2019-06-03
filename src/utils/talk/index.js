@@ -3,6 +3,7 @@
  * @author jihainan
  */
 import SocketApi from './SocketApi'
+import { threadId } from 'worker_threads';
 
 /**
  * 用于websocket通信的消息体
@@ -37,7 +38,7 @@ class Tweet {
    * @param {Date} time 消息发送时间
    * @param {Boolean} isGroup 消息分类 ture - 群消息， - 私聊消息
    */
-  constructor (id, username, avatar, fromId, toId, atId, secretLevel, type, content, time, isGroup) {
+  constructor (id, username, avatar, fromId, toId, atId, secretLevel, type, content, time, isGroup, contactInfo) {
     // if (id instanceof String) { this.id = id } else { throw Error('id 数据类型错误') }
     this.id = id
     // if (avatar instanceof String) { this.avatar = avatar } else { throw Error('avatar 数据类型错误') }
@@ -60,11 +61,44 @@ class Tweet {
     this.isGroup = isGroup
     // if (content instanceof String || content instanceof Object) { this.content = content } else { throw Error('content 数据类型错误') }
     this.content = content
+    this.contactInfo = contactInfo
+  }
+}
+
+/**
+ * 最近联系人消息体
+ */
+class RecentContact {
+  /**
+   * 构建最近联系人项
+   * @param {String} id id
+   * @param {String} name 名称
+   * @param {String} time 最后聊天时间 hh:mm
+   * @param {String} lastMessage 最后一条消息
+   * @param {String} avatar 头像地址
+   * @param {Boolean} atMe 是否at我
+   * @param {Number} unreadNum 未读消息数
+   * @param {Boolean} isTop 是否置顶
+   * @param {Boolean} isMute 是否免打扰
+   * @param {Boolean} isGroup 是否为群组
+   */
+  constructor (id, name, time, lastMessage, avatar, atMe, unreadNum, isTop, isMute, isGroup) {
+    this.id = id
+    this.name = name
+    this.time = time
+    this.lastMessage = lastMessage
+    this.avatar = avatar
+    this.atMe = atMe
+    this.unreadNum = unreadNum
+    this.isTop = isTop
+    this.isMute = isMute
+    this.isGroup = isGroup
   }
 }
 
 export {
   Tweet,
   SocketApi,
-  SocketMessage
+  SocketMessage,
+  RecentContact
 }

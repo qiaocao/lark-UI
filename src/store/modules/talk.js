@@ -113,8 +113,24 @@ const talk = {
      * @param {*} freshItem 更新的项，结构同最近联系人项
      */
     UpdateRecentContacts ({ commit, state }, freshItem) {
-      // TODO: 写处理逻辑
-      // ···
+      const recentContacts = state.recentContacts
+      // 在最近联系人中查找当前联系人是否已经存在如果存在返回位置
+      const index = recentContacts.findIndex(element => element.id === freshItem.id)
+      // 设置未读消息数量 (TODO: 需要判断是否为当前研讨，是当前研讨置为0XXXX-->这个地方统一做加一处理)
+      if (index > -1) {
+        freshItem.unreadNum += recentContacts[index].unreadNum
+        // 若已存在 先删除
+        this._vm.$delete(recentContacts, index)
+      }
+
+      // 在最近联系人中查找是否有置顶项，如果有返回置顶项数量
+      const TopNum = recentContacts.filter(element => element.isTop).length
+
+      freshItem.isTop
+        ? recentContacts.unshift(freshItem)
+        : recentContacts.splice(TopNum, 0, freshItem)
+      // 更新，实际在操作的过程中已经更新了
+      // commit('SET_RECENT_CONTACTS', recentContacts)
     },
     /**
      * 获取所有未读消息的map(初始化缓存中的消息列表)
@@ -132,6 +148,13 @@ const talk = {
           reject(error)
         })
       })
+    },
+    /**
+     * 更新缓存中的消息map
+     * @param {Tweet} newMessage 新消息
+     */
+    UpdateTalkMap ({ state, commit }, newMessage) {
+      // 更新消息map
     }
   },
   modules,

@@ -55,7 +55,10 @@ export function format (date, fmt) {
     'S+': date.getMilliseconds(),
     'q+': Math.floor(date.getMonth() / 3) + 1,
     'h+': (() => {
-      const hour = date.getHours() % 12
+      // 12小时制
+      // const hour = date.getHours() % 12
+      // 24小时制
+      const hour = date.getHours()
       return hour === 0 ? 12 : hour
     })(),
     'E+': (() => {
