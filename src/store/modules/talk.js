@@ -4,6 +4,7 @@
  */
 import modules from './conf'
 import { getGroupList, getContactsTree, getRecentContacts, getTalkMap } from '@/api/chat'
+import { Tweet } from '@/utils/talk'
 
 const talk = {
   state: {
@@ -122,15 +123,13 @@ const talk = {
         // 若已存在 先删除
         this._vm.$delete(recentContacts, index)
       }
-
       // 在最近联系人中查找是否有置顶项，如果有返回置顶项数量
       const TopNum = recentContacts.filter(element => element.isTop).length
-
       freshItem.isTop
         ? recentContacts.unshift(freshItem)
         : recentContacts.splice(TopNum, 0, freshItem)
       // 更新，实际在操作的过程中已经更新了
-      // commit('SET_RECENT_CONTACTS', recentContacts)
+      commit('SET_RECENT_CONTACTS', recentContacts)
     },
     /**
      * 获取所有未读消息的map(初始化缓存中的消息列表)
@@ -154,7 +153,9 @@ const talk = {
      * @param {Tweet} newMessage 新消息
      */
     UpdateTalkMap ({ state, commit }, newMessage) {
-      // 更新消息map
+      const tempMessageList = state.talkMap.get(newMessage.contactInfo.id) || []
+      tempMessageList.push(new Tweet(newMessage))
+      commit('SET_TALK_MAP', [newMessage.contactInfo.id, tempMessageList])
     }
   },
   modules,

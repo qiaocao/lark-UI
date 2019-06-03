@@ -250,6 +250,8 @@ export default {
     messageList: function (newValue) {
       // 消息列表发生变化，更新缓存
       this.$store.state.talk.talkMap.set(this.chatInfo.id, newValue)
+      // 滚动到最下方
+      this.scrollToBottom()
     }
     // 监听每次 user 的变化
     // chatInfo: function () {

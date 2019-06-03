@@ -15,19 +15,19 @@ class SocketApi {
    * @param {Number} reconnInterval 重连间隔时间 单位：毫秒
    * @param {String} binaryType 返回websocket连接所传输二进制数据的类型
    */
-  constructor (wsProtocol, ip, port, paramStr, param, heartbeatTimeout, reconnInterval, binaryType) {
+  constructor ({ wsProtocol, ip = '127.0.0.1', port = '8181', paramStr, param, heartbeatTimeout = 50000, reconnInterval = 1000, binaryType = 'arraybuffer' } = {}) {
     this.wsProtocol = wsProtocol
-    this.ip = ip || '127.0.0.1'
-    this.port = port || '8181'
+    this.ip = ip
+    this.port = port
     this.url = 'ws://127.0.0.1:8181'
-    this.binaryType = binaryType || 'arraybuffer'
+    this.binaryType = binaryType
 
     if (paramStr) {
       this.url += '?' + paramStr
     }
     this.param = param
-    this.heartbeatTimeout = heartbeatTimeout || 50000
-    this.reconnInterval = reconnInterval || 1000
+    this.heartbeatTimeout = heartbeatTimeout
+    this.reconnInterval = reconnInterval
     this.heartbeatSendInterval = heartbeatTimeout / 2
   }
 
@@ -74,8 +74,24 @@ class SocketApi {
     // 收到websocket消息
     ws.onmessage = messageEvent => {
       const time = new Date()
-      console.log(JSON.parse(messageEvent.data).data.contactInfo)
-      store.dispatch('UpdateRecentContacts', JSON.parse(messageEvent.data).data.contactInfo)
+      const received = JSON.parse(messageEvent.data)
+
+      switch (received.code) {
+        case 0:
+        // 接收到私聊消息
+        // eslint-disable-next-line no-fallthrough
+        case 1:
+          // 接收到群组消息
+          // 更新最近联系人列表
+          store.dispatch('UpdateRecentContacts', received.data.contactInfo)
+          // 更新消息缓存
+          store.dispatch('UpdateTalkMap', received.data)
+          break
+        default:
+          break
+      }
+      // 更新最近联系人列表
+      // store.dispatch('UpdateRecentContacts', JSON.parse(messageEvent.data).contactInfo)
       // 消息体的处理逻辑
       // ···
 
