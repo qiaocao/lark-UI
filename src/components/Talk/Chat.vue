@@ -255,31 +255,31 @@ export default {
     }
     // 监听每次 user 的变化
     // chatInfo: function () {
-      // const self = this
-      // self.messageList = []
-      // 从内存中取研讨信息
-      // const cacheMessages = self.$store.state.chat.messageListMap.get(self.chatInfo.id)
-      // if (cacheMessages) {
-      //   self.messageList = cacheMessages
-      // }
-      // 每次滚动到最底部
-      // this.$nextTick(() => {
-      //   imageLoad('conv-box-editor')
-      // })
-      // if (self.chat.type === '1') {
-      //   const param = new FormData()
-      //   param.set('chatId', self.chat.id)
-      //   fetchPost(
-      //     conf.getChatUsersUrl(),
-      //     param,
-      //     function (json) {
-      //       self.userList = json
-      //     },
-      //     self
-      //   )
-      // }
-      // 滚动到最新一条消息
-      // this.scrollToBottom()
+    // const self = this
+    // self.messageList = []
+    // 从内存中取研讨信息
+    // const cacheMessages = self.$store.state.chat.messageListMap.get(self.chatInfo.id)
+    // if (cacheMessages) {
+    //   self.messageList = cacheMessages
+    // }
+    // 每次滚动到最底部
+    // this.$nextTick(() => {
+    //   imageLoad('conv-box-editor')
+    // })
+    // if (self.chat.type === '1') {
+    //   const param = new FormData()
+    //   param.set('chatId', self.chat.id)
+    //   fetchPost(
+    //     conf.getChatUsersUrl(),
+    //     param,
+    //     function (json) {
+    //       self.userList = json
+    //     },
+    //     self
+    //   )
+    // }
+    // 滚动到最新一条消息
+    // this.scrollToBottom()
     // }
   },
   mounted () {
@@ -343,7 +343,7 @@ export default {
      * @author jihainan
      */
     sendMessage (secretLevel) {
-      let tweet = new Tweet()
+      const tweet = new Tweet()
       const uuid = uuidv4()
       const content = this.messageContent
 
