@@ -74,7 +74,8 @@ class SocketApi {
     // 收到websocket消息
     ws.onmessage = messageEvent => {
       const time = new Date()
-
+      console.log(JSON.parse(messageEvent.data).data.contactInfo)
+      store.dispatch('UpdateRecentContacts', JSON.parse(messageEvent.data).data.contactInfo)
       // 消息体的处理逻辑
       // ···
 

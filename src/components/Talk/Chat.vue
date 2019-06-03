@@ -1,5 +1,5 @@
 <template>
-  <a-layout v-if="Object.keys(chatInfo).length" class="conv-box">
+  <a-layout v-if="Object.keys(chatInfo).length" @mouseover="clearUnread()" class="conv-box">
 
     <!-- 聊天设置选项的抽屉组件 -->
     <talk-history :activeOption="activeOption" @closeDrawer="triggerDrawer"></talk-history>
@@ -140,6 +140,7 @@ import packData from 'v-emoji-picker/data/emojis.json'
 // 引入密级常量
 import { mixinSecret } from '@/utils/mixin'
 import { SocketMessage, Tweet } from '@/utils/talk'
+import { format } from '@/utils/util'
 import { mapGetters } from 'vuex'
 // 生成随机uuid
 import uuidv4 from 'uuid/v4'
@@ -229,15 +230,26 @@ export default {
       const cacheMessage = this.$store.state.talk.talkMap.get(this.chatInfo.id)
       if (cacheMessage) {
         this.messageList = cacheMessage
+      } else {
+        this.messageList = []
       }
       // 消息加载完成后滚动到最下方
       this.scrollToBottom()
     },
+    'chatInfo.unreadNum': function (newValue) {
+      console.log('newValue:' + newValue)
+      // TODO: 更新未读消息的数量，待优化
+      if (this.$store.state.recentContacts) {
+        this.$store.state.recentContacts.forEach(element => {
+          if (element.id === this.chatInfo.id) {
+            element.unreadNum = newValue
+          }
+        })
+      }
+    },
     messageList: function (newValue) {
       // 消息列表发生变化，更新缓存
       this.$store.state.talk.talkMap.set(this.chatInfo.id, newValue)
-      // TODO: 需要同时更新最近联系人列表
-      // ···
     }
     // 监听每次 user 的变化
     // chatInfo: function () {
@@ -282,6 +294,14 @@ export default {
   },
   filters: {},
   methods: {
+    /**
+     * 将最近联系人列表中的未读消息数清零
+     */
+    clearUnread () {
+      if (this.chatInfo.unreadNum !== 0) {
+        this.$store.state.talk.currentTalk.unreadNum = 0
+      }
+    },
     /**
      * 聊天消息滚到到最新一条
      * 1. 发送消息 2. 页面创建 3.页面更新
@@ -342,13 +362,22 @@ export default {
         tweet.time = new Date()
         tweet.isGroup = this.chatInfo.isGroup
 
-        // 形成基本websocket消息体
-        const baseMessage = new SocketMessage(this.chatInfo.isGroup ? 1 : 0, tweet)
-
-        // TODO: 通过websoket向服务端发送消息
+        // TODO: 通过websoket向服务端发送消息， 注意加上chatInfo的结构体
         // ···
         // 将消息加入当前消息列表(栈操作)
         this.messageList.push(tweet)
+
+        // 更新当前联系人信息
+        this.chatInfo.lastMessage = content
+        this.chatInfo.time = format(tweet.time, 'hh:mm')
+
+        // 添加发件人信息，组件消息体，发送websocket消息
+        tweet.contactInfo = this.chatInfo
+        const baseMessage = new SocketMessage(this.chatInfo.isGroup ? 1 : 0, tweet)
+        this.SocketGlobal.send(JSON.stringify(baseMessage))
+
+        // 更新最近联系人列表
+        this.$store.dispatch('UpdateRecentContacts', this.chatInfo)
         // 发完消息滚动到最下方
         this.scrollToBottom()
       }

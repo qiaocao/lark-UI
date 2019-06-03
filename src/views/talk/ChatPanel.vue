@@ -196,11 +196,11 @@ export default {
       this.activeChat = currentTalk.id
       // 未读消息置为0
       currentTalk.unreadNum = 0
-      // 更新sotre中的当前会话
+      // 初始化sotre中的当前会话
       this.currentTalk = currentTalk
       // TODO: 向服务端发一条已读的消息，同步消息状态
       // ···
-      // 更新最近联系人列表
+      // TODO: 更新最近联系人列表，待优化
       this.recentContacts[index] = currentTalk
 
       // const self = this
