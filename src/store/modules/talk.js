@@ -3,7 +3,7 @@
  * @author jihainan
  */
 import modules from './conf'
-import { getGroupList, getContactsTree, getRecentContacts } from '@/api/chat'
+import { getGroupList, getContactsTree, getRecentContacts, getTalkMap } from '@/api/chat'
 
 const talk = {
   state: {
@@ -19,8 +19,10 @@ const talk = {
     contactsTree: [],
     /** 存储研讨消息的Map */
     talkMap: new Map(),
-    /** 当前正在进行的聊天 */
-    currentTalk: {}
+    /** 当前正在进行的研讨 */
+    currentTalk: {},
+    /** 当前正在进行研讨的消息列表 */
+    curMessageList: []
   },
 
   mutations: {
@@ -36,11 +38,21 @@ const talk = {
     SET_CONTACTS_TREE (state, contactsTree) {
       state.contactsTree = contactsTree
     },
-    SET_TALK_MAP (state, talkMap) {
-      state.talkMap = talkMap
+    /**
+     * 更新talkMap
+     * @param {Object} state talk状态
+     * @param {Array} talkMapList 赋值数组
+     */
+    SET_TALK_MAP (state, talkMapList) {
+      talkMapList.forEach(function (item) {
+        state.talkMap.set(item[0], item[1])
+      })
     },
     SET_CURRENT_TALK (state, currentTalk) {
       state.currentTalk = currentTalk
+    },
+    SET_CUR_MESSAGE_LIST (state, curMessageList) {
+      state.curMessageList = curMessageList
     }
   },
 
@@ -80,7 +92,7 @@ const talk = {
       })
     },
     /**
-     * 获取最近联系人列表
+     * 获取最近联系人列表(用于初始化最近联系人列表)
      */
     GetRecentContacts ({ commit }) {
       return new Promise((resolve, reject) => {
@@ -89,6 +101,31 @@ const talk = {
             commit('SET_RECENT_CONTACTS', [ ...response.result.data ])
           } else {
             reject(new Error('getRecentContacts: 服务器发生错误'))
+          }
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+    /**
+     * 跟新最近联系人列表
+     * @param {*} freshItem 更新的项，结构同最近联系人项
+     */
+    UpdateRecentContacts ({ commit, state }, freshItem) {
+      // TODO: 写处理逻辑
+      // ···
+    },
+    /**
+     * 获取所有未读消息的map(初始化缓存中的消息列表)
+     */
+    GetTalkMap ({ commit }) {
+      return new Promise((resolve, reject) => {
+        getTalkMap().then(response => {
+          if (response.status === 200) {
+            commit('SET_TALK_MAP', [ ...response.result.data ])
+          } else {
+            reject(new Error('getTalkMap: 服务器发生错误'))
           }
           resolve(response)
         }).catch(error => {

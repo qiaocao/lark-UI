@@ -59,6 +59,9 @@ class SocketApi {
     ws.onopen = openEvent => {
       self.lastInteractionTime(new Date().getTime())
 
+      // 获取该用户所有的未读消息
+      store.dispatch('GetTalkMap')
+
       // 设置在线状态为已连接
       store.commit('SET_ONLINE_STATE', ws.OPEN)
 

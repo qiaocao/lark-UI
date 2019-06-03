@@ -29,12 +29,12 @@
           </span>
 
           <div class="recent-contacts-container tab-content-container">
-            <div v-for="(item, index) in chatList" :key="index" @click="showChat(item)">
+            <div v-for="(item, index) in recentContacts" :key="index" @click="showConvBox(item, index)">
               <recent-contacts-item :contactsInfo="item" :activated="item.id === activeChat"></recent-contacts-item>
             </div>
 
             <!-- 没有最新联系人或者联系人加载失败时的提示信息 -->
-            <div v-if="!chatList || !chatList.length" class="empty-tips">
+            <div v-if="!recentContacts || !recentContacts.length" class="empty-tips">
               <p>
                 暂无聊天信息，
                 <a-button type="primary" ghost size="small" :loading="recentLoading" @click="getRecentContacts">重新加载</a-button>
@@ -117,18 +117,9 @@ import {
   MemberBox as MemberModel,
   GroupItem
 } from '@/components/Talk'
-import WebsocketHeartbeatJs from '../../utils/talk/WebsocketHeartbeatJs'
 import {
-  ChatListUtils,
-  Chat,
-  imageLoad,
-  MessageInfoType,
-  MessageTargetType,
-  timeoutFetch
+  ChatListUtils
 } from '../../utils/talk/chatUtils'
-import { ErrorType } from '@/utils/constants'
-import conf from '@/api/index'
-import HttpApiUtils from '../../utils/talk/HttpApiUtils'
 
 export default {
   name: 'ChatPanel',
@@ -144,15 +135,8 @@ export default {
   data () {
     return {
       activeKey: '1',
+      // tab标签页的样式
       tabStyle: { margin: '0 6px 0', paddingLeft: '10px' },
-      data: [],
-      loading: false,
-      busy: false,
-      host: conf.getHostUrl(),
-      isShowPanel: false,
-      isShowWelcome: true,
-      memberVisible: false,
-      active: '',
 
       // 记录当前选中的联系人/群组信息
       activeContacts: '',
@@ -175,7 +159,7 @@ export default {
         this.$store.commit('SET_CURRENT_TALK', currentTalk)
       }
     },
-    chatList: {
+    recentContacts: {
       get: function () {
         return this.$store.state.talk.recentContacts
       },
@@ -191,6 +175,7 @@ export default {
     }
   },
   created () {
+    // 页面创建时获取列表信息
     this.getRecentContacts()
     this.getContactsTree()
     this.getGroupList()
@@ -202,20 +187,32 @@ export default {
     },
     handleSaveOk () {},
     handleSaveClose () {},
-    // TODO:
-    showChat: function (chat) {
-      this.activeChat = chat.id
-      console.log(chat)
+    /**
+     * 展示研讨对话框
+     * @param {Object} currentTalk 当前研讨
+     * @param {Nunber} index 当前研讨在最近联系人列表中的位置
+     */
+    showConvBox: function (currentTalk, index) {
+      this.activeChat = currentTalk.id
+      // 未读消息置为0
+      currentTalk.unreadNum = 0
+      // 更新sotre中的当前会话
+      this.currentTalk = currentTalk
+      // TODO: 向服务端发一条已读的消息，同步消息状态
+      // ···
+      // 更新最近联系人列表
+      this.recentContacts[index] = currentTalk
+
       // const self = this
       // self.isShowWelcome = false
       // self.isShowPanel = true
-      // const chatList = ChatListUtils.getChatList(self.$store.state.user.info.id)
+      // const recentContacts = ChatListUtils.getChatList(self.$store.state.user.info.id)
 
       // // 重新添加会话，放到第一个
       // const firstChat = new Chat(chat.id, chat.name, conf.getHostUrl() + chat.avatar, 0, '', '', '', MessageTargetType.CHAT_GROUP)
 
-      // // 存储到localStorage 的 chatList
-      // ChatListUtils.setChatList(self.$store.state.user.info.id, chatList)
+      // // 存储到localStorage 的 recentContacts
+      // ChatListUtils.setChatList(self.$store.state.user.info.id, recentContacts)
 
       // this.$store.commit('RESET_UNREAD')
       // this.currentTalk = chat

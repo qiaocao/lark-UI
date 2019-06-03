@@ -2,7 +2,7 @@
   <!-- 聊天消息框 -->
   <!-- :class="['message-piece', {send: messageInfo.isself, receive: !messageInfo.isself}]" -->
   <!-- class="message-piece receive" -->
-  <div :class="['message-piece', {send: isMe(messageInfo.fromId), receive: !isMe(messageInfo.fromId)}]">
+  <div :class="['message-piece', {send: isMe(), receive: !isMe()}]">
 
     <!-- 消息时间 需要判断显示时间的条件 -->
     <div class="time-stamp">
@@ -13,9 +13,9 @@
     <!-- class="message-avatar send" -->
     <!-- :class="['message-avatar', {send: messageInfo.isself, receive: !messageInfo.isself}]" -->
     <a-avatar
-      :class="['message-avatar', {send: isMe(messageInfo.fromId), receive: !isMe(messageInfo.fromId)}]"
+      :class="['message-avatar', {send: isMe(), receive: !isMe()}]"
       shape="square"
-      :src="messageInfo.avatar"
+      :src="isMe() ? userInfo.avatar : messageInfo.avatar"
       :size="40">
       <span>{{ messageInfo.username }}</span>
     </a-avatar>
@@ -24,7 +24,7 @@
 
       <!-- 需要判断什么时候显示 -- 群消息 且 不是当前用户发送的 且 设置了显示群昵称的 -->
       <!-- v-if="!messageInfo.isself" -->
-      <div v-if="!isMe(messageInfo.fromId) && messageInfo.isGroup" class="message-nickname">
+      <div v-if="!isMe() && messageInfo.isGroup" class="message-nickname">
         <span>{{ messageInfo.username }}</span>
       </div>
 
@@ -79,8 +79,8 @@ export default {
      * 判断是否当前用户发送的消息
      * @param {String} fromId 发送者的id
      */
-    isMe (fromId) {
-      return fromId === this.userInfo.id
+    isMe () {
+      return this.messageInfo.fromId === this.userInfo.id
     }
   }
 }
