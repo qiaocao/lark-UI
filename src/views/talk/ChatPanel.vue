@@ -277,7 +277,6 @@ export default {
         query: currentTalk
       })
 
-
       // const self = this
       // self.isShowWelcome = false
       // self.isShowPanel = true
@@ -301,10 +300,7 @@ export default {
       // this.$nextTick(() => {
       //   // imageLoad('message-box')
       // })
-
     },
-
-
     delChat (chat) {
       this.$store.commit('DEL_CHAT', chat)
     },

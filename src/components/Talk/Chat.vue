@@ -136,7 +136,7 @@
 <script>
 import conf from '@/api/index'
 import Faces from './Face.vue'
-import { TalkHistory,GroupNotice,TalkSetting,MarkMessage,TalkFile } from '@/components/Talk'
+import { TalkHistory, GroupNotice, TalkSetting, MarkMessage, TalkFile } from '@/components/Talk'
 import MessagePiece from './MessagePiece'
 import { fetchPost, imageLoad, transform, ChatListUtils } from '../../utils/talk/chatUtils'
 import VEmojiPicker from 'v-emoji-picker'

@@ -10,9 +10,9 @@
     @close="onClose"
     :visible="activeOption=='groupNotice'">
 
-    <p class="notice-p">{{item.content}}</p>
-    <span class="notice-s">发布时间 : {{item.createTime}}</span>
-    
+    <p class="notice-p">{{ item.content }}</p>
+    <span class="notice-s">发布时间 : {{ item.createTime }}</span>
+
   </a-drawer>
 </template>
 
@@ -35,8 +35,8 @@ export default {
   },
   data () {
     return {
-      time:'',
-      item:{}
+      time: '',
+      item: {}
     }
   },
   watch: {
@@ -58,20 +58,20 @@ export default {
     onClose () {
       this.$emit('closeDrawer')
     },
-    getNowFormatDate() {//获取当前时间
-      var date = new Date();
-      var seperator1 = "-";
-      var seperator2 = ":";
-      var month = date.getMonth() + 1<10? "0"+(date.getMonth() + 1):date.getMonth() + 1;
-      var strDate = date.getDate()<10? "0" + date.getDate():date.getDate();
-      var currentdate = date.getFullYear() + seperator1  + month  + seperator1  + strDate
-          + " "  + date.getHours()  + seperator2  + date.getMinutes()
-          + seperator2 + date.getSeconds();
+    getNowFormatDate () { // 获取当前时间
+      var date = new Date()
+      var seperator1 = '-'
+      var seperator2 = ':'
+      var month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
+      var strDate = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
+      var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate +
+          ' ' + date.getHours() + seperator2 + date.getMinutes() +
+          seperator2 + date.getSeconds()
       this.time = currentdate
       console.log('tag', this.time)
     },
-    getContent(){
-      this.$http.get('https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/notice').then((data)=>{
+    getContent () {
+      this.$http.get('https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/notice').then((data) => {
         console.log('aaa', data)
         this.item = data
         console.log('11111', data)
