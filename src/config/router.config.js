@@ -39,7 +39,7 @@ export const asyncRouterMap = [
         name: 'talk',
         component: GeneralView,
         redirect: '/talk/ChatPanel',
-        meta: { title: '研讨中心', icon: 'message', hideHeader: true, keepAlive: true, permission: [ 'talk' ] },
+        meta: { title: '研讨', icon: 'message', hideHeader: true, keepAlive: true, permission: [ 'talk' ] },
         hideChildrenInMenu: true,
         children: [
           {
@@ -52,7 +52,7 @@ export const asyncRouterMap = [
                 path: '/talk/ChatPanel/ChatBox',
                 name: 'ChatBox',
                 component: () => import('@/views/talk/ChatBox'),
-                meta: { title: '研讨页', keepAlive: true, permission: ['talk'], hidden: true }
+                meta: { title: '研讨面板', keepAlive: true, permission: ['talk'], hidden: true }
               }
             ]
           }]
