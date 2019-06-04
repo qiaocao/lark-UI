@@ -6,7 +6,8 @@ const api = {
   groupList: 'talk/group/list',
   contactsInfo: 'talk/contacts/info',
   contactsTree: 'talk/contacts/tree',
-  recentContacts: 'talk/recent/list'
+  recentContacts: 'talk/recent/list',
+  talkMap: 'talk/message/map'
 }
 
 export default api
@@ -72,6 +73,17 @@ export function getContactsTree () {
 export function getRecentContacts () {
   return axios({
     url: api.recentContacts,
+    method: 'GET'
+  })
+}
+
+/**
+ * 获取未读消息
+ * @author jihainan
+ */
+export function getTalkMap () {
+  return axios({
+    url: api.talkMap,
     method: 'GET'
   })
 }

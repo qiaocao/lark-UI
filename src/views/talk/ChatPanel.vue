@@ -51,12 +51,12 @@
           </span>
 
           <div class="recent-contacts-container tab-content-container">
-            <div v-for="(item, index) in chatList" :key="index" @click="showChat(item)">
+            <div v-for="(item, index) in recentContacts" :key="index" @click="showConvBox(item, index)">
               <recent-contacts-item :contactsInfo="item" :activated="item.id === activeChat"></recent-contacts-item>
             </div>
 
             <!-- 没有最新联系人或者联系人加载失败时的提示信息 -->
-            <div v-if="!chatList || !chatList.length" class="empty-tips">
+            <div v-if="!recentContacts || !recentContacts.length" class="empty-tips">
               <p>
                 暂无聊天信息，
                 <a-button type="primary" ghost size="small" :loading="recentLoading" @click="getRecentContacts">重新加载</a-button>
@@ -111,7 +111,7 @@
     <a-layout class="talk-layout-content">
 
       <div v-show="activeKey == '1'" class="chat-area">
-        <user-chat :chatInfo="currentChat" @showChat="showChat"/>
+        <user-chat :chatInfo="currentTalk" />
       </div>
 
       <div v-show="activeKey == '2'" class="info-area">
@@ -151,6 +151,9 @@ import {
 // import { ErrorType } from '@/utils/constants'
 import conf from '@/api/index'
 // import HttpApiUtils from '../../utils/talk/HttpApiUtils'
+import {
+  ChatListUtils
+} from '../../utils/talk/chatUtils'
 
 export default {
   name: 'ChatPanel',
@@ -166,6 +169,7 @@ export default {
   data () {
     return {
       activeKey: '1',
+      // tab标签页的样式
       tabStyle: { margin: '0 6px 0', paddingLeft: '10px' },
       data: [],
       loading: false,
@@ -195,31 +199,32 @@ export default {
     }
   },
   computed: {
-    currentChat: {
+    currentTalk: {
       get: function () {
-        console.log(this.$store.state.chat.currentChat)
-        return this.$store.state.chat.currentChat
+        console.log(this.$store.state.talk.currentTalk)
+        return this.$store.state.talk.currentTalk
       },
-      set: function (currentChat) {
-        this.$store.commit('SET_CURRENT_CHAT', currentChat)
+      set: function (currentTalk) {
+        this.$store.commit('SET_CURRENT_TALK', currentTalk)
       }
     },
-    chatList: {
+    recentContacts: {
       get: function () {
-        return this.$store.state.chat.recentChatList
+        return this.$store.state.talk.recentContacts
       },
-      set: function (recentChatList) {
-        this.$store.commit('SET_RECENT_CHAT_LIST', recentChatList)
+      set: function (recentContacts) {
+        this.$store.commit('SET_RECENT_CONTACTS', recentContacts)
       }
     },
     groupList () {
-      return this.$store.state.chat.groupList
+      return this.$store.state.talk.groupList
     },
     contactsTree () {
-      return this.$store.state.chat.contactsTree
+      return this.$store.state.talk.contactsTree
     }
   },
   created () {
+    // 页面创建时获取列表信息
     this.getRecentContacts()
     this.getContactsTree()
     this.getGroupList()
@@ -229,37 +234,47 @@ export default {
     changePane (activeKey) {
       this.activeKey = activeKey
     },
-    handleSaveOk () {
+    handleSaveOk () {},
+    handleSaveClose () {},
+    /**
+     * 展示研讨对话框
+     * @param {Object} currentTalk 当前研讨
+     * @param {Nunber} index 当前研讨在最近联系人列表中的位置
+     */
+    showConvBox: function (currentTalk, index) {
+      this.activeChat = currentTalk.id
+      // 未读消息置为0
+      currentTalk.unreadNum = 0
+      // 初始化sotre中的当前会话
+      this.currentTalk = currentTalk
+      // TODO: 向服务端发一条已读的消息，同步消息状态
+      // ···
+      // TODO: 更新最近联系人列表，待优化
+      this.recentContacts[index] = currentTalk
 
-    },
-    handleSaveClose () {
+      // const self = this
+      // self.isShowWelcome = false
+      // self.isShowPanel = true
+      // const recentContacts = ChatListUtils.getChatList(self.$store.state.user.info.id)
 
-    },
-    showChat: function (chat) {
-      const self = this
-      self.isShowWelcome = false
-      self.isShowPanel = true
-      const chatList = ChatListUtils.getChatList(self.$store.state.user.info.id)
+      // // 重新添加会话，放到第一个
+      // const firstChat = new Chat(chat.id, chat.name, conf.getHostUrl() + chat.avatar, 0, '', '', '', MessageTargetType.CHAT_GROUP)
 
-      // 重新添加会话，放到第一个
-      const firstChat = new Chat(chat.id, chat.name, conf.getHostUrl() + chat.avatar, 0, '', '', '', MessageTargetType.CHAT_GROUP)
+      // // 存储到localStorage 的 recentContacts
+      // ChatListUtils.setChatList(self.$store.state.user.info.id, recentContacts)
 
-      // 存储到localStorage 的 chatList
-      ChatListUtils.setChatList(self.$store.state.user.info.id, chatList)
-
-      this.$store.commit('RESET_UNREAD')
-      this.currentChat = chat
-      // 当前聊天室
-      if (firstChat) {
-        self.$store.commit('SET_CURRENT_CHAT', firstChat)
-      }
-      // 重新设置chatList
-      self.$store.commit('SET_RECENT_CHAT_LIST', ChatListUtils.getChatList(self.$store.state.user.info.id))
-      // Chat会话框中的研讨信息每次滚动到最底部
-      this.$nextTick(() => {
-        // imageLoad('message-box')
-      })
-      this.activeChat = chat.id
+      // this.$store.commit('RESET_UNREAD')
+      // this.currentTalk = chat
+      // // 当前聊天室
+      // if (firstChat) {
+      //   self.$store.commit('SET_CURRENT_CHAT', firstChat)
+      // }
+      // // 重新设置chatList
+      // self.$store.commit('SET_RECENT_CHAT_LIST', ChatListUtils.getChatList(self.$store.state.user.info.id))
+      // // Chat会话框中的研讨信息每次滚动到最底部
+      // this.$nextTick(() => {
+      //   // imageLoad('message-box')
+      // })
     },
     delChat (chat) {
       this.$store.commit('DEL_CHAT', chat)
@@ -274,7 +289,6 @@ export default {
     },
     /**
      * 加载群组列表
-     * @author jihainan
      */
     getGroupList () {
       this.groupLoading = true
@@ -284,7 +298,6 @@ export default {
     },
     /**
      * 加载联系人树
-     * @author jihainan
      */
     getContactsTree () {
       this.contactsLoading = true
@@ -294,7 +307,6 @@ export default {
     },
     /**
      * 获取最近联系列表
-     * @author jihainan
      */
     getRecentContacts () {
       this.recentLoading = true
@@ -349,131 +361,21 @@ export default {
     }
   },
   activated: function () {
-    const self = this
-    if (this.$route.query.chat) {
-      self.isShowPanel = true
-      self.isShowWelcome = false
-    }
-    // 当前研讨室
-    if (self.$route.query.chat) {
-      self.$store.commit('SET_CURRENT_CHAT', this.$route.query.chat)
-    }
-    // 重新设置chatList
-    self.$store.commit('SET_RECENT_CHAT_LIST', ChatListUtils.getChatList(self.$store.state.user.info.id))
-    // 每次滚动到最底部
-    this.$nextTick(() => {
-      imageLoad('message-box')
-    })
-  },
-  mounted: function () {
     // const self = this
-    // const websocketHeartbeatJs = new WebsocketHeartbeatJs({
-    //   url: conf.getWsUrl()
+    // if (this.$route.query.chat) {
+    //   self.isShowPanel = true
+    //   self.isShowWelcome = false
+    // }
+    // // 当前研讨室
+    // if (self.$route.query.chat) {
+    //   self.$store.commit('SET_CURRENT_CHAT', this.$route.query.chat)
+    // }
+    // // 重新设置chatList
+    // self.$store.commit('SET_RECENT_CHAT_LIST', ChatListUtils.getChatList(self.$store.state.user.info.id))
+    // // 每次滚动到最底部
+    // this.$nextTick(() => {
+    //   imageLoad('message-box')
     // })
-    // websocketHeartbeatJs.onopen = function () {
-    //   websocketHeartbeatJs.send('{"code":' + MessageInfoType.MSG_READY + '}')
-    // }
-    // websocketHeartbeatJs.onmessage = function (event) {
-    //   const data = event.data
-    //   const sendInfo = JSON.parse(data)
-    //   // 真正的消息类型
-    //   if (sendInfo.code === MessageInfoType.MSG_MESSAGE) {
-    //     const message = sendInfo.message
-    //     if (message.avatar && message.avatar.indexOf('http') === -1) {
-    //       message.avatar = conf.getHostUrl() + message.avatar
-    //     }
-    //     message.timestamp = self.formatDateTime(new Date(message.timestamp))
-    //     // 发送给个人
-    //     if (message.type === MessageTargetType.FRIEND) {
-    //       // 接受人是当前的研讨窗口
-    //       if (String(message.fromid) === String(self.$store.state.currentChat.id)) {
-    //         self.$store.commit('ADD_MESSAGE', message)
-    //       } else {
-    //         self.$store.commit('SET_UNREAD_COUNT', message)
-    //         self.$store.commit('ADD_UNREAD_MESSAGE', message)
-    //       }
-    //     } else if (message.type === MessageTargetType.CHAT_GROUP) {
-    //       // message.avatar = self.$store.state.chatMap.get(message.id);
-    //       // 接受人是当前的研讨窗口
-    //       if (String(message.id) === String(self.$store.state.currentChat.id)) {
-    //         if (String(message.fromid) !== self.$store.state.user.id) {
-    //           self.$store.commit('ADD_MESSAGE', message)
-    //         }
-    //       } else {
-    //         self.$store.commit('SET_UNREAD_COUNT', message)
-    //         self.$store.commit('ADD_UNREAD_MESSAGE', message)
-    //       }
-    //     }
-    //     self.$store.commit('SET_LAST_MESSAGE', message)
-    //     // 每次滚动到最底部
-    //     self.$nextTick(() => {
-    //       imageLoad('message-box')
-    //     })
-    //   }
-    // }
-
-    // websocketHeartbeatJs.onreconnect = function () {
-    //   console.log('重连中...')
-    // }
-
-    // let count = 0
-    // websocketHeartbeatJs.onerror = function () {
-    //   const param = new FormData()
-    //   param.set('client_id', 'v-client')
-    //   param.set('client_secret', 'v-client-ppp')
-    //   param.set('grant_type', 'refresh_token')
-    //   param.set('scope', 'select')
-    //   // param.set('refresh_token', localStorage.getItem('Refresh-Token'))
-    //   timeoutFetch(
-    //     fetch(conf.getTokenUrl(), {
-    //       method: 'POST',
-    //       model: 'cros', // 跨域
-    //       headers: {
-    //         Accept: 'application/json'
-    //       },
-    //       body: param
-    //     }),
-    //     5000
-    //   )
-    //     .then(response => {
-    //       if (response.status === 200) {
-    //         return response.json()
-    //       } else {
-    //         return new Promise((resolve, reject) => {
-    //           reject(ErrorType.FLUSH_TOKEN_ERROR)
-    //         })
-    //       }
-    //     })
-    //     .then(json => {
-    //       count = 0
-    //       self.$store.commit('SET_TOKEN', json)
-    //       self.$store.commit('SET_TOKEN_STATUS', json)
-
-    //       // 清除原先的刷新缓存的定时器
-    //       self.$store.commit('CLEAR_FLUSH_TOKEN_TIME_ID')
-    //       // 刷新token 定时器
-    //       const flushTokenTimerId = setTimeout(function () {
-    //         const api = new HttpApiUtils()
-    //         api.flushToken(self)
-    //       }, ((json.expires_in - 10) * 1000))
-    //       self.$store.commit('SET_FLUSH_TOKEN_TIME_ID', flushTokenTimerId)
-    //     })
-    //     .catch(error => {
-    //       count++
-    //       if (error.toString() === 'TypeError: Failed to fetch') {
-    //         self.$Message.error('网络断开，正在重连...')
-    //       } else if (ErrorType.FLUSH_TOKEN_ERROR === error) {
-    //         count = 25
-    //       }
-    //     })
-    //     // 重连次数大于24 退出登录
-    //   if (count > 24) {
-    //     count = 0
-    //     // logout(self)
-    //   }
-    // }
-    // // 这地方不成功，消息将不能发送
-    // self.$store.commit('SET_WEBSOCKET', websocketHeartbeatJs)
   }
 }
 </script>

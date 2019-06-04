@@ -39,14 +39,14 @@ export const asyncRouterMap = [
         name: 'talk',
         component: RouteView,
         redirect: '/talk/ChatPanel',
-        meta: { title: '研讨', icon: 'message', hideHeader: true, keepAlive: true, permission: [ 'form' ] },
+        meta: { title: '研讨', icon: 'message', hideHeader: true, keepAlive: true, permission: [ 'dashboard' ] },
         hideChildrenInMenu: true,
         children: [
           {
             path: '/talk/ChatPanel',
             name: 'ChatPanel',
             component: () => import('@/views/talk/ChatPanel'),
-            meta: { title: '研讨面板', keepAlive: true, permission: ['form'], hidden: true }
+            meta: { title: '研讨面板', keepAlive: true, permission: ['dashboard'], hidden: true }
           }]
       },
       {

@@ -1,5 +1,5 @@
 <template>
-  <a-layout v-if="Object.keys(chatInfo).length" class="conv-box">
+  <a-layout v-if="Object.keys(chatInfo).length" @mouseover="clearUnread()" class="conv-box">
 
     <!-- 聊天设置选项的抽屉组件 -->
     <talk-history :activeOption="activeOption" @closeDrawer="triggerDrawer"></talk-history>
@@ -93,7 +93,6 @@
             size="large"
             class="textarea-input"
             v-model="messageContent"
-            @keyup.enter="mineSend()"
           ></textarea>
           <!-- 发送键 -->
           <div class="send-toolbar">
@@ -107,7 +106,7 @@
                 </template>
                 <a-icon type="question-circle" style="margin-right: 6px; cursor: pointer;"/>
               </a-tooltip>
-              <a-dropdown-button @click="mineSend()" type="primary">
+              <a-dropdown-button @click="sendMessage(60)" type="primary">
                 发送(<strong>非密</strong>)
                 <a-menu slot="overlay">
                   <a-menu-item key="1">标记为<strong>秘密</strong>并发送</a-menu-item>
@@ -140,6 +139,11 @@ import VEmojiPicker from 'v-emoji-picker'
 import packData from 'v-emoji-picker/data/emojis.json'
 // 引入密级常量
 import { mixinSecret } from '@/utils/mixin'
+import { SocketMessage, Tweet } from '@/utils/talk'
+import { format } from '@/utils/util'
+import { mapGetters } from 'vuex'
+// 生成随机uuid
+import uuidv4 from 'uuid/v4'
 
 export default {
   components: {
@@ -153,7 +157,8 @@ export default {
     /** 聊天对话框的基本信息 */
     chatInfo: {
       type: Object,
-      default: () => ({})
+      default: () => ({}),
+      required: true
     },
     /** 是否为弹框式的聊天窗口 */
     isPopup: {
@@ -167,10 +172,13 @@ export default {
     return {
       // 被激活的抽屉
       activeOption: '',
+      // 所有被at用的id
+      atId: [],
+      // 消息类型
+      messageType: 1,
+
       facesVisible: false,
       pack: packData,
-      visible: false,
-      wrapClass: 'talk-setting',
       host: conf.getHostUrl(),
       count: 0,
       pageSize: 20,
@@ -201,53 +209,78 @@ export default {
       }
     }
   },
-  watch: {
-    // 监听每次 user 的变化
-    chatInfo: function () {
-      const self = this
-      self.messageList = []
-      // 从内存中取研讨信息
-      const cacheMessages = self.$store.state.chat.messageListMap.get(self.chatInfo.id)
-      if (cacheMessages) {
-        self.messageList = cacheMessages
-      }
-      // 每次滚动到最底部
-      this.$nextTick(() => {
-        imageLoad('conv-box-editor')
-      })
-      // if (self.chat.type === '1') {
-      //   const param = new FormData()
-      //   param.set('chatId', self.chat.id)
-      //   fetchPost(
-      //     conf.getChatUsersUrl(),
-      //     param,
-      //     function (json) {
-      //       self.userList = json
-      //     },
-      //     self
-      //   )
-      // }
-      // 滚动到最新一条消息
-      this.scrollToBottom()
-    }
-  },
   computed: {
-    emojisNative () {
-      return packData
-    },
+    ...mapGetters(['onlineState', 'userInfo']),
     messageList: {
       get: function () {
-        return this.$store.state.chat.messageList
+        return this.$store.state.talk.curMessageList
       },
       set: function (messageList) {
-        this.$store.commit('SET_MESSAGE_LIST', messageList)
+        this.$store.commit('SET_CUR_MESSAGE_LIST', messageList)
       }
     },
-    talkId: {
-      get: function () {
-        return this.chatInfo.id
-      }
+    emojisNative () {
+      return packData
     }
+  },
+  watch: {
+    // 监听当前研讨id的变化
+    'chatInfo.id': function () {
+      // 用当前研讨的id从store中获取消息列表
+      const cacheMessage = this.$store.state.talk.talkMap.get(this.chatInfo.id)
+      if (cacheMessage) {
+        this.messageList = cacheMessage
+      } else {
+        this.messageList = []
+      }
+      // 消息加载完成后滚动到最下方
+      this.scrollToBottom()
+    },
+    'chatInfo.unreadNum': function (newValue) {
+      console.log('newValue:' + newValue)
+      // TODO: 更新未读消息的数量，待优化
+      if (this.$store.state.recentContacts) {
+        this.$store.state.recentContacts.forEach(element => {
+          if (element.id === this.chatInfo.id) {
+            element.unreadNum = newValue
+          }
+        })
+      }
+    },
+    messageList: function (newValue) {
+      // 消息列表发生变化，更新缓存
+      this.$store.state.talk.talkMap.set(this.chatInfo.id, newValue)
+      // 滚动到最下方
+      this.scrollToBottom()
+    }
+    // 监听每次 user 的变化
+    // chatInfo: function () {
+    // const self = this
+    // self.messageList = []
+    // 从内存中取研讨信息
+    // const cacheMessages = self.$store.state.chat.messageListMap.get(self.chatInfo.id)
+    // if (cacheMessages) {
+    //   self.messageList = cacheMessages
+    // }
+    // 每次滚动到最底部
+    // this.$nextTick(() => {
+    //   imageLoad('conv-box-editor')
+    // })
+    // if (self.chat.type === '1') {
+    //   const param = new FormData()
+    //   param.set('chatId', self.chat.id)
+    //   fetchPost(
+    //     conf.getChatUsersUrl(),
+    //     param,
+    //     function (json) {
+    //       self.userList = json
+    //     },
+    //     self
+    //   )
+    // }
+    // 滚动到最新一条消息
+    // this.scrollToBottom()
+    // }
   },
   mounted () {
     // 页面创建时，消息滚动到最近一条
@@ -261,17 +294,16 @@ export default {
   },
   updated () {
   },
-  filters: {
-    // 将日期过滤为 hour:minutes
-    // time (date) {
-    // if (typeof date === 'string') {
-    //   date = new Date(date)
-    // }
-    // date = new Date(date)
-    // return date.getHours() + ':' + date.getMinutes()
-    // }
-  },
+  filters: {},
   methods: {
+    /**
+     * 将最近联系人列表中的未读消息数清零
+     */
+    clearUnread () {
+      if (this.chatInfo.unreadNum !== 0) {
+        this.$store.state.talk.currentTalk.unreadNum = 0
+      }
+    },
     /**
      * 聊天消息滚到到最新一条
      * 1. 发送消息 2. 页面创建 3.页面更新
@@ -306,6 +338,52 @@ export default {
     triggerDrawer (drawerName) {
       this.activeOption = drawerName
     },
+    /**
+     * 发送消息
+     * @author jihainan
+     */
+    sendMessage (secretLevel) {
+      const tweet = new Tweet()
+      const uuid = uuidv4()
+      const content = this.messageContent
+
+      if (content.replace(/\n/g, '').trim() === '') {
+        this.$message.warning('消息内容不能为空')
+      } else if (this.messageContent.length > 2000) {
+        this.$message.warning('消息内容不能超过2000个字符,以文件发送')
+      } else {
+        tweet.id = uuid
+        tweet.username = this.userInfo.name
+        tweet.avatar = this.userInfo.avatar
+        tweet.fromId = this.userInfo.id
+        tweet.toId = this.chatInfo.id
+        tweet.atId = []
+        tweet.secretLevel = secretLevel
+        tweet.type = 1
+        tweet.content = content
+        tweet.time = new Date()
+        tweet.isGroup = this.chatInfo.isGroup
+
+        // TODO: 通过websoket向服务端发送消息， 注意加上chatInfo的结构体
+        // ···
+        // 将消息加入当前消息列表(栈操作)
+        this.messageList.push(tweet)
+
+        // 更新当前联系人信息
+        this.chatInfo.lastMessage = content
+        this.chatInfo.time = format(tweet.time, 'hh:mm')
+
+        // 添加发件人信息，组件消息体，发送websocket消息
+        tweet.contactInfo = this.chatInfo
+        const baseMessage = new SocketMessage(this.chatInfo.isGroup ? 1 : 0, tweet)
+        this.SocketGlobal.send(JSON.stringify(baseMessage))
+
+        // 更新最近联系人列表
+        this.$store.dispatch('UpdateRecentContacts', this.chatInfo)
+        // 发完消息滚动到最下方
+        this.scrollToBottom()
+      }
+    },
     talkItemEnter () {
       this.activeItemHandle = true
     },
@@ -314,12 +392,6 @@ export default {
     },
     onSelectEmoji (dataEmoji) {
       this.messageContent += dataEmoji.emoji
-    },
-    showSetting () {
-      this.visible = true
-    },
-    onClose () {
-      this.visible = false
     },
     showChat (user) {
       const self = this

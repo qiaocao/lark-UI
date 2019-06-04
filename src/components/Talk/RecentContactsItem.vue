@@ -76,8 +76,8 @@ export default {
     recentContactsClasses () {
       return {
         'recent-contacts': true,
-        'activated': this.activated,
-        'top': this.contactsInfo.isTop
+        'top': this.contactsInfo.isTop && !this.activated,
+        'activated': this.activated
       }
     },
     badgeoffset () {
