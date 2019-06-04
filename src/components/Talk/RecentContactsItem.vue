@@ -4,8 +4,8 @@
 
     <div class="avatar">
       <a-badge
-        :dot="contactsInfo.isMute"
-        :count="contactsInfo.unreadNum"
+        :dot="JSON.parse(contactsInfo.isMute)"
+        :count="JSON.parse(contactsInfo.unreadNum)"
         :overflowCount="99"
         :offset="badgeoffset"
         :numberStyle="badgeNumStyle">

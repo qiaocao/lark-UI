@@ -1,42 +1,27 @@
 <template>
   <!-- 研讨布局 -->
   <a-layout class="talk-layout">
-
     <a-layout-sider class="talk-layout-sider">
-
       <div class="search-bar">
-        <div class="search-bar-input">
-          <a-input
-            placeholder="消息/联系人/群组"
-            size="small"
-            style="width: 215px;border:2px solid white;"
-            @blur="onBlur"
-            @focus="onFocus"
-            v-model="searchObj.searchValue"
-            @input="searchValueChange"
-          />
-          <span class="search-icon" v-if="!showSearchContent" @click="cleanSearchValue">✖</span>
-          <a-icon class="search-icon" v-if="showSearchContent" type="search" />
-        </div>
-
+        <SearchInput />
         <a-dropdown>
           <a-menu slot="overlay">
             <a-menu-item key="1" @click="$refs.model.beginTalk()">发起研讨</a-menu-item>
             <a-menu-item key="2">发起会议</a-menu-item>
           </a-menu>
-          <a-button type="default" size="small" icon="plus" style="margin-left:3px;margin-top:3px;">
+          <a-button type="default" size="small" icon="plus" style="margin-left:3px;">
           </a-button>
         </a-dropdown>
       </div>
-
-      <div v-if="!showSearchContent" class="showSearchContent">
-        <div class="recent-contacts-container tab-content-container">
-          <div v-for="(item, index) in searchResultList" :key="index" @click="showChat(item)">
-            <recent-contacts-item :contactsInfo="item" :activated="item.id === activeChat"></recent-contacts-item>
-          </div>
-        </div>
-      </div>
-
+      <SearchArea
+        :activeChat="activeChat"
+        :activeGroup="activeGroup"
+        :contactsGroup="activeContacts"
+        :searchResultList="searchResultList"
+        :searchGroupResultList="searchGroupResultList"
+        :showSearchContent="showSearchContent"
+        :searchContactsResultList="searchContactsResultList"
+      />
       <a-tabs
         v-if="showSearchContent"
         :activeKey="activeKey"
@@ -49,9 +34,9 @@
             <a-icon type="clock-circle" style="{fontSize: 16px}" />
             最近
           </span>
-
+          <!-- 最近里面每一项 -->
           <div class="recent-contacts-container tab-content-container">
-            <div v-for="(item, index) in recentContacts" :key="index" @click="showConvBox(item, index)">
+            <div v-for="(item, index) in recentContacts" :key="index" @click="showConvBox(item)">
               <recent-contacts-item :contactsInfo="item" :activated="item.id === activeChat"></recent-contacts-item>
             </div>
 
@@ -111,9 +96,11 @@
     <a-layout class="talk-layout-content">
 
       <div v-show="activeKey == '1'" class="chat-area">
-        <user-chat :chatInfo="currentTalk" />
+        <keep-alive>
+          <router-view />
+        </keep-alive>
+        <!-- <user-chat :chatInfo="currentTalk"/> -->
       </div>
-
       <div v-show="activeKey == '2'" class="info-area">
         <group-info :selected="activeGroup"></group-info>
       </div>
@@ -125,7 +112,7 @@
     </a-layout>
 
     <member-model ref="model" @ok="handleSaveOk" @close="handleSaveClose"/>
-
+    <SearchRecordModal :searchRecordModalVisible="searchRecordModalVisible"/>
   </a-layout>
 </template>
 
@@ -139,21 +126,25 @@ import {
   MemberBox as MemberModel,
   GroupItem
 } from '@/components/Talk'
+
+import SearchInput from './SearchInput'
+import SearchArea from './SearchArea'
+import SearchRecordModal from './SearchRecordModal'
+
 // import WebsocketHeartbeatJs from '../../utils/talk/WebsocketHeartbeatJs'
 import {
-  ChatListUtils,
-  Chat,
-  imageLoad,
+  ChatListUtils
+  // Chat,
+  // imageLoad,
   // MessageInfoType,
-  MessageTargetType
+  // MessageTargetType
   // timeoutFetch
 } from '../../utils/talk/chatUtils'
 // import { ErrorType } from '@/utils/constants'
 import conf from '@/api/index'
 // import HttpApiUtils from '../../utils/talk/HttpApiUtils'
-import {
-  ChatListUtils
-} from '../../utils/talk/chatUtils'
+
+// import Utils from '../../../src/utils/utils.js'
 
 export default {
   name: 'ChatPanel',
@@ -164,7 +155,10 @@ export default {
     UserChat,
     MemberModel,
     RecentContactsItem,
-    GroupItem
+    GroupItem,
+    SearchInput,
+    SearchArea,
+    SearchRecordModal
   },
   data () {
     return {
@@ -182,7 +176,6 @@ export default {
       searchObj: {
         searchValue: ''
       },
-      searchResultList: [],
 
       // 记录当前选中的联系人/群组信息
       activeContacts: '',
@@ -194,14 +187,12 @@ export default {
       groupLoading: false,
       contactsLoading: false,
 
-      // 搜索内容显示
-      showSearchContent: true
+      searchRecordModalVisible: false
     }
   },
   computed: {
     currentTalk: {
       get: function () {
-        console.log(this.$store.state.talk.currentTalk)
         return this.$store.state.talk.currentTalk
       },
       set: function (currentTalk) {
@@ -221,6 +212,22 @@ export default {
     },
     contactsTree () {
       return this.$store.state.talk.contactsTree
+    },
+    showSearchContent () {
+      if (this.$store.state.chat.showSearchContent === null) {
+        return true
+      } else {
+        return this.$store.state.chat.showSearchContent
+      }
+    },
+    searchResultList () {
+      return this.$store.state.chat.searchResultList
+    },
+    searchGroupResultList () {
+      return this.$store.state.chat.searchGroupResultList
+    },
+    searchContactsResultList () {
+      return this.$store.state.chat.searchContactsResultList
     }
   },
   created () {
@@ -229,19 +236,22 @@ export default {
     this.getContactsTree()
     this.getGroupList()
   },
+  beforeRouteEnter (to, from, next) {
+    next(vm => vm.showConvBox(to.query))
+  },
   methods: {
     /* 切换面板 */
     changePane (activeKey) {
       this.activeKey = activeKey
     },
+
     handleSaveOk () {},
     handleSaveClose () {},
     /**
      * 展示研讨对话框
      * @param {Object} currentTalk 当前研讨
-     * @param {Nunber} index 当前研讨在最近联系人列表中的位置
      */
-    showConvBox: function (currentTalk, index) {
+    showConvBox: function (currentTalk) {
       this.activeChat = currentTalk.id
       // 未读消息置为0
       currentTalk.unreadNum = 0
@@ -250,7 +260,15 @@ export default {
       // TODO: 向服务端发一条已读的消息，同步消息状态
       // ···
       // TODO: 更新最近联系人列表，待优化
-      this.recentContacts[index] = currentTalk
+      // this.recentContacts[index] = currentTalk
+      this.$store.dispatch('UpdateRecentContacts', { ...currentTalk, reOrder: false, addUnread: false })
+
+      // 路由跳转
+
+      this.$router.push({
+        path: '/talk/ChatPanel/ChatBox',
+        query: currentTalk
+      })
 
       // const self = this
       // self.isShowWelcome = false
@@ -318,46 +336,11 @@ export default {
         this.recentLoading = false
       })
     },
-    onBlur () {
-      console.log('onBlur')
-      if (!this.searchObj.searchValue) {
-        this.showSearchContent = true
-      }
+    handleOpenSearchRecordModal () {
+      this.searchRecordModalVisible = true
     },
-    onFocus () {
-      console.log('onFocus')
-      if (!this.searchObj.searchValue) {
-        this.searchResultList = []
-      }
-      this.showSearchContent = false
-    },
-    cleanSearchValue () {
-      this.searchObj.searchValue = ''
-      this.showSearchContent = true
-    },
-    searchValueChange (e) {
-      const value = e.target.value
-      const strArr = []
-      const searchArr = []
-      this.searchResultList = []
-      for (const item of this.chatList) {
-        strArr.push(item.name)
-      }
-      if (strArr && value) {
-        for (let i = 0; i < strArr.length; i++) {
-          if (strArr[i].indexOf(value) >= 0) {
-            searchArr.push(strArr[i])
-          }
-        }
-      }
-      for (const searchArrItem of searchArr) {
-        for (const chatListItem of this.chatList) {
-          if (searchArrItem === chatListItem.name) {
-            this.searchResultList.push(chatListItem)
-          }
-        }
-      }
-      console.log('this.searchResultList', this.searchResultList)
+    handleCloseSearchRecordModal () {
+      this.searchRecordModalVisible = false
     }
   },
   activated: function () {
@@ -449,19 +432,6 @@ export default {
     .chat-area, .info-area {
       height: 100%;
     }
-  }
-
-  .search-bar-input {
-    background-color: white;
-    border: 2px solid #eeeeee;
-  }
-
-  .showSearchContent{
-    height: 810px;
-  }
-
-  .search-icon{
-    padding: 0 5px 0 5px;
   }
 
 </style>
