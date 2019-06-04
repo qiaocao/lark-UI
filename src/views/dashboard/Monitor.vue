@@ -145,7 +145,7 @@ import Message from './components/Message'
 import TodoList from './components/TodoList'
 import LinkFooter from './components/Link.vue'
 import WorkSituation from './components/WorkSituation.vue'
-
+import Utils from '../../../src/utils/utils.js'
 import SettingDrawer from './components/SettingDrawer.vue'
 import './components/monitor.less'
 // 工作台看板模拟数据
@@ -330,7 +330,21 @@ export default {
     this.fetchMonitor()
   },
   mounted () {
-
+    const self = this
+    if (self.$route.params.setFlag) {
+      self.settingDrawerVisible = self.$route.params.setFlag
+    }
+    if (self.$route.params.messageFlag) {
+      self.myChatPanelIsShow = self.$route.params.messageFlag
+    }
+    Utils.$on('message', function (msg) {
+      console.log(msg)
+      self.openMyChatPanel()
+    })
+    Utils.$on('set', function (msg) {
+      console.log(msg)
+      self.toggle()
+    })
   },
   methods: {
     fetchMonitor () {
@@ -487,9 +501,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.lark-monitor{
-  margin: -21px 0 0 0
-}
   .antd-pro-pages-dashboard-analysis-twoColLayout {
     position: relative;
     display: flex;
