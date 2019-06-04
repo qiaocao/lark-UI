@@ -5,23 +5,45 @@
     <a-layout-sider class="talk-layout-sider">
 
       <div class="search-bar">
-        <a-input-search
-          placeholder="消息/联系人/群组"
-          size="small"
-        />
+        <div class="search-bar-input">
+          <a-input
+            placeholder="消息/联系人/群组"
+            size="small"
+            style="width: 215px;border:2px solid white;"
+            @blur="onBlur"
+            @focus="onFocus"
+            v-model="searchObj.searchValue"
+            @input="searchValueChange"
+          />
+          <span class="search-icon" v-if="!showSearchContent" @click="cleanSearchValue">✖</span>
+          <a-icon class="search-icon" v-if="showSearchContent" type="search" />
+        </div>
 
         <a-dropdown>
           <a-menu slot="overlay">
             <a-menu-item key="1" @click="$refs.model.beginTalk()">发起研讨</a-menu-item>
             <a-menu-item key="2">发起会议</a-menu-item>
           </a-menu>
-          <a-button type="default" size="small" icon="plus" style="margin-left:3px">
+          <a-button type="default" size="small" icon="plus" style="margin-left:3px;margin-top:3px;">
           </a-button>
         </a-dropdown>
-
       </div>
 
-      <a-tabs :activeKey="activeKey" @change="changePane" :tabBarGutter="0" :tabBarStyle="tabStyle" :animated="false">
+      <div v-if="!showSearchContent" class="showSearchContent">
+        <div class="recent-contacts-container tab-content-container">
+          <div v-for="(item, index) in searchResultList" :key="index" @click="showChat(item)">
+            <recent-contacts-item :contactsInfo="item" :activated="item.id === activeChat"></recent-contacts-item>
+          </div>
+        </div>
+      </div>
+
+      <a-tabs
+        v-if="showSearchContent"
+        :activeKey="activeKey"
+        @change="changePane"
+        :tabBarGutter="0"
+        :tabBarStyle="tabStyle"
+        :animated="false">
         <a-tab-pane key="1" forceRender>
           <span slot="tab">
             <a-icon type="clock-circle" style="{fontSize: 16px}" />
@@ -117,6 +139,18 @@ import {
   MemberBox as MemberModel,
   GroupItem
 } from '@/components/Talk'
+// import WebsocketHeartbeatJs from '../../utils/talk/WebsocketHeartbeatJs'
+import {
+  ChatListUtils,
+  Chat,
+  imageLoad,
+  // MessageInfoType,
+  MessageTargetType
+  // timeoutFetch
+} from '../../utils/talk/chatUtils'
+// import { ErrorType } from '@/utils/constants'
+import conf from '@/api/index'
+// import HttpApiUtils from '../../utils/talk/HttpApiUtils'
 import {
   ChatListUtils
 } from '../../utils/talk/chatUtils'
@@ -137,6 +171,18 @@ export default {
       activeKey: '1',
       // tab标签页的样式
       tabStyle: { margin: '0 6px 0', paddingLeft: '10px' },
+      data: [],
+      loading: false,
+      busy: false,
+      host: conf.getHostUrl(),
+      isShowPanel: false,
+      isShowWelcome: true,
+      memberVisible: false,
+      active: '',
+      searchObj: {
+        searchValue: ''
+      },
+      searchResultList: [],
 
       // 记录当前选中的联系人/群组信息
       activeContacts: '',
@@ -146,7 +192,10 @@ export default {
       // 加载状态
       recentLoading: false,
       groupLoading: false,
-      contactsLoading: false
+      contactsLoading: false,
+
+      // 搜索内容显示
+      showSearchContent: true
     }
   },
   computed: {
@@ -268,8 +317,48 @@ export default {
       }).finally(() => {
         this.recentLoading = false
       })
+    },
+    onBlur () {
+      console.log('onBlur')
+      if (!this.searchObj.searchValue) {
+        this.showSearchContent = true
+      }
+    },
+    onFocus () {
+      console.log('onFocus')
+      if (!this.searchObj.searchValue) {
+        this.searchResultList = []
+      }
+      this.showSearchContent = false
+    },
+    cleanSearchValue () {
+      this.searchObj.searchValue = ''
+      this.showSearchContent = true
+    },
+    searchValueChange (e) {
+      const value = e.target.value
+      const strArr = []
+      const searchArr = []
+      this.searchResultList = []
+      for (const item of this.chatList) {
+        strArr.push(item.name)
+      }
+      if (strArr && value) {
+        for (let i = 0; i < strArr.length; i++) {
+          if (strArr[i].indexOf(value) >= 0) {
+            searchArr.push(strArr[i])
+          }
+        }
+      }
+      for (const searchArrItem of searchArr) {
+        for (const chatListItem of this.chatList) {
+          if (searchArrItem === chatListItem.name) {
+            this.searchResultList.push(chatListItem)
+          }
+        }
+      }
+      console.log('this.searchResultList', this.searchResultList)
     }
-
   },
   activated: function () {
     // const self = this
@@ -295,7 +384,6 @@ export default {
   .talk-layout{
     // height: calc(100vh - 64px);
     overflow-y: hidden;
-    margin: -24px -24px 0;
   }
 
   .talk-layout-sider {
@@ -361,6 +449,19 @@ export default {
     .chat-area, .info-area {
       height: 100%;
     }
+  }
+
+  .search-bar-input {
+    background-color: white;
+    border: 2px solid #eeeeee;
+  }
+
+  .showSearchContent{
+    height: 810px;
+  }
+
+  .search-icon{
+    padding: 0 5px 0 5px;
   }
 
 </style>
