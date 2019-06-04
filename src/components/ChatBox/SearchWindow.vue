@@ -73,7 +73,7 @@ export default {
     },
     deleteContactsItem (item, index) {
       this.contactsData.splice(index, 1)
-      this.$parent.$parent.searchAndChangeSelectStatus(this.tree, item.key, false)
+      this.$parent.searchAndChangeSelectStatus(this.tree, item.key, false)
     },
     searchValueChange () {
       console.log('searchKeyWords', this.searchKeyWords)
@@ -88,17 +88,17 @@ export default {
       console.log('arr', arr)
     },
     closeSearchWindow () {
-      this.$parent.$parent.closeSearchWindow()
+      this.$parent.closeSearchWindow()
     },
     addSelectedData (item) {
       this.contactsData.push(item)
-      this.$parent.$parent.searchAndChangeSelectStatus(this.tree, item.key, true)
+      this.$parent.searchAndChangeSelectStatus(this.tree, item.key, true)
     },
     deleteSelectedData (item) {
       for (let i = 0; i < this.contactsData.length; i++) {
         if (item.key === this.contactsData[i].key) {
           this.contactsData.splice(i, 1)
-          this.$parent.$parent.searchAndChangeSelectStatus(this.tree, item.key, false)
+          this.$parent.searchAndChangeSelectStatus(this.tree, item.key, false)
         }
       }
       console.log('contactsData', this.contactsData)
@@ -125,9 +125,6 @@ export default {
     z-index: 999;
     top: 160px;
     right: 500px;
-  }
-  .search-window-style .ant-input{
-    background-color: #EEEEEE!important;
   }
   .search-window-left-part{
     /*border-right: 1px solid #EEEEEE;*/

@@ -19,6 +19,10 @@ const getters = {
   chatList: state => state.chat.recentChatList,
   userFriendList: state => state.chat.userFriendList,
   flushTokenTimerId: state => state.chat.flushTokenTimerId,
+  showSearchContent: state => state.chat.showSearchContent,
+  searchResultList: state => state.chat.searchResultList,
+  searchGroupResultList: state => state.chat.searchGroupResultList,
+  searchContactsResultList: state => state.chat.searchContactsResultList,
   /** 用户的登陆状态 */
   onlineState: state => state.talk.onlineState
 }
