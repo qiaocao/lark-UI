@@ -83,7 +83,7 @@ class SocketApi {
         case 1:
           // 接收到群组消息
           // 更新最近联系人列表
-          store.dispatch('UpdateRecentContacts', received.data.contactInfo)
+          store.dispatch('UpdateRecentContacts', { item: received.data.contactInfo, reOrder: true, addUnreaNum: true })
           // 更新消息缓存
           store.dispatch('UpdateTalkMap', received.data)
           break
