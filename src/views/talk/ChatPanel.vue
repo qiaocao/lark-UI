@@ -34,7 +34,7 @@
             <a-icon type="clock-circle" style="{fontSize: 16px}" />
             最近
           </span>
-
+          <!-- 最近里面每一项 -->
           <div class="recent-contacts-container tab-content-container">
             <div v-for="(item, index) in recentContacts" :key="index" @click="showConvBox(item)">
               <recent-contacts-item :contactsInfo="item" :activated="item.id === activeChat"></recent-contacts-item>
@@ -244,6 +244,7 @@ export default {
     changePane (activeKey) {
       this.activeKey = activeKey
     },
+
     handleSaveOk () {},
     handleSaveClose () {},
     /**
@@ -263,6 +264,7 @@ export default {
       this.$store.dispatch('UpdateRecentContacts', { ...currentTalk, reOrder: false, addUnread: false })
 
       // 路由跳转
+
       this.$router.push({
         path: '/talk/ChatPanel/ChatBox',
         query: currentTalk
