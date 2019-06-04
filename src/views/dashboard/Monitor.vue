@@ -15,7 +15,7 @@
       >
         <grid-item
           v-for="grid in layout"
-          dragIgnoreFrom=".card-content"
+          dragAllowFrom=".ant-card-head"
           :minH="cardSize.minH"
           :maxH="cardSize.maxH"
           :minW="cardSize.minW"
@@ -27,6 +27,7 @@
           :i="grid.i">
           <a-card
             :headStyle="headStyle"
+            :bodyStyle="bodyStyle"
             :loading="loading"
             :bordered="true"
             :title="grid.title"
@@ -43,12 +44,11 @@
 
             <div v-if="talkData.length!=0" class="card-content">
               <a-list
-                bordered
+                :bordered="bordered"
                 :dataSource="talkData"
+                class="card-list"
               >
-                <a-list-item slot="renderItem" slot-scope="item">{{ item }}</a-list-item>
-                <div slot="header">Header</div>
-                <div slot="footer">Footer</div>
+                <a-list-item style="padding: 12px 21px 12px 21px" slot="renderItem" slot-scope="item">{{ item }}</a-list-item>
               </a-list>
             </div>
             <div v-else style="margin: 40px auto 0 auto;text-align: center;" class="card-content">
@@ -74,6 +74,11 @@ import FooterToolBar from '@/components/FooterToolbar'
 // import { applyDrag, generateItems } from './utils'
 import VueGridLayout from 'vue-grid-layout'
 const talkData = [
+  'Racing car sprays burning fuel into crowd.',
+  'Japanese princess to wed commoner.',
+  'Australian walks 100km after outback crash.',
+  'Man charged over missing wedding girl.',
+  'Los Angeles battles huge wildfires.'
 ]
 // 工作台看板模拟数据
 var layoutCards = [
@@ -87,8 +92,10 @@ export default {
   mixins: [mixin, mixinDevice],
   data () {
     return {
+      bordered: false,
       loading: true,
       headStyle: { height: '52px', 'border-top': '4px solid #1890ff', 'border-bottom': 'none' },
+      bodyStyle: { padding: '0' },
       fontSize: { fontSize: '52px' },
       talkData: talkData,
       visible: false,
@@ -129,6 +136,17 @@ export default {
       height: 100%;
     }
   }
+    .card-list{
+      .ant-list-item{
+        cursor: pointer;
+        transition: background-color 218ms;
+        border-bottom: 0px solid #e8e8e8;
+      }
+      .ant-list-item:hover{
+        background-color: #f5f5f5;
+      }
+    }
+
   .description{
     margin-top: 24px;
     color: gray;
