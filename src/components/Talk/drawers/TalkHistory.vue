@@ -11,7 +11,7 @@
     @close="onClose"
     :visible="activeOption=='talkHistory'"
     ref="historyDrawer"
-    >
+  >
     <a-input-search
       class="a-input"
       placeholder="input search text"
@@ -22,15 +22,15 @@
     <div class="history_cotent" v-for="item in items" :key="item.id">
       <img :src="item.avatar" class="content_l" alt="">
       <div class="content_r">
-        <h3>{{item.name}}</h3>
-        <p @click="isCurrent()" :class="{'current':flag}">{{item.lastMessage}}</p>
+        <h3>{{ item.name }}</h3>
+        <p @click="isCurrent()" :class="{'current':flag}">{{ item.lastMessage }}</p>
       </div>
       <div class="history_right">
         <span>2013-2-2 22:22</span>
         <div class="secret">
           <a-tag color="orange" v-if="item.Concentrated === 'secret'">保密</a-tag>
           <a-tag color="red" v-if="item.Concentrated === 'top-secret'">绝密</a-tag>
-          <a-tag color=""  v-if="item.Concentrated === 'no-secret'">无秘</a-tag>  
+          <a-tag color="" v-if="item.Concentrated === 'no-secret'">无秘</a-tag>
         </div>
       </div>
     </div>
@@ -55,11 +55,11 @@ export default {
   },
   data () {
     return {
-      flag:true,
-      items:[],
-      color:"",
-      page:[],
-      timer:null
+      flag: true,
+      items: [],
+      color: '',
+      page: [],
+      timer: null
     }
   },
   watch: {
@@ -77,48 +77,46 @@ export default {
   mounted () {
     // this.whatColor()
     console.log('123321', this.$refs.historyDrawer)
-    
-    window.addEventListener("scroll",this.lazyLoading)
+
+    window.addEventListener('scroll', this.lazyLoading)
   },
   methods: {
     /** 抽屉关闭时触发closeDrawer事件 */
     onClose () {
       this.$emit('closeDrawer')
     },
-    isCurrent(){
+    isCurrent () {
       this.flag = !this.flag
     },
-    getHistory(){
-      var itemData = this.items
-      this.$http.get("https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/history",).then((data)=>{
+    getHistory () {
+      this.$http.get('https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/history').then((data) => {
         console.log('1221212', data.result.pageNo)
-        let datas = data.result.data
+        const datas = data.result.data
         this.page = data.result.pageNo
-        let dataa = datas.map((item,index,array)=>{          
+        const dataa = datas.map((item, index, array) => {
           return item
         })
         // debugger
-        this.items.push(...dataa);
+        this.items.push(...dataa)
       })
     },
     onSearch (value) {
       console.log(value)
     },
     // 滚动获取数据
-    lazyLoading(){
-      let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
-      let clientHeight = document.documentElement.clientHeight
-      let scrollHeight = document.documentElement.scrollHeight
+    lazyLoading () {
+      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+      const clientHeight = document.documentElement.clientHeight
+      const scrollHeight = document.documentElement.scrollHeight
       if (scrollTop + clientHeight >= scrollHeight) {
         // console.log('0000', "000")
         console.log('000', scrollHeight)
         clearTimeout(this.timer)
-        this.timer = setTimeout(()=>{
+        this.timer = setTimeout(() => {
           this.getHistory()
-        },200)
-      }else{
-        return
-        
+        }, 200)
+      } else {
+
       }
     }
   }
@@ -172,9 +170,9 @@ export default {
       .secret{
         margin-top: 20px;
         float: right;
-        
+
       }
     }
   }
-  
+
 </style>
