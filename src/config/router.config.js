@@ -52,7 +52,8 @@ export const asyncRouterMap = [
                 path: '/talk/ChatPanel/ChatBox',
                 name: 'ChatBox',
                 component: () => import('@/views/talk/ChatBox'),
-                meta: { title: '研讨面板', keepAlive: true, permission: ['talk'], hidden: true }
+                meta: { title: '研讨面板', keepAlive: true, permission: ['talk'], hidden: true },
+                props: (route) => ({ currentTalk: route.query })
               }
             ]
           }]
