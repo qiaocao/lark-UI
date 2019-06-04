@@ -351,7 +351,7 @@ export default {
         this.SocketGlobal.send(JSON.stringify(baseMessage))
 
         // 更新最近联系人列表
-        this.$store.dispatch('UpdateRecentContacts', { item: this.chatInfo, reOrder: true, addUnreaNum: false })
+        this.$store.dispatch('UpdateRecentContacts', { ...this.chatInfo, reOrder: true, addUnread: false })
         // 发完消息滚动到最下方
         this.scrollToBottom()
       }
@@ -362,7 +362,6 @@ export default {
      */
     getCacheMessage () {
       const cacheMessage = this.$store.state.talk.talkMap.get(this.chatInfo.id)
-      console.log(cacheMessage)
       if (cacheMessage) {
         this.messageList = cacheMessage
       } else {

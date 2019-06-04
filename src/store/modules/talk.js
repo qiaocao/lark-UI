@@ -5,7 +5,7 @@
 import modules from './conf'
 import router from '@/router'
 import { getGroupList, getContactsTree, getRecentContacts, getTalkMap } from '@/api/chat'
-import { Tweet } from '@/utils/talk'
+import { Tweet, RecentContact } from '@/utils/talk'
 
 const talk = {
   state: {
@@ -112,33 +112,35 @@ const talk = {
     },
     /**
      * 跟新最近联系人列表
-     * @param {RecentContact} freshItem {item: RecentContact, reOrder: true, addUnreaNum: true}更新的项，结构同最近联系人项
+     * @param {RecentContact,reOrder,addUnread} freshItem
+     * {{...RecentContact}, reOrder: true, addUnread: true}
+     * 将要处理的数据，结构为最近联系人的结构加上reOrder和addUnread属性
      */
     UpdateRecentContacts ({ commit, state }, freshItem) {
-      console.log(freshItem.reOrder)
-      console.log(freshItem.addUnreaNum)
       const recentContacts = state.recentContacts
-      const newItem = freshItem.item
-      // 在最近联系人中查找当前联系人是否已经存在如果存在返回位置
+      // 从payload中生成最近联系人项
+      const newItem = new RecentContact(freshItem)
+      // 判断该联系人是否已经存在于最近联系人列表
       const index = recentContacts.findIndex(element => element.id === newItem.id)
-      // 设置未读消息数量 (TODO: 需要判断是否为当前研讨，是当前研讨置为0XXXX-->这个地方统一做加一处理)
+      // 原未读消息数
+      let oUnread = 0
+      // 若已存在，先删除
       if (index > -1) {
-        if (freshItem.addUnreaNum) {
-          newItem.unreadNum = recentContacts[index].unreadNum + 1
-        }
-        // 若已存在 先删除
+        oUnread = recentContacts[index].unreadNum
         this._vm.$delete(recentContacts, index)
       }
-      // 正在进行的研讨，未读消息数置为0
-      if (router.currentRoute.query.id === newItem.id) {
-        newItem.unreadNum = 0
-        // TODO: 向服务端发送消息状态
-        // ···
-      }
-      if (freshItem.addUnreaNum) {}
-      // 在最近联系人中查找是否有置顶项，如果有返回置顶项数量
+      // 查询置顶联系人数量
       const TopNum = recentContacts.filter(element => element.isTop).length
 
+      // 设置未读消息数
+      if (freshItem.addUnread && router.currentRoute.query.id !== newItem.id) {
+        newItem.unreadNum = oUnread + 1
+      } else {
+        newItem.unreadNum = 0
+        // TODO: 告知服务器消息的状态
+        // ···
+      }
+      // 更新列表顺序
       if (freshItem.reOrder) {
         newItem.isTop
           ? recentContacts.unshift(newItem)
@@ -152,7 +154,6 @@ const talk = {
             : recentContacts.splice(TopNum, 0, newItem)
         }
       }
-
       // 更新，实际在操作的过程中已经更新了
       commit('SET_RECENT_CONTACTS', recentContacts)
     },

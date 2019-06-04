@@ -237,7 +237,6 @@ export default {
     this.getGroupList()
   },
   beforeRouteEnter (to, from, next) {
-    console.log(to.query)
     next(vm => vm.showConvBox(to.query))
   },
   methods: {
@@ -261,7 +260,7 @@ export default {
       // ···
       // TODO: 更新最近联系人列表，待优化
       // this.recentContacts[index] = currentTalk
-      this.$store.dispatch('UpdateRecentContacts', { item: currentTalk, reOrder: false, addUnreaNum: false })
+      this.$store.dispatch('UpdateRecentContacts', { ...currentTalk, reOrder: false, addUnread: false })
 
       // 路由跳转
       this.$router.push({
