@@ -1,7 +1,7 @@
 import modules from './conf'
 import { Chat, ChatListUtils, MessageInfoType, MessageTargetType, transform } from '../../utils/talk/chatUtils'
 import conf from '@/api/index'
-import { getGroupList, getContactsTree, getRecentContacts } from '@/api/chat'
+// import { getGroupList, getContactsTree, getRecentContacts } from '@/api/chat'
 
 const chat = {
   state: {

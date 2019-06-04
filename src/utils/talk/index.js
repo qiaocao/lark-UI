@@ -3,7 +3,6 @@
  * @author jihainan
  */
 import SocketApi from './SocketApi'
-import { threadId } from 'worker_threads';
 
 /**
  * 用于websocket通信的消息体
@@ -14,7 +13,7 @@ class SocketMessage {
    * @param {Number} code 消息类型码
    * @param {*} data 数据对象
    */
-  constructor (code, data) {
+  constructor ({ code, data } = {}) {
     if (typeof code === 'number') { this.code = code }
     if (data instanceof Object) { this.data = data }
   }
@@ -38,7 +37,7 @@ class Tweet {
    * @param {Date} time 消息发送时间
    * @param {Boolean} isGroup 消息分类 ture - 群消息， - 私聊消息
    */
-  constructor (id, username, avatar, fromId, toId, atId, secretLevel, type, content, time, isGroup, contactInfo) {
+  constructor ({ id, username, avatar, fromId, toId, atId, secretLevel, type, content, time, isGroup, contactInfo } = {}) {
     // if (id instanceof String) { this.id = id } else { throw Error('id 数据类型错误') }
     this.id = id
     // if (avatar instanceof String) { this.avatar = avatar } else { throw Error('avatar 数据类型错误') }
@@ -82,7 +81,7 @@ class RecentContact {
    * @param {Boolean} isMute 是否免打扰
    * @param {Boolean} isGroup 是否为群组
    */
-  constructor (id, name, time, lastMessage, avatar, atMe, unreadNum, isTop, isMute, isGroup) {
+  constructor ({ id, name, time, lastMessage, avatar, atMe, unreadNum, isTop, isMute, isGroup } = {}) {
     this.id = id
     this.name = name
     this.time = time
