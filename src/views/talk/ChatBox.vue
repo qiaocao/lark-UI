@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height: 100%">
     <user-chat :chatInfo="currentChat"/>
   </div>
 </template>
@@ -15,10 +15,10 @@ export default {
       currentChat: {}
     }
   },
-  created () {
-    console.log('路由')
-    console.log(this.$route.query)
-    this.currentChat = this.$route.query
+  watch: {
+    '$route.query': function (newValue) {
+      this.currentChat = newValue
+    }
   }
 }
 </script>

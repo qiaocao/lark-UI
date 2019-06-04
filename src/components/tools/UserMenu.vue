@@ -9,7 +9,10 @@
     <header-notice class="action"/>
     <a-dropdown>
       <span class="action ant-dropdown-link user-dropdown-menu">
-        <a-avatar class="avatar" size="small" :src="avatar()"/>
+        <!-- 添加登陆状态展示 -->
+        <a-badge :status="statusMap.get(onlineState)" :offset="[-10, 23]" :numberStyle="{padding: '4px'}">
+          <a-avatar class="avatar" size="small" :src="avatar()"/>
+        </a-badge>
         <span>{{ nickname() }}</span>
       </span>
       <a-menu slot="overlay" class="user-dropdown-menu-wrapper">
@@ -45,10 +48,27 @@
 import HeaderNotice from './HeaderNotice'
 import { mapActions, mapGetters } from 'vuex'
 import Utils from '../../../src/utils/utils.js'
+import { LandingStatus } from '@/utils/constants'
+
 export default {
   name: 'UserMenu',
   components: {
     HeaderNotice
+  },
+  data () {
+    return {
+      statusMap: new Map([
+        [LandingStatus.LANDING, 'warning'],
+        [LandingStatus.ONLINE, 'success'],
+        [LandingStatus.EXITING, 'error'],
+        [LandingStatus.OFFLINE, 'default']
+      ])
+    }
+  },
+  computed: {
+    onlineState () {
+      return this.$store.state.talk.onlineState
+    }
   },
   methods: {
     ...mapActions(['Logout']),

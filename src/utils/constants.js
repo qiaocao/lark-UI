@@ -4,9 +4,9 @@
 
 // 密级常量
 const SECRETLEVEL_ENUM = new Map([
-  ['60', { people: '非密', file: '非密' }],
-  ['70', { people: '一般', file: '秘密' }],
-  ['80', { people: '重要', file: '机密' }],
+  [60, { people: '非密', file: '非密' }],
+  [70, { people: '一般', file: '秘密' }],
+  [80, { people: '重要', file: '机密' }],
   ['default', '非密']
 ])
 
@@ -19,7 +19,20 @@ const ErrorType = {
   SERVER_ERROR: 500 // 刷新token错误
 }
 
+// 登陆状态常量 同websocket的readyState
+const LandingStatus = {
+  /** 正在登陆 */
+  LANDING: 0,
+  /** 在线 */
+  ONLINE: 1,
+  /** 正在退出 */
+  EXITING: 2,
+  /** 离线 */
+  OFFLINE: 3
+}
+
 export {
   SECRETLEVEL_ENUM,
-  ErrorType
+  ErrorType,
+  LandingStatus
 }

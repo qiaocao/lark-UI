@@ -36,12 +36,12 @@
           </span>
           <!-- 最近里面每一项 -->
           <div class="recent-contacts-container tab-content-container">
-            <div v-for="(item, index) in chatList" :key="index" @click="showChat(item)">
+            <div v-for="(item, index) in recentContacts" :key="index" @click="showConvBox(item, index)">
               <recent-contacts-item :contactsInfo="item" :activated="item.id === activeChat"></recent-contacts-item>
             </div>
 
             <!-- 没有最新联系人或者联系人加载失败时的提示信息 -->
-            <div v-if="!chatList || !chatList.length" class="empty-tips">
+            <div v-if="!recentContacts || !recentContacts.length" class="empty-tips">
               <p>
                 暂无聊天信息，
                 <a-button type="primary" ghost size="small" :loading="recentLoading" @click="getRecentContacts">重新加载</a-button>
@@ -99,7 +99,7 @@
         <keep-alive>
           <router-view />
         </keep-alive>
-        <!-- <user-chat :chatInfo="currentChat" @showChat="showChat"/> -->
+        <!-- <user-chat :chatInfo="currentTalk"/> -->
       </div>
       <div v-show="activeKey == '2'" class="info-area">
         <group-info :selected="activeGroup"></group-info>
@@ -133,18 +133,18 @@ import SearchRecordModal from './SearchRecordModal'
 
 // import WebsocketHeartbeatJs from '../../utils/talk/WebsocketHeartbeatJs'
 import {
-  ChatListUtils,
-  Chat,
-  imageLoad,
+  ChatListUtils
+  // Chat,
+  // imageLoad,
   // MessageInfoType,
-  MessageTargetType
+  // MessageTargetType
   // timeoutFetch
 } from '../../utils/talk/chatUtils'
 // import { ErrorType } from '@/utils/constants'
 import conf from '@/api/index'
 // import HttpApiUtils from '../../utils/talk/HttpApiUtils'
 
-import Utils from '../../../src/utils/utils.js'
+// import Utils from '../../../src/utils/utils.js'
 
 export default {
   name: 'ChatPanel',
@@ -163,6 +163,7 @@ export default {
   data () {
     return {
       activeKey: '1',
+      // tab标签页的样式
       tabStyle: { margin: '0 6px 0', paddingLeft: '10px' },
       data: [],
       loading: false,
@@ -190,28 +191,28 @@ export default {
     }
   },
   computed: {
-    currentChat: {
+    currentTalk: {
       get: function () {
-        console.log(this.$store.state.chat.currentChat)
-        return this.$store.state.chat.currentChat
+        console.log(this.$store.state.talk.currentTalk)
+        return this.$store.state.talk.currentTalk
       },
-      set: function (currentChat) {
-        this.$store.commit('SET_CURRENT_CHAT', currentChat)
+      set: function (currentTalk) {
+        this.$store.commit('SET_CURRENT_TALK', currentTalk)
       }
     },
-    chatList: {
+    recentContacts: {
       get: function () {
-        return this.$store.state.chat.recentChatList
+        return this.$store.state.talk.recentContacts
       },
-      set: function (recentChatList) {
-        this.$store.commit('SET_RECENT_CHAT_LIST', recentChatList)
+      set: function (recentContacts) {
+        this.$store.commit('SET_RECENT_CONTACTS', recentContacts)
       }
     },
     groupList () {
-      return this.$store.state.chat.groupList
+      return this.$store.state.talk.groupList
     },
     contactsTree () {
-      return this.$store.state.chat.contactsTree
+      return this.$store.state.talk.contactsTree
     },
     showSearchContent () {
       if (this.$store.state.chat.showSearchContent === null) {
@@ -231,6 +232,7 @@ export default {
     }
   },
   created () {
+    // 页面创建时获取列表信息
     this.getRecentContacts()
     this.getContactsTree()
     this.getGroupList()
@@ -249,45 +251,57 @@ export default {
       // this.getContactsTree()
       // }
     },
-    handleSaveOk () {
 
-    },
-    handleSaveClose () {
+    handleSaveOk () {},
+    handleSaveClose () {},
+    /**
+     * 展示研讨对话框
+     * @param {Object} currentTalk 当前研讨
+     * @param {Nunber} index 当前研讨在最近联系人列表中的位置
+     */
+    showConvBox: function (currentTalk, index) {
+      this.activeChat = currentTalk.id
+      // 未读消息置为0
+      currentTalk.unreadNum = 0
+      // 初始化sotre中的当前会话
+      this.currentTalk = currentTalk
+      // TODO: 向服务端发一条已读的消息，同步消息状态
+      // ···
+      // TODO: 更新最近联系人列表，待优化
+      this.recentContacts[index] = currentTalk
 
-    },
-    showChat: function (chat) {
-      console.log('chat')
-      console.log('1213',chat)
-      const self = this
-      self.isShowWelcome = false
-      self.isShowPanel = true
-      const chatList = ChatListUtils.getChatList(self.$store.state.user.info.id)
-
-      // 重新添加会话，放到第一个
-      const firstChat = new Chat(chat.id, chat.name, conf.getHostUrl() + chat.avatar, 0, '', '', '', MessageTargetType.CHAT_GROUP)
-
-      // 存储到localStorage 的 chatList
-      ChatListUtils.setChatList(self.$store.state.user.info.id, chatList)
-
-      this.$store.commit('RESET_UNREAD')
-      this.currentChat = chat
-      // 当前聊天室
-      if (firstChat) {
-        self.$store.commit('SET_CURRENT_CHAT', firstChat)
-      }
-      // 重新设置chatList
-      self.$store.commit('SET_RECENT_CHAT_LIST', ChatListUtils.getChatList(self.$store.state.user.info.id))
+      // 路由跳转
 
       this.$router.push({
         path: '/talk/ChatPanel/ChatBox',
-        query: chat
+        query: currentTalk
       })
-      console.log('3321', this.$router)
-      // Chat会话框中的研讨信息每次滚动到最底部
-      this.$nextTick(() => {
-        // imageLoad('message-box')
-      })
-      this.activeChat = chat.id
+
+
+      // const self = this
+      // self.isShowWelcome = false
+      // self.isShowPanel = true
+      // const recentContacts = ChatListUtils.getChatList(self.$store.state.user.info.id)
+
+      // // 重新添加会话，放到第一个
+      // const firstChat = new Chat(chat.id, chat.name, conf.getHostUrl() + chat.avatar, 0, '', '', '', MessageTargetType.CHAT_GROUP)
+
+      // // 存储到localStorage 的 recentContacts
+      // ChatListUtils.setChatList(self.$store.state.user.info.id, recentContacts)
+
+      // this.$store.commit('RESET_UNREAD')
+      // this.currentTalk = chat
+      // // 当前聊天室
+      // if (firstChat) {
+      //   self.$store.commit('SET_CURRENT_CHAT', firstChat)
+      // }
+      // // 重新设置chatList
+      // self.$store.commit('SET_RECENT_CHAT_LIST', ChatListUtils.getChatList(self.$store.state.user.info.id))
+      // // Chat会话框中的研讨信息每次滚动到最底部
+      // this.$nextTick(() => {
+      //   // imageLoad('message-box')
+      // })
+
     },
 
 
@@ -304,7 +318,6 @@ export default {
     },
     /**
      * 加载群组列表
-     * @author jihainan
      */
     getGroupList () {
       this.groupLoading = true
@@ -314,7 +327,6 @@ export default {
     },
     /**
      * 加载联系人树
-     * @author jihainan
      */
     getContactsTree () {
       this.contactsLoading = true
@@ -324,7 +336,6 @@ export default {
     },
     /**
      * 获取最近联系列表
-     * @author jihainan
      */
     getRecentContacts () {
       this.recentLoading = true
@@ -344,42 +355,21 @@ export default {
     }
   },
   activated: function () {
-    const self = this
-    if (this.$route.query.chat) {
-      self.isShowPanel = true
-      self.isShowWelcome = false
-    }
-    // 当前研讨室
-    if (self.$route.query.chat) {
-      self.$store.commit('SET_CURRENT_CHAT', this.$route.query.chat)
-    }
-    // 重新设置chatList
-    self.$store.commit('SET_RECENT_CHAT_LIST', ChatListUtils.getChatList(self.$store.state.user.info.id))
-    // 每次滚动到最底部
-    this.$nextTick(() => {
-      imageLoad('message-box')
-    })
-  },
-  mounted: function () {
-    const self = this
-    Utils.$on('showChat', function (chat) {
-      self.showChat(chat)
-    })
-    Utils.$on('showGroup', function (chat) {
-      self.showGroup(chat)
-    })
-    Utils.$on('openModal', function (chat) {
-      self.handleOpenSearchRecordModal()
-    })
-    Utils.$on('closeModal', function (chat) {
-      self.handleCloseSearchRecordModal()
-    })
-    Utils.$on('changePane', function (key) {
-      self.changePane(key)
-    })
-    Utils.$on('showContacts', function (key) {
-      self.showContacts(key)
-    })
+    // const self = this
+    // if (this.$route.query.chat) {
+    //   self.isShowPanel = true
+    //   self.isShowWelcome = false
+    // }
+    // // 当前研讨室
+    // if (self.$route.query.chat) {
+    //   self.$store.commit('SET_CURRENT_CHAT', this.$route.query.chat)
+    // }
+    // // 重新设置chatList
+    // self.$store.commit('SET_RECENT_CHAT_LIST', ChatListUtils.getChatList(self.$store.state.user.info.id))
+    // // 每次滚动到最底部
+    // this.$nextTick(() => {
+    //   imageLoad('message-box')
+    // })
   }
 }
 </script>

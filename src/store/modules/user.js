@@ -88,8 +88,6 @@ const user = {
           // commit('SET_RECENT_CHAT_LIST', result.chat.chatList)
           // ChatListUtils.setChatList(user.state.info.id, result.chat.chatList)
           resolve(response)
-        }).then(() => {
-
         }).catch(error => {
           reject(error)
         })
@@ -102,6 +100,9 @@ const user = {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
         Vue.ls.remove(ACCESS_TOKEN)
+
+        // 断开websocket连接
+        Vue.prototype.SocketGlobal.close(3400, '退出登陆')
 
         logout(state.token).then(() => {
           resolve()
