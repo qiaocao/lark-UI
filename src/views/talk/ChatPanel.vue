@@ -34,7 +34,7 @@
             <a-icon type="clock-circle" style="{fontSize: 16px}" />
             最近
           </span>
-
+          <!-- 最近里面每一项 -->
           <div class="recent-contacts-container tab-content-container">
             <div v-for="(item, index) in recentContacts" :key="index" @click="showConvBox(item, index)">
               <recent-contacts-item :contactsInfo="item" :activated="item.id === activeChat"></recent-contacts-item>
@@ -251,6 +251,7 @@ export default {
       // this.getContactsTree()
       // }
     },
+
     handleSaveOk () {},
     handleSaveClose () {},
     /**
@@ -270,10 +271,12 @@ export default {
       this.recentContacts[index] = currentTalk
 
       // 路由跳转
+
       this.$router.push({
         path: '/talk/ChatPanel/ChatBox',
         query: currentTalk
       })
+
 
       // const self = this
       // self.isShowWelcome = false
@@ -298,7 +301,10 @@ export default {
       // this.$nextTick(() => {
       //   // imageLoad('message-box')
       // })
+
     },
+
+
     delChat (chat) {
       this.$store.commit('DEL_CHAT', chat)
     },
