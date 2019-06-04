@@ -99,7 +99,7 @@
         <keep-alive>
           <router-view />
         </keep-alive>
-        <!-- <user-chat :chatInfo="currentChat" @showChat="showChat"/> -->
+        <!-- <user-chat :chatInfo="currentTalk"/> -->
       </div>
       <div v-show="activeKey == '2'" class="info-area">
         <group-info :selected="activeGroup"></group-info>
@@ -133,21 +133,18 @@ import SearchRecordModal from './SearchRecordModal'
 
 // import WebsocketHeartbeatJs from '../../utils/talk/WebsocketHeartbeatJs'
 import {
-  ChatListUtils,
-  Chat,
-  imageLoad,
+  ChatListUtils
+  // Chat,
+  // imageLoad,
   // MessageInfoType,
-  MessageTargetType
+  // MessageTargetType
   // timeoutFetch
 } from '../../utils/talk/chatUtils'
 // import { ErrorType } from '@/utils/constants'
 import conf from '@/api/index'
 // import HttpApiUtils from '../../utils/talk/HttpApiUtils'
-import {
-  ChatListUtils
-} from '../../utils/talk/chatUtils'
 
-import Utils from '../../../src/utils/utils.js'
+// import Utils from '../../../src/utils/utils.js'
 
 export default {
   name: 'ChatPanel',
@@ -271,6 +268,12 @@ export default {
       // ···
       // TODO: 更新最近联系人列表，待优化
       this.recentContacts[index] = currentTalk
+
+      // 路由跳转
+      this.$router.push({
+        path: '/talk/ChatPanel/ChatBox',
+        query: currentTalk
+      })
 
       // const self = this
       // self.isShowWelcome = false
