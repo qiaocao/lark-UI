@@ -34,7 +34,7 @@
             <a-icon type="clock-circle" style="{fontSize: 16px}" />
             最近
           </span>
-
+          <!-- 最近里面每一项 -->
           <div class="recent-contacts-container tab-content-container">
             <div v-for="(item, index) in chatList" :key="index" @click="showChat(item)">
               <recent-contacts-item :contactsInfo="item" :activated="item.id === activeChat"></recent-contacts-item>
@@ -257,7 +257,7 @@ export default {
     },
     showChat: function (chat) {
       console.log('chat')
-      console.log(chat)
+      console.log('1213',chat)
       const self = this
       self.isShowWelcome = false
       self.isShowPanel = true
@@ -282,13 +282,15 @@ export default {
         path: '/talk/ChatPanel/ChatBox',
         query: chat
       })
-
+      console.log('3321', this.$router)
       // Chat会话框中的研讨信息每次滚动到最底部
       this.$nextTick(() => {
         // imageLoad('message-box')
       })
       this.activeChat = chat.id
     },
+
+
     delChat (chat) {
       this.$store.commit('DEL_CHAT', chat)
     },
