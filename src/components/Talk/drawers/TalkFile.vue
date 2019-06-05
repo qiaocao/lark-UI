@@ -17,38 +17,38 @@
       enterButton
     />
     <div class="nav_box">
-        <ul>
-          <li>文件名</li>
-          <li>上传者</li>
-          <li>上传时间</li>
-        </ul>
-      </div>
+      <ul>
+        <li>文件名</li>
+        <li>上传者</li>
+        <li>上传时间</li>
+      </ul>
+    </div>
     <a-list
       class="demo-loadmore-list"
       :loading="loading"
       itemLayout="horizontal"
       :dataSource="data"
     >
-      
+
       <div v-if="showLoadingMore" slot="loadMore" :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }">
         <a-spin v-if="loadingMore" />
         <a-button v-else @click="onLoadMore">loading more</a-button>
       </div>
-      <a-list-item slot="renderItem" slot-scope="item, index">
+      <a-list-item slot="renderItem">
         <!-- <a slot="actions">edit</a> -->
-        <span class="file_sp" >{{item.name.title}}</span>
+        <span class="file_sp" >{{ item.name.title }}</span>
         <a slot="actions">下载</a>
         <a-list-item-meta class="file_name">
-          <a class="file_a" slot="title" href="https://vue.ant.design/">{{item.name.last}}</a>
+          <a class="file_a" slot="title" href="https://vue.ant.design/">{{ item.name.last }}</a>
           <a-avatar slot="avatar" :src="item.url" />
         </a-list-item-meta>
-        <div class="file_time">{{item.time}}</div>
+        <div class="file_time">{{ item.time }}</div>
         <a href="">
           <div class="secret">
-          <a-tag color="orange" v-if="item.Concentrated === 'secret'">保密</a-tag>
-          <a-tag color="red" v-if="item.Concentrated === 'top-secret'">绝密</a-tag>
-          <a-tag color=""  v-if="item.Concentrated === 'no-secret'">无秘</a-tag>  
-        </div>
+            <a-tag color="orange" v-if="item.Concentrated === 'secret'">保密</a-tag>
+            <a-tag color="red" v-if="item.Concentrated === 'top-secret'">绝密</a-tag>
+            <a-tag color="" v-if="item.Concentrated === 'no-secret'">无秘</a-tag>
+          </div>
         </a>
       </a-list-item>
     </a-list>
@@ -78,13 +78,12 @@ export default {
       data: [],
       loading: false,
       busy: false,
-      loading: true,
       loadingMore: false,
       showLoadingMore: true,
-      item:[]
+      item: []
     }
   },
-  created(){
+  created () {
     this.getData()
   },
   watch: {
@@ -98,13 +97,12 @@ export default {
     onSearch (value) {
       console.log(value)
     },
- 
-     getData  (callback) {
-  
-      this.$http.get("https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/file").then((data)=>{
+
+    getData  (callback) {
+      this.$http.get('https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/file').then((data) => {
         // console.log('22112', data)
         // this.data = data.results
-         callback( data)
+        callback(data)
       })
     },
     onLoadMore () {
@@ -117,7 +115,7 @@ export default {
         })
       })
     },
-     /** 抽屉关闭时触发closeDrawer事件 */
+    /** 抽屉关闭时触发closeDrawer事件 */
     onClose () {
       this.$emit('closeDrawer')
     }
@@ -127,7 +125,7 @@ export default {
       this.loading = false
       this.data = res.results
     })
-  },
+  }
 }
 </script>
 
@@ -171,7 +169,7 @@ export default {
       width: 100%;
       height: 20px;
     ul{
-      width: 100%;  
+      width: 100%;
       li{
         list-style: none;
         width: 50px;

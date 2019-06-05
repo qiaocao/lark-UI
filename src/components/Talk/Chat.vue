@@ -1,5 +1,5 @@
 <template>
-  <a-layout v-if="Object.keys(chatInfo).length" @mouseover="clearUnread()" class="conv-box">
+  <a-layout v-if="Object.keys(chatInfo).length" class="conv-box">
 
     <!-- 聊天设置选项的抽屉组件 -->
     <talk-history :activeOption="activeOption" @closeDrawer="triggerDrawer"></talk-history>
@@ -136,7 +136,7 @@
 <script>
 import conf from '@/api/index'
 import Faces from './Face.vue'
-import { TalkHistory,GroupNotice,TalkSetting,MarkMessage,TalkFile } from '@/components/Talk'
+import { TalkHistory, GroupNotice, TalkSetting, MarkMessage, TalkFile } from '@/components/Talk'
 import MessagePiece from './MessagePiece'
 import { fetchPost, imageLoad, transform, ChatListUtils } from '../../utils/talk/chatUtils'
 import VEmojiPicker from 'v-emoji-picker'
@@ -235,25 +235,9 @@ export default {
     // 监听当前研讨id的变化
     'chatInfo.id': function () {
       // 用当前研讨的id从store中获取消息列表
-      const cacheMessage = this.$store.state.talk.talkMap.get(this.chatInfo.id)
-      if (cacheMessage) {
-        this.messageList = cacheMessage
-      } else {
-        this.messageList = []
-      }
+      this.getCacheMessage()
       // 消息加载完成后滚动到最下方
       this.scrollToBottom()
-    },
-    'chatInfo.unreadNum': function (newValue) {
-      console.log('newValue:' + newValue)
-      // TODO: 更新未读消息的数量，待优化
-      if (this.$store.state.recentContacts) {
-        this.$store.state.recentContacts.forEach(element => {
-          if (element.id === this.chatInfo.id) {
-            element.unreadNum = newValue
-          }
-        })
-      }
     },
     messageList: function (newValue) {
       // 消息列表发生变化，更新缓存
@@ -298,20 +282,8 @@ export default {
     this.$nextTick(() => {
       imageLoad('conv-box-editor')
     })
-    console.log('this.chatInfo', this.chatInfo)
   },
-  updated () {
-  },
-  filters: {},
   methods: {
-    /**
-     * 将最近联系人列表中的未读消息数清零
-     */
-    clearUnread () {
-      if (this.chatInfo.unreadNum !== 0) {
-        this.$store.state.talk.currentTalk.unreadNum = 0
-      }
-    },
     /**
      * 聊天消息滚到到最新一条
      * 1. 发送消息 2. 页面创建 3.页面更新
@@ -387,9 +359,21 @@ export default {
         this.SocketGlobal.send(JSON.stringify(baseMessage))
 
         // 更新最近联系人列表
-        this.$store.dispatch('UpdateRecentContacts', this.chatInfo)
+        this.$store.dispatch('UpdateRecentContacts', { ...this.chatInfo, reOrder: true, addUnread: false })
         // 发完消息滚动到最下方
         this.scrollToBottom()
+      }
+    },
+    /**
+     * 获取缓存消息
+     * @author jihainan
+     */
+    getCacheMessage () {
+      const cacheMessage = this.$store.state.talk.talkMap.get(this.chatInfo.id)
+      if (cacheMessage) {
+        this.messageList = cacheMessage
+      } else {
+        this.messageList = []
       }
     },
     talkItemEnter () {

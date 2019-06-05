@@ -101,8 +101,8 @@ export default {
     },
     sendMessage (event) {
       console.log('这里应该跳转到聊天页')
-      console.log('222',this.$router)
-      this.$router.push({path: '/talk/ChatPanel/ChatBox?id='})
+      console.log('222', this.$router)
+      this.$router.push({ path: '/talk/ChatPanel/ChatBox?id=' })
     }
   }
 }
