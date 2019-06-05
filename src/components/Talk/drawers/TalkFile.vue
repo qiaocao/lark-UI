@@ -34,7 +34,7 @@
         <a-spin v-if="loadingMore" />
         <a-button v-else @click="onLoadMore">loading more</a-button>
       </div>
-      <a-list-item slot="renderItem">
+      <a-list-item slot="renderItem"  slot-scope="item, index">
         <!-- <a slot="actions">edit</a> -->
         <span class="file_sp" >{{ item.name.title }}</span>
         <a slot="actions">下载</a>
@@ -84,12 +84,13 @@ export default {
     }
   },
   created () {
-    this.getData()
+    
   },
   watch: {
     activeOption (newValue) {
       if (newValue === 'talkFile') {
         console.log('在这里加载数据')
+        this.getData()
       }
     }
   },
@@ -100,8 +101,6 @@ export default {
 
     getData  (callback) {
       this.$http.get('https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/file').then((data) => {
-        // console.log('22112', data)
-        // this.data = data.results
         callback(data)
       })
     },

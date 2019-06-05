@@ -66,18 +66,15 @@ export default {
     activeOption (newValue) {
       if (newValue === 'talkHistory') {
         console.log('在这里加载数据')
+        this.getHistory()
       }
     }
   },
   computed: {
   },
   created () {
-    this.getHistory()
   },
   mounted () {
-    // this.whatColor()
-    console.log('123321', this.$refs.historyDrawer)
-    
     window.addEventListener("scroll",this.lazyLoading,true)
   },
   methods: {
@@ -90,13 +87,11 @@ export default {
     },
     getHistory () {
       this.$http.get('https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/history').then((data) => {
-        console.log('1221212', data.result.pageNo)
         const datas = data.result.data
         this.page = data.result.pageNo
         const dataa = datas.map((item, index, array) => {
           return item
         })
-        // debugger
         this.items.push(...dataa)
       })
     },
