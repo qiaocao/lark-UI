@@ -1,3 +1,8 @@
+/**
+ * @todo 这个模块已经不维护
+ * @todo 关于研讨的状态全部存储在talk模块中
+ */
+
 import modules from './conf'
 import { Chat, ChatListUtils, MessageInfoType, MessageTargetType, transform } from '../../utils/talk/chatUtils'
 import conf from '@/api/index'
