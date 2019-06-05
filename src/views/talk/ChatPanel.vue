@@ -3,14 +3,13 @@
   <a-layout class="talk-layout">
     <a-layout-sider class="talk-layout-sider">
       <div class="search-bar">
-        <SearchInput />
+        <SearchInput/>
         <a-dropdown>
           <a-menu slot="overlay">
             <a-menu-item key="1" @click="$refs.model.beginTalk()">发起研讨</a-menu-item>
             <a-menu-item key="2">发起会议</a-menu-item>
           </a-menu>
-          <a-button type="default" size="small" icon="plus" style="margin-left:3px;">
-          </a-button>
+          <a-button type="default" size="small" icon="plus" style="margin-left:3px;"></a-button>
         </a-dropdown>
       </div>
       <SearchArea
@@ -28,11 +27,11 @@
         @change="changePane"
         :tabBarGutter="0"
         :tabBarStyle="tabStyle"
-        :animated="false">
+        :animated="false"
+      >
         <a-tab-pane key="1" forceRender>
           <span slot="tab">
-            <a-icon type="clock-circle" style="{fontSize: 16px}" />
-            最近
+            <a-icon type="clock-circle" style="{fontSize: 16px}"/>最近
           </span>
           <!-- 最近里面每一项 -->
           <div class="recent-contacts-container tab-content-container">
@@ -44,7 +43,13 @@
             <div v-if="!recentContacts || !recentContacts.length" class="empty-tips">
               <p>
                 暂无聊天信息，
-                <a-button type="primary" ghost size="small" :loading="recentLoading" @click="getRecentContacts">重新加载</a-button>
+                <a-button
+                  type="primary"
+                  ghost
+                  size="small"
+                  :loading="recentLoading"
+                  @click="getRecentContacts"
+                >重新加载</a-button>
               </p>
             </div>
           </div>
@@ -52,8 +57,7 @@
 
         <a-tab-pane key="2">
           <span slot="tab">
-            <a-icon type="team" style="{fontSize: 16px}" />
-            群组
+            <a-icon type="team" style="{fontSize: 16px}"/>群组
           </span>
 
           <div class="group-contacts-container tab-content-container">
@@ -65,27 +69,41 @@
             <div v-if="!groupList || !groupList.length" class="empty-tips">
               <p>
                 暂无群组信息，
-                <a-button type="primary" ghost size="small" :loading="groupLoading" @click="getGroupList">重新加载</a-button>
+                <a-button
+                  type="primary"
+                  ghost
+                  size="small"
+                  :loading="groupLoading"
+                  @click="getGroupList"
+                >重新加载</a-button>
               </p>
             </div>
-
           </div>
         </a-tab-pane>
 
         <a-tab-pane key="3">
           <span slot="tab">
-            <a-icon type="user" style="{fontSize: 18px, margin: 0}" />
-            联系人
+            <a-icon type="user" style="{fontSize: 18px, margin: 0}"/>联系人
           </span>
 
           <div class="contacts-container tab-content-container">
-            <contacts-box :contactsTree="contactsTree" @SelectContacts="showContacts" style="paddingLeft: 18px;"/>
+            <contacts-box
+              :contactsTree="contactsTree"
+              @SelectContacts="showContacts"
+              style="paddingLeft: 18px;"
+            />
 
             <!-- 获取联系人树失败时的提示信息 -->
             <div v-if="!contactsTree || !contactsTree.length" class="empty-tips">
               <p>
                 加载失败，
-                <a-button type="primary" ghost size="small" :loading="contactsLoading" @click="getContactsTree">重新加载</a-button>
+                <a-button
+                  type="primary"
+                  ghost
+                  size="small"
+                  :loading="contactsLoading"
+                  @click="getContactsTree"
+                >重新加载</a-button>
               </p>
             </div>
           </div>
@@ -94,21 +112,19 @@
     </a-layout-sider>
 
     <a-layout class="talk-layout-content">
-
       <div v-show="activeKey == '1'" class="chat-area">
         <keep-alive>
-          <router-view />
+          <router-view/>
         </keep-alive>
         <!-- <user-chat :chatInfo="currentTalk"/> -->
       </div>
       <div v-show="activeKey == '2'" class="info-area">
-        <group-info :selected="activeGroup"></group-info>
+        <group-info :selected="activeGroup" @t="s"></group-info>
       </div>
 
       <div v-show="activeKey == '3'" class="info-area">
         <contacts-info :selected="activeContacts"></contacts-info>
       </div>
-
     </a-layout>
 
     <member-model ref="model" @ok="handleSaveOk" @close="handleSaveClose"/>
@@ -215,7 +231,7 @@ export default {
     },
     showSearchContent () {
       if (this.$store.state.chat.showSearchContent === null) {
-        return true
+        return true/*  */
       } else {
         return this.$store.state.chat.showSearchContent
       }
@@ -240,6 +256,11 @@ export default {
     next(vm => vm.showConvBox(to.query))
   },
   methods: {
+    s (val) {
+      this.activeKey = '1'
+      console.log('0202', val)
+      this.activeChat = val
+    },
     /* 切换面板 */
     changePane (activeKey) {
       this.activeKey = activeKey
@@ -323,13 +344,16 @@ export default {
      */
     getRecentContacts () {
       this.recentLoading = true
-      this.$store.dispatch('GetRecentContacts').then(res => {
-        if (this.$store.state.user.info.id) {
-          ChatListUtils.setChatList(this.$store.state.user.info.id, res.result.data)
-        }
-      }).finally(() => {
-        this.recentLoading = false
-      })
+      this.$store
+        .dispatch('GetRecentContacts')
+        .then(res => {
+          if (this.$store.state.user.info.id) {
+            ChatListUtils.setChatList(this.$store.state.user.info.id, res.result.data)
+          }
+        })
+        .finally(() => {
+          this.recentLoading = false
+        })
     },
     handleOpenSearchRecordModal () {
       this.searchRecordModalVisible = true
@@ -359,74 +383,73 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  .talk-layout{
-    // height: calc(100vh - 64px);
-    overflow-y: hidden;
+.talk-layout {
+  // height: calc(100vh - 64px);
+  overflow-y: hidden;
+}
+
+.talk-layout-sider {
+  // 覆盖默认样式
+  max-width: 280px !important;
+  flex: 0 0 280px !important;
+
+  background: rgb(230, 232, 235);
+  border-right: 1px solid #dcdee0;
+
+  // 聊天搜索栏样式 该部分高度为48px
+  .search-bar {
+    display: flex;
+    margin: 16px 12px 8px;
   }
 
-  .talk-layout-sider {
-    // 覆盖默认样式
-    max-width: 280px !important;
-    flex: 0 0 280px !important;
-
-    background: rgb(230, 232, 235);
-    border-right: 1px solid #dcdee0;
-
-    // 聊天搜索栏样式 该部分高度为48px
-    .search-bar {
-      display: flex;
-      margin: 16px 12px 8px;
-    }
-
-    // 调整tabs标签样式
-    .ant-tabs-nav .ant-tabs-tab .anticon {
-      margin-right: 0px;
-    }
-
-    // 最近消息标签页样式
-    .recent-contacts-container {
-      flex: 1;
-      display: flex;
-      position: relative;
-      flex-direction: column;
-      border-top: 1px solid #ebebeb;
-    }
-
-    // 群组标签页样式
-    .group-contacts-container {
-    }
-
-    // 联系人标签页样式
-    .contacts-container {
-    }
-
-    // 让最近 群组 联系人tab页的内容可以滚动的样式
-    .tab-content-container {
-      overflow: hidden;
-
-      // 视窗高度-头部导航栏高度-搜索框高度-tab页高度
-      height: calc(100vh - 64px - 48px - 46px);
-
-      &:hover {
-        overflow-y: overlay;
-      }
-
-    }
-
-    // 加载失败或列表为空的提示信息样式
-    .empty-tips {
-      text-align: center;
-      padding: 32px;
-    }
+  // 调整tabs标签样式
+  .ant-tabs-nav .ant-tabs-tab .anticon {
+    margin-right: 0px;
   }
 
-  .talk-layout-content {
+  // 最近消息标签页样式
+  .recent-contacts-container {
+    flex: 1;
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    border-top: 1px solid #ebebeb;
+  }
+
+  // 群组标签页样式
+  .group-contacts-container {
+  }
+
+  // 联系人标签页样式
+  .contacts-container {
+  }
+
+  // 让最近 群组 联系人tab页的内容可以滚动的样式
+  .tab-content-container {
     overflow: hidden;
-    z-index: 8;
-    background-color: rgb(242, 243, 245);
-    .chat-area, .info-area {
-      height: 100%;
+
+    // 视窗高度-头部导航栏高度-搜索框高度-tab页高度
+    height: calc(100vh - 64px - 48px - 46px);
+
+    &:hover {
+      overflow-y: overlay;
     }
   }
 
+  // 加载失败或列表为空的提示信息样式
+  .empty-tips {
+    text-align: center;
+    padding: 32px;
+  }
+}
+
+.talk-layout-content {
+  overflow: hidden;
+  z-index: 8;
+  background-color: rgb(242, 243, 245);
+  .chat-area,
+  .info-area {
+    height: 100%;
+  }
+}
 </style>
