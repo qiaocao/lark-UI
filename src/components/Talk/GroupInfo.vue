@@ -119,22 +119,23 @@ export default {
       console.log('这里应该跳转到聊天页')
       // let ss = RecentContact.constructor
       // console.log('120', ss)
-      const sen = {
-        id: '111',
-        name: 'sas',
-        time: '时间',
-        lastMessage: '阿斯顿',
-        avater: '',
-        atMe: false,
-        unreadNum: 0,
-        isTop: false,
-        isMute: false,
-        isGroup: true
-      }
+      const sen = this.groupInfo
+      // const sen = {
+      //   id: '111',
+      //   name: 'sas',
+      //   time: '时间',
+      //   lastMessage: '阿斯顿',
+      //   avater: '',
+      //   atMe: false,
+      //   unreadNum: 0,
+      //   isTop: false,
+      //   isMute: false,
+      //   isGroup: true
+      // }
       this.$emit('t', sen.id)
 
       this.$router.push({
-        path: '/talk/ChatPanel/ChatBox?',
+        path: '/talk/ChatPanel/ChatBox',
         query: new RecentContact(sen)
       })
       this.$store.dispatch('UpdateRecentContacts', sen)

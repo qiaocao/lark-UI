@@ -258,7 +258,7 @@ export default {
   methods: {
     s (val) {
       this.activeKey = '1'
-      console.log('0202', val)
+      // console.log('0202', val)
       this.activeChat = val
     },
     /* 切换面板 */

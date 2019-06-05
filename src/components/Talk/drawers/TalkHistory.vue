@@ -12,7 +12,14 @@
     :visible="activeOption=='talkHistory'"
     ref="historyDrawer"
   >
-    <a-input-search class="a-input" placeholder="input search text" @search="onSearch" enterButton/>
+    <a-input-search
+      class="a-input"
+      v-model="valData"
+      placeholder="input search text"
+      @change="onChange"
+      @search="onSearch"
+      enterButton
+    />
 
     <div class="history_cotent" v-for="item in items" :key="item.id">
       <img :src="item.avatar" class="content_l" alt>
@@ -53,22 +60,23 @@ export default {
       flag: true,
       items: [],
       color: '',
-      page: [],
-      timer: null
+      timer: null,
+      changeTimer: null,
+      valData: ''
     }
   },
   watch: {
     activeOption (newValue) {
       if (newValue === 'talkHistory') {
         console.log('在这里加载数据')
-        this.getHistory()
       }
     }
   },
   computed: {},
-  created () {},
+  created () {
+    this.getHistory()
+  },
   mounted () {
-    console.log('123321', this.$refs.historyDrawer)
     window.addEventListener('scroll', this.lazyLoading, true)
   },
   methods: {
@@ -84,7 +92,6 @@ export default {
         .get('https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/history')
         .then(data => {
           const datas = data.result.data
-          this.page = data.result.pageNo
           const dataa = datas.map((item, index, array) => {
             return item
           })
@@ -94,27 +101,36 @@ export default {
     onSearch (value) {
       console.log(value)
     },
+    // 搜索
+    onChange (val) {
+      clearTimeout(this.changeTimer)
+      this.changeTimer = setTimeout(() => {
+        if (val.data !== null) {
+          this.valData = this.valData + val.data
+        } else {
+          this.valData = this.valData.substr(0, this.valData.length - 1)
+        }
+        console.log('1', this.items)
+      }, 1500)
+      for (let i = 0; i < this.items.length; i++) {
+        console.log('00', this.items[i].id)
+        if (this.valData) {
+
+        }
+      }
+    },
     // 滚动获取数据
     lazyLoading () {
       const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
       const clientHeight = document.documentElement.clientHeight
       const scrollHeight = document.documentElement.scrollHeight
-      let p = 0; let t = 0
-      p = scrollTop
-      if (scrollTop + clientHeight >= scrollHeight && p >= t) {
+      if (scrollTop + clientHeight >= scrollHeight) {
         clearTimeout(this.timer)
         this.timer = setTimeout(() => {
           this.getHistory()
         }, 1200)
       } else {
       }
-    },
-    win (attr, value) {
-      if (typeof value === 'undefined') {
-        return document.documentElement[attr] || document.body[attr]
-      }
-      document.documentElement[attr] = value
-      document.body[attr] = value
     }
   }
 }
