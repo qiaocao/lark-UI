@@ -257,14 +257,9 @@ export default {
       currentTalk.unreadNum = 0
       // 初始化sotre中的当前会话
       this.currentTalk = currentTalk
-      // TODO: 向服务端发一条已读的消息，同步消息状态
-      // ···
-      // TODO: 更新最近联系人列表，待优化
-      // this.recentContacts[index] = currentTalk
       this.$store.dispatch('UpdateRecentContacts', { ...currentTalk, reOrder: false, addUnread: false })
 
       // 路由跳转
-
       this.$router.push({
         path: '/talk/ChatPanel/ChatBox',
         query: currentTalk
