@@ -1,6 +1,6 @@
 // eslint-disable-next-line
 import { UserLayout, BasicLayout, RouteView, BlankLayout, PageView, GeneralView } from '@/components/layouts'
-// import { bxAnaalyse } from '@/core/icons'
+import { RecentContact } from '@/utils/talk'
 
 export const asyncRouterMap = [
 
@@ -53,7 +53,7 @@ export const asyncRouterMap = [
                 name: 'ChatBox',
                 component: () => import('@/views/talk/ChatBox'),
                 meta: { title: '研讨面板', keepAlive: true, permission: ['talk'], hidden: true },
-                props: (route) => ({ currentTalk: route.query })
+                props: (route) => ({ currentTalk: new RecentContact(route.query) })
               }
             ]
           }]
