@@ -113,6 +113,7 @@ const talk = {
      * 跟新最近联系人列表
      * @param {*} freshItem 更新的项，结构同最近联系人项
      */
+    //  将index中的constructor 传进来  直接生成最近联系人列表
     UpdateRecentContacts ({ commit, state }, freshItem) {
       const recentContacts = state.recentContacts
       // 在最近联系人中查找当前联系人是否已经存在如果存在返回位置

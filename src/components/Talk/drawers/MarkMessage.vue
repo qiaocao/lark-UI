@@ -31,6 +31,9 @@
         </div>
       </div>
     </div>
+    <div class="login_img">
+      <a-spin />
+    </div>
   </a-drawer>
 </template>
 
@@ -54,7 +57,7 @@ export default {
     return {
       flag:true,
       items:[],
-      color:""
+      color:"",
     }
   },
   watch: {
@@ -71,7 +74,7 @@ export default {
   },
   mounted () {
     // this.whatColor()
-     window.addEventListener("scroll",this.lazyLoading)
+     window.addEventListener("scroll",this.lazyLoading,true)
   },
   methods: {
     /** 抽屉关闭时触发closeDrawer事件 */
@@ -84,13 +87,11 @@ export default {
      getHistory(){
       var itemData = this.items
       this.$http.get("https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/history",).then((data)=>{
-        console.log('1221212', data.result.pageNo)
         let datas = data.result.data
         this.page = data.result.pageNo
         let dataa = datas.map((item,index,array)=>{          
           return item
         })
-        // debugger
         this.items.push(...dataa);
       })
     },
@@ -102,13 +103,11 @@ export default {
       let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
       let clientHeight = document.documentElement.clientHeight
       let scrollHeight = document.documentElement.scrollHeight
-      if (scrollTop + clientHeight >= scrollHeight) {
-        // console.log('0000', "000")
-        console.log('000', scrollHeight)
+      if (scrollTop + clientHeight >= scrollHeight ) {
         clearTimeout(this.timer)
         this.timer = setTimeout(()=>{
           this.getHistory()
-        },200)
+        },1200)
       }else{
         return
         
@@ -130,6 +129,11 @@ export default {
   }
   .a-input{
     margin-bottom: 20px;
+  }
+  .login_img{
+    position: relative ;
+    top:30px;
+    left: 50px;
   }
   .history_cotent{
     width: 100%;

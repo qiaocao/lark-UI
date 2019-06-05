@@ -102,13 +102,12 @@
         <!-- <user-chat :chatInfo="currentTalk"/> -->
       </div>
       <div v-show="activeKey == '2'" class="info-area">
-        <group-info :selected="activeGroup"></group-info>
+        <group-info :selected="activeGroup" @t="s"></group-info>
       </div>
 
       <div v-show="activeKey == '3'" class="info-area">
         <contacts-info :selected="activeContacts"></contacts-info>
       </div>
-
     </a-layout>
 
     <member-model ref="model" @ok="handleSaveOk" @close="handleSaveClose"/>
@@ -180,7 +179,7 @@ export default {
       // 记录当前选中的联系人/群组信息
       activeContacts: '',
       activeGroup: '',
-      activeChat: '',
+      activeChat: "",
 
       // 加载状态
       recentLoading: false,
@@ -238,12 +237,17 @@ export default {
     this.getGroupList()
   },
   methods: {
+    s(val){
+      this.activeKey = '1'
+      console.log('0202', val)
+      this.activeChat = val
+    },
     /* 切换面板 */
     changePane (activeKey) {
       this.activeKey = activeKey
-      if (activeKey === '1') {
-        this.getRecentContacts()
-      }
+      // if (activeKey === '1') {
+      //   this.getRecentContacts()
+      // }
       // if( activeKey === '2'){
       // this.getGroupList()
       // }

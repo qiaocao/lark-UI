@@ -78,7 +78,7 @@ export default {
     // this.whatColor()
     console.log('123321', this.$refs.historyDrawer)
     
-    window.addEventListener("scroll",this.lazyLoading)
+    window.addEventListener("scroll",this.lazyLoading,true)
   },
   methods: {
     /** 抽屉关闭时触发closeDrawer事件 */
@@ -91,13 +91,11 @@ export default {
     getHistory(){
       var itemData = this.items
       this.$http.get("https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/history",).then((data)=>{
-        console.log('1221212', data.result.pageNo)
         let datas = data.result.data
         this.page = data.result.pageNo
         let dataa = datas.map((item,index,array)=>{          
           return item
         })
-        // debugger
         this.items.push(...dataa);
       })
     },
@@ -110,12 +108,10 @@ export default {
       let clientHeight = document.documentElement.clientHeight
       let scrollHeight = document.documentElement.scrollHeight
       if (scrollTop + clientHeight >= scrollHeight) {
-        // console.log('0000', "000")
-        console.log('000', scrollHeight)
         clearTimeout(this.timer)
         this.timer = setTimeout(()=>{
           this.getHistory()
-        },200)
+        },1220)
       }else{
         return
         
