@@ -34,7 +34,7 @@
         <a-spin v-if="loadingMore" />
         <a-button v-else @click="onLoadMore">loading more</a-button>
       </div>
-      <a-list-item slot="renderItem"  slot-scope="item, index">
+      <a-list-item slot="renderItem"  slot-scope="item,index">
         <!-- <a slot="actions">edit</a> -->
         <span class="file_sp" >{{ item.name.title }}</span>
         <a slot="actions">下载</a>

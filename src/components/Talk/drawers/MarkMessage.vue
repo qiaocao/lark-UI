@@ -102,7 +102,7 @@ export default {
       const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
       const clientHeight = document.documentElement.clientHeight
       const scrollHeight = document.documentElement.scrollHeight
-      if (scrollTop + clientHeight >= scrollHeight) {
+      if (scrollTop + clientHeight+10 >= scrollHeight) {
         clearTimeout(this.timer)
         this.timer = setTimeout(() => {
           this.getHistory()
