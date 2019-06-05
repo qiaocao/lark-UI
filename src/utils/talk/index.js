@@ -11,7 +11,7 @@ class SocketMessage {
   /**
    * websocket通信消息体构造器
    * @param {Number} code 消息类型码
-   * @param {*} data 数据对象
+   * @param {Object} data 数据对象
    */
   constructor ({ code, data } = {}) {
     if (typeof code === 'number') { this.code = code }
