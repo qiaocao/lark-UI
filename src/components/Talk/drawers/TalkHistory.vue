@@ -48,7 +48,7 @@ export default {
       required: true
     }
   },
-  data() {
+  data () {
     return {
       flag: true,
       items: [],
@@ -58,7 +58,7 @@ export default {
     }
   },
   watch: {
-    activeOption(newValue) {
+    activeOption (newValue) {
       if (newValue === 'talkHistory') {
         console.log('在这里加载数据')
         this.getHistory()
@@ -66,21 +66,20 @@ export default {
     }
   },
   computed: {},
-  created() {},
-  mounted() {
+  created () {},
+  mounted () {
     console.log('123321', this.$refs.historyDrawer)
-
     window.addEventListener('scroll', this.lazyLoading, true)
   },
   methods: {
     /** 抽屉关闭时触发closeDrawer事件 */
-    onClose() {
+    onClose () {
       this.$emit('closeDrawer')
     },
-    isCurrent() {
+    isCurrent () {
       this.flag = !this.flag
     },
-    getHistory() {
+    getHistory () {
       this.$http
         .get('https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/history')
         .then(data => {
@@ -92,15 +91,15 @@ export default {
           this.items.push(...dataa)
         })
     },
-    onSearch(value) {
+    onSearch (value) {
       console.log(value)
     },
     // 滚动获取数据
-    lazyLoading() {
+    lazyLoading () {
       const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
       const clientHeight = document.documentElement.clientHeight
       const scrollHeight = document.documentElement.scrollHeight
-      let p = 0 , t = 0
+      let p = 0; let t = 0
       p = scrollTop
       if (scrollTop + clientHeight >= scrollHeight && p >= t) {
         clearTimeout(this.timer)
@@ -110,13 +109,13 @@ export default {
       } else {
       }
     },
-    win(attr, value) {
-      if(typeof value === 'undefined') {
+    win (attr, value) {
+      if (typeof value === 'undefined') {
         return document.documentElement[attr] || document.body[attr]
       }
       document.documentElement[attr] = value
       document.body[attr] = value
-    },
+    }
   }
 }
 </script>

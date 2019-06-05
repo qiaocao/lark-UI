@@ -83,7 +83,7 @@ export default {
       isGroup: true
     }
   },
-  data() {
+  data () {
     return {
       /** 群组信息 */
       groupInfo: {},
@@ -91,17 +91,17 @@ export default {
       loadingState: false
     }
   },
-  created() {},
+  created () {},
   watch: {
-    selected: function(newValue) {
+    selected: function (newValue) {
       this.getData(newValue)
     }
   },
   methods: {
     /** 通过id获取联系人信息 */
-    getData(groupId) {
+    getData (groupId) {
       ;[this.groupInfo, this.loadingState] = [{}, true]
-
+      /*  */
       getGroupInfo(groupId).then(
         res => {
           if (res.status === 200) {
@@ -115,7 +115,7 @@ export default {
         }
       )
     },
-    sendMessage(event) {
+    sendMessage (event) {
       console.log('这里应该跳转到聊天页')
       // let ss = RecentContact.constructor
       // console.log('120', ss)
