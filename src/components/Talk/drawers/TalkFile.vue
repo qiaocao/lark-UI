@@ -34,20 +34,20 @@
         <a-spin v-if="loadingMore"/>
         <a-button v-else @click="onLoadMore">loading more</a-button>
       </div>
-      <a-list-item slot="renderItem" slot-scope="item,index">
+      <a-list-item slot="renderItem" slot-scope="itemFile">
         <!-- <a slot="actions">edit</a> -->
-        <span class="file_sp">{{ item.name.title }}</span>
+        <span class="file_sp">{{ itemFile.name.title }}</span>
         <a slot="actions">下载</a>
         <a-list-item-meta class="file_name">
-          <a class="file_a" slot="title" href="https://vue.ant.design/">{{ item.name.last }}</a>
-          <a-avatar slot="avatar" :src="item.url"/>
+          <a class="file_a" slot="title" href="https://vue.ant.design/">{{ itemFile.name.last }}</a>
+          <a-avatar slot="avatar" :src="itemFile.url"/>
         </a-list-item-meta>
-        <div class="file_time">{{ item.time }}</div>
+        <div class="file_time">{{ itemFile.time }}</div>
         <a href>
           <div class="secret">
-            <a-tag color="orange" v-if="item.Concentrated === 'secret'">保密</a-tag>
-            <a-tag color="red" v-if="item.Concentrated === 'top-secret'">绝密</a-tag>
-            <a-tag color v-if="item.Concentrated === 'no-secret'">无秘</a-tag>
+            <a-tag color="orange" v-if="itemFile.Concentrated === 'secret'">保密</a-tag>
+            <a-tag color="red" v-if="itemFile.Concentrated === 'top-secret'">绝密</a-tag>
+            <a-tag color v-if="itemFile.Concentrated === 'no-secret'">无秘</a-tag>
           </div>
         </a>
       </a-list-item>
