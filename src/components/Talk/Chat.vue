@@ -2,11 +2,11 @@
   <a-layout v-if="Object.keys(chatInfo).length" class="conv-box">
 
     <!-- 聊天设置选项的抽屉组件 -->
-    <talk-history :activeOption="activeOption" @closeDrawer="triggerDrawer"></talk-history>
+    <!-- <talk-history :activeOption="activeOption" @closeDrawer="triggerDrawer"></talk-history>
     <group-notice :activeOption="activeOption" @closeDrawer="triggerDrawer"></group-notice>
     <talk-setting :activeOption="activeOption" @closeDrawer="triggerDrawer"></talk-setting>
     <talk-file :activeOption="activeOption" @closeDrawer="triggerDrawer"></talk-file>
-    <mark-message :activeOption="activeOption" @closeDrawer="triggerDrawer"></mark-message>
+    <mark-message :activeOption="activeOption" @closeDrawer="triggerDrawer"></mark-message> -->
 
     <a-layout-header class="conv-box-header">
       <a-row type="flex" justify="space-between">
@@ -369,7 +369,11 @@ export default {
      * @author jihainan
      */
     getCacheMessage () {
+      console.log('被调用了')
+      console.log(this.$store.state.talk)
+      console.log(this.$store.state.talk.talkMap)
       const cacheMessage = this.$store.state.talk.talkMap.get(this.chatInfo.id)
+      console.log(cacheMessage)
       if (cacheMessage) {
         this.messageList = cacheMessage
       } else {
