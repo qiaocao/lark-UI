@@ -16,7 +16,7 @@
           <!-- 若为群组时显示成员数量 -->
           <span v-show="chatInfo.isGroup">( {{ chatInfo.memberNum }} )</span>
           <!-- 显示密级 -->
-          <span>【{{ chatInfo.secretLevel | fileSecret }}】</span>
+          <span :class="'s-' + chatInfo.secretLevel">【{{ chatInfo.secretLevel | fileSecret }}】</span>
         </a-col>
 
         <a-col :span="10" class="conv-option">
@@ -110,7 +110,7 @@
                 </template>
                 <a-icon type="question-circle" style="margin-right: 6px; cursor: pointer;"/>
               </a-tooltip>
-              <a-dropdown-button @click="sendMessage(60)" type="primary">
+              <a-dropdown-button @click="sendMessage(80)" type="primary">
                 发送(<strong>非密</strong>)
                 <a-menu slot="overlay">
                   <a-menu-item key="1">标记为<strong>秘密</strong>并发送</a-menu-item>
@@ -355,7 +355,7 @@ export default {
 
         // 添加发件人信息，组件消息体，发送websocket消息
         tweet.contactInfo = this.chatInfo
-        const baseMessage = new SocketMessage(this.chatInfo.isGroup ? 1 : 0, tweet)
+        const baseMessage = new SocketMessage({ code: this.chatInfo.isGroup ? 1 : 0, data: tweet })
         this.SocketGlobal.send(JSON.stringify(baseMessage))
 
         // 更新最近联系人列表
@@ -588,9 +588,17 @@ export default {
         :nth-child(2) {
           letter-spacing: -2px;
         }
-        :nth-child(3) {
-          color: #708090;
+        .s-60, .s-undefined {
           font-size: 14px;
+          color: #b2b2b2;
+        }
+        .s-70 {
+          font-size: 14px;
+          color: orange;
+        }
+        .s-80 {
+          font-size: 14px;
+          color: tomato;
         }
       }
 

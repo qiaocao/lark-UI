@@ -25,15 +25,21 @@
 
       <!-- 判断消息类型：图片 文字 文件 -->
       <div class="message-bubble left right ">
-        <!-- 纯文本信息 -->
         <div class="bubble-content">
           <div class="plain">
-            <div class="secret-tip">
-              <span :class="'s-' + messageInfo.secretLevel">
-                【{{ JSON.parse(messageInfo.secretLevel) | fileSecret }}】
-              </span>
+            <!-- 纯文本信息 -->
+            <div>
+              <div class="secret-tip">
+                <span :class="'s-' + messageInfo.secretLevel">
+                  【{{ JSON.parse(messageInfo.secretLevel) | fileSecret }}】
+                </span>
+              </div>
+              <pre>{{ messageInfo.content }}</pre>
             </div>
-            <pre>{{ messageInfo.content }}</pre>
+            <!-- 图片消息 -->
+            <div></div>
+            <!-- 文件消息 -->
+            <div></div>
           </div>
         </div>
       </div>
