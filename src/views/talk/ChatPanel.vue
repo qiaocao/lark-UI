@@ -36,7 +36,7 @@
           </span>
           <!-- 最近里面每一项 -->
           <div class="recent-contacts-container tab-content-container">
-            <div v-for="(item, index) in recentContacts" :key="index" @click="showConvBox(item, index)">
+            <div v-for="(item, index) in recentContacts" :key="index" @click="showConvBox(item)">
               <recent-contacts-item :contactsInfo="item" :activated="item.id === activeChat"></recent-contacts-item>
             </div>
 
@@ -192,7 +192,6 @@ export default {
   computed: {
     currentTalk: {
       get: function () {
-        console.log(this.$store.state.talk.currentTalk)
         return this.$store.state.talk.currentTalk
       },
       set: function (currentTalk) {
@@ -236,6 +235,9 @@ export default {
     this.getContactsTree()
     this.getGroupList()
   },
+  beforeRouteEnter (to, from, next) {
+    next(vm => vm.showConvBox(to.query))
+  },
   methods: {
     s(val){
       this.activeKey = '1'
@@ -245,15 +247,6 @@ export default {
     /* 切换面板 */
     changePane (activeKey) {
       this.activeKey = activeKey
-      // if (activeKey === '1') {
-      //   this.getRecentContacts()
-      // }
-      // if( activeKey === '2'){
-      // this.getGroupList()
-      // }
-      // if( activeKey === '3'){
-      // this.getContactsTree()
-      // }
     },
 
     handleSaveOk () {},
@@ -261,9 +254,8 @@ export default {
     /**
      * 展示研讨对话框
      * @param {Object} currentTalk 当前研讨
-     * @param {Nunber} index 当前研讨在最近联系人列表中的位置
      */
-    showConvBox: function (currentTalk, index) {
+    showConvBox: function (currentTalk) {
       this.activeChat = currentTalk.id
       // 未读消息置为0
       currentTalk.unreadNum = 0
@@ -272,7 +264,8 @@ export default {
       // TODO: 向服务端发一条已读的消息，同步消息状态
       // ···
       // TODO: 更新最近联系人列表，待优化
-      this.recentContacts[index] = currentTalk
+      // this.recentContacts[index] = currentTalk
+      this.$store.dispatch('UpdateRecentContacts', { ...currentTalk, reOrder: false, addUnread: false })
 
       // 路由跳转
 
@@ -280,7 +273,6 @@ export default {
         path: '/talk/ChatPanel/ChatBox',
         query: currentTalk
       })
-
 
       // const self = this
       // self.isShowWelcome = false
@@ -305,10 +297,7 @@ export default {
       // this.$nextTick(() => {
       //   // imageLoad('message-box')
       // })
-
     },
-
-
     delChat (chat) {
       this.$store.commit('DEL_CHAT', chat)
     },

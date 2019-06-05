@@ -19,15 +19,15 @@
     <div class="history_cotent" v-for="item in items" :key="item.id">
       <img :src="item.avatar" class="content_l" alt="">
       <div class="content_r">
-        <h3>{{item.name}}</h3>
-        <p @click="isCurrent()" :class="{'current':flag}">{{item.lastMessage}}</p>
+        <h3>{{ item.name }}</h3>
+        <p @click="isCurrent()" :class="{'current':flag}">{{ item.lastMessage }}</p>
       </div>
       <div class="history_right">
         <span>2013-2-2 22:22</span>
         <div class="secret">
           <a-tag color="orange" v-if="item.Concentrated === 'secret'">保密</a-tag>
           <a-tag color="red" v-if="item.Concentrated === 'top-secret'">绝密</a-tag>
-          <a-tag color=""  v-if="item.Concentrated === 'no-secret'">无秘</a-tag>  
+          <a-tag color="" v-if="item.Concentrated === 'no-secret'">无秘</a-tag>
         </div>
       </div>
     </div>
@@ -55,9 +55,9 @@ export default {
   },
   data () {
     return {
-      flag:true,
-      items:[],
-      color:"",
+      flag: true,
+      items: [],
+      color: ''
     }
   },
   watch: {
@@ -81,39 +81,40 @@ export default {
     onClose () {
       this.$emit('closeDrawer')
     },
-    isCurrent(){
+    isCurrent () {
       this.flag = !this.flag
     },
-     getHistory(){
-      var itemData = this.items
-      this.$http.get("https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/history",).then((data)=>{
-        let datas = data.result.data
+    getHistory () {
+      this.$http.get('https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/history').then((data) => {
+        console.log('1221212', data.result.pageNo)
+        const datas = data.result.data
         this.page = data.result.pageNo
-        let dataa = datas.map((item,index,array)=>{          
+        const dataa = datas.map((item, index, array) => {
           return item
         })
-        this.items.push(...dataa);
+        // debugger
+        this.items.push(...dataa)
       })
     },
     onSearch (value) {
       console.log(value)
     },
-     // 滚动获取数据
-    lazyLoading(){
-      let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
-      let clientHeight = document.documentElement.clientHeight
-      let scrollHeight = document.documentElement.scrollHeight
-      if (scrollTop + clientHeight >= scrollHeight ) {
+    // 滚动获取数据
+    lazyLoading () {
+      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+      const clientHeight = document.documentElement.clientHeight
+      const scrollHeight = document.documentElement.scrollHeight
+      if (scrollTop + clientHeight >= scrollHeight) {
+        // console.log('0000', "000")
+        console.log('000', scrollHeight)
         clearTimeout(this.timer)
-        this.timer = setTimeout(()=>{
+        this.timer = setTimeout(() => {
           this.getHistory()
-        },1200)
-      }else{
-        return
-        
+        }, 1200)
+      } else {
       }
     }
- 
+
   }
 }
 </script>
@@ -170,7 +171,7 @@ export default {
       .secret{
         margin-top: 20px;
         float: right;
-        
+
       }
     }
   }
