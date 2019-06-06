@@ -81,18 +81,20 @@ class RecentContact {
    * @param {Boolean} isMute 是否免打扰
    * @param {Boolean} isGroup 是否为群组
    */
-  constructor ({ id, name, time, lastMessage, avatar, atMe, unreadNum, memberNum, isTop, isMute, isGroup } = {}) {
+  constructor ({ id, name, time, lastMessage, avatar, atMe, secretLevel, unreadNum, memberNum, isTop, isMute, isGroup } = {}) {
     this.id = id
     this.name = name
     this.time = time
     this.lastMessage = lastMessage
     this.avatar = avatar
     this.atMe = JSON.parse(atMe)
+    this.secretLevel = JSON.parse(secretLevel)
     this.unreadNum = JSON.parse(unreadNum)
     this.memberNum = JSON.parse(memberNum)
     this.isTop = JSON.parse(isTop)
     this.isMute = JSON.parse(isMute)
     this.isGroup = JSON.parse(isGroup)
+    console.log('11111', '')
   }
 }
 

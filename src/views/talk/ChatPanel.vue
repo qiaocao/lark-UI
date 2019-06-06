@@ -207,13 +207,8 @@ export default {
     }
   },
   computed: {
-    currentTalk: {
-      get: function () {
-        return this.$store.state.talk.currentTalk
-      },
-      set: function (currentTalk) {
-        this.$store.commit('SET_CURRENT_TALK', currentTalk)
-      }
+    currentTalk () {
+      return this.$store.state.talk.currentTalk
     },
     recentContacts: {
       get: function () {
@@ -246,14 +241,17 @@ export default {
       return this.$store.state.chat.searchContactsResultList
     }
   },
+  watch: {
+    currentTalk (newValue) {
+      // 监听当前研讨的变化，更新最近联系人选中状态
+      this.activeChat = newValue.id
+    }
+  },
   created () {
     // 页面创建时获取列表信息
     this.getRecentContacts()
     this.getContactsTree()
     this.getGroupList()
-  },
-  beforeRouteEnter (to, from, next) {
-    next(vm => vm.showConvBox(to.query))
   },
   methods: {
     s (val) {
@@ -277,7 +275,7 @@ export default {
       // 未读消息置为0
       currentTalk.unreadNum = 0
       // 初始化sotre中的当前会话
-      this.currentTalk = currentTalk
+      // this.currentTalk = currentTalk
       this.$store.dispatch('UpdateRecentContacts', { ...currentTalk, reOrder: false, addUnread: false })
 
       // 路由跳转

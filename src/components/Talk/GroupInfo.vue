@@ -119,19 +119,19 @@ export default {
       console.log('这里应该跳转到聊天页')
       // let ss = RecentContact.constructor
       // console.log('120', ss)
-      // const sen = this.groupInfo
-      const sen = {
-        id: '111',
-        name: 'sas',
-        time: '时间',
-        lastMessage: '阿斯顿',
-        avater: '',
-        atMe: false,
-        unreadNum: '0',
-        isTop: false,
-        isMute: false,
-        isGroup: true
-      }
+      const sen = this.groupInfo
+      // const sen = {
+      //   id: '111',
+      //   name: 'sas',
+      //   time: '时间',
+      //   lastMessage: '阿斯顿',
+      //   avater: '',
+      //   atMe: false,
+      //   unreadNum: '0',
+      //   isTop: false,
+      //   isMute: false,
+      //   isGroup: true
+      // }
       // console.log('22', this.groupInfo)
       this.$emit('t', sen.id)
 
