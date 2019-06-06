@@ -20,10 +20,10 @@
       </div>
       <div class="history_right">
         <span>2013-2-2 22:22</span>
-        <div class="secret">
-          <a-tag color="orange" v-if="item.Concentrated === 'secret'">保密</a-tag>
-          <a-tag color="red" v-if="item.Concentrated === 'top-secret'">绝密</a-tag>
-          <a-tag color v-if="item.Concentrated === 'no-secret'">无秘</a-tag>
+        <div class="secret" style="margin: 6px 0 0 20px">
+          <a-tag color="orange" v-if="item.Concentrated === 'secret'">秘密</a-tag>
+          <a-tag color="tomato" v-if="item.Concentrated === 'top-secret'">机密</a-tag>
+          <a-tag color v-if="item.Concentrated === 'no-secret'">非密</a-tag>
         </div>
       </div>
     </div>
@@ -66,7 +66,6 @@ export default {
   },
   computed: {},
   created () {
-    this.getHistory()
   },
   mounted () {
     window.addEventListener('scroll', this.lazyLoading, true)
@@ -111,7 +110,7 @@ export default {
 }
 </script>
 
-<style lang='less' scope>
+<style lang="less" scope>
 .current {
   display: -webkit-box;
   word-break: break-all;
@@ -123,11 +122,6 @@ export default {
 .a-input {
   margin-bottom: 20px;
 }
-.login_img {
-  position: relative;
-  top: 30px;
-  left: 50px;
-}
 .history_cotent {
   width: 100%;
   height: 100%;
@@ -135,8 +129,8 @@ export default {
   position: relative;
   border-bottom: 1px solid #cccccc;
   .content_l {
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     // background-image: url("./file.jpg");
     background-size: 30px 30px;
     position: absolute;
@@ -145,23 +139,30 @@ export default {
   }
   .content_r {
     display: inline-block;
-    margin-left: 40px;
+    margin-left: 50px;
+    box-sizing: border-box;
     h3 {
       margin-bottom: 0;
+      padding-top: 6px;
+      width: 150px;
     }
     p {
-      width: 250px;
+      // width: 250px;
       border-radius: 5px;
     }
   }
   .history_right {
     float: right;
-
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    right: 0;
     span {
       display: block;
+      padding-top: 6px;
+      float: left;
     }
     .secret {
-      margin-top: 20px;
       float: right;
     }
   }

@@ -11,12 +11,12 @@
     @close="onClose"
     :visible="activeOption=='talkHistory'"
     ref="historyDrawer"
+    v-if="hackReset"
   >
     <a-input-search
       class="a-input"
       v-model="valData"
       placeholder="input search text"
-      @change="onChange"
       @search="onSearch"
       enterButton
     />
@@ -29,10 +29,10 @@
       </div>
       <div class="history_right">
         <span>2013-2-2 22:22</span>
-        <div class="secret">
-          <a-tag color="orange" v-if="item.Concentrated === 'secret'">保密</a-tag>
-          <a-tag color="red" v-if="item.Concentrated === 'top-secret'">绝密</a-tag>
-          <a-tag color v-if="item.Concentrated === 'no-secret'">无秘</a-tag>
+        <div class="secret" style="margin: 6px 0 0 20px">
+          <a-tag color="orange" v-if="item.Concentrated === 'secret'">秘密</a-tag>
+          <a-tag color="tomato" v-if="item.Concentrated === 'top-secret'">机密</a-tag>
+          <a-tag color v-if="item.Concentrated === 'no-secret'">非密</a-tag>
         </div>
       </div>
     </div>
@@ -51,8 +51,7 @@ export default {
     },
     activeOption: {
       type: String,
-      default: '',
-      required: true
+      default: ''
     }
   },
   data () {
@@ -61,23 +60,23 @@ export default {
       items: [],
       color: '',
       timer: null,
-      changeTimer: null,
-      valData: ''
+      // changeTimer: null,
+      valData: '',
+      hackReset: true
     }
   },
   watch: {
     activeOption (newValue) {
       if (newValue === 'talkHistory') {
         console.log('在这里加载数据')
+        this.getHistory()
       }
     }
   },
   computed: {},
-  created () {
-    this.getHistory()
-  },
+  created () {},
   mounted () {
-    window.addEventListener('scroll', this.lazyLoading, true)
+    window.addEventListener('scroll', (this.lazyLoading, this.srcollBottom), true)
   },
   methods: {
     /** 抽屉关闭时触发closeDrawer事件 */
@@ -101,30 +100,31 @@ export default {
     onSearch (value) {
       console.log(value)
     },
-    // 搜索
-    onChange (val) {
-      clearTimeout(this.changeTimer)
-      this.changeTimer = setTimeout(() => {
-        if (val.data !== null) {
-          this.valData = this.valData + val.data
-        } else {
-          this.valData = this.valData.substr(0, this.valData.length - 1)
-        }
-        console.log('1', this.items)
-      }, 1500)
-      for (let i = 0; i < this.items.length; i++) {
-        console.log('00', this.items[i].id)
-        if (this.valData) {
 
-        }
-      }
-    },
+    // 搜索
+    // onChange (val) {
+    //   clearTimeout(this.changeTimer)
+    //   this.changeTimer = setTimeout(() => {
+    //     if (val.data !== null) {
+    //       this.valData = this.valData + val.data
+    //     } else {
+    //       this.valData = this.valData.substr(0, this.valData.length - 1)
+    //     }
+    //     console.log('1', this.items)
+    //   }, 1500)
+    // },
+
     // 滚动获取数据
     lazyLoading () {
       const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
       const clientHeight = document.documentElement.clientHeight
       const scrollHeight = document.documentElement.scrollHeight
-      if (scrollTop + clientHeight >= scrollHeight) {
+      // viewH =$(this).height(),//可见高度
+      // contentH =$(this).get(0).scrollHeight,//内容高度
+      // scrollTop =$(this).scrollTop();//滚动高度
+      // if(contentH - viewH - scrollTop <= 100) { //到达底部100px时,加载新内容
+      // if(scrollTop/(contentH -viewH)>=0.95){ //到达底部100px时,加载新内容
+      if (scrollTop + clientHeight >= scrollHeight && scrollTop == (offsetHeight - clientHeight)) {
         clearTimeout(this.timer)
         this.timer = setTimeout(() => {
           this.getHistory()
@@ -155,9 +155,8 @@ export default {
   position: relative;
   border-bottom: 1px solid #cccccc;
   .content_l {
-    width: 30px;
-    height: 30px;
-    // background-image: url("./file.jpg");
+    width: 40px;
+    height: 40px;
     background-size: 30px 30px;
     position: absolute;
     top: 10px;
@@ -165,23 +164,31 @@ export default {
   }
   .content_r {
     display: inline-block;
-    margin-left: 40px;
+    margin-left: 50px;
+    box-sizing: border-box;
     h3 {
       margin-bottom: 0;
+      padding-top: 6px;
+      width: 150px;
     }
     p {
-      width: 250px;
+      // width: 250px;
       border-radius: 5px;
+      cursor: pointer;
     }
   }
   .history_right {
     float: right;
-
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    right: 0;
     span {
       display: block;
+      padding-top: 6px;
+      float: left;
     }
     .secret {
-      margin-top: 20px;
       float: right;
     }
   }

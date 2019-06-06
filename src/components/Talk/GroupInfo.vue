@@ -127,11 +127,12 @@ export default {
       //   lastMessage: '阿斯顿',
       //   avater: '',
       //   atMe: false,
-      //   unreadNum: 0,
+      //   unreadNum: '0',
       //   isTop: false,
       //   isMute: false,
       //   isGroup: true
       // }
+      // console.log('22', this.groupInfo)
       this.$emit('t', sen.id)
 
       this.$router.push({
