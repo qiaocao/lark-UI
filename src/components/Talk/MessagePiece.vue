@@ -1,7 +1,5 @@
 <template>
   <!-- 聊天消息框 -->
-  <!-- :class="['message-piece', {send: messageInfo.isself, receive: !messageInfo.isself}]" -->
-  <!-- class="message-piece receive" -->
   <div :class="['message-piece', {send: isMe(), receive: !isMe()}]">
 
     <!-- 消息时间 需要判断显示时间的条件 -->
@@ -10,8 +8,6 @@
     </div>
 
     <!-- 用户头像 需要添加点击事件，显示用户信息 -->
-    <!-- class="message-avatar send" -->
-    <!-- :class="['message-avatar', {send: messageInfo.isself, receive: !messageInfo.isself}]" -->
     <a-avatar
       :class="['message-avatar', {send: isMe(), receive: !isMe()}]"
       shape="square"
@@ -23,22 +19,30 @@
     <div class="message-content">
 
       <!-- 需要判断什么时候显示 -- 群消息 且 不是当前用户发送的 且 设置了显示群昵称的 -->
-      <!-- v-if="!messageInfo.isself" -->
       <div v-if="!isMe() && messageInfo.isGroup" class="message-nickname">
         <span>{{ messageInfo.username }}</span>
       </div>
 
       <!-- 判断消息类型：图片 文字 文件 -->
       <div class="message-bubble left right ">
-        <!-- 纯文本信息 -->
         <div class="bubble-content">
           <div class="plain">
-            <pre>{{ messageInfo.content }}</pre>
+            <!-- 纯文本信息 -->
+            <div>
+              <div class="secret-tip">
+                <span :class="'s-' + messageInfo.secretLevel">
+                  【{{ JSON.parse(messageInfo.secretLevel) | fileSecret }}】
+                </span>
+              </div>
+              <pre>{{ messageInfo.content }}</pre>
+            </div>
+            <!-- 图片消息 -->
+            <div></div>
+            <!-- 文件消息 -->
+            <div></div>
           </div>
         </div>
       </div>
-
-      <!-- <div>{{ messageInfo }}</div> -->
 
     </div>
 
@@ -48,6 +52,7 @@
 <script>
 import { toWeiXinString } from '@/utils/util'
 import { mapGetters } from 'vuex'
+import { mixinSecret } from '@/utils/mixin'
 
 export default {
   name: 'MessagePiece',
@@ -68,6 +73,7 @@ export default {
   data () {
     return {}
   },
+  mixins: [mixinSecret],
   computed: {
     ...mapGetters(['userInfo'])
   },
@@ -106,10 +112,10 @@ export default {
     text-align: right;
 
     .right {
-      background-color: #b2e281 !important;
+      background-color: #cce4fc !important;
       &::before, &::after {
         left: 100%;
-        border-left-color: #b2e281 !important;
+        border-left-color: #cce4fc !important;
         border-left-width: 4px;
       }
     }
@@ -183,8 +189,22 @@ export default {
           .plain {
             padding: 9px 13px;
 
+            .secret-tip {
+              display: inline;
+              .s-60 {
+                color: #b2b2b2;
+              }
+              .s-70 {
+                color: orange;
+              }
+              .s-80 {
+                color: tomato;
+              }
+            }
+
             pre {
               margin: 0;
+              display: inline;
               font-family: inherit;
               font-size: inherit;
               white-space: pre-wrap;

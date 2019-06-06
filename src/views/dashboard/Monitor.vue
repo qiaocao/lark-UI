@@ -70,8 +70,7 @@
 <script>
 import { mixin, mixinDevice } from '@/utils/mixin'
 import FooterToolBar from '@/components/FooterToolbar'
-// import { Container, Draggable } from 'vue-smooth-dnd'
-// import { applyDrag, generateItems } from './utils'
+import getWorkplace from '@/api/workplace'
 import VueGridLayout from 'vue-grid-layout'
 const talkData = [
   'Racing car sprays burning fuel into crowd.',
@@ -80,13 +79,7 @@ const talkData = [
   'Man charged over missing wedding girl.',
   'Los Angeles battles huge wildfires.'
 ]
-// 工作台看板模拟数据
-var layoutCards = [
-  { 'x': 0, 'y': 0, 'w': 1, 'h': 5, 'i': '0', 'title': '消息提醒' },
-  { 'x': 1, 'y': 0, 'w': 1, 'h': 5, 'i': '1', 'title': '待办事项' },
-  { 'x': 0, 'y': 5, 'w': 1, 'h': 5, 'i': '2', 'title': '我的收藏' },
-  { 'x': 1, 'y': 5, 'w': 1, 'h': 5, 'i': '3', 'title': '工作热图' }
-]
+
 export default {
   name: 'Monitor',
   mixins: [mixin, mixinDevice],
@@ -99,7 +92,7 @@ export default {
       fontSize: { fontSize: '52px' },
       talkData: talkData,
       visible: false,
-      layout: layoutCards,
+      layout: [],
       cardSize: { maxH: 5, minH: 5, maxW: 1, minW: 1 }
       // items: generateItems(50, i => ({ id: i, data: 'Draggable' + i }))
     }
@@ -115,11 +108,15 @@ export default {
     setTimeout(() => {
       this.loading = !this.loading
     }, 1000)
+    this.getSelfWorkplace()
   },
   methods: {
-    // onDrop (dropResult) {
-    //   this.items = applyDrag(this.items, dropResult)
-    // }
+    getSelfWorkplace () {
+      const self = this
+      getWorkplace(self.$store.state.user.info.id).then(res => {
+        this.layout = res.result.data
+      })
+    }
   }
 }
 </script>
