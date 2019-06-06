@@ -236,9 +236,6 @@ export default {
     this.getContactsTree()
     this.getGroupList()
   },
-  beforeRouteEnter (to, from, next) {
-    next(vm => vm.showConvBox(to.query))
-  },
   methods: {
     /* 切换面板 */
     changePane (activeKey) {

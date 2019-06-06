@@ -12,6 +12,10 @@ export default {
   components: {
     UserChat
   },
+  beforeRouteEnter (to, from, next) {
+    console.log('jihainan')
+    next(vm => vm.$children[0].getCacheMessage())
+  },
   data () {
     return {}
   }
