@@ -45,9 +45,9 @@
         <div class="file_time">{{ item.time }}</div>
         <a href>
           <div class="secret">
-            <a-tag color="orange" v-if="item.Concentrated === 'secret'">保密</a-tag>
-            <a-tag color="red" v-if="item.Concentrated === 'top-secret'">绝密</a-tag>
-            <a-tag color v-if="item.Concentrated === 'no-secret'">无秘</a-tag>
+            <a-tag color="orange" v-if="item.Concentrated === 'secret'">秘密</a-tag>
+            <a-tag color="tomato" v-if="item.Concentrated === 'top-secret'">机密</a-tag>
+            <a-tag color v-if="item.Concentrated === 'no-secret'">非密</a-tag>
           </div>
         </a>
       </a-list-item>
@@ -143,11 +143,21 @@ export default {
 .ant-spin-container {
   position: relative;
 }
+.ant-list-item-meta{
+  flex : none
+}
 .ant-list-item-meta-content {
   width: 100px;
 }
 .file_sp {
+  display: block;
+  width: 120px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
   margin-right: 50px;
+  text-align: left
 }
 .file_name {
   margin-right: 20px;
@@ -173,10 +183,10 @@ export default {
       float: left;
       font-size: 5px;
       &:nth-child(1) {
-        margin-right: 190px;
+        margin-right: 98px;
       }
       &:nth-child(2) {
-        margin-right: 50px;
+        margin-right: 120px;
       }
     }
   }
