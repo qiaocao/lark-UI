@@ -12,6 +12,14 @@ export default {
   components: {
     UserChat
   },
+  beforeRouteEnter (to, from, next) {
+    next()
+  },
+  beforeRouteLeave (to, from, next) {
+    // 清除当前联系人信息
+    this.$store.commit('SET_CURRENT_TALK', {})
+    next()
+  },
   data () {
     return {}
   }
