@@ -233,11 +233,15 @@ export default {
   },
   watch: {
     // 监听当前研讨id的变化
-    'chatInfo.id': function () {
-      // 用当前研讨的id从store中获取消息列表
-      this.getCacheMessage()
-      // 消息加载完成后滚动到最下方
-      this.scrollToBottom()
+    'chatInfo.id': {
+      handler: function () {
+        // 设置当前联系人
+        this.$store.commit('SET_CURRENT_TALK', this.chatInfo)
+
+        this.getCacheMessage()
+        this.scrollToBottom()
+      },
+      immediate: true
     },
     messageList: function (newValue) {
       // 消息列表发生变化，更新缓存
@@ -245,34 +249,8 @@ export default {
       // 滚动到最下方
       this.scrollToBottom()
     }
-    // 监听每次 user 的变化
-    // chatInfo: function () {
-    // const self = this
-    // self.messageList = []
-    // 从内存中取研讨信息
-    // const cacheMessages = self.$store.state.chat.messageListMap.get(self.chatInfo.id)
-    // if (cacheMessages) {
-    //   self.messageList = cacheMessages
-    // }
-    // 每次滚动到最底部
-    // this.$nextTick(() => {
-    //   imageLoad('conv-box-editor')
-    // })
-    // if (self.chat.type === '1') {
-    //   const param = new FormData()
-    //   param.set('chatId', self.chat.id)
-    //   fetchPost(
-    //     conf.getChatUsersUrl(),
-    //     param,
-    //     function (json) {
-    //       self.userList = json
-    //     },
-    //     self
-    //   )
-    // }
-    // 滚动到最新一条消息
-    // this.scrollToBottom()
-    // }
+  },
+  created () {
   },
   mounted () {
     // 页面创建时，消息滚动到最近一条
@@ -369,11 +347,7 @@ export default {
      * @author jihainan
      */
     getCacheMessage () {
-      console.log('被调用了')
-      console.log(this.$store.state.talk)
-      console.log(this.$store.state.talk.talkMap)
       const cacheMessage = this.$store.state.talk.talkMap.get(this.chatInfo.id)
-      console.log(cacheMessage)
       if (cacheMessage) {
         this.messageList = cacheMessage
       } else {
