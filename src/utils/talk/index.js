@@ -11,7 +11,7 @@ class SocketMessage {
   /**
    * websocket通信消息体构造器
    * @param {Number} code 消息类型码
-   * @param {*} data 数据对象
+   * @param {Object} data 数据对象
    */
   constructor ({ code, data } = {}) {
     if (typeof code === 'number') { this.code = code }
@@ -81,17 +81,18 @@ class RecentContact {
    * @param {Boolean} isMute 是否免打扰
    * @param {Boolean} isGroup 是否为群组
    */
-  constructor ({ id, name, time, lastMessage, avatar, atMe, unreadNum, isTop, isMute, isGroup } = {}) {
+  constructor ({ id, name, time, lastMessage, avatar, atMe, unreadNum, memberNum, isTop, isMute, isGroup } = {}) {
     this.id = id
     this.name = name
     this.time = time
     this.lastMessage = lastMessage
     this.avatar = avatar
-    this.atMe = atMe
-    this.unreadNum = unreadNum
-    this.isTop = isTop
-    this.isMute = isMute
-    this.isGroup = isGroup
+    this.atMe = JSON.parse(atMe)
+    this.unreadNum = JSON.parse(unreadNum)
+    this.memberNum = JSON.parse(memberNum)
+    this.isTop = JSON.parse(isTop)
+    this.isMute = JSON.parse(isMute)
+    this.isGroup = JSON.parse(isGroup)
   }
 }
 

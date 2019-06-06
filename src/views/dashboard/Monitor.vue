@@ -31,7 +31,7 @@
             :loading="loading"
             :bordered="true"
             :title="grid.title"
-            :style="{ minHeight: '300px' }">
+            :style="{ minHeight: '300px', borderRadius: '4px' }">
             <a-popover
               placement="left"
               slot="extra"
