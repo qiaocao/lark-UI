@@ -13,8 +13,12 @@ export default {
     UserChat
   },
   beforeRouteEnter (to, from, next) {
-    console.log('jihainan')
-    next(vm => vm.$children[0].getCacheMessage())
+    next()
+  },
+  beforeRouteLeave (to, from, next) {
+    // 清除当前联系人信息
+    this.$store.commit('SET_CURRENT_TALK', {})
+    next()
   },
   data () {
     return {}
