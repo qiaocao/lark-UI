@@ -45,15 +45,9 @@
         <div class="file_time">{{ itemFile.time }}</div>
         <a href>
           <div class="secret">
-<<<<<<< HEAD
-            <a-tag color="orange" v-if="item.Concentrated === 'secret'">秘密</a-tag>
-            <a-tag color="tomato" v-if="item.Concentrated === 'top-secret'">机密</a-tag>
-            <a-tag color v-if="item.Concentrated === 'no-secret'">非密</a-tag>
-=======
             <a-tag color="orange" v-if="itemFile.Concentrated === 'secret'">保密</a-tag>
             <a-tag color="red" v-if="itemFile.Concentrated === 'top-secret'">绝密</a-tag>
             <a-tag color v-if="itemFile.Concentrated === 'no-secret'">无秘</a-tag>
->>>>>>> ec800c5559287b5e682b0b42a94d872a992cb600
           </div>
         </a>
       </a-list-item>
