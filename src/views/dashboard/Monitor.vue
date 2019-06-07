@@ -2,7 +2,7 @@
   <div style="margin-bottom: 64px">
     <div class="antd-pro-pages-dashboard-analysis-twoColLayout" :class="isDesktop() ? 'desktop' : ''">
       <grid-layout
-        :layout.sync="layout"
+        :layout.sync="cardList"
         :col-num="2"
         :row-height="52"
         :max-rows="12"
@@ -14,7 +14,7 @@
         :use-css-transforms="true"
       >
         <grid-item
-          v-for="grid in layout"
+          v-for="grid in cardList"
           dragAllowFrom=".ant-card-head"
           :minH="cardSize.minH"
           :maxH="cardSize.maxH"
@@ -25,37 +25,7 @@
           :w="grid.w"
           :h="grid.h"
           :i="grid.i">
-          <a-card
-            :headStyle="headStyle"
-            :bodyStyle="bodyStyle"
-            :loading="loading"
-            :bordered="true"
-            :title="grid.title"
-            :style="{ minHeight: '300px', borderRadius: '4px' }">
-            <a-popover
-              placement="left"
-              slot="extra"
-              trigger="click">
-              <template slot="content">
-                <a slot="content">移除卡片</a>
-              </template>
-              <a href="#"><a-icon type="ellipsis" /></a>
-            </a-popover>
-
-            <div v-if="talkData.length!=0" class="card-content">
-              <a-list
-                :bordered="bordered"
-                :dataSource="talkData"
-                class="card-list"
-              >
-                <a-list-item style="padding: 12px 21px 12px 21px" slot="renderItem" slot-scope="item">{{ item }}</a-list-item>
-              </a-list>
-            </div>
-            <div v-else style="margin: 40px auto 0 auto;text-align: center;" class="card-content">
-              <a-icon type="file-exclamation" theme="twoTone" :style="fontSize" />
-              <p class="description">卡片暂无内容</p>
-            </div>
-          </a-card>
+          <l-card :cardData="grid"></l-card>
         </grid-item>
       </grid-layout>
     </div>
@@ -70,52 +40,38 @@
 <script>
 import { mixin, mixinDevice } from '@/utils/mixin'
 import FooterToolBar from '@/components/FooterToolbar'
-import getWorkplace from '@/api/workplace'
 import VueGridLayout from 'vue-grid-layout'
-const talkData = [
-  'Racing car sprays burning fuel into crowd.',
-  'Japanese princess to wed commoner.',
-  'Australian walks 100km after outback crash.',
-  'Man charged over missing wedding girl.',
-  'Los Angeles battles huge wildfires.'
-]
+import LCard from '@/views/dashboard/Card'
 
 export default {
   name: 'Monitor',
   mixins: [mixin, mixinDevice],
   data () {
     return {
-      bordered: false,
-      loading: true,
-      headStyle: { height: '52px', 'border-top': '4px solid #1890ff', 'border-bottom': 'none' },
-      bodyStyle: { padding: '0' },
-      fontSize: { fontSize: '52px' },
-      talkData: talkData,
-      visible: false,
-      layout: [],
+
+      cardList: [],
       cardSize: { maxH: 5, minH: 5, maxW: 1, minW: 1 }
       // items: generateItems(50, i => ({ id: i, data: 'Draggable' + i }))
     }
   },
   components: {
+    LCard,
     FooterToolBar,
-    // Container,
-    // Draggable,
     GridLayout: VueGridLayout.GridLayout,
     GridItem: VueGridLayout.GridItem
   },
   created () {
-    setTimeout(() => {
-      this.loading = !this.loading
-    }, 1000)
     this.getSelfWorkplace()
+  },
+  mounted () {
+
   },
   methods: {
     getSelfWorkplace () {
-      const self = this
-      getWorkplace(self.$store.state.user.info.id).then(res => {
-        this.layout = res.result.data
-      })
+      this.$http.get('/workplace/myself')
+        .then(res => {
+          this.cardList = res.result.data
+        })
     }
   }
 }
@@ -133,16 +89,6 @@ export default {
       height: 100%;
     }
   }
-    .card-list{
-      .ant-list-item{
-        cursor: pointer;
-        transition: background-color 218ms;
-        border-bottom: 0px solid #e8e8e8;
-      }
-      .ant-list-item:hover{
-        background-color: #f5f5f5;
-      }
-    }
 
   .description{
     margin-top: 24px;

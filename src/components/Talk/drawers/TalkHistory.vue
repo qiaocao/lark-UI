@@ -124,7 +124,8 @@ export default {
       // scrollTop =$(this).scrollTop();//滚动高度
       // if(contentH - viewH - scrollTop <= 100) { //到达底部100px时,加载新内容
       // if(scrollTop/(contentH -viewH)>=0.95){ //到达底部100px时,加载新内容
-      if (scrollTop + clientHeight >= scrollHeight && scrollTop == (offsetHeight - clientHeight)) {
+      // eslint-disable-next-line no-undef
+      if (scrollTop + clientHeight >= scrollHeight && scrollTop === (offsetHeight - clientHeight)) {
         clearTimeout(this.timer)
         this.timer = setTimeout(() => {
           this.getHistory()
