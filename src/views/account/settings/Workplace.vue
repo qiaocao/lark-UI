@@ -15,7 +15,7 @@
         />
         <template class="ant-card-actions" slot="actions">
           <a-icon type="setting" />
-          <a-icon type="plus" />
+          <a-icon type="ellipsis" />
         </template>
         <a-card-meta
           :title="item.title"

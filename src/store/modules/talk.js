@@ -116,6 +116,7 @@ const talk = {
      * {{...RecentContact}, reOrder: true, addUnread: true}
      * 将要处理的数据，结构为最近联系人的结构加上reOrder和addUnread属性
      */
+    //  将index中的constructor 传进来  直接生成最近联系人列表
     UpdateRecentContacts ({ commit, state }, freshItem) {
       const recentContacts = state.recentContacts
       // 从payload中生成最近联系人项
