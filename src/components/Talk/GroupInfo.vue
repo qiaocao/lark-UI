@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import { getGroupInfo } from '@/api/chat'
+import { getGroupInfo } from '@/api/talk'
 import { RecentContact } from '@/utils/talk/index.js'
 
 export default {

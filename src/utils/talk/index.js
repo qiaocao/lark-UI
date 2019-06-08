@@ -17,6 +17,13 @@ class SocketMessage {
     if (typeof code === 'number') { this.code = code }
     if (data instanceof Object) { this.data = data }
   }
+
+  /**
+   * 将消息体转换为字符串
+   */
+  toString () {
+    return JSON.stringify(this)
+  }
 }
 
 /**
