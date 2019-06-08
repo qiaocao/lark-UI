@@ -36,13 +36,14 @@
               </div>
               <pre>{{ messageInfo.content }}</pre>
             </div>
+
             <!-- 图片消息 -->
-            <div v-if="messageInfo.type === 2">
+            <div v-if="messageInfo.type === 2" class="img-message">
               <a-spin :spinning="imgLoading === 1" size="small">
                 <img
-                  class="img-message"
                   @load="handleImg"
                   @error="handleImg"
+                  @click="handlePreview('open')"
                   :src="messageInfo.content.src"
                   :alt="messageInfo.content.title + '.' + messageInfo.content.extension" >
 
@@ -53,10 +54,48 @@
                   type="primary"
                   size="small"
                   icon="redo" />
+
+                <div class="img-message-option">
+                  <div class="secret-tip">
+                    <span :class="'s-' + messageInfo.secretLevel">
+                      【{{ JSON.parse(messageInfo.secretLevel) | fileSecret }}】
+                    </span>
+                  </div>
+                  <span class="download">下载</span>
+                </div>
               </a-spin>
+
+              <a-modal :visible="previewVisible" :closable="false" :footer="null" @cancel="handlePreview('close')">
+                <img
+                  :alt="messageInfo.content.title + '.' + messageInfo.content.extension"
+                  style="width: 100%"
+                  :src="messageInfo.content.src" />
+              </a-modal>
             </div>
+
             <!-- 文件消息 -->
-            <div v-if="messageInfo.type === 3"></div>
+            <div v-if="messageInfo.type === 3" class="file-message">
+              <div class="file-message-icon">
+                <a-icon type="file" theme="twoTone" style="fontSize: 26px" />
+              </div>
+              <div class="file-message-info">
+                <a-tooltip placement="topLeft">
+                  <template slot="title">
+                    <span>{{ messageInfo.content.title }}.{{ messageInfo.content.extension }}</span>
+                  </template>
+                  <span>{{ messageInfo.content.title }}.{{ messageInfo.content.extension }}</span>
+                </a-tooltip>
+
+                <div class="file-option">
+                  <div class="secret-tip">
+                    <span :class="'s-' + messageInfo.secretLevel">
+                      【{{ JSON.parse(messageInfo.secretLevel) | fileSecret }}】
+                    </span>
+                  </div>
+                  <span class="download">下载</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -89,8 +128,9 @@ export default {
   },
   data () {
     return {
-      // 0:无状态 1:加载中 2:加载成功 3:加载失败
-      imgLoading: 0
+      // 图片加载状态 0:无状态 1:加载中 2:加载成功 3:加载失败
+      imgLoading: 0,
+      previewVisible: false
     }
   },
   mixins: [mixinSecret],
@@ -131,6 +171,16 @@ export default {
       if (event.type === 'click') {
         this.messageInfo.content.src = this.messageInfo.content.src + '?t=' + Math.random()
       }
+    },
+    /**
+     * 图片预览
+     */
+    handlePreview (option) {
+      if (option === 'open' && this.imgLoading === 2) {
+        this.previewVisible = true
+      } else {
+        this.previewVisible = false
+      }
     }
   }
 }
@@ -162,6 +212,13 @@ export default {
         border-left-color: #cce4fc !important;
         border-left-width: 4px;
       }
+    }
+  }
+  // 下载键样式
+  .download {
+    cursor: pointer;
+    &:hover {
+      color: #295786;
     }
   }
 
@@ -256,7 +313,39 @@ export default {
             }
 
             .img-message {
-              max-width: 450px;
+              img {
+                max-width: 450px;
+              }
+              &-option {
+                text-align: right;
+                font-size: 13px;
+              }
+            }
+
+            .file-message {
+              display: flex;
+              &-icon {
+                width: 48px;
+                padding: 10px 0;
+                border-radius: 2px;
+                text-align: center;
+                opacity: 0.8;
+                background-color: seashell;
+                margin-right: 5px;
+              }
+              &-info {
+                max-width: 185px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+
+                .file-option {
+                  font-size: 13px;
+                  position: absolute;
+                  right: 20px;
+                  bottom: 9px;
+                }
+              }
             }
           }
         }
