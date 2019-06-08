@@ -221,6 +221,19 @@ export default {
       color: #295786;
     }
   }
+  // 密级标识样式
+  .secret-tip {
+    display: inline;
+    .s-60 {
+      color: #b2b2b2;
+    }
+    .s-70 {
+      color: orange;
+    }
+    .s-80 {
+      color: tomato;
+    }
+  }
 
   .message-piece {
     width: 100%;
@@ -290,19 +303,6 @@ export default {
           .plain {
             padding: 9px 13px;
 
-            .secret-tip {
-              display: inline;
-              .s-60 {
-                color: #b2b2b2;
-              }
-              .s-70 {
-                color: orange;
-              }
-              .s-80 {
-                color: tomato;
-              }
-            }
-
             pre {
               margin: 0;
               display: inline;
@@ -315,6 +315,7 @@ export default {
             .img-message {
               img {
                 max-width: 450px;
+                min-width: 85px;
               }
               &-option {
                 text-align: right;
