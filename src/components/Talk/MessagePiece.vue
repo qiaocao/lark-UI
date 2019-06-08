@@ -28,7 +28,7 @@
         <div class="bubble-content">
           <div class="plain">
             <!-- 纯文本信息 -->
-            <div>
+            <div v-if="messageInfo.type === 1">
               <div class="secret-tip">
                 <span :class="'s-' + messageInfo.secretLevel">
                   【{{ JSON.parse(messageInfo.secretLevel) | fileSecret }}】
@@ -37,9 +37,26 @@
               <pre>{{ messageInfo.content }}</pre>
             </div>
             <!-- 图片消息 -->
-            <div></div>
+            <div v-if="messageInfo.type === 2">
+              <a-spin :spinning="imgLoading === 1" size="small">
+                <img
+                  class="img-message"
+                  @load="imgLoaded"
+                  @error="imgError"
+                  :src="messageInfo.content.src"
+                  :alt="messageInfo.content.title + '.' + messageInfo.content.extension" >
+
+                <a-button
+                  v-if="imgLoading === 3"
+                  @click="handleImgReload"
+                  style="float: right; margin: 0 10px"
+                  type="primary"
+                  size="small"
+                  icon="redo" />
+              </a-spin>
+            </div>
             <!-- 文件消息 -->
-            <div></div>
+            <div v-if="messageInfo.type === 3"></div>
           </div>
         </div>
       </div>
@@ -51,8 +68,8 @@
 
 <script>
 import { toWeiXinString } from '@/utils/util'
-import { mapGetters } from 'vuex'
 import { mixinSecret } from '@/utils/mixin'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'MessagePiece',
@@ -71,22 +88,47 @@ export default {
     }
   },
   data () {
-    return {}
+    return {
+      // 0:无状态 1:加载中 2:加载成功 3:加载失败
+      imgLoading: 0
+    }
   },
   mixins: [mixinSecret],
   computed: {
     ...mapGetters(['userInfo'])
   },
-  filters: {
-    timeFormat: toWeiXinString
+  watch: {
+    messageInfo: {
+      handler: function () {
+        // 处理图片的加载状态
+        if (this.messageInfo.content.src) this.imgLoading = 1
+        else this.imgLoading = 0
+      },
+      immediate: true,
+      deep: true
+    }
   },
+  filters: { timeFormat: toWeiXinString },
   methods: {
     /**
      * 判断是否当前用户发送的消息
-     * @param {String} fromId 发送者的id
+     * @param {String} fromId 消息发送者的id
      */
     isMe () {
       return this.messageInfo.fromId === this.userInfo.id
+    },
+    /**
+     * 图片消息加载完成时触发imgLoaded事件 并将图片高度一起返回
+     */
+    imgLoaded (event) {
+      this.imgLoading = 2
+      this.$emit('imgLoaded', event.target.height)
+    },
+    imgError () {
+      this.imgLoading = 3
+    },
+    handleImgReload () {
+      this.messageInfo.content.src = this.messageInfo.content.src + '?t=' + Math.random()
     }
   }
 }
@@ -209,6 +251,10 @@ export default {
               font-size: inherit;
               white-space: pre-wrap;
               word-break: normal;
+            }
+
+            .img-message {
+              max-width: 450px;
             }
           }
         }

@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import { getGroupInfo } from '@/api/chat'
+import { getGroupInfo } from '@/api/talk'
 
 export default {
   name: 'GroupInfo',

@@ -43,8 +43,8 @@
 
       <div class="talk-main-box">
         <div v-if="messageList.length" class="talk-main">
-          <div v-for="(item, index) in messageList" :key="index" class="talk-item" @mouseenter="talkItemEnter" @mouseleave="talkItemLeave">
-            <message-piece :messageInfo="item"></message-piece>
+          <div v-for="(item, index) in messageList" :key="index" class="talk-item">
+            <message-piece :messageInfo="item" @imgLoaded="scrollToBottom" />
           </div>
         </div>
 
@@ -134,26 +134,23 @@
 </template>
 
 <script>
-import conf from '@/api/index'
-import Faces from './Face.vue'
-import { TalkHistory, GroupNotice, TalkSetting, MarkMessage, TalkFile } from '@/components/Talk'
-import MessagePiece from './MessagePiece'
-import { fetchPost, imageLoad, transform, ChatListUtils } from '../../utils/talk/chatUtils'
-import VEmojiPicker from 'v-emoji-picker'
-import packData from 'v-emoji-picker/data/emojis.json'
+// import MessagePiece from './MessagePiece'
+import { MessagePiece, TalkHistory, GroupNotice, TalkSetting, MarkMessage, TalkFile } from '@/components/Talk'
 // 引入密级常量
 import { mixinSecret } from '@/utils/mixin'
+import { getTalkHistory } from '@/api/talk'
 import { SocketMessage, Tweet } from '@/utils/talk'
 import { format } from '@/utils/util'
+import VEmojiPicker from 'v-emoji-picker'
+import packData from 'v-emoji-picker/data/emojis.json'
 import { mapGetters } from 'vuex'
 // 生成随机uuid
 import uuidv4 from 'uuid/v4'
 
 export default {
   components: {
-    VEmojiPicker,
-    Faces,
     MessagePiece,
+    VEmojiPicker,
     TalkHistory,
     GroupNotice,
     TalkSetting,
@@ -184,34 +181,11 @@ export default {
       atId: [],
       // 消息类型
       messageType: 1,
-
-      facesVisible: false,
-      pack: packData,
-      host: conf.getHostUrl(),
-      count: 0,
-      pageSize: 20,
-      modal: false,
-      showHistory: false,
-      loading: false,
-      busy: false,
-      hisMessageList: [],
-      // 保存各个研讨记录的map
-      messageListMap: new Map(),
+      // 输入框内容
       messageContent: '',
-      showFace: false,
-      activeItemHandle: false,
-      // userList: [],
+
       imgFormat: ['jpg', 'jpeg', 'png', 'gif'],
       fileFormat: ['doc', 'docx', 'jpg', 'jpeg', 'png', 'gif', 'xls', 'xlsx', 'pdf', 'gif', 'exe', 'msi', 'swf', 'sql', 'apk', 'psd'],
-      // tokenImg: {
-      //   access_token: Vue.ls.get('Access-Token'),
-      //   type: 'image'
-      // },
-      // tokenFile: {
-      //   access_token: localStorage.getItem('Access-Token'),
-      //   type: 'file'
-      // },
-      action: conf.getHostUrl() + '/api/upload',
       headers: {
         'Access-Control-Allow-Origin': '*'
       }
@@ -232,7 +206,6 @@ export default {
     }
   },
   watch: {
-    // 监听当前研讨id的变化
     'chatInfo.id': {
       handler: function () {
         // 设置当前联系人
@@ -250,28 +223,28 @@ export default {
       this.scrollToBottom()
     }
   },
-  created () {
-  },
   mounted () {
     // 页面创建时，消息滚动到最近一条
     this.scrollToBottom()
 
     // 每次滚动到最底部
     this.$nextTick(() => {
-      imageLoad('conv-box-editor')
     })
   },
   methods: {
     /**
      * 聊天消息滚到到最新一条
      * 1. 发送消息 2. 页面创建 3.页面更新
+     * @param {Number} height 滚动的高度
      * @author jihainan
      */
-    scrollToBottom () {
+    scrollToBottom (height) {
       this.$nextTick(() => {
         const msgContr = this.$el.querySelector('.talk-main-box')
         if (msgContr) {
-          msgContr.scrollTop = msgContr.scrollHeight
+          msgContr.scrollTop = height
+            ? (msgContr.scrollTop + Number.parseInt(height))
+            : msgContr.scrollHeight
         }
       })
     },
@@ -302,7 +275,6 @@ export default {
      */
     sendMessage (secretLevel) {
       const tweet = new Tweet()
-      const uuid = uuidv4()
       const content = this.messageContent
 
       if (content.replace(/\n/g, '').trim() === '') {
@@ -310,7 +282,7 @@ export default {
       } else if (this.messageContent.length > 2000) {
         this.$message.warning('消息内容不能超过2000个字符,以文件发送')
       } else {
-        tweet.id = uuid
+        tweet.id = uuidv4()
         tweet.username = this.userInfo.name
         tweet.avatar = this.userInfo.avatar
         tweet.fromId = this.userInfo.id
@@ -322,8 +294,6 @@ export default {
         tweet.time = new Date()
         tweet.isGroup = this.chatInfo.isGroup
 
-        // TODO: 通过websoket向服务端发送消息， 注意加上chatInfo的结构体
-        // ···
         // 将消息加入当前消息列表(栈操作)
         this.messageList.push(tweet)
 
@@ -331,10 +301,10 @@ export default {
         this.chatInfo.lastMessage = content
         this.chatInfo.time = format(tweet.time, 'hh:mm')
 
-        // 添加发件人信息，组件消息体，发送websocket消息
+        // 添加发件人信息,发送websocket消息
         tweet.contactInfo = this.chatInfo
         const baseMessage = new SocketMessage({ code: this.chatInfo.isGroup ? 1 : 0, data: tweet })
-        this.SocketGlobal.send(JSON.stringify(baseMessage))
+        this.SocketGlobal.send(baseMessage.toString())
 
         // 更新最近联系人列表
         this.$store.dispatch('UpdateRecentContacts', { ...this.chatInfo, reOrder: true, addUnread: false })
@@ -349,179 +319,14 @@ export default {
     getCacheMessage () {
       const cacheMessage = this.$store.state.talk.talkMap.get(this.chatInfo.id)
       if (cacheMessage) {
+        // 在缓存中取到历史研讨记录
         this.messageList = cacheMessage
       } else {
-        this.messageList = []
-      }
-    },
-    talkItemEnter () {
-      this.activeItemHandle = true
-    },
-    talkItemLeave () {
-      this.activeItemHandle = false
-    },
-    onSelectEmoji (dataEmoji) {
-      this.messageContent += dataEmoji.emoji
-    },
-    showChat (user) {
-      const self = this
-      if (user.id !== self.$store.state.user.info.id) {
-        const chat = ChatListUtils.resetChatList(self, user, conf.getHostUrl())
-        self.$store.commit('SET_CURRENT_CHAT', chat)
-      } else {
-        self.$Message.warning('不能给自己说话哦')
-      }
-    },
-    showUser: function () {},
-    beforeUpload () {
-      this.tokenImg = {
-        // access_token: localStorage.getItem('Access-Token'),
-        type: 'image'
-      }
-      this.tokenFile = {
-        // access_token: localStorage.getItem('Access-Token'),
-        type: 'file'
-      }
-      return new Promise(resolve => {
-        this.$nextTick(function () {
-          resolve(true)
+        // 未在缓存中取到记录，向服务端请求数据
+        getTalkHistory().then(res => {
+          if (res.status === 200) this.messageList = res.result.data
         })
-      })
-    },
-    // handleInfiniteOnLoad () {
-    //   const hisMessageList = this.hisMessageList
-    //   this.loading = true
-    //   if (hisMessageList.length > 14) {
-    //     this.$message.warning('没有了')
-    //     this.busy = true
-    //     this.loading = false
-    //     return
-    //   }
-    //   this.fetchData(res => {
-    //     this.hisMessageList = hisMessageList.concat(res.results)
-    //     this.loading = false
-    //   })
-    // },
-    // 错误提示
-    openMessage (error) {
-      this.$Message.error(error)
-    },
-    showFaceBox: function () {
-      this.showFace = !this.showFace
-    },
-    insertFace: function (item) {
-      this.messageContent = this.messageContent + 'face' + item
-      this.showFace = false
-    },
-    handleStart () {
-      this.$Loading.start()
-    },
-    handleFormatError (file) {
-      this.$Message.warning('文件 ' + file.name + ' 格式不正确。')
-    },
-    handleImgMaxSize (file) {
-      this.$Message.warning('图片 ' + file.name + ' 太大，不能超过 512K！')
-    },
-    handleFileMaxSize (file) {
-      this.$Message.warning('文件 ' + file.name + ' 太大，不能超过 10M！')
-    },
-    handleSuccess (res, file) {
-      const self = this
-      if (res.msg === 'success') {
-        const path = res.filePath
-        const fileName = file.name
-        // 文件后缀
-        const suffix = fileName.substring(fileName.lastIndexOf('.') + 1, fileName.length)
-        // 文件
-        if (self.imgFormat.indexOf(suffix) === -1) {
-          this.messageContent = this.messageContent + 'file(' + path + ')[' + fileName + ']'
-        } else { // 图片
-          this.messageContent = this.messageContent + 'img[' + path + ']'
-        }
-        this.$Loading.finish()
-      } else {
-        this.$Message.error('文件上传错误，请重试')
       }
-    },
-    handleError: function () {
-      this.$Loading.finish()
-      this.$Message.error('上传错误！')
-    },
-    // 本人发送信息
-    mineSend () {
-      const self = this
-      const currentUser = self.$store.state.user
-      // const time = new Date().getTime()
-      const content = self.messageContent
-      if (content !== '' && content !== '\n') {
-        if (content.length > 2000) {
-          self.openMessage('不能超过2000个字符')
-        } else {
-          const currentMessage = {
-            mine: true, // 当前用户
-            avatar: currentUser.avatar, // 当前用户头像
-            username: currentUser.name, // 当前用户名称
-            time: new Date(), // 时间
-            content: self.messageContent, // 研讨内容
-            toid: self.chatInfo.id, // 消息目的id
-            fromid: currentUser.id, // 消息来源id
-            id: self.chatInfo.id, // 当前研讨间id
-            type: self.chatInfo.type, // 消息类型
-            code: self.chatInfo.code, // 消息编码
-            secret: self.chatInfo.secret, // 消息密级
-            status: self.chatInfo.status, // 消息状态 已读未读
-            isself: true
-          }
-          self.send(currentMessage)
-        }
-      }
-      this.scrollToBottom()
-    },
-    // 发送消息的基础方法
-    send (message) {
-      const self = this
-      // self.$store.commit('SEND_MESSAGE', message)
-      // message.timestamp = self.formatDateTime(new Date(message.timestamp))
-      self.$store.commit('ADD_MESSAGE', message)
-      self.messageContent = ''
-      // 每次滚动到最底部
-      self.$nextTick(() => {
-        // imageLoad('conv-box-editor')
-      })
-    },
-    getHistoryMessage (pageNo) {
-      const self = this
-      self.showHistory = true
-      if (!pageNo) {
-        pageNo = 1
-      }
-      const param = new FormData()
-      param.set('chatId', self.chatInfo.id)
-      param.set('chatType', self.chatInfo.type)
-      param.set('fromId', self.$store.state.user.id)
-      param.set('pageNo', pageNo)
-      fetchPost(
-        conf.getHisUrl(),
-        param,
-        function (json) {
-          const list = json.messageList.map(function (element) {
-            element.content = transform(element.content)
-            return element
-          })
-          const tempList = list.map(function (message) {
-            message.timestamp = self.formatDateTime(new Date(message.timestamp))
-            return message
-          })
-          self.hisMessageList = tempList.reverse()
-          self.count = json.count
-          self.pageSize = json.pageSize
-          // 每次滚动到最底部
-          self.$nextTick(() => {
-            imageLoad('his-chat-message')
-          })
-        },
-        self
-      )
     }
   },
   directives: {

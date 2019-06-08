@@ -4,7 +4,7 @@
  */
 import modules from './conf'
 import router from '@/router'
-import { getGroupList, getContactsTree, getRecentContacts, getTalkMap } from '@/api/chat'
+import { getGroupList, getContactsTree, getRecentContacts, getTalkMap } from '@/api/talk'
 import { Tweet, RecentContact } from '@/utils/talk'
 
 const talk = {
