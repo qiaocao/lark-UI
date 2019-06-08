@@ -41,14 +41,14 @@
               <a-spin :spinning="imgLoading === 1" size="small">
                 <img
                   class="img-message"
-                  @load="imgLoaded"
-                  @error="imgError"
+                  @load="handleImg"
+                  @error="handleImg"
                   :src="messageInfo.content.src"
                   :alt="messageInfo.content.title + '.' + messageInfo.content.extension" >
 
                 <a-button
                   v-if="imgLoading === 3"
-                  @click="handleImgReload"
+                  @click="handleImg"
                   style="float: right; margin: 0 10px"
                   type="primary"
                   size="small"
@@ -118,17 +118,19 @@ export default {
       return this.messageInfo.fromId === this.userInfo.id
     },
     /**
-     * 图片消息加载完成时触发imgLoaded事件 并将图片高度一起返回
+     * 图片加载过程处理
      */
-    imgLoaded (event) {
-      this.imgLoading = 2
-      this.$emit('imgLoaded', event.target.height)
-    },
-    imgError () {
-      this.imgLoading = 3
-    },
-    handleImgReload () {
-      this.messageInfo.content.src = this.messageInfo.content.src + '?t=' + Math.random()
+    handleImg (event) {
+      if (event.type === 'load') {
+        this.imgLoading = 2
+        this.$emit('imgLoaded', event.target.height)
+      }
+      if (event.type === 'error') {
+        this.imgLoading = 3
+      }
+      if (event.type === 'click') {
+        this.messageInfo.content.src = this.messageInfo.content.src + '?t=' + Math.random()
+      }
     }
   }
 }
