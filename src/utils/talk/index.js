@@ -101,7 +101,6 @@ class RecentContact {
     this.isTop = JSON.parse(isTop)
     this.isMute = JSON.parse(isMute)
     this.isGroup = JSON.parse(isGroup)
-    console.log('11111', '')
   }
 }
 

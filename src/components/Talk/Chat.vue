@@ -58,35 +58,31 @@
     <a-layout-footer class="conv-box-editor">
 
       <div class="editor-option">
-        <a-row type="flex" justify="space-between" class="editor-option-container">
-          <a-col :span="12">
-            <!-- 文字编辑选项 -->
-            <a-tooltip
-              placement="top"
-              :overlayStyle="{fontSize: '12px'}"
-            >
-              <template slot="title">
-                <span>表情</span>
-              </template>
-              <a-icon style="marginRight: 20px" type="smile" />
-            </a-tooltip>
-          </a-col>
+        <!-- 文字编辑选项 -->
+        <div>
+          <a-tooltip
+            placement="top"
+            :overlayStyle="{fontSize: '12px'}"
+          >
+            <template slot="title">
+              <span>表情</span>
+            </template>
+            <a-icon style="marginRight: 20px" type="smile" />
+          </a-tooltip>
+        </div>
 
-          <a-col :span="12">
-            <div style="float: right">
-              <!-- 发送选项 -->
-              <a-tooltip
-                placement="top"
-                :overlayStyle="{fontSize: '12px'}"
-              >
-                <template slot="title">
-                  <span>文件上传</span>
-                </template>
-                <a-icon style="marginLeft: 20px" type="folder" />
-              </a-tooltip>
-            </div>
-          </a-col>
-        </a-row>
+        <div style="marginLeft: auto">
+          <!-- 发送选项 -->
+          <a-tooltip
+            placement="top"
+            :overlayStyle="{fontSize: '12px'}"
+          >
+            <template slot="title">
+              <span>文件上传</span>
+            </template>
+            <a-icon style="marginLeft: 20px" type="folder" />
+          </a-tooltip>
+        </div>
       </div>
 
       <div class="editor-area">
@@ -98,27 +94,31 @@
             class="textarea-input"
             v-model="messageContent"
           ></textarea>
+
           <!-- 发送键 -->
           <div class="send-toolbar">
-            <div style="margin-left: auto">
-              <a-tooltip placement="top" >
+            <div style="marginLeft: auto">
+              <!-- 提示信息 -->
+              <a-tooltip placement="left" >
                 <template slot="title">
-                  <span><p>Enter 标记为<strong>非密</strong>发送 ,</p>
-                    <p>Shift+Enter 标记为<strong>秘密</strong>发送 ,</p>
-                    <p>Alt+Enter 标记为<strong>机密</strong>发送 ,</p>
-                    <p>Ctrl+Enter 换行</p></span>
+                  <span>发送前请正确选择消息密级</span>
                 </template>
                 <a-icon type="question-circle" style="margin-right: 6px; cursor: pointer;"/>
               </a-tooltip>
-              <a-dropdown-button @click="sendMessage(80)" type="primary">
-                发送(<strong>非密</strong>)
-                <a-menu slot="overlay">
-                  <a-menu-item key="1">标记为<strong>秘密</strong>并发送</a-menu-item>
-                  <a-menu-item key="2">标记为<strong>机密</strong>并发送</a-menu-item>
+              <!-- 发送键 -->
+              <a-dropdown-button @click="sendMessage(sendSecretLevel)" type="primary">
+                发送<span :class="'s-' + sendSecretLevel">【{{ sendSecretLevel | fileSecret }}】</span>
+                <a-menu v-if="sendMenuList.length" slot="overlay">
+                  <template v-for="item in sendMenuList">
+                    <a-menu-item :key="item" @click="handleSendSecretLevel">
+                      发送<span :class="'s-' + item">【{{ item | fileSecret }}】</span>
+                    </a-menu-item>
+                  </template>
                 </a-menu>
               </a-dropdown-button>
             </div>
           </div>
+
         </div>
       </div>
     </a-layout-footer>
@@ -134,7 +134,6 @@
 </template>
 
 <script>
-// import MessagePiece from './MessagePiece'
 import { MessagePiece, TalkHistory, GroupNotice, TalkSetting, MarkMessage, TalkFile } from '@/components/Talk'
 // 引入密级常量
 import { mixinSecret } from '@/utils/mixin'
@@ -148,6 +147,7 @@ import { mapGetters } from 'vuex'
 import uuidv4 from 'uuid/v4'
 
 export default {
+  name: 'UserChat',
   components: {
     MessagePiece,
     VEmojiPicker,
@@ -157,7 +157,6 @@ export default {
     MarkMessage,
     TalkFile
   },
-  name: 'UserChat',
   props: {
     /** 聊天对话框的基本信息 */
     chatInfo: {
@@ -183,6 +182,10 @@ export default {
       messageType: 1,
       // 输入框内容
       messageContent: '',
+      // 发送消息的密级，默认为非密
+      sendSecretLevel: 60,
+      // 发送键的可选密级选项
+      sendMenuList: [],
 
       imgFormat: ['jpg', 'jpeg', 'png', 'gif'],
       fileFormat: ['doc', 'docx', 'jpg', 'jpeg', 'png', 'gif', 'xls', 'xlsx', 'pdf', 'gif', 'exe', 'msi', 'swf', 'sql', 'apk', 'psd'],
@@ -213,6 +216,7 @@ export default {
 
         this.getCacheMessage()
         this.scrollToBottom()
+        this.handleSendSecretLevel()
       },
       immediate: true
     },
@@ -236,7 +240,6 @@ export default {
      * 聊天消息滚到到最新一条
      * 1. 发送消息 2. 页面创建 3.页面更新
      * @param {Number} height 滚动的高度
-     * @author jihainan
      */
     scrollToBottom (height) {
       this.$nextTick(() => {
@@ -268,6 +271,20 @@ export default {
      */
     triggerDrawer (drawerName) {
       this.activeOption = drawerName
+    },
+    /**
+     * 设置发送消息的密级
+     */
+    handleSendSecretLevel (item) {
+      item = item ? item.key : 60
+      const allSendMenu = [60, 70, 80]
+      // 当前研讨的密级
+      const talkSecretLevel = this.chatInfo.secretLevel
+      // 设置发送按钮的密级
+      this.sendSecretLevel = item
+      this.sendMenuList = allSendMenu.filter(function (menu) {
+        return menu !== item && menu <= talkSecretLevel
+      })
     },
     /**
      * 发送消息
@@ -314,7 +331,6 @@ export default {
     },
     /**
      * 获取缓存消息
-     * @author jihainan
      */
     getCacheMessage () {
       const cacheMessage = this.$store.state.talk.talkMap.get(this.chatInfo.id)
@@ -345,6 +361,20 @@ export default {
     font-size: 16px;
   }
 
+  // 消息密级样式
+  .s-60, .s-undefined {
+    font-size: 14px;
+    color: #b2b2b2;
+  }
+  .s-70 {
+    font-size: 14px;
+    color: orange;
+  }
+  .s-80 {
+    font-size: 14px;
+    color: tomato;
+  }
+
   .conv-box {
     height: 100%;
 
@@ -370,18 +400,6 @@ export default {
 
         :nth-child(2) {
           letter-spacing: -2px;
-        }
-        .s-60, .s-undefined {
-          font-size: 14px;
-          color: #b2b2b2;
-        }
-        .s-70 {
-          font-size: 14px;
-          color: orange;
-        }
-        .s-80 {
-          font-size: 14px;
-          color: tomato;
         }
       }
 
@@ -420,63 +438,6 @@ export default {
           .talk-item{
             display: flex;
             flex-direction: row-reverse;
-            // margin-top: 20px;
-            // margin-bottom: 22px;
-            // .item-avatar{
-            //   float: left;
-            //   margin-left: 0;
-            //   margin-right: 7px;
-            //   cursor: pointer;
-            // }
-            // .item-avatar.me {
-            //   float: right;
-            //   margin-right: 0;
-            //   margin-left: 7px;
-            //   cursor: pointer;
-            // }
-            // .say {
-            //     color: #212121;
-            //     background: rgba(207 , 232, 252, 0.84);
-            //     padding: 8px 16px;
-            //     border-radius: 1px 18px 18px 18px;
-            //     font-weight: 400;
-            //     text-transform: none;
-            //     text-align: left;
-            //     font-size: 16px;
-            //     letter-spacing: .5px;
-            //     margin: 0 0 2px 0;
-            //     max-width: 65%;
-            //     float: none;
-            //     clear: both;
-            //     line-height: 1.5em;
-            //     word-break: break-word;
-            //     transform-origin: left top;
-            //     transition: all 200ms;
-            //     box-sizing: content-box;
-            //     // border: 1px solid rgb(182, 182, 182);
-            //     box-shadow: 1px 1px 1px #c2c2c2;
-            // }
-            // .reply {
-            //     color: #212121;
-            //     background: rgba(255, 255, 255, 0.84);
-            //     padding: 8px 16px !important;
-            //     border-radius: 18px 1px 18px 18px;
-            //     font-weight: 400;
-            //     text-transform: none;
-            //     text-align: left;
-            //     font-size: 16px;
-            //     letter-spacing: .5px;
-            //     margin: 0 0 2px 0 !important;
-            //     max-width: 65%;
-            //     float: right;
-            //     position: relative;
-            //     transform-origin: right top;
-            //     margin: 8px 0 10px;
-            //     padding: 0;
-            //     max-width: 65%;
-            //     // border: 1px solid red;
-            //     box-shadow: -1px 1px 1px #c2c2c2;
-            // }
           }
 
           .empty-tip {
@@ -502,11 +463,7 @@ export default {
         height: 40px;
         line-height: 32px;
         padding: 4px 20px;
-
-        &-container {
-          width: 100%;
-          font-size: 20px;
-        }
+        font-size: 20px;
       }
       // 文字编辑区域
       .editor-area {
