@@ -17,6 +17,9 @@
         <a href="#"><a-icon type="ellipsis" /></a>
       </a-popover>
       <card-content :listData="contentData"/>
+      <div class="card-footer">
+        <a-button class="footer-more" size="small" ghost block>全部</a-button>
+      </div>
     </a-card>
   </div>
 </template>
@@ -52,5 +55,10 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-
+    .footer-more{
+        border:0;
+        // color: #a6a6a6;
+        font-size: 12px;
+        background: linear-gradient(180deg,#ffffff,#e0e0e0) !important;
+    }
 </style>

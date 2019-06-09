@@ -6,7 +6,7 @@
     <a-list-item slot="renderItem" slot-scope="item">
       <a-card
         hoverable
-        style="width: 300px"
+        style="width: 240px"
       >
         <img
           alt="example"
@@ -14,7 +14,7 @@
           slot="cover"
         />
         <template class="ant-card-actions" slot="actions">
-          <a-icon type="setting" />
+          <a-icon type="plus" />
           <a-icon type="ellipsis" />
         </template>
         <a-card-meta
