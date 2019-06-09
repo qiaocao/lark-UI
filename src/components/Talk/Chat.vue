@@ -93,16 +93,17 @@
             size="large"
             class="textarea-input"
             v-model="messageContent"
-          ></textarea>
+            @keydown.enter.stop.prevent.exact
+            @keyup.enter.stop.prevent.exact="sendMessage(sendSecretLevel)"
+            @keyup.alt.enter.exact="messageContent += '\n'"
+            @keyup.ctrl.enter.exact="messageContent += '\n'"
+          />
 
           <!-- 发送键 -->
           <div class="send-toolbar">
             <div style="marginLeft: auto">
               <!-- 提示信息 -->
-              <a-tooltip placement="left" >
-                <template slot="title">
-                  <span>发送前请正确选择消息密级</span>
-                </template>
+              <a-tooltip placement="left" title="发送前请正确选择消息密级">
                 <a-icon type="question-circle" style="margin-right: 6px; cursor: pointer;"/>
               </a-tooltip>
               <!-- 发送键 -->
