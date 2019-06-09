@@ -225,7 +225,13 @@ export const asyncRouterMap = [
                 path: '/account/settings/workplace',
                 name: 'WorkPlaceSettings',
                 component: () => import('@/views/account/settings/Workplace'),
-                meta: { title: '工作台设置', hidden: true, keepAlive: true, permission: [ 'user' ] }
+                meta: { title: '卡片设置', hidden: true, keepAlive: true, permission: [ 'user' ] }
+              },
+              {
+                path: '/account/settings/commontool',
+                name: 'CommonToolSettings',
+                component: () => import('@/views/account/settings/CommonTool'),
+                meta: { title: '常用工具设置', hidden: true, keepAlive: true, permission: [ 'user' ] }
               }
             ]
           }
