@@ -31,7 +31,6 @@
               <template slot="title">
                 <span>{{ item.message }}</span>
               </template>
-              <!-- <a-icon @click="openDrawer(item.name)" style="marginLeft: 20px" :type="item.type" /> -->
               <a-icon @click="triggerDrawer(item.name)" style="marginLeft: 20px" :type="item.type" />
             </a-tooltip>
           </div>
@@ -58,67 +57,85 @@
     <a-layout-footer class="conv-box-editor">
 
       <div class="editor-option">
-        <a-row type="flex" justify="space-between" class="editor-option-container">
-          <a-col :span="12">
-            <!-- 文字编辑选项 -->
-            <a-tooltip
-              placement="top"
-              :overlayStyle="{fontSize: '12px'}"
-            >
-              <template slot="title">
-                <span>表情</span>
+        <!-- 文字编辑选项 -->
+        <div>
+          <a-tooltip placement="top" :overlayStyle="{fontSize: '12px'}">
+            <template slot="title">
+              <span>表情</span>
+            </template>
+
+            <a-popover placement="topLeft" v-model="emojisVisible" trigger="click" overlayClassName="emojis-picker">
+              <template slot="content">
+                <VEmojiPicker :pack="emojisNative" labelSearch @select="onSelectEmoji" style="color: black;" />
               </template>
               <a-icon style="marginRight: 20px" type="smile" />
-            </a-tooltip>
-          </a-col>
+            </a-popover>
 
-          <a-col :span="12">
-            <div style="float: right">
-              <!-- 发送选项 -->
-              <a-tooltip
-                placement="top"
-                :overlayStyle="{fontSize: '12px'}"
-              >
-                <template slot="title">
-                  <span>文件上传</span>
-                </template>
-                <a-icon style="marginLeft: 20px" type="folder" />
-              </a-tooltip>
-            </div>
-          </a-col>
-        </a-row>
+          </a-tooltip>
+        </div>
+
+        <div>
+          <!-- 上传文件 -->
+          <a-upload
+            name="file"
+            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            listType="picture"
+            class="upload-list-inline"
+            :headers="headers"
+            @change="handleChange"
+            :openFileDialogOnClick="uploadEnable">
+            <a-tooltip placement="top" title="文件上传" :overlayStyle="{fontSize: '12px'}">
+              <a-icon style="fontSize: 20px" type="folder" />
+            </a-tooltip>
+          </a-upload>
+          
+        </div>
       </div>
 
       <div class="editor-area">
         <div class="draft-input">
           <!-- 输入框 -->
           <textarea
+            v-if="true"
             v-focus
             size="large"
             class="textarea-input"
             v-model="messageContent"
-          ></textarea>
+            @keydown.enter.stop.prevent.exact
+            @keyup.enter.stop.prevent.exact="sendMessage(sendSecretLevel)"
+            @keyup.alt.enter.exact="messageContent += '\n'"
+            @keyup.ctrl.enter.exact="messageContent += '\n'"
+          />
+          <div v-else class="upload-display">
+            <a-card class="file-card" :bodyStyle="{lineHeight: '40px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}">
+              <a-icon type="paper-clip" style="fontSize: 20px; marginRight: 10px;" />
+              <a-tooltip title="我是文件的名字我是很长的名字再长一点.js">
+                <span>我是文件的名字我是很长的名字再长一点.js</span>
+              </a-tooltip>
+              <a-progress :percent="100" size="small" style="display: block;"/>
+            </a-card>
+          </div>
           <!-- 发送键 -->
           <div class="send-toolbar">
-            <div style="margin-left: auto">
-              <a-tooltip placement="top" >
-                <template slot="title">
-                  <span><p>Enter 标记为<strong>非密</strong>发送 ,</p>
-                    <p>Shift+Enter 标记为<strong>秘密</strong>发送 ,</p>
-                    <p>Alt+Enter 标记为<strong>机密</strong>发送 ,</p>
-                    <p>Ctrl+Enter 换行</p></span>
-                </template>
+            <div style="marginLeft: auto">
+              <!-- 提示信息 -->
+              <a-tooltip placement="left" title="发送前请正确选择消息密级">
                 <a-icon type="question-circle" style="margin-right: 6px; cursor: pointer;"/>
               </a-tooltip>
-              <a-dropdown-button @click="sendMessage(80)" type="primary">
-                发送(<strong>非密</strong>)
-                <a-menu slot="overlay">
-                  <a-menu-item key="1">标记为<strong>秘密</strong>并发送</a-menu-item>
-                  <a-menu-item key="2">标记为<strong>机密</strong>并发送</a-menu-item>
+              <!-- 发送键 -->
+              <a-dropdown-button @click="sendMessage(sendSecretLevel)" type="primary">
+                发送<span :class="'s-' + sendSecretLevel">【{{ sendSecretLevel | fileSecret }}】</span>
+                <a-menu v-if="sendMenuList.length" slot="overlay">
+                  <template v-for="item in sendMenuList">
+                    <a-menu-item :key="item" @click="handleSendSecretLevel">
+                      发送<span :class="'s-' + item">【{{ item | fileSecret }}】</span>
+                    </a-menu-item>
+                  </template>
                 </a-menu>
               </a-dropdown-button>
             </div>
           </div>
+
         </div>
       </div>
     </a-layout-footer>
@@ -134,7 +151,6 @@
 </template>
 
 <script>
-// import MessagePiece from './MessagePiece'
 import { MessagePiece, TalkHistory, GroupNotice, TalkSetting, MarkMessage, TalkFile } from '@/components/Talk'
 // 引入密级常量
 import { mixinSecret } from '@/utils/mixin'
@@ -148,6 +164,7 @@ import { mapGetters } from 'vuex'
 import uuidv4 from 'uuid/v4'
 
 export default {
+  name: 'UserChat',
   components: {
     MessagePiece,
     VEmojiPicker,
@@ -157,7 +174,6 @@ export default {
     MarkMessage,
     TalkFile
   },
-  name: 'UserChat',
   props: {
     /** 聊天对话框的基本信息 */
     chatInfo: {
@@ -183,12 +199,19 @@ export default {
       messageType: 1,
       // 输入框内容
       messageContent: '',
+      // 发送消息的密级，默认为非密
+      sendSecretLevel: 60,
+      // 发送键的可选密级选项
+      sendMenuList: [],
+      // 控制表情选择框不自动关闭
+      emojisVisible: false,
+      // 是否允许上传
+      uploadEnable: true,
+      // 文件上传时的请求头部
+      headers: { authorization: 'authorization-text', 'Access-Control-Allow-Origin': '*' },
 
       imgFormat: ['jpg', 'jpeg', 'png', 'gif'],
-      fileFormat: ['doc', 'docx', 'jpg', 'jpeg', 'png', 'gif', 'xls', 'xlsx', 'pdf', 'gif', 'exe', 'msi', 'swf', 'sql', 'apk', 'psd'],
-      headers: {
-        'Access-Control-Allow-Origin': '*'
-      }
+      fileFormat: ['doc', 'docx', 'jpg', 'jpeg', 'png', 'gif', 'xls', 'xlsx', 'pdf', 'gif', 'exe', 'msi', 'swf', 'sql', 'apk', 'psd']
     }
   },
   computed: {
@@ -207,12 +230,20 @@ export default {
   },
   watch: {
     'chatInfo.id': {
-      handler: function () {
+      handler: function (newId, oldId) {
         // 设置当前联系人
         this.$store.commit('SET_CURRENT_TALK', this.chatInfo)
-
+        // TODO: 更新最近联系人列表的唯独消息数
+        // ···
         this.getCacheMessage()
         this.scrollToBottom()
+        this.handleSendSecretLevel()
+
+        // 设置输入框信息
+        this.$store.dispatch('UpdateDraftMap', [oldId, this.messageContent])
+          .then(() => {
+            this.messageContent = this.$store.state.talk.draftMap.get(newId) || ''
+          })
       },
       immediate: true
     },
@@ -232,11 +263,26 @@ export default {
     })
   },
   methods: {
+    handleChange (info) {
+      if (info.file.status !== 'uploading') {
+        console.log(info.file, info.fileList)
+      }
+      if (info.file.status === 'done') {
+        this.$message.success(`${info.file.name} file uploaded successfully`)
+      } else if (info.file.status === 'error') {
+        this.$message.error(`${info.file.name} file upload failed.`)
+      }
+    },
+    /**
+     * 添加表情
+     */
+    onSelectEmoji (dataEmoji) {
+      this.messageContent += dataEmoji.emoji
+    },
     /**
      * 聊天消息滚到到最新一条
      * 1. 发送消息 2. 页面创建 3.页面更新
      * @param {Number} height 滚动的高度
-     * @author jihainan
      */
     scrollToBottom (height) {
       this.$nextTick(() => {
@@ -268,6 +314,20 @@ export default {
      */
     triggerDrawer (drawerName) {
       this.activeOption = drawerName
+    },
+    /**
+     * 设置发送消息的密级
+     */
+    handleSendSecretLevel (item) {
+      item = item ? item.key : 60
+      const allSendMenu = [60, 70, 80]
+      // 当前研讨的密级
+      const talkSecretLevel = this.chatInfo.secretLevel
+      // 设置发送按钮的密级
+      this.sendSecretLevel = item
+      this.sendMenuList = allSendMenu.filter(function (menu) {
+        return menu !== item && menu <= talkSecretLevel
+      })
     },
     /**
      * 发送消息
@@ -310,11 +370,11 @@ export default {
         this.$store.dispatch('UpdateRecentContacts', { ...this.chatInfo, reOrder: true, addUnread: false })
         // 发完消息滚动到最下方
         this.scrollToBottom()
+        this.messageContent = ''
       }
     },
     /**
      * 获取缓存消息
-     * @author jihainan
      */
     getCacheMessage () {
       const cacheMessage = this.$store.state.talk.talkMap.get(this.chatInfo.id)
@@ -344,6 +404,29 @@ export default {
     color: #a5a7a9;
     font-size: 16px;
   }
+  // 让表情看着更清楚
+  #EmojiPicker {
+    color: black;
+  }
+
+  // 修改上传文件列表的样式
+  // TODO: 修改文件上传的样式
+  .upload-list-inline {
+  }
+
+  // 消息密级样式
+  .s-60, .s-undefined {
+    font-size: 14px;
+    color: #b2b2b2;
+  }
+  .s-70 {
+    font-size: 14px;
+    color: orange;
+  }
+  .s-80 {
+    font-size: 14px;
+    color: tomato;
+  }
 
   .conv-box {
     height: 100%;
@@ -370,18 +453,6 @@ export default {
 
         :nth-child(2) {
           letter-spacing: -2px;
-        }
-        .s-60, .s-undefined {
-          font-size: 14px;
-          color: #b2b2b2;
-        }
-        .s-70 {
-          font-size: 14px;
-          color: orange;
-        }
-        .s-80 {
-          font-size: 14px;
-          color: tomato;
         }
       }
 
@@ -420,63 +491,6 @@ export default {
           .talk-item{
             display: flex;
             flex-direction: row-reverse;
-            // margin-top: 20px;
-            // margin-bottom: 22px;
-            // .item-avatar{
-            //   float: left;
-            //   margin-left: 0;
-            //   margin-right: 7px;
-            //   cursor: pointer;
-            // }
-            // .item-avatar.me {
-            //   float: right;
-            //   margin-right: 0;
-            //   margin-left: 7px;
-            //   cursor: pointer;
-            // }
-            // .say {
-            //     color: #212121;
-            //     background: rgba(207 , 232, 252, 0.84);
-            //     padding: 8px 16px;
-            //     border-radius: 1px 18px 18px 18px;
-            //     font-weight: 400;
-            //     text-transform: none;
-            //     text-align: left;
-            //     font-size: 16px;
-            //     letter-spacing: .5px;
-            //     margin: 0 0 2px 0;
-            //     max-width: 65%;
-            //     float: none;
-            //     clear: both;
-            //     line-height: 1.5em;
-            //     word-break: break-word;
-            //     transform-origin: left top;
-            //     transition: all 200ms;
-            //     box-sizing: content-box;
-            //     // border: 1px solid rgb(182, 182, 182);
-            //     box-shadow: 1px 1px 1px #c2c2c2;
-            // }
-            // .reply {
-            //     color: #212121;
-            //     background: rgba(255, 255, 255, 0.84);
-            //     padding: 8px 16px !important;
-            //     border-radius: 18px 1px 18px 18px;
-            //     font-weight: 400;
-            //     text-transform: none;
-            //     text-align: left;
-            //     font-size: 16px;
-            //     letter-spacing: .5px;
-            //     margin: 0 0 2px 0 !important;
-            //     max-width: 65%;
-            //     float: right;
-            //     position: relative;
-            //     transform-origin: right top;
-            //     margin: 8px 0 10px;
-            //     padding: 0;
-            //     max-width: 65%;
-            //     // border: 1px solid red;
-            //     box-shadow: -1px 1px 1px #c2c2c2;
-            // }
           }
 
           .empty-tip {
@@ -502,11 +516,7 @@ export default {
         height: 40px;
         line-height: 32px;
         padding: 4px 20px;
-
-        &-container {
-          width: 100%;
-          font-size: 20px;
-        }
+        font-size: 20px;
       }
       // 文字编辑区域
       .editor-area {
@@ -531,21 +541,22 @@ export default {
             outline: none;
             border: none;
           }
+          // 文件上传展示
+          .upload-display {
+            height: 100%;
+            width: 100%;
+            max-height: 100px;
+            .file-card {
+              width: 300px;
+              height: 80px;
+            }
+          }
           // 发送键
           .send-toolbar{
             margin: 4px 0;
             display: flex;
             align-items: flex-end;
         }
-      }
-
-      .user-guide {
-        font-size: 12px;
-        color: #bdbebf;
-      }
-      .faces-box {
-        position: absolute;
-        bottom: 3.8rem;
       }
     }
     }

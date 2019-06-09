@@ -299,6 +299,7 @@ export default {
           word-wrap: break-word;
           word-break: break-all;
           min-height: 25px;
+          color: #4e4a4a;
 
           .plain {
             padding: 9px 13px;

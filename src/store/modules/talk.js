@@ -24,7 +24,9 @@ const talk = {
     /** 当前正在进行的研讨 */
     currentTalk: {},
     /** 当前正在进行研讨的消息列表 */
-    curMessageList: []
+    curMessageList: [],
+    /** 草稿Map */
+    draftMap: new Map()
   },
 
   mutations: {
@@ -55,6 +57,14 @@ const talk = {
     },
     SET_CUR_MESSAGE_LIST (state, curMessageList) {
       state.curMessageList = curMessageList
+    },
+    /**
+     * 更新draftMap
+     * @param {Object} state talk状态
+     * @param {Array} draft 赋值数组[id, message]
+     */
+    SET_DRAFT_MAP (state, draft) {
+      state.draftMap.set(draft[0], draft[1])
     }
   },
 
@@ -183,6 +193,18 @@ const talk = {
       const tempMessageList = state.talkMap.get(newMessage.contactInfo.id) || []
       tempMessageList.push(new Tweet(newMessage))
       commit('SET_TALK_MAP', [newMessage.contactInfo.id, tempMessageList])
+    },
+    /**
+     * 更新缓存中的草稿信息
+     * @param {Array} draft 草稿信息[id, message]
+     */
+    UpdateDraftMap ({ state, commit }, draft) {
+      return new Promise((resolve) => {
+        if (draft[0]) commit('SET_DRAFT_MAP', draft)
+        resolve(draft)
+      }).catch(error => {
+        throw (error)
+      })
     }
   },
   modules,
