@@ -74,14 +74,21 @@
           </a-tooltip>
         </div>
 
-        <div style="marginLeft: auto">
-          <!-- 发送选项 -->
-          <a-tooltip placement="top" :overlayStyle="{fontSize: '12px'}">
-            <template slot="title">
-              <span>文件上传</span>
-            </template>
-            <a-icon style="marginLeft: 20px" type="folder" />
-          </a-tooltip>
+        <div>
+          <!-- 上传文件 -->
+          <a-upload
+            name="file"
+            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            listType="picture"
+            class="upload-list-inline"
+            :headers="headers"
+            @change="handleChange"
+            :openFileDialogOnClick="uploadEnable">
+            <a-tooltip placement="top" title="文件上传" :overlayStyle="{fontSize: '12px'}">
+              <a-icon style="fontSize: 20px" type="folder" />
+            </a-tooltip>
+          </a-upload>
+          
         </div>
       </div>
 
@@ -89,6 +96,7 @@
         <div class="draft-input">
           <!-- 输入框 -->
           <textarea
+            v-if="true"
             v-focus
             size="large"
             class="textarea-input"
@@ -98,7 +106,15 @@
             @keyup.alt.enter.exact="messageContent += '\n'"
             @keyup.ctrl.enter.exact="messageContent += '\n'"
           />
-
+          <div v-else class="upload-display">
+            <a-card class="file-card" :bodyStyle="{lineHeight: '40px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}">
+              <a-icon type="paper-clip" style="fontSize: 20px; marginRight: 10px;" />
+              <a-tooltip title="我是文件的名字我是很长的名字再长一点.js">
+                <span>我是文件的名字我是很长的名字再长一点.js</span>
+              </a-tooltip>
+              <a-progress :percent="100" size="small" style="display: block;"/>
+            </a-card>
+          </div>
           <!-- 发送键 -->
           <div class="send-toolbar">
             <div style="marginLeft: auto">
@@ -189,12 +205,13 @@ export default {
       sendMenuList: [],
       // 控制表情选择框不自动关闭
       emojisVisible: false,
+      // 是否允许上传
+      uploadEnable: true,
+      // 文件上传时的请求头部
+      headers: { authorization: 'authorization-text', 'Access-Control-Allow-Origin': '*' },
 
       imgFormat: ['jpg', 'jpeg', 'png', 'gif'],
-      fileFormat: ['doc', 'docx', 'jpg', 'jpeg', 'png', 'gif', 'xls', 'xlsx', 'pdf', 'gif', 'exe', 'msi', 'swf', 'sql', 'apk', 'psd'],
-      headers: {
-        'Access-Control-Allow-Origin': '*'
-      }
+      fileFormat: ['doc', 'docx', 'jpg', 'jpeg', 'png', 'gif', 'xls', 'xlsx', 'pdf', 'gif', 'exe', 'msi', 'swf', 'sql', 'apk', 'psd']
     }
   },
   computed: {
@@ -246,6 +263,16 @@ export default {
     })
   },
   methods: {
+    handleChange (info) {
+      if (info.file.status !== 'uploading') {
+        console.log(info.file, info.fileList)
+      }
+      if (info.file.status === 'done') {
+        this.$message.success(`${info.file.name} file uploaded successfully`)
+      } else if (info.file.status === 'error') {
+        this.$message.error(`${info.file.name} file upload failed.`)
+      }
+    },
     /**
      * 添加表情
      */
@@ -382,6 +409,11 @@ export default {
     color: black;
   }
 
+  // 修改上传文件列表的样式
+  // TODO: 修改文件上传的样式
+  .upload-list-inline {
+  }
+
   // 消息密级样式
   .s-60, .s-undefined {
     font-size: 14px;
@@ -508,6 +540,16 @@ export default {
             resize: none;
             outline: none;
             border: none;
+          }
+          // 文件上传展示
+          .upload-display {
+            height: 100%;
+            width: 100%;
+            max-height: 100px;
+            .file-card {
+              width: 300px;
+              height: 80px;
+            }
           }
           // 发送键
           .send-toolbar{
