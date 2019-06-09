@@ -4,7 +4,6 @@
       <a-list
         :bordered="bordered"
         :dataSource="listData"
-
         class="card-list"
       >
         <a-list-item style="padding: 12px 21px 12px 21px" slot="renderItem" slot-scope="item">{{ item }}</a-list-item>
@@ -21,7 +20,6 @@ export default {
   name: 'CardContent',
   data () {
     return {
-
       bordered: false,
       fontSize: { fontSize: '52px' },
       list: []
