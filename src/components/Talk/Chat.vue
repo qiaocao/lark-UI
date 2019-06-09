@@ -60,23 +60,24 @@
       <div class="editor-option">
         <!-- 文字编辑选项 -->
         <div>
-          <a-tooltip
-            placement="top"
-            :overlayStyle="{fontSize: '12px'}"
-          >
+          <a-tooltip placement="top" :overlayStyle="{fontSize: '12px'}">
             <template slot="title">
               <span>表情</span>
             </template>
-            <a-icon style="marginRight: 20px" type="smile" />
+
+            <a-popover placement="topLeft" v-model="emojisVisible" trigger="click" overlayClassName="emojis-picker">
+              <template slot="content">
+                <VEmojiPicker :pack="emojisNative" labelSearch @select="onSelectEmoji" style="color: black;" />
+              </template>
+              <a-icon style="marginRight: 20px" type="smile" />
+            </a-popover>
+
           </a-tooltip>
         </div>
 
         <div style="marginLeft: auto">
           <!-- 发送选项 -->
-          <a-tooltip
-            placement="top"
-            :overlayStyle="{fontSize: '12px'}"
-          >
+          <a-tooltip placement="top" :overlayStyle="{fontSize: '12px'}">
             <template slot="title">
               <span>文件上传</span>
             </template>
@@ -186,6 +187,8 @@ export default {
       sendSecretLevel: 60,
       // 发送键的可选密级选项
       sendMenuList: [],
+      // 控制表情选择框不自动关闭
+      emojisVisible: false,
 
       imgFormat: ['jpg', 'jpeg', 'png', 'gif'],
       fileFormat: ['doc', 'docx', 'jpg', 'jpeg', 'png', 'gif', 'xls', 'xlsx', 'pdf', 'gif', 'exe', 'msi', 'swf', 'sql', 'apk', 'psd'],
@@ -236,6 +239,12 @@ export default {
     })
   },
   methods: {
+    /**
+     * 添加表情
+     */
+    onSelectEmoji(dataEmoji) {
+      this.messageContent += dataEmoji.emoji;
+    },
     /**
      * 聊天消息滚到到最新一条
      * 1. 发送消息 2. 页面创建 3.页面更新
@@ -359,6 +368,10 @@ export default {
     padding-top: 20%;
     color: #a5a7a9;
     font-size: 16px;
+  }
+  // 让表情看着更清楚
+  #EmojiPicker {
+    color: black;
   }
 
   // 消息密级样式
@@ -494,15 +507,6 @@ export default {
             display: flex;
             align-items: flex-end;
         }
-      }
-
-      .user-guide {
-        font-size: 12px;
-        color: #bdbebf;
-      }
-      .faces-box {
-        position: absolute;
-        bottom: 3.8rem;
       }
     }
     }
