@@ -31,7 +31,6 @@
               <template slot="title">
                 <span>{{ item.message }}</span>
               </template>
-              <!-- <a-icon @click="openDrawer(item.name)" style="marginLeft: 20px" :type="item.type" /> -->
               <a-icon @click="triggerDrawer(item.name)" style="marginLeft: 20px" :type="item.type" />
             </a-tooltip>
           </div>
@@ -213,13 +212,20 @@ export default {
   },
   watch: {
     'chatInfo.id': {
-      handler: function () {
+      handler: function (newId, oldId) {
         // 设置当前联系人
         this.$store.commit('SET_CURRENT_TALK', this.chatInfo)
-
+        // TODO: 更新最近联系人列表的唯独消息数
+        // ···
         this.getCacheMessage()
         this.scrollToBottom()
         this.handleSendSecretLevel()
+
+        // 设置输入框信息
+        this.$store.dispatch('UpdateDraftMap', [oldId, this.messageContent])
+          .then(() => {
+            this.messageContent = this.$store.state.talk.draftMap.get(newId) || ''
+          })
       },
       immediate: true
     },
@@ -242,8 +248,8 @@ export default {
     /**
      * 添加表情
      */
-    onSelectEmoji(dataEmoji) {
-      this.messageContent += dataEmoji.emoji;
+    onSelectEmoji (dataEmoji) {
+      this.messageContent += dataEmoji.emoji
     },
     /**
      * 聊天消息滚到到最新一条
@@ -336,6 +342,7 @@ export default {
         this.$store.dispatch('UpdateRecentContacts', { ...this.chatInfo, reOrder: true, addUnread: false })
         // 发完消息滚动到最下方
         this.scrollToBottom()
+        this.messageContent = ''
       }
     },
     /**
