@@ -10,9 +10,8 @@
     @close="onClose"
     :visible="activeOption=='groupNotice'">
 
-    <p class="notice-p">{{ item.content }}</p>
+    <div class="notice-p"> &nbsp;&nbsp;&nbsp;&nbsp;{{ item.content }} <p></p></div>
     <span class="notice-s">发布时间 : {{ item.createTime }}</span>
-
   </a-drawer>
 </template>
 
@@ -68,9 +67,10 @@ export default {
 
 <style lang='less' scope>
   .notice-p{
-     height:508px;
+    //  height:508px;
      border-bottom: 1px solid #cccccc;
-     font-size: 20px
+     font-size: 20px;
+     margin-bottom: 20px
   }
   .notice-s{
     float: right

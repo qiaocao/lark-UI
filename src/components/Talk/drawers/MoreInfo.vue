@@ -1,14 +1,15 @@
 <template>
-  <!-- 更多信息的抽屉组件 -->
-  <a-drawer></a-drawer>
+  <div>
+
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'MoreInfo'
+
 }
 </script>
 
-<style>
+<style scoped>
 
 </style>

@@ -6,8 +6,8 @@
     <group-notice :activeOption="activeOption" @closeDrawer="triggerDrawer"></group-notice>
     <talk-setting :activeOption="activeOption" @closeDrawer="triggerDrawer"></talk-setting>
     <talk-file :activeOption="activeOption" @closeDrawer="triggerDrawer"></talk-file>
-    <mark-message :activeOption="activeOption" @closeDrawer="triggerDrawer"></mark-message> -->
-
+    <mark-message :activeOption="activeOption" @closeDrawer="triggerDrawer"></mark-message>
+    <more-info :activeOption="activeOption" @closeDrawer="triggerDrawer"></more-info>
     <a-layout-header class="conv-box-header">
       <a-row type="flex" justify="space-between">
         <a-col :span="14" class="conv-title">
@@ -24,6 +24,7 @@
             <!-- 需要判断是否为群聊，操作选项不同 -->
             <a-tooltip
               v-for="(item, index) in optionFilter(chatInfo.isGroup)"
+
               :key="index"
               placement="bottom"
               :overlayStyle="{fontSize: '12px'}"
@@ -92,11 +93,9 @@
               :overlayStyle="{fontSize: '12px'}">
               <a-icon :style="{fontSize: '20px', color: Object.keys(fileUpload).length ? '#00000033' : ''}" type="folder" />
             </a-tooltip>
-
           </a-upload>
         </div>
       </div>
-
       <div class="editor-area">
         <div class="draft-input">
           <!-- 输入框 -->
@@ -161,8 +160,10 @@
 </template>
 
 <script>
-import { MessagePiece, TalkHistory, GroupNotice, TalkSetting, MarkMessage, TalkFile } from '@/components/Talk'
-import { LandingStatus } from '@/utils/constants'
+import { MessagePiece, TalkHistory, MoreInfo, GroupNotice, TalkSetting, MarkMessage, TalkFile } from '@/components/Talk'
+// 引入密级常量
+import { mixinSecret } from '@/utils/mixin'
+import { getTalkHistory } from '@/api/talk'
 import { SocketMessage, Tweet } from '@/utils/talk'
 import { format, extensionStr } from '@/utils/util'
 import { getTalkHistory } from '@/api/talk'
@@ -181,7 +182,8 @@ export default {
     GroupNotice,
     TalkSetting,
     MarkMessage,
-    TalkFile
+    TalkFile,
+    MoreInfo
   },
   props: {
     /** 聊天对话框的基本信息 */

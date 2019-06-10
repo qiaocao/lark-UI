@@ -5,7 +5,7 @@
     placement="right"
     :getContainer="mountEle"
     :wrapStyle="{marginTop: '64px'}"
-    :width="700"
+    :width="500"
     :closable="false"
     @close="onClose"
     :visible="activeOption=='talkFile'"
@@ -37,19 +37,20 @@
       <a-list-item slot="renderItem" slot-scope="itemFile">
         <!-- <a slot="actions">edit</a> -->
         <span class="file_sp">{{ itemFile.name.title }}</span>
-        <a slot="actions">下载</a>
         <a-list-item-meta class="file_name">
-          <a class="file_a" slot="title" href="https://vue.ant.design/">{{ itemFile.name.last }}</a>
+          <a class="file_a" slot="title">{{ itemFile.name.last }}</a>
           <a-avatar slot="avatar" :src="itemFile.url"/>
         </a-list-item-meta>
         <div class="file_time">{{ itemFile.time }}</div>
         <a href>
           <div class="secret">
             <a-tag color="orange" v-if="itemFile.Concentrated === 'secret'">保密</a-tag>
-            <a-tag color="red" v-if="itemFile.Concentrated === 'top-secret'">绝密</a-tag>
-            <a-tag color v-if="itemFile.Concentrated === 'no-secret'">无秘</a-tag>
+            <a-tag color="tomato" v-if="itemFile.Concentrated === 'top-secret'">机密</a-tag>
+            <a-tag color v-if="itemFile.Concentrated === 'no-secret'">非密</a-tag>
           </div>
         </a>
+        <a style="float:right">下载</a>
+
       </a-list-item>
     </a-list>
   </a-drawer>
@@ -149,21 +150,28 @@ export default {
 .ant-list-item-meta-content {
   width: 100px;
 }
+.secret{
+  margin-right: 12px
+}
 .file_sp {
   display: block;
-  width: 120px;
+  width: 70px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   box-sizing: border-box;
-  margin-right: 50px;
+  margin-right: 30px;
   text-align: left
 }
 .file_name {
   margin-right: 20px;
 }
 .file_time {
-  margin-right: 50px;
+  margin-right: 20px;
+  width: 100px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .ant-list-item-meta-title {
   width: 80px;
@@ -183,10 +191,10 @@ export default {
       float: left;
       font-size: 5px;
       &:nth-child(1) {
-        margin-right: 98px;
+        margin-right: 55px;
       }
       &:nth-child(2) {
-        margin-right: 120px;
+        margin-right: 50px;
       }
     }
   }
