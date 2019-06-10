@@ -4,13 +4,16 @@
     <a-layout-sider class="talk-layout-sider">
       <div class="search-bar">
         <SearchInput/>
-        <a-dropdown>
+        <!-- <a-dropdown>
           <a-menu slot="overlay">
             <a-menu-item key="1" @click="$refs.model.beginTalk()">发起研讨</a-menu-item>
             <a-menu-item key="2">发起会议</a-menu-item>
           </a-menu>
           <a-button type="default" size="small" icon="plus" style="margin-left:3px;"></a-button>
-        </a-dropdown>
+        </a-dropdown> -->
+        <a-tooltip title="发起研讨" placement="bottom" :overlayStyle="{fontSize: '12px'}">
+          <a-button @click="startTalk" icon="plus" size="small" style="marginLeft: 3px"></a-button>
+        </a-tooltip>
       </div>
       <SearchArea
         :activeChat="activeChat"
@@ -147,21 +150,6 @@ import SearchInput from './SearchInput'
 import SearchArea from './SearchArea'
 import SearchRecordModal from './SearchRecordModal'
 
-// import WebsocketHeartbeatJs from '../../utils/talk/WebsocketHeartbeatJs'
-import {
-  ChatListUtils
-  // Chat,
-  // imageLoad,
-  // MessageInfoType,
-  // MessageTargetType
-  // timeoutFetch
-} from '../../utils/talk/chatUtils'
-// import { ErrorType } from '@/utils/constants'
-import conf from '@/api/index'
-// import HttpApiUtils from '../../utils/talk/HttpApiUtils'
-
-// import Utils from '../../../src/utils/utils.js'
-
 export default {
   name: 'ChatPanel',
   components: {
@@ -180,15 +168,7 @@ export default {
     return {
       activeKey: '1',
       // tab标签页的样式
-      tabStyle: { margin: '0 6px 0', paddingLeft: '10px' },
-      data: [],
-      loading: false,
-      busy: false,
-      host: conf.getHostUrl(),
-      isShowPanel: false,
-      isShowWelcome: true,
-      memberVisible: false,
-      active: '',
+      tabStyle: { margin: '0 20px' },
       searchObj: {
         searchValue: ''
       },
@@ -265,6 +245,10 @@ export default {
     },
 
     handleSaveOk () {},
+    /** 发起研讨 */
+    startTalk () {
+      console.log('发起研讨')
+    },
     handleSaveClose () {},
     /**
      * 展示研讨对话框
@@ -283,30 +267,6 @@ export default {
         path: '/talk/ChatPanel/ChatBox',
         query: currentTalk
       })
-
-      // const self = this
-      // self.isShowWelcome = false
-      // self.isShowPanel = true
-      // const recentContacts = ChatListUtils.getChatList(self.$store.state.user.info.id)
-
-      // // 重新添加会话，放到第一个
-      // const firstChat = new Chat(chat.id, chat.name, conf.getHostUrl() + chat.avatar, 0, '', '', '', MessageTargetType.CHAT_GROUP)
-
-      // // 存储到localStorage 的 recentContacts
-      // ChatListUtils.setChatList(self.$store.state.user.info.id, recentContacts)
-
-      // this.$store.commit('RESET_UNREAD')
-      // this.currentTalk = chat
-      // // 当前聊天室
-      // if (firstChat) {
-      //   self.$store.commit('SET_CURRENT_CHAT', firstChat)
-      // }
-      // // 重新设置chatList
-      // self.$store.commit('SET_RECENT_CHAT_LIST', ChatListUtils.getChatList(self.$store.state.user.info.id))
-      // // Chat会话框中的研讨信息每次滚动到最底部
-      // this.$nextTick(() => {
-      //   // imageLoad('message-box')
-      // })
     },
     delChat (chat) {
       this.$store.commit('DEL_CHAT', chat)
@@ -344,11 +304,6 @@ export default {
       this.recentLoading = true
       this.$store
         .dispatch('GetRecentContacts')
-        .then(res => {
-          if (this.$store.state.user.info.id) {
-            ChatListUtils.setChatList(this.$store.state.user.info.id, res.result.data)
-          }
-        })
         .finally(() => {
           this.recentLoading = false
         })
@@ -360,23 +315,7 @@ export default {
       this.searchRecordModalVisible = false
     }
   },
-  activated: function () {
-    // const self = this
-    // if (this.$route.query.chat) {
-    //   self.isShowPanel = true
-    //   self.isShowWelcome = false
-    // }
-    // // 当前研讨室
-    // if (self.$route.query.chat) {
-    //   self.$store.commit('SET_CURRENT_CHAT', this.$route.query.chat)
-    // }
-    // // 重新设置chatList
-    // self.$store.commit('SET_RECENT_CHAT_LIST', ChatListUtils.getChatList(self.$store.state.user.info.id))
-    // // 每次滚动到最底部
-    // this.$nextTick(() => {
-    //   imageLoad('message-box')
-    // })
-  }
+  activated: function () {}
 }
 </script>
 
@@ -397,7 +336,7 @@ export default {
   // 聊天搜索栏样式 该部分高度为48px
   .search-bar {
     display: flex;
-    margin: 16px 12px 8px;
+    margin: 16px 27px 8px;
   }
 
   // 调整tabs标签样式
