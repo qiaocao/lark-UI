@@ -338,8 +338,8 @@ export default {
     optionFilter (isGroup) {
       // 聊天操作选项
       const optionList = [
-        { group: false, name: 'groupNotice', message: '群公告', type: 'notification' },
-        { group: false, name: 'markMessage', message: '标记信息', type: 'tags' },
+        { group: true, name: 'groupNotice', message: '群公告', type: 'notification' },
+        { group: true, name: 'markMessage', message: '标记信息', type: 'tags' },
         { group: false, name: 'talkHistory', message: '聊天内容', type: 'file-text' },
         { group: false, name: 'talkFile', message: '文件', type: 'folder-open' },
         { group: false, name: 'moreInfo', message: '更多', type: 'ellipsis' }]
