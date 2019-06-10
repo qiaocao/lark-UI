@@ -45,7 +45,7 @@
                   @error="handleImg"
                   @click="handlePreview('open')"
                   :src="messageInfo.content.src"
-                  :alt="messageInfo.content.title + '.' + messageInfo.content.extension" >
+                  :alt="messageInfo.content.title" >
 
                 <a-button
                   v-if="imgLoading === 3"
@@ -67,7 +67,7 @@
 
               <a-modal :visible="previewVisible" :closable="false" :footer="null" @cancel="handlePreview('close')">
                 <img
-                  :alt="messageInfo.content.title + '.' + messageInfo.content.extension"
+                  :alt="messageInfo.content.title"
                   style="width: 100%"
                   :src="messageInfo.content.src" />
               </a-modal>
@@ -79,11 +79,8 @@
                 <a-icon type="file" theme="twoTone" style="fontSize: 26px" />
               </div>
               <div class="file-message-info">
-                <a-tooltip placement="topLeft">
-                  <template slot="title">
-                    <span>{{ messageInfo.content.title }}.{{ messageInfo.content.extension }}</span>
-                  </template>
-                  <span>{{ messageInfo.content.title }}.{{ messageInfo.content.extension }}</span>
+                <a-tooltip placement="topLeft" :title="messageInfo.content.title">
+                  <span>{{ messageInfo.content.title }}</span>
                 </a-tooltip>
 
                 <div class="file-option">
@@ -107,7 +104,6 @@
 
 <script>
 import { toWeiXinString } from '@/utils/util'
-import { mixinSecret } from '@/utils/mixin'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -133,7 +129,6 @@ export default {
       previewVisible: false
     }
   },
-  mixins: [mixinSecret],
   computed: {
     ...mapGetters(['userInfo'])
   },
@@ -336,7 +331,7 @@ export default {
                 margin-right: 5px;
               }
               &-info {
-                max-width: 185px;
+                width: 185px;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
