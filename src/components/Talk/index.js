@@ -1,3 +1,5 @@
+// 这个组件必须最先引入，否则会报错
+import MessagePiece from './MessagePiece'
 import MemberBox from './contacts/MemberBox'
 // 抽屉组件
 import TalkSetting from './drawers/TalkSetting'
@@ -17,8 +19,9 @@ import Face from './Face'
 import ContactsItem from './ContactsItem'
 
 export {
+  // 消息展示组件
+  MessagePiece,
   MemberBox,
-
   // 研讨设置
   TalkSetting,
   // 研讨历史
@@ -45,5 +48,6 @@ export {
   // 群组信息组件
   GroupInfo,
   Face,
+  // 联系人项
   ContactsItem
 }

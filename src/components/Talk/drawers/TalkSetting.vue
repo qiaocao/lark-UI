@@ -3,17 +3,19 @@
     class="unpop-modal"
     title="研讨组设置"
     wrapClassName="talk-setting"
-    :mask="showMask"
-    :width="360"
+    :width="448"
     @close="onClose"
-    :visible="visible"
+    :visible="activeOption=='moreInfo'"
     :wrapStyle="{height: 'calc(100% - 108px)',overflow: 'auto',paddingBottom: '108px', marginTop: '64px' }"
-    getContainer="#talkSetting"
+    :getContainer="mountEle"
+    :maskClosable="true"
+    :closable="false"
   >
     <div class="talk-setting" ref="settingDrawer">
       <a-row :gutter="8" class="group-setting-row">
         <a-col :span="6">
           <span class="group-setting-title">组名称:</span>
+          <i>{{ setting.name }}</i>
         </a-col>
         <a-col :span="10">
           <span class="group-setting-content">
@@ -141,6 +143,7 @@
 <script>
 const data = ['1', '2', '1', '2', '1', '2']
 export default {
+  name: 'MoreInfo',
   data () {
     return {
       showMask: false,
@@ -148,19 +151,34 @@ export default {
       text: 'caonima',
       teamMembersNum: 12,
       data,
-      visible: false,
+      // visible: false,
       setting: {}
     }
   },
+  watch: {
+    // activeOption (newValue) {
+    //   // debugger
+    //   if (newValue === 'moreInfo') {
+    //     console.log('在这里加载数据')
+    //     this.$http.get('/talk/talk-setting', {
+    //     }).then(res => {
+    //       this.setting = res.result.data
+    //     })
+    //   }
+    // }
+  },
+  created () {
+    // debugger
+  },
   methods: {
-    showSetting (talkId) {
-      this.visible = true
-      this.$http.get('/talk/talk-setting', {
-        params: talkId
-      }).then(res => {
-        this.setting = res.result
-      })
-    },
+    // showSetting (talkId) {
+    //   this.visible = true
+    //   this.$http.get('/talk/talk-setting', {
+    //     params: talkId
+    //   }).then(res => {
+    //     this.setting = res.result
+    //   })
+    // },
     handleChange (value) {
       console.log(value)
       this.text = value
@@ -177,15 +195,27 @@ export default {
     },
     onClose () {
       this.visible = false
+      this.$emit('closeDrawer')
     },
     addMember () {
 
     }
   },
   props: {
-    talk: {
+    // talk: {
+    //   type: String,
+    //   default: ''
+    // },
+    /** 抽屉挂载的元素 */
+    mountEle: {
       type: String,
-      default: ''
+      default: '.conv-box',
+      required: false
+    },
+    activeOption: {
+      type: String,
+      default: '',
+      required: true
     }
   }
 }

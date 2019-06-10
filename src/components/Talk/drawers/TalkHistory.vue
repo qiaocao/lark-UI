@@ -1,7 +1,7 @@
 <template>
   <!-- 聊天记录的抽屉 -->
   <a-drawer
-    id="sss"
+    id="ss"
     title="聊天记录"
     placement="right"
     :getContainer="mountEle"
@@ -10,7 +10,7 @@
     :closable="false"
     @close="onClose"
     :visible="activeOption=='talkHistory'"
-    ref="historyDrawer"
+    ref="ss"
     v-if="hackReset"
   >
     <a-input-search
@@ -32,9 +32,12 @@
         <div class="secret" style="margin: 6px 0 0 20px">
           <a-tag color="orange" v-if="item.Concentrated === 'secret'">秘密</a-tag>
           <a-tag color="tomato" v-if="item.Concentrated === 'top-secret'">机密</a-tag>
-          <a-tag color v-if="item.Concentrated === 'no-secret'">非密</a-tag>
+          <a-tag color="" v-if="item.Concentrated === 'no-secret'">非密</a-tag>
         </div>
       </div>
+    </div>
+    <div class="login_img">
+      <a-spin/>
     </div>
   </a-drawer>
 </template>
@@ -56,13 +59,15 @@ export default {
   },
   data () {
     return {
+      aa: '1',
       flag: true,
       items: [],
       color: '',
       timer: null,
       // changeTimer: null,
       valData: '',
-      hackReset: true
+      hackReset: true,
+      visible: false
     }
   },
   watch: {
@@ -76,11 +81,14 @@ export default {
   computed: {},
   created () {},
   mounted () {
-    window.addEventListener('scroll', (this.lazyLoading, this.srcollBottom), true)
+    const a = this.$refs.getHistory
+    // a.addEventListener('scroll', (this.lazyLoading))
+    window.addEventListener('scroll', (this.lazyLoading), true)
   },
   methods: {
     /** 抽屉关闭时触发closeDrawer事件 */
     onClose () {
+      this.visible = false
       this.$emit('closeDrawer')
     },
     isCurrent () {
@@ -128,7 +136,10 @@ export default {
       if (scrollTop + clientHeight >= scrollHeight) {
         clearTimeout(this.timer)
         this.timer = setTimeout(() => {
-          this.getHistory()
+          if (this.activeOption === 'talkHistory') {
+            this.getHistory()
+            console.log('000', '111')
+          }
         }, 1200)
       } else {
       }

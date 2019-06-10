@@ -101,7 +101,9 @@ export default {
       if (scrollTop + clientHeight + 10 >= scrollHeight) {
         clearTimeout(this.timer)
         this.timer = setTimeout(() => {
-          this.getHistory()
+          if (this.activeOption === 'markMessage') {
+            this.getHistory()
+          }
         }, 1200)
       } else {
       }
