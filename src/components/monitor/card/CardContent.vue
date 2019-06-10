@@ -6,7 +6,27 @@
         :dataSource="listData"
         class="card-list"
       >
-        <a-list-item style="padding: 12px 21px 12px 21px" slot="renderItem" slot-scope="item">{{ item }}</a-list-item>
+        <a-list-item style="padding: 3px 21px 3px 21px" slot="renderItem" slot-scope="item">
+          <a-list-item-meta v-if="item.type=='message'" :description="item.detail">
+            <div slot="title">{{ item.title }}</div>
+            <a-avatar slot="avatar" :src="item.avatar" />
+          </a-list-item-meta>
+
+          <a-list-item-meta v-else-if="item.type=='notice'" :description="item.detail">
+            <a-tag v-if="item.level=='new'" color="red">{{ item.level }}</a-tag>
+            <div slot="title">{{ item.title }}</div>
+            <a-avatar slot="avatar" :src="item.avatar" />
+          </a-list-item-meta>
+          <a-list-item-meta v-else-if="item.type=='todos'" :description="item.detail">
+            <div slot="title">{{ item.title }}</div>
+            <a-avatar slot="avatar" :src="item.avatar" />
+          </a-list-item-meta>
+          <a-list-item-meta v-else-if="item.type=='collection'" :description="item.detail">
+            <div slot="title">{{ item.title }}</div>
+            <a-avatar slot="avatar" :src="item.avatar" />
+          </a-list-item-meta>
+          <div>{{ item.date|timeFormat }}</div>
+        </a-list-item>
       </a-list>
     </div>
     <div v-else style="margin: 40px auto 0 auto;text-align: center;" class="card-content">
@@ -16,6 +36,7 @@
   </div>
 </template>
 <script>
+import { toWeiXinString } from '@/utils/util'
 export default {
   name: 'CardContent',
   data () {
@@ -31,6 +52,7 @@ export default {
       required: true
     }
   },
+  filters: { timeFormat: toWeiXinString },
   mounted () {
     console.log('this.listData')
     console.log(this.listData)
