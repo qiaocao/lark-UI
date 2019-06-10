@@ -33,7 +33,7 @@
       :columns="columns"
       :data="loadData"
     >
-    <!--TODO 目前只提供了按角色查询权限的接口，这部分提供方法后再做
+      <!--TODO 目前只提供了按角色查询权限的接口，这部分提供方法后再做
       <div
         slot="expandedRowRender"
         slot-scope="record"
@@ -172,7 +172,6 @@
 <script>
 import { STable } from '@/components'
 import { getRoleList, getRolePermission, delRole, disabledRole, updateRole, updateRolePermission } from '@/api/admin'
-import { axios } from '../../utils/request';
 export default {
   name: 'Rolelist',
   components: {
@@ -233,7 +232,7 @@ export default {
       rolePerMap: new Map(),
       rolePermissions: [],
       detailModel: false,
-      tempSelected:[]
+      tempSelected: []
     }
   },
   created () {
@@ -243,7 +242,7 @@ export default {
      * 为了解决checkgroup无法点击的问题
      */
     checkChange (a) {
-      for(var i in this.tempSelected){
+      for (var i in this.tempSelected) {
         this.mdl.permissions[i].selected = this.tempSelected[i]
         // 遍历权限list 修改defaultChecked值
         const setlist = this.mdl.permissions[i].actionEntitySetList

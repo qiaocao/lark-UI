@@ -1,6 +1,6 @@
 // eslint-disable-next-line
 import { UserLayout, BasicLayout, RouteView, BlankLayout, PageView, GeneralView } from '@/components/layouts'
-// import { bxAnaalyse } from '@/core/icons'
+import { RecentContact } from '@/utils/talk'
 
 export const asyncRouterMap = [
 
@@ -46,7 +46,16 @@ export const asyncRouterMap = [
             path: '/talk/ChatPanel',
             name: 'ChatPanel',
             component: () => import('@/views/talk/ChatPanel'),
-            meta: { title: '研讨面板', keepAlive: true, permission: ['talk'], hidden: true }
+            meta: { title: '研讨面板', keepAlive: true, permission: ['talk'], hidden: true },
+            children: [
+              {
+                path: '/talk/ChatPanel/ChatBox',
+                name: 'ChatBox',
+                component: () => import('@/views/talk/ChatBox'),
+                meta: { title: '研讨面板', keepAlive: true, permission: ['talk'], hidden: true },
+                props: (route) => ({ currentTalk: new RecentContact(route.query) })
+              }
+            ]
           }]
       },
       {
@@ -216,7 +225,13 @@ export const asyncRouterMap = [
                 path: '/account/settings/workplace',
                 name: 'WorkPlaceSettings',
                 component: () => import('@/views/account/settings/Workplace'),
-                meta: { title: '工作台设置', hidden: true, keepAlive: true, permission: [ 'user' ] }
+                meta: { title: '卡片设置', hidden: true, keepAlive: true, permission: [ 'user' ] }
+              },
+              {
+                path: '/account/settings/commontool',
+                name: 'CommonToolSettings',
+                component: () => import('@/views/account/settings/CommonTool'),
+                meta: { title: '常用工具设置', hidden: true, keepAlive: true, permission: [ 'user' ] }
               }
             ]
           }
