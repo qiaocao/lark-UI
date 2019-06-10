@@ -82,13 +82,12 @@
             listType="picture"
             class="upload-list-inline"
             :headers="headers"
-            @change="handleChange"
+            @change="handleUpload"
             :openFileDialogOnClick="uploadEnable">
             <a-tooltip placement="top" title="文件上传" :overlayStyle="{fontSize: '12px'}">
               <a-icon style="fontSize: 20px" type="folder" />
             </a-tooltip>
           </a-upload>
-          
         </div>
       </div>
 
@@ -209,6 +208,8 @@ export default {
       uploadEnable: true,
       // 文件上传时的请求头部
       headers: { authorization: 'authorization-text', 'Access-Control-Allow-Origin': '*' },
+      // 已上传的文件列表
+      uploadedFileList: [],
 
       imgFormat: ['jpg', 'jpeg', 'png', 'gif'],
       fileFormat: ['doc', 'docx', 'jpg', 'jpeg', 'png', 'gif', 'xls', 'xlsx', 'pdf', 'gif', 'exe', 'msi', 'swf', 'sql', 'apk', 'psd']
@@ -263,15 +264,7 @@ export default {
     })
   },
   methods: {
-    handleChange (info) {
-      if (info.file.status !== 'uploading') {
-        console.log(info.file, info.fileList)
-      }
-      if (info.file.status === 'done') {
-        this.$message.success(`${info.file.name} file uploaded successfully`)
-      } else if (info.file.status === 'error') {
-        this.$message.error(`${info.file.name} file upload failed.`)
-      }
+    handleUpload (info) {
     },
     /**
      * 添加表情
