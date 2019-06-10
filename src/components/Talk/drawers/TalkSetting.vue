@@ -15,7 +15,7 @@
       <a-row :gutter="8" class="group-setting-row">
         <a-col :span="6">
           <span class="group-setting-title">组名称:</span>
-          <i>{{ setting.name }}</i>
+          <span>{{ setting.title }}</span>
         </a-col>
         <a-col :span="10">
           <span class="group-setting-content">
@@ -35,7 +35,7 @@
             <a @click="() => cancel()">取消</a>
           </span>
           <span v-else>
-            <a class="edit" @click="() => edit()">修改</a>
+            <a class="edit" @click="() => edit()"></a><!-- 修改 -->
           </span>
         </a-col>
       </a-row>
@@ -53,7 +53,7 @@
             <a @click="() => cancel()">取消</a>
           </span>
           <span v-else>
-            <a class="edit" @click="() => edit()">修改</a>
+            <a class="edit" @click="() => edit()"></a><!-- 修改 -->
           </span>
         </a-col>
       </a-row>
@@ -156,19 +156,21 @@ export default {
     }
   },
   watch: {
-    // activeOption (newValue) {
-    //   // debugger
-    //   if (newValue === 'moreInfo') {
-    //     console.log('在这里加载数据')
-    //     this.$http.get('/talk/talk-setting', {
-    //     }).then(res => {
-    //       this.setting = res.result.data
-    //     })
-    //   }
-    // }
+    activeOption (newValue) {
+      if (newValue === 'moreInfo') {
+        console.log('在这里加载数据')
+        this.$http.get('/talk/talk-setting', {
+        }).then(res => {
+          const datas = res.result.data
+          this.setting = datas.map((item) => {
+            console.log('111', item)
+            return item
+          })
+        })
+      }
+    }
   },
   created () {
-    // debugger
   },
   methods: {
     // showSetting (talkId) {
