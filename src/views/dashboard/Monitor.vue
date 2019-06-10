@@ -4,7 +4,7 @@
       <grid-layout
         :layout.sync="cardList"
         :col-num="2"
-        :row-height="52"
+        :row-height="61"
         :max-rows="12"
         :is-draggable="true"
         :is-resizable="false"
@@ -31,8 +31,25 @@
     </div>
     <!--这个地方放置最近访问-->
 
-    <footer-tool-bar :style="{height:'64px', width: isSideMenu() && isDesktop() ? `calc(100% - ${sidebarOpened ? 256 : 80}px)` : '100%'}">
-
+    <footer-tool-bar :style="{height:'72px', width: isSideMenu() && isDesktop() ? `calc(100% - ${sidebarOpened ? 256 : 80}px)` : '100%'}">
+      <div class="tool-list">
+        <div class="tool-item">
+          <img src="/tools/Icon-PDM.png" width="40" height="40" alt="PDM" title="项目数据管理系统"/>
+          <div class="tool-name">项目数据管理系统</div>
+        </div>
+        <div class="tool-item">
+          <img src="/tools/Icon-MPM.png" width="40" height="40" alt="MPM" title="项目管理系统"/>
+          <div class="tool-name">项目管理系统</div>
+        </div>
+        <div class="tool-item">
+          <img src="/tools/Icon-OA.png" width="40" height="40" alt="OA" title="协同办公系统"/>
+          <div class="tool-name">协同办公系统</div>
+        </div>
+        <div class="tool-item">
+          <img src="/tools/Icon-TDM.png" width="40" height="40" alt="TDM" title="试验数据管理系统"/>
+          <div class="tool-name">试验数据管理系统</div>
+        </div>
+      </div>
     </footer-tool-bar>
   </div>
 </template>
@@ -130,5 +147,22 @@ export default {
         }
     }
   }
+.tool-list{
+  margin-left: 64px;
+  .tool-item{
+    width: 52px;
+    margin-left: 12px;
+    text-align:center;
+    font-size:8px;
+    text-overflow: ellipsis;
+    float: left;
+    .tool-name{
+      overflow: hidden;/*超出部分隐藏*/
+      white-space: nowrap;/*不换行*/
+      text-overflow:ellipsis;/*超出部分文字以...显示*/
+      margin-top:-26px;
+    }
+  }
+}
 
 </style>
