@@ -6,7 +6,25 @@
         :dataSource="listData"
         class="card-list"
       >
-        <a-list-item style="padding: 12px 21px 12px 21px" slot="renderItem" slot-scope="item">{{ item }}</a-list-item>
+        <a-list-item style="padding: 12px 21px 12px 21px" slot="renderItem" slot-scope="item">
+          <a-list-item-meta v-if="item.type=='message'" :description="item.detail">
+            {{ item.title }}
+            <a-avatar slot="avatar" :src="item.avatar" />
+          </a-list-item-meta>
+          <a-list-item-meta v-else-if="item.type=='notice'" :description="item.detail">
+            <a-tag v-if="item.level=='new'" color="red">{{ item.level }}</a-tag>
+            {{ item.title }}
+            <a-avatar slot="avatar" :src="item.avatar" />
+          </a-list-item-meta>
+          <a-list-item-meta v-else-if="item.type=='todo'" :description="item.detail">
+            {{ item.title }}
+            <a-avatar slot="avatar" :src="item.avatar" />
+          </a-list-item-meta>
+          <a-list-item-meta v-else-if="item.type=='collection'" :description="item.detail">
+            {{ item.title }}
+            <a-avatar slot="avatar" :src="item.avatar" />
+          </a-list-item-meta>
+        </a-list-item>
       </a-list>
     </div>
     <div v-else style="margin: 40px auto 0 auto;text-align: center;" class="card-content">

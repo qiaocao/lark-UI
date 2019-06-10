@@ -88,7 +88,7 @@
               <a-icon style="fontSize: 20px" type="folder" />
             </a-tooltip>
           </a-upload>
-          
+
         </div>
       </div>
 
