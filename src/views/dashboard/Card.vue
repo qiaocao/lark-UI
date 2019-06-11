@@ -17,7 +17,7 @@
         <a href="#"><a-icon type="ellipsis" /></a>
       </a-popover>
       <div v-if="content.title == '待办事项'">
-
+        <d-todo/>
       </div>
       <div v-else>
         <card-content :listData="contentData"/>
@@ -30,10 +30,12 @@
 </template>
 <script>
 import CardContent from '@/components/monitor/card/CardContent'
+import DTodo from '@/components/monitor/todo/Todo'
 export default {
   name: 'Card',
   components: {
-    CardContent
+    CardContent,
+    DTodo
   },
   data () {
     return {

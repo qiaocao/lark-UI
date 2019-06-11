@@ -81,8 +81,6 @@ export default {
   computed: {},
   created () {},
   mounted () {
-    const a = this.$refs.getHistory
-    // a.addEventListener('scroll', (this.lazyLoading))
     window.addEventListener('scroll', (this.lazyLoading), true)
   },
   methods: {
