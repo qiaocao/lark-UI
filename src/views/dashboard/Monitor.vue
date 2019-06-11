@@ -4,7 +4,7 @@
       <grid-layout
         :layout.sync="cardList"
         :col-num="2"
-        :row-height="52"
+        :row-height="61"
         :max-rows="12"
         :is-draggable="true"
         :is-resizable="false"
