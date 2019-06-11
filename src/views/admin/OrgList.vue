@@ -493,7 +493,7 @@ export default {
       let str = JSON.stringify(value)
       str = str.replace(/id/g, 'key').replace(/label/g, 'title')
       return JSON.parse(str)
-    },
+    }
   }
 }
 </script>

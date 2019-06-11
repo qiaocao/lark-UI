@@ -48,8 +48,8 @@
                 <a-col :span="6">
                   <span class="table-page-search-submitButtons">
                     <a-button type="primary" @click="searchUser">查询</a-button>
-                    <a-button type="primary" style="margin-left: 8px" @click="openEditModal('','1')">新增用户</a-button>
                     <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
+                    <a-button type="primary" style="margin-left: 30px" @click="openEditModal('','1')">新增用户</a-button>
                   </span>
                 </a-col>
               </a-row>
@@ -471,6 +471,7 @@ export default {
           ).then(
             res => {
               if (res.status === 200) {
+                _this.$refs.stable.refresh(true)
                 _this.$notification['success']({
                   message: '删除成功',
                   duration: 2
