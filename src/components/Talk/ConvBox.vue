@@ -173,7 +173,7 @@ import { mapGetters } from 'vuex'
 import uuidv4 from 'uuid/v4'
 
 export default {
-  name: 'UserChat',
+  name: 'ConvBox',
   components: {
     MessagePiece,
     VEmojiPicker,
@@ -357,7 +357,8 @@ export default {
      */
     handleSendSecretLevel (item) {
       item = item ? item.key : 60
-      const allSendMenu = [60, 70, 80]
+      // 当前用户可发送的全部密级
+      const allSendMenu = [60, 70, 80].filter(item => item <= this.userInfo.secretLevel)
       // 当前研讨的密级
       const talkSecretLevel = this.chatInfo.secretLevel
       // 设置发送按钮的密级
