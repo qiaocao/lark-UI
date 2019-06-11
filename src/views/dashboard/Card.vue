@@ -16,7 +16,7 @@
         </template>
         <a href="#"><a-icon type="ellipsis" /></a>
       </a-popover>
-      <div v-if="content.title == '待办事项'" style="overflow-y:auto;overflow-x:hidden;">
+      <div v-if="content.title == '待办事项'" style="height:295px; overflow:hidden;">
         <d-todo/>
       </div>
       <div v-else>
