@@ -16,7 +16,7 @@
         </template>
         <a href="#"><a-icon type="ellipsis" /></a>
       </a-popover>
-      <div v-if="content.title == '待办事项'">
+      <div v-if="content.title == '待办事项'" style="overflow-y:auto;overflow-x:hidden;">
         <d-todo/>
       </div>
       <div v-else>
@@ -41,7 +41,7 @@ export default {
     return {
       loading: true,
       headStyle: { height: '52px', 'border-top': '4px solid #1890ff', 'border-bottom': 'none' },
-      bodyStyle: { padding: '0' },
+      bodyStyle: { padding: '0', height: '295px' },
       content: this.cardData,
       contentData: []
     }
