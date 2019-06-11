@@ -343,7 +343,11 @@ export default {
         { group: true, name: 'markMessage', message: '标记信息', type: 'tags' },
         { group: false, name: 'talkHistory', message: '聊天内容', type: 'file-text' },
         { group: false, name: 'talkFile', message: '文件', type: 'folder-open' },
-        { group: false, name: 'moreInfo', message: '更多', type: 'ellipsis' }]
+        { group: true, name: 'moreInfo', message: '更多', type: 'ellipsis' },
+        { group: false, name: 'personMoreInfo', message: '更多', type: 'ellipsis' }]
+      if (isGroup === true) {
+        optionList.pop()
+      }
       return isGroup ? optionList : optionList.filter(item => !item.group)
     },
     /**
