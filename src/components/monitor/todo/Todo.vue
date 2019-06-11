@@ -1,54 +1,54 @@
 <template>
-  <div>
-    <div class="todoapp">
-      <div class="header-todo">
+  <div class="todoapp">
+    <div class="header-todo">
+      <input id="toggle-all" class="toggle-all" type="checkbox" v-model="allDone">
+      <label for="toggle-all"></label>
+      <div style="padding-left: 56px">
         <input
           class="new-todo"
-          autofocus
           autocomplete="off"
           placeholder="有什么要完成的计划?"
           v-model="newTodo"
-          @keyup.enter="addTodo">
+          @keyup.enter="addTodo"/>
       </div>
-      <section class="main" v-show="todos.length" v-cloak>
-        <input id="toggle-all" class="toggle-all" type="checkbox" v-model="allDone">
-        <label for="toggle-all"></label>
-        <ul class="todo-list">
-          <li
-            v-for="todo in filteredTodos"
-            class="todo"
-            :key="todo.id"
-            :class="{ completed: todo.completed, editing: todo == editedTodo }">
-            <div class="view">
-              <input class="toggle" type="checkbox" v-model="todo.completed">
-              <label @dblclick="editTodo(todo)">{{ todo.title }}</label>
-              <button class="destroy" @click="removeTodo(todo)"></button>
-            </div>
-            <input
-              class="edit"
-              type="text"
-              v-model="todo.title"
-              v-todo-focus="todo == editedTodo"
-              @blur="doneEdit(todo)"
-              @keyup.enter="doneEdit(todo)"
-              @keyup.esc="cancelEdit(todo)">
-          </li>
-        </ul>
-      </section>
-      <footer class="footer" v-show="todos.length" v-cloak>
-        <span class="todo-count">
-          <strong>{{ remaining }}</strong> {{ remaining | pluralize }} 未完
-        </span>
-        <ul class="filters">
-          <li><a href="#/all" :class="{ selected: visibility == 'all' }">全部</a></li>
-          <li><a href="#/active" :class="{ selected: visibility == 'active' }">未完成</a></li>
-          <li><a href="#/completed" :class="{ selected: visibility == 'completed' }">已完成</a></li>
-        </ul>
-        <button class="clear-completed" @click="removeCompleted" v-show="todos.length > remaining">
-          清除
-        </button>
-      </footer>
     </div>
+    <section class="main-todo" v-show="todos.length" v-cloak>
+
+      <ul class="todo-list">
+        <li
+          v-for="todo in filteredTodos"
+          class="todo"
+          :key="todo.id"
+          :class="{ completed: todo.completed, editing: todo == editedTodo }">
+          <div class="view">
+            <input class="toggle" type="checkbox" v-model="todo.completed">
+            <label @dblclick="editTodo(todo)">{{ todo.title }}</label>
+            <button class="destroy" @click="removeTodo(todo)"></button>
+          </div>
+          <input
+            class="edit"
+            type="text"
+            v-model="todo.title"
+            v-todo-focus="todo == editedTodo"
+            @blur="doneEdit(todo)"
+            @keyup.enter="doneEdit(todo)"
+            @keyup.esc="cancelEdit(todo)">
+        </li>
+      </ul>
+    </section>
+    <footer class="footer" v-show="todos.length" v-cloak>
+      <span class="todo-count">
+        <strong>{{ remaining }}</strong> {{ remaining | pluralize }} 未完
+      </span>
+      <ul class="filters">
+        <li><a href="#/all" :class="{ selected: visibility == 'all' }">all</a></li>
+        <li><a href="#/active" :class="{ selected: visibility == 'active' }">active</a></li>
+        <li><a href="#/completed" :class="{ selected: visibility == 'completed' }">completed</a></li>
+      </ul>
+      <button class="clear-completed" @click="removeCompleted" v-show="todos.length > remaining">
+        清除
+      </button>
+    </footer>
   </div>
 </template>
 <script>
@@ -120,7 +120,7 @@ export default {
   },
   filters: {
     pluralize: function (n) {
-      return n === 1 ? 'item' : 'items'
+      return n === 1 ? '个' : '个'
     }
   },
   methods: {
@@ -177,11 +177,6 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-html,
-body {
-	margin: 0;
-	padding: 0;
-}
 
 button {
 	margin: 0;
@@ -213,7 +208,7 @@ body {
 }
 
 .header-todo{
-  height: 28px;
+  height: 30px;
 }
 :focus {
 	outline: 0;
@@ -224,10 +219,13 @@ body {
 }
 
 .todoapp {
+  height: 100%;
 	background: #fff;
-	margin: 0 0 40px 0;
+	margin: 0;
   position: relative;
-  display: 'flex'
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
 }
 
 .todoapp input::-webkit-input-placeholder {
@@ -266,14 +264,14 @@ body {
 	position: relative;
 	margin: 0;
 	width: 100%;
-	font-size: 16px;
+	font-size: 18px;
 	font-family: inherit;
 	font-weight: inherit;
 	line-height: 1.4em;
 	border: 0;
 	color: inherit;
-	padding: 6px;
-	border: 1px solid #999;
+	// padding: 6px;
+	border: 1px solid rgb(117, 117, 117);
 	box-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
 	box-sizing: border-box;
 	-webkit-font-smoothing: antialiased;
@@ -281,17 +279,21 @@ body {
 }
 
 .new-todo {
-	padding: 3px 3px 3px 60px;
+  height: 32px;
+	padding: 0px 3px 3px 3px;
 	border: none;
 	background: rgba(0, 0, 0, 0.003);
 	box-shadow: inset 0 -2px 1px rgba(0,0,0,0.03);
 }
 
-.main {
+.main-todo {
 	position: relative;
 	z-index: 2;
   border-top: 1px solid #e6e6e6;
-  display: 'flex'
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: auto;
 }
 
 .toggle-all {
@@ -306,10 +308,10 @@ body {
 	height: 30px;
 	font-size: 0;
 	position: absolute;
-	top: -51px;
-	left: 12px;
+	top: -24px;
+	left: 9px;
 	-webkit-transform: rotate(90deg);
-	transform: rotate(90deg);
+  transform: rotate(90deg);
 }
 
 .toggle-all + label:before {
@@ -358,13 +360,12 @@ body {
 .todo-list li .toggle {
 	text-align: center;
 	width: 40px;
-	/* auto, since non-WebKit browsers doesn't support input styling */
 	height: auto;
 	position: absolute;
 	top: 0;
 	bottom: 0;
 	margin: auto 0;
-	border: none; /* Mobile Safari */
+	border: none;
 	-webkit-appearance: none;
 	appearance: none;
 }
@@ -374,10 +375,6 @@ body {
 }
 
 .todo-list li .toggle + label {
-	/*
-		Firefox requires `#` to be escaped - https://bugzilla.mozilla.org/show_bug.cgi?id=922433
-		IE and Edge requires *everything* to be escaped to render, so we do that instead of just the `#` - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/7157459/
-	*/
 	background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%22-10%20-18%20100%20135%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2250%22%20fill%3D%22none%22%20stroke%3D%22%23ededed%22%20stroke-width%3D%223%22/%3E%3C/svg%3E');
 	background-repeat: no-repeat;
 	background-position: center left;
@@ -437,8 +434,8 @@ body {
 
 .footer {
 	color: #777;
-	padding: 10px 15px;
-	height: 20px;
+	padding: 3px 15px;
+	height: 27px;
 	text-align: center;
 	border-top: 1px solid #e6e6e6;
 }
@@ -527,30 +524,6 @@ html .clear-completed:active {
 	text-decoration: underline;
 }
 
-/*
-	Hack to remove background from Mobile Safari.
-	Can't use it globally since it destroys checkboxes in Firefox
-*/
-@media screen and (-webkit-min-device-pixel-ratio:0) {
-	.toggle-all,
-	.todo-list li .toggle {
-		background: none;
-	}
-
-	.todo-list li .toggle {
-		height: 40px;
-	}
-}
-
-@media (max-width: 430px) {
-	.footer {
-		height: 50px;
-	}
-
-	.filters {
-		bottom: 10px;
-	}
-}
 hr {
 	margin: 20px 0;
 	border: 0;
