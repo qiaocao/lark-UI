@@ -7,7 +7,7 @@
     <talk-setting :activeOption="activeOption" @closeDrawer="triggerDrawer"></talk-setting>
     <talk-file :activeOption="activeOption" @closeDrawer="triggerDrawer"></talk-file>
     <mark-message :activeOption="activeOption" @closeDrawer="triggerDrawer"></mark-message>
-    <more-info :activeOption="activeOption" @closeDrawer="triggerDrawer"></more-info>
+    <more-info :activeOption="activeOption" @closeDrawer="triggerDrawer"></more-info>-->
     <a-layout-header class="conv-box-header">
       <a-row type="flex" justify="space-between">
         <a-col :span="14" class="conv-title">
@@ -161,9 +161,8 @@
 
 <script>
 import { MessagePiece, TalkHistory, MoreInfo, GroupNotice, TalkSetting, MarkMessage, TalkFile } from '@/components/Talk'
+import { LandingStatus } from '@/utils/constants'
 // 引入密级常量
-import { mixinSecret } from '@/utils/mixin'
-import { getTalkHistory } from '@/api/talk'
 import { SocketMessage, Tweet } from '@/utils/talk'
 import { format, extensionStr } from '@/utils/util'
 import { getTalkHistory } from '@/api/talk'

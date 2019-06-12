@@ -16,8 +16,8 @@
         </template>
         <a href="#"><a-icon type="ellipsis" /></a>
       </a-popover>
-      <div v-if="content.title == '待办事项'">
-
+      <div v-if="content.title == '待办事项'" style="height:295px; overflow:hidden;">
+        <d-todo/>
       </div>
       <div v-else>
         <card-content :listData="contentData"/>
@@ -30,16 +30,18 @@
 </template>
 <script>
 import CardContent from '@/components/monitor/card/CardContent'
+import DTodo from '@/components/monitor/todo/Todo'
 export default {
   name: 'Card',
   components: {
-    CardContent
+    CardContent,
+    DTodo
   },
   data () {
     return {
       loading: true,
       headStyle: { height: '52px', 'border-top': '4px solid #1890ff', 'border-bottom': 'none' },
-      bodyStyle: { padding: '0' },
+      bodyStyle: { padding: '0', height: '295px' },
       content: this.cardData,
       contentData: []
     }
