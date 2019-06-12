@@ -14,15 +14,7 @@
         </div>
       </li>
       <li v-for="(item,index) in NewItems" class="history_cotent" :key="index" :value="item.value">
-        <!-- <a-list
-          class="demo-loadmore-list"
-          :loading="loading"
-          itemLayout="horizontal"
-          :dataSource="data"
-        > -->
 
-        <!-- <a-list-item slot="renderItem" slot-scope="NewItems"> v-for="(item,index) in NewItems" :key="index"  -->
-        <!-- <a slot="actions">edit</a> -->
         <a-list-item-meta class="file_name">
           <a class="file_a" slot="title">{{ item.name.last }}</a>
           <a-avatar slot="avatar" :src="item.url"/>
@@ -38,8 +30,6 @@
         </a>
         <a class="down">下载</a>
 
-        <!-- </a-list-item> -->
-        <!-- </a-list> -->
       </li>
       <li>
         <div
@@ -65,7 +55,6 @@ export default {
       items: [],
       data: [],
       loading: false,
-      busy: false,
       loadingMore: false,
       showLoadingMore: true,
       item: []
@@ -79,9 +68,6 @@ export default {
       this.data = res.results
     })
   },
-  // beforeDestroy () {
-  //   this.activeOption = ''
-  // },
   methods: {
     onSearch (value) {
       console.log(value)
@@ -124,7 +110,6 @@ export default {
 
 <style lang="less" scope>
 ul{
-  // height: 100%;
   margin-bottom: 100px;
   overflow: hidden;
   .history_box{

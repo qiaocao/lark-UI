@@ -35,12 +35,7 @@ export default {
   },
   data () {
     return {
-      data: [],
-      loading: false,
-      busy: false,
-      loadingMore: false,
-      showLoadingMore: true,
-      item: []
+      data: []
     }
   },
   created () {},

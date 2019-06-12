@@ -79,9 +79,8 @@ export default {
         this.timer = setTimeout(() => {
           if (this.activeOption === 'talkHistory') {
             this.getHistory()
-            console.log('000', '111')
           }
-        }, 1200)
+        }, 1000)
       } else {
       }
     }

@@ -39,16 +39,11 @@ export default {
   },
   data () {
     return {
-      aa: '1',
-      flag: true,
       items: [],
       color: '',
-      timer: null,
       // changeTimer: null,
-      valData: '',
       hackReset: true,
-      visible: false,
-      searchVal: ''
+      visible: false
     }
   },
   components: {
