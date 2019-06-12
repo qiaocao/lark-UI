@@ -16,26 +16,48 @@
         </template>
         <a href="#"><a-icon type="ellipsis" /></a>
       </a-popover>
-      <div v-if="content.title == '待办事项'" style="height:295px; overflow:hidden;">
-        <d-todo/>
-      </div>
-      <div v-else>
-        <card-content :listData="contentData"/>
+      <div v-if="content.type=='info'">
+        <card-content-info :listData="contentData"/>
         <div style="justify-content: center;position: absolute;bottom: 0;width: 100%;">
           <a-button class="footer-more" size="small" ghost block>全部</a-button>
         </div>
+      </div>
+      <div v-else-if="content.type=='react'">
+        <card-content-react :listData="contentData"/>
+        <div style="justify-content: center;position: absolute;bottom: 0;width: 100%;">
+          <a-button class="footer-more" size="small" ghost block>全部</a-button>
+        </div>
+      </div>
+      <div v-else-if="content.type=='activity'">
+        <card-content-activity :listData="contentData"/>
+        <div style="justify-content: center;position: absolute;bottom: 0;width: 100%;">
+          <a-button class="footer-more" size="small" ghost block>全部</a-button>
+        </div>
+      </div>
+      <div v-else-if="content.type=='local'" style="height: 100%">
+        <card-content-local :listData="contentData"/>
+      </div>
+      <div v-else-if="content.type=='graph'">
+        <card-content-graph :listData="contentData"/>
       </div>
     </a-card>
   </div>
 </template>
 <script>
-import CardContent from '@/components/monitor/card/CardContent'
-import DTodo from '@/components/monitor/todo/Todo'
+import CardContentInfo from '@/components/monitor/card/CardContentInfo'
+import CardContentLocal from '@/components/monitor/card/CardContentLocal'
+import CardContentReact from '@/components/monitor/card/CardContentReact'
+import CardContentActivity from '@/components/monitor/card/CardContentActivity'
+import CardContentGraph from '@/components/monitor/card/CardContentGraph'
+
 export default {
   name: 'Card',
   components: {
-    CardContent,
-    DTodo
+    CardContentInfo,
+    CardContentLocal,
+    CardContentReact,
+    CardContentActivity,
+    CardContentGraph
   },
   data () {
     return {
