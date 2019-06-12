@@ -210,7 +210,7 @@ export default {
           console.log('像后台发送websocket请求:')
           console.log(new SocketMessage({ code: 4, data: values }).toString())
           try {
-            this.SocketGlobal.send(new SocketMessage(4, values).toString())
+            this.SocketGlobal.send(new SocketMessage({ code: 4, data: values }).toString())
           } catch (error) {
             this.$message.error('创建失败，请稍后再试', 3)
           }
