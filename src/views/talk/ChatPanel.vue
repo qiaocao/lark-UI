@@ -168,6 +168,7 @@ export default {
       activeKey: '1',
       // 是否显示创建研讨的模态框
       showCreateModal: () => false,
+
       searchObj: {
         searchValue: ''
       },
@@ -352,12 +353,12 @@ export default {
   }
 
   // 群组标签页样式
-  .group-contacts-container {
-  }
+  // .group-contacts-container {
+  // }
 
   // 联系人标签页样式
-  .contacts-container {
-  }
+  // .contacts-container {
+  // }
 
   // 让最近 群组 联系人tab页的内容可以滚动的样式
   .tab-content-container {
