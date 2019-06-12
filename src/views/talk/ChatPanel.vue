@@ -29,7 +29,7 @@
         :activeKey="activeKey"
         @change="changePane"
         :tabBarGutter="0"
-        :tabBarStyle="tabStyle"
+        :tabBarStyle="{ margin: '0 20px' }"
         :animated="false"
       >
         <a-tab-pane key="1" forceRender>
@@ -90,7 +90,7 @@
           </span>
 
           <div class="contacts-container tab-content-container">
-            <contacts-box
+            <contacts-tree
               :contactsTree="contactsTree"
               @SelectContacts="showContacts"
               style="paddingLeft: 18px;"
@@ -119,7 +119,6 @@
         <keep-alive>
           <router-view/>
         </keep-alive>
-        <!-- <user-chat :chatInfo="currentTalk"/> -->
       </div>
       <div v-show="activeKey == '2'" class="info-area">
         <group-info :selected="activeGroup" @t="s"></group-info>
@@ -130,20 +129,20 @@
       </div>
     </a-layout>
 
-    <member-model ref="model" @ok="handleSaveOk" @close="handleSaveClose"/>
+    <!-- 创建新的研讨模态框 -->
+    <CreateTalk :showModal="showCreateModal" />
     <SearchRecordModal :searchRecordModalVisible="searchRecordModalVisible"/>
   </a-layout>
 </template>
 
 <script>
 import {
-  Chat as UserChat,
-  Contacts as ContactsBox,
+  ContactsTree,
   ContactsInfo,
   GroupInfo,
   RecentContactsItem,
-  MemberBox as MemberModel,
-  GroupItem
+  GroupItem,
+  CreateTalk
 } from '@/components/Talk'
 
 import SearchInput from './SearchInput'
@@ -153,22 +152,23 @@ import SearchRecordModal from './SearchRecordModal'
 export default {
   name: 'ChatPanel',
   components: {
-    ContactsBox,
+    ContactsTree,
     ContactsInfo,
     GroupInfo,
-    UserChat,
-    MemberModel,
     RecentContactsItem,
     GroupItem,
+    CreateTalk,
     SearchInput,
     SearchArea,
     SearchRecordModal
   },
   data () {
     return {
+      // 当前选中的标签页
       activeKey: '1',
-      // tab标签页的样式
-      tabStyle: { margin: '0 20px' },
+      // 是否显示创建研讨的模态框
+      showCreateModal: () => false,
+
       searchObj: {
         searchValue: ''
       },
@@ -243,11 +243,10 @@ export default {
     changePane (activeKey) {
       this.activeKey = activeKey
     },
-
     handleSaveOk () {},
     /** 发起研讨 */
     startTalk () {
-      console.log('发起研讨')
+      this.showCreateModal = () => true
     },
     handleSaveClose () {},
     /**
