@@ -114,6 +114,10 @@ const axis1Opts = {
         return '9月'
       } else if (val === '24') {
         return '10月'
+      } else if (val === '29') {
+        return '11月'
+      } else if (val === '34') {
+        return '12月'
       }
       return ''
     }

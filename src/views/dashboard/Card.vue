@@ -40,6 +40,9 @@
       <div v-else-if="content.type=='graph'">
         <card-content-graph :listData="contentData"/>
       </div>
+      <div v-else-if="content.type=='intro'">
+        <card-content-intro/>
+      </div>
     </a-card>
   </div>
 </template>
@@ -49,6 +52,7 @@ import CardContentLocal from '@/components/monitor/card/CardContentLocal'
 import CardContentReact from '@/components/monitor/card/CardContentReact'
 import CardContentActivity from '@/components/monitor/card/CardContentActivity'
 import CardContentGraph from '@/components/monitor/card/CardContentGraph'
+import CardContentIntro from '@/components/monitor/card/CardContentIntro'
 
 export default {
   name: 'Card',
@@ -57,7 +61,8 @@ export default {
     CardContentLocal,
     CardContentReact,
     CardContentActivity,
-    CardContentGraph
+    CardContentGraph,
+    CardContentIntro
   },
   data () {
     return {
@@ -75,11 +80,18 @@ export default {
     }
   },
   created () {
-    this.$http.get(this.content.url)
-      .then(res => {
-        this.loading = false
-        this.contentData = res.result.data
-      })
+    if (this.content.type !== 'intro') {
+      this.$http.get(this.content.url)
+        .then(res => {
+          this.loading = false
+          this.contentData = res.result.data
+        })
+    }
+  },
+  mounted () {
+    if (this.content.type === 'intro') {
+      this.loading = false
+    }
   }
 }
 </script>

@@ -9,7 +9,7 @@
         <a-list-item style="padding: 3px 21px 3px 21px" slot="renderItem" slot-scope="item">
           <a-list-item-meta>
             <a-avatar slot="avatar" :src="item.user.avatar"/>
-            <div slot="title">
+            <div slot="title" style="width:240px">
               <span>{{ item.user.nickname }}</span>&nbsp;
               在&nbsp;
               <a href="#">{{ item.project.name }}</a>&nbsp;
