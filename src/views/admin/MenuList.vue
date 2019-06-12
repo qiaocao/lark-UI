@@ -1,0 +1,417 @@
+<template>
+  <a-card :bordered="false">
+    <div class="table-page-search-wrapper">
+      <a-form layout="inline">
+        <a-row :gutter="8" type="flex" justify="end">
+          <a-col :md="5" :sm="24">
+            <a-form-item label="菜单名称">
+              <a-input v-model="queryParam.title"/>
+            </a-form-item>
+          </a-col>
+          <a-col :md="3" :sm="24" :offset="1">
+            <span class="table-page-search-submitButtons">
+              <a-button type="primary" @click="search">查询</a-button>
+              <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
+              <a-button type="primary" style="margin-left: 30px" @click="addMenu()">新增菜单</a-button>
+            </span>
+          </a-col>
+        </a-row>
+      </a-form>
+    </div>
+    <s-table
+      ref="stable"
+      size="default"
+      :columns="columns"
+      :data="loadData"
+    >
+      <span slot="action" slot-scope="text, record">
+        <a @click="detailMenu(record)">详情</a>
+        <a-divider type="vertical" />
+        <a @click="editMenu(record)">编辑</a>
+        <a-divider type="vertical" />
+        <a @click="delMenu(record)">删除</a>
+      </span>
+    </s-table>
+    <a-modal
+      title="操作"
+      style="top: 100px;"
+      :width="800"
+      v-model="visible"
+      @ok="handleOk"
+      :destroyOnClose="true"
+    >
+      <a-form :form="form">
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="菜单名称"
+        >
+          <a-input v-decorator="['title',{rules: [{ required: true, message: '请填写菜单名称' }]}]" :disabled="inDetail"/>
+        </a-form-item>
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="上级菜单"
+          :labelInValue="true"
+        >
+          <a-select
+            size="default"
+            :disabled="inDetail"
+            v-decorator="['parentId',{initialValue:parentId}]"
+          >
+            <a-select-option v-for="menu in menulist" :value="menu.id" :key="menu.id">
+              {{ menu.title }}
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="包含按钮"
+        >
+          <a-row>
+            <a-checkbox-group style="width:100%" @change="checkBoxChange" :defaultValue="chooseDes">
+              <a-row type="flex" justify="start" align="middle" v-for="item in descriptionArr" :key="item">
+                <a-col :span="4"><a-checkbox :value="item">{{ item }}</a-checkbox></a-col>
+                <a-col :span="10">
+                  <a-select
+                    size="default"
+                    :disabled="inDetail"
+                    style="margin-top:10px"
+                    @change="selectChange"
+                    :defaultValue="selectMethod.get(item)===undefined?'':selectMethod.get(item)"
+                  >
+                    <a-select-option v-for="method in methodArr" :key="`${item}-${method}`" >
+                      {{ method }}
+                    </a-select-option>
+                  </a-select>
+                </a-col>
+              </a-row>
+            </a-checkbox-group>
+          </a-row>
+        </a-form-item>
+        <!-- <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="创建人"
+          hasFeedback
+          v-show="inDetail"
+        >
+          <a-input v-decorator="['creator']" :disabled="inDetail"/>
+        </a-form-item>
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="创建时间"
+          hasFeedback
+          v-show="inDetail"
+        >
+          <a-input v-decorator="['createTime']" :disabled="inDetail"/>
+        </a-form-item> -->
+      </a-form>
+    </a-modal>
+  </a-card>
+</template>
+<script>
+import { STable } from '@/components'
+import { getMenuList, getMenuElement, addMenu, updateMenu, delMenu, getMenuListAll, saveMenuElement } from '@/api/admin'
+export default {
+  name: 'MenuList',
+  components: {
+    STable
+  },
+  data () {
+    return {
+      // 父级菜单id
+      parentId: '',
+      visible: false,
+      form: this.$form.createForm(this),
+      // 行信息
+      mdl: {},
+      // 查询参数
+      queryParam: {},
+      inAdd: false,
+      inEdit: false,
+      inDetail: false,
+      // 上级菜单下拉框内容
+      menulist: [],
+      methodArr: ['POST', 'PUT', 'PATCH', 'GET', 'DELETE', 'CONNECT', 'HEAD', 'OPTIONS', 'TRACE'],
+      descriptionArr: ['增加', '修改', '删除', '查询', '上传', '下载', '导入', '导出'],
+      // 选择的描述
+      chooseDes: [],
+      chooseMet: '',
+      // key method value description
+      methodMap: new Map(),
+      descriptions: [],
+      // 绑定在方法下拉框的值
+      selectMethod: new Map(),
+      menuid: '',
+      // 加载数据方法 必须为 Promise 对象
+      loadData: parameter => {
+        return getMenuList(parameter)
+          .then(res => {
+            return res.result
+          })
+      },
+      // 表头
+      columns: [
+        {
+          title: '菜单名称',
+          dataIndex: 'title'
+        },
+        {
+          title: 'uri',
+          dataIndex: 'uri'
+        },
+        {
+          title: '操作',
+          width: '200px',
+          dataIndex: 'action',
+          scopedSlots: { customRender: 'action' }
+        }
+      ],
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 5 }
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 }
+      }
+    }
+  },
+  created () {
+    return getMenuListAll()
+      .then(res => {
+        this.menulist = Object.assign({}, res.result.data)
+      })
+  },
+  methods: {
+    /**
+     * 描述多选框change事件
+     */
+    checkBoxChange (value) {
+      this.chooseDes = value
+      this.descriptions = value
+    },
+    /**
+     * 方法下拉框change事件
+     */
+    selectChange (value, node) {
+      const arr = node.data.key.split('-')
+      this.methodMap.set(arr[0], arr[1])
+    },
+    /**
+     * 保存element信息
+     */
+    saveElement () {
+      const elementList = this.handleElementData()
+      const data = { 'menuId': this.menuid, 'elements': elementList }
+      // 请求后台保存菜单按钮信息
+      return saveMenuElement(data).then(res => {
+        if (res.status === 200) {
+          this.$notification['success']({
+            message: '保存成功',
+            duration: 2
+          })
+          // 关闭编辑框
+          this.visible = false
+          // 刷新列表
+          this.$refs.stable.refresh(true)
+        } else {
+          this.$notification['error']({
+            message: res.message,
+            duration: 4
+          })
+        }
+      }).catch(() =>
+        this.$notification['error']({
+          message: '出现异常，请联系系统管理员',
+          duration: 4
+        })
+      )
+    },
+    /**
+     * 处理多选框和下拉框内容
+     * 将内容整理为后台接收的格式
+     */
+    handleElementData () {
+      const arr = []
+      this.descriptions.forEach(item => {
+        arr.push({ 'method': this.methodMap.get(item), 'description': item })
+      })
+      return arr
+    },
+    /**
+     * 搜索
+     */
+    search () {
+      this.$refs.stable.loadData({}, this.queryParam, {})
+    },
+    /**
+     * 保存
+     * menu，element两个接口
+     */
+    handleOk () {
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          if (this.inAdd) {
+            return addMenu(
+              values
+            ).then(
+              res => {
+                if (res.status === 200) {
+                  this.menuid = res.result.id
+                  this.saveElement()
+                } else {
+                  this.$notification['error']({
+                    message: res.message,
+                    duration: 4
+                  })
+                }
+              }
+            ).catch(() =>
+              this.$notification['error']({
+                message: '出现异常，请联系系统管理员',
+                duration: 4
+              })
+            )
+          } else {
+            values.id = this.menuid
+            return updateMenu(
+              values
+            ).then(
+              res => {
+                if (res.status === 200) {
+                  this.saveElement()
+                } else {
+                  this.$notification['error']({
+                    message: res.message,
+                    duration: 4
+                  })
+                }
+              }
+            ).catch(() =>
+              this.$notification['error']({
+                message: '出现异常，请联系系统管理员',
+                duration: 4
+              })
+            )
+          }
+        }
+      })
+    },
+    /**
+     * 新增菜单
+     */
+    addMenu () {
+      this.inAdd = true
+      this.inEdit = false
+      this.inDetail = false
+      this.bindFormData({})
+    },
+    /**
+     * 菜单查看
+     */
+    detailMenu (record) {
+      this.inAdd = false
+      this.inEdit = false
+      this.inDetail = true
+      this.bindFormData(record)
+    },
+    /**
+     * 编辑菜单
+     */
+    editMenu (record) {
+      this.inAdd = false
+      this.inEdit = true
+      this.inDetail = false
+      this.bindFormData(record)
+      this.menuid = record.id
+    },
+    /**
+     * form表单绑定数据
+     */
+    bindFormData (record) {
+      this.chooseDes = []
+      this.selectMethod = new Map()
+      this.methodMap = new Map()
+      return getMenuListAll()
+        .then(res => {
+          this.menulist = Object.assign({}, res.result.data)
+          if (record.id !== undefined) {
+            return getMenuElement({ 'menuId': record.id }).then(res => {
+              res.result.data.forEach(item => {
+                // 用于初始化绑定组件
+                this.chooseDes.push(item.description)
+                // 用于初始化绑定组件
+                this.selectMethod.set(item.description, item.description + '-' + item.method)
+                // 用于发送到后台请求的数据
+                this.methodMap.set(item.description, item.method)
+              })
+              this.$nextTick(() => {
+                // 表单中绑定信息项
+                this.form.setFieldsValue({
+                  title: record.title,
+                  creator: record.creator,
+                  createTime: record.createTime,
+                  parentId: record.parentId === undefined ? '' : record.parentId + ''
+                })
+              })
+              this.visible = true
+            })
+          }
+          this.visible = true
+        })
+    },
+    /**
+     * 删除菜单
+     */
+    delMenu (record) {
+      const _this = this
+      this.$confirm({
+        title: '警告',
+        content: `确认要删除 ${record.title} 吗?`,
+        okText: '确认',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk () {
+          // 在这里调用删除接口
+          return delMenu(
+            record.id
+          ).then(
+            res => {
+              if (res.status === 200) {
+                _this.$notification['success']({
+                  message: '删除成功',
+                  duration: 2
+                })
+                _this.$refs.stable.refresh(true)
+              } else {
+                _this.$notification['error']({
+                  message: res.message,
+                  duration: 4
+                })
+              }
+            }
+          ).catch(() =>
+            this.$notification['error']({
+              message: '出现异常，请联系系统管理员',
+              duration: 4
+            })
+          )
+        },
+        onCancel: () => {
+          this.$notification['info']({
+            message: '取消删除操作',
+            duration: 4
+          })
+        }
+      })
+    }
+  }
+}
+</script>
+<style>
+
+</style>

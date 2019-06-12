@@ -22,8 +22,9 @@ const api = {
   msg: 'admin/notice',
   upload: '/admin/fileupload',
   getmenu: '/admin/menu/page',
-  getmenuall: '/admin/menu/no-page',
-  menu: '/admin/menu'
+  getmenuall: '/admin/menu/all',
+  menu: '/admin/menu',
+  menuelement: '/admin/menu/element'
 }
 
 export default api
@@ -261,7 +262,7 @@ export function addMenu (parameter) {
   return axios({
     url: api.menu,
     method: 'post',
-    params: parameter
+    data: parameter
   })
 }
 /**
@@ -271,10 +272,9 @@ export function updateMenu (parameter) {
   return axios({
     url: api.menu,
     method: 'put',
-    params: parameter
+    data: parameter
   })
 }
-
 /**
  * 删除菜单
  */
@@ -284,3 +284,24 @@ export function delMenu (parameter) {
     method: 'delete'
   })
 }
+/**
+ * 根据菜单id获取按钮信息
+ */
+export function getMenuElement (parameter) {
+  return axios({
+    url: api.menuelement,
+    method: 'get',
+    params: parameter
+  })
+}
+/**
+ * 根据菜单id获取按钮信息
+ */
+export function saveMenuElement (parameter) {
+  return axios({
+    url: api.menuelement,
+    method: 'post',
+    data: parameter
+  })
+}
+// saveUserOrg
