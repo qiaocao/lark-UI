@@ -168,6 +168,7 @@ export default {
       activeKey: '1',
       // 是否显示创建研讨的模态框
       showCreateModal: () => false,
+
       searchObj: {
         searchValue: ''
       },
