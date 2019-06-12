@@ -166,6 +166,7 @@ export default {
   margin-bottom: 20px;
 }
 .history_box{
-  padding:0
+  padding:0;
+  margin-bottom: 50px
 }
 </style>

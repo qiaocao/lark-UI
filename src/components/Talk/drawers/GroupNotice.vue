@@ -3,7 +3,6 @@
   <a-drawer
     title="群公告"
     placement="right"
-    :getContainer="mountEle"
     :wrapStyle="{marginTop: '64px'}"
     :width="448"
     :closable="false"
