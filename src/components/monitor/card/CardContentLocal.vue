@@ -13,7 +13,6 @@
       </div>
     </div>
     <section class="main-todo" v-show="todos.length" v-cloak>
-
       <ul class="todo-list">
         <li
           v-for="todo in filteredTodos"
@@ -530,4 +529,5 @@ hr {
 	border-top: 1px dashed #c5c5c5;
 	border-bottom: 1px dashed #f7f7f7;
 }
+
 </style>

@@ -193,7 +193,7 @@ export default {
   created () {
     // 获取树形组织信息
     getOrgTree({ 'parentTreeId': 'root' }).then(res => {
-      // this.orgTree = this.handleVal(res.result.data)
+      this.orgTree = this.handleVal(res.result.data)
       generateList(this.orgTree)
     })
     // 将树型结构信息转成列表形式，用于组织信息搜索
@@ -485,15 +485,15 @@ export default {
           }
         }
       })
-    }
+    },
     /**
      * 处理后台返回值 替换名字 id=>key label=>title
      */
-    // handleVal (value) {
-    //   let str = JSON.stringify(value)
-    //   str = str.replace(/id/g, 'key').replace(/label/g, 'title')
-    //   return JSON.parse(str)
-    // },
+    handleVal (value) {
+      let str = JSON.stringify(value)
+      str = str.replace(/id/g, 'key').replace(/label/g, 'title')
+      return JSON.parse(str)
+    }
   }
 }
 </script>

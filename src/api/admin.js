@@ -7,16 +7,24 @@ import { axios } from '@/utils/request'
 
 const api = {
   orgTree: '/admin/org/tree',
-  user: '/admin/user',
-  adduser: '/admin/user/addUser',
   getuserpage: '/admin/user/page',
   getuser: '/admin/org/user',
   getuserrole: '/admin/role/userRole',
+  user: '/admin/user',
+  adduser: '/admin/user/addUser',
   org: '/admin/org',
   getrole: '/admin/role/page',
   role: '/admin/role',
   rolepermission: '/admin/role/permission',
   userrole: '/admin/user/roles',
+  getmsgpage: '/admin/notice/page',
+  getmsg: '/admin/notice/no-page',
+  msg: 'admin/notice',
+  upload: '/admin/fileupload',
+  getmenu: '/admin/menu/page',
+  getmenuall: '/admin/menu/all',
+  menu: '/admin/menu',
+  menuelement: '/admin/menu/element',
   // 临时增加，方便测试
   getUserBySecret: 'admin/user/list'
 }
@@ -189,6 +197,116 @@ export function disabledRole (parameter) {
     params: parameter
   })
 }
+/**
+ * 获取消息列表（分页）
+ */
+export function getMsgPage (parameter) {
+  return axios({
+    url: api.getmsgpage,
+    method: 'get',
+    params: parameter
+  })
+}
+/**
+ * 获取消息列表（最近6条）
+ */
+export function getMsg (parameter) {
+  return axios({
+    url: api.getmsg,
+    method: 'get',
+    params: parameter
+  })
+}
+/**
+ * 消息发布
+ */
+export function saveMsg (parameter) {
+  return axios({
+    url: api.msg,
+    method: 'post',
+    params: parameter
+  })
+}
+/**
+ * 文件上传
+ */
+export function uploadFile (parameter) {
+  return axios({
+    url: api.upload,
+    method: 'post',
+    params: parameter
+  })
+}
+/**
+ * 菜单查询（分页）
+ */
+export function getMenuList (parameter) {
+  return axios({
+    url: api.getmenu,
+    method: 'get',
+    params: parameter
+  })
+}
+/**
+ * 菜单查询（不分页）
+ */
+export function getMenuListAll (parameter) {
+  return axios({
+    url: api.getmenuall,
+    method: 'get',
+    params: parameter
+  })
+}
+/**
+ * 新增菜单
+ */
+export function addMenu (parameter) {
+  return axios({
+    url: api.menu,
+    method: 'post',
+    data: parameter
+  })
+}
+/**
+ * 修改菜单
+ */
+export function updateMenu (parameter) {
+  return axios({
+    url: api.menu,
+    method: 'put',
+    data: parameter
+  })
+}
+/**
+ * 删除菜单
+ */
+export function delMenu (parameter) {
+  return axios({
+    url: api.menu + '/' + parameter,
+    method: 'delete'
+  })
+}
+/**
+ * 根据菜单id获取按钮信息
+ */
+export function getMenuElement (parameter) {
+  return axios({
+    url: api.menuelement,
+    method: 'get',
+    params: parameter
+  })
+}
+/**
+ * 根据菜单id获取按钮信息
+ */
+export function saveMenuElement (parameter) {
+  return axios({
+    url: api.menuelement,
+    method: 'post',
+    data: parameter
+  })
+}
+// saveUserOrg
 /**
  * 临时增加，通过密级获取用户列表
  * @param {Object} parameter {secretLevel: 60}
