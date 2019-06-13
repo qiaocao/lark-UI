@@ -1,8 +1,8 @@
 <template>
   <div class="user-wrapper">
-    <span class="action" @click="messageFun">
+    <!-- <span class="action" @click="messageFun">
       <a-icon type="message"/>
-    </span>
+    </span> -->
     <span class="action">
       <a-icon type="question-circle-o"></a-icon>
     </span>
