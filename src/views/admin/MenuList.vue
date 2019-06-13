@@ -115,6 +115,7 @@
 <script>
 import { STable } from '@/components'
 import { getMenuList, getMenuElement, addMenu, updateMenu, delMenu, getMenuListAll, saveMenuElement } from '@/api/admin'
+import { setTimeout } from 'timers'
 export default {
   name: 'MenuList',
   components: {
@@ -206,6 +207,10 @@ export default {
      */
     saveElement () {
       const elementList = this.handleElementData()
+      if (elementList === undefined) {
+        return
+      }
+      console.log('elementList', elementList)
       const data = { 'menuId': this.menuid, 'elements': elementList }
       // 请求后台保存菜单按钮信息
       return saveMenuElement(data).then(res => {
@@ -218,6 +223,7 @@ export default {
           this.visible = false
           // 刷新列表
           this.$refs.stable.refresh(true)
+          this.refreshMenu()
         } else {
           this.$notification['error']({
             message: res.message,
@@ -232,14 +238,43 @@ export default {
       )
     },
     /**
+     * 刷新菜单
+     */
+    refreshMenu () {
+      return getMenuListAll()
+        .then(res => {
+          console.log('refreshMenu')
+          this.menulist = Object.assign({}, res.result.data)
+          console.log('this.menulist', this.menulist)
+        })
+    },
+    /**
      * 处理多选框和下拉框内容
      * 将内容整理为后台接收的格式
      */
     handleElementData () {
       const arr = []
+      let checkResult = true
+      if (this.descriptions.length === 0) {
+        this.$notification['info']({
+          message: '请选择包含的按钮',
+          duration: 2
+        })
+        return
+      }
       this.descriptions.forEach(item => {
+        if (this.methodMap.get(item) === undefined) {
+          this.$notification['info']({
+            message: '请为'+ item +'按钮选择请求方式',
+            duration: 2
+          })
+          checkResult = false
+        }
         arr.push({ 'method': this.methodMap.get(item), 'description': item })
       })
+      if (!checkResult) {
+        return
+      }
       return arr
     },
     /**
@@ -256,6 +291,7 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           if (this.inAdd) {
+            // TODO 如果上级菜单是空，默认给root
             return addMenu(
               values
             ).then(
@@ -336,33 +372,34 @@ export default {
       this.chooseDes = []
       this.selectMethod = new Map()
       this.methodMap = new Map()
-      return getMenuListAll()
-        .then(res => {
-          this.menulist = Object.assign({}, res.result.data)
-          if (record.id !== undefined) {
-            return getMenuElement({ 'menuId': record.id }).then(res => {
-              res.result.data.forEach(item => {
-                // 用于初始化绑定组件
-                this.chooseDes.push(item.description)
-                // 用于初始化绑定组件
-                this.selectMethod.set(item.description, item.description + '-' + item.method)
-                // 用于发送到后台请求的数据
-                this.methodMap.set(item.description, item.method)
-              })
-              this.$nextTick(() => {
-                // 表单中绑定信息项
-                this.form.setFieldsValue({
-                  title: record.title,
-                  creator: record.creator,
-                  createTime: record.createTime,
-                  parentId: record.parentId === undefined ? '' : record.parentId + ''
-                })
-              })
-              this.visible = true
+      if (record.id !== undefined) {
+        return getMenuElement({ 'menuId': record.id }).then(res => {
+          if (res.status === 200) {
+            res.result.data.forEach(item => {
+              // 用于初始化绑定组件
+              this.chooseDes.push(item.description)
+              // 用于初始化绑定组件
+              this.selectMethod.set(item.description, item.description + '-' + item.method)
+              // 用于发送到后台请求的数据
+              this.methodMap.set(item.description, item.method)
             })
           }
+          this.$nextTick(() => {
+            // 表单中绑定信息项
+            this.form.setFieldsValue({
+              title: record.title,
+              parentId: record.parentId === undefined ? '' : record.parentId + ''
+            })
+          })
           this.visible = true
-        })
+        }).catch(() =>
+          this.$notification['error']({
+            message: '出现异常，请联系系统管理员',
+            duration: 4
+          })
+        )
+      }
+      this.visible = true
     },
     /**
      * 删除菜单

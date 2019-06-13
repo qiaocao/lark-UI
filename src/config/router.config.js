@@ -103,6 +103,28 @@ export const asyncRouterMap = [
             }
           },
           {
+            path: '/list/msg-list',
+            name: 'MsgList',
+            component: () => import('@/views/admin/NotificationList'),
+            meta: {
+              title: '消息列表',
+              icon: 'bell',
+              keepAlive: true,
+              permission: ['role']
+            }
+          },
+          {
+            path: '/list/menu-list',
+            name: 'MenuList',
+            component: () => import('@/views/admin/MenuList'),
+            meta: {
+              title: '菜单管理',
+              icon: 'ordered-list',
+              keepAlive: true,
+              permission: ['role']
+            }
+          },
+          {
             path: '/list/service-list',
             name: 'ServiceList',
             component: () => import('@/views/admin/ServiceList'),
