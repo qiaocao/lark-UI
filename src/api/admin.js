@@ -16,7 +16,9 @@ const api = {
   getrole: '/admin/role/page',
   role: '/admin/role',
   rolepermission: '/admin/role/permission',
-  userrole: '/admin/user/roles'
+  userrole: '/admin/user/roles',
+  // 临时增加，方便测试
+  getUserBySecret: 'admin/user/list'
 }
 
 export default api
@@ -184,6 +186,17 @@ export function disabledRole (parameter) {
   return axios({
     url: api.role,
     method: 'put',
+    params: parameter
+  })
+}
+/**
+ * 临时增加，通过密级获取用户列表
+ * @param {Object} parameter {secretLevel: 60}
+ */
+export function getUserBySecret (parameter) {
+  return axios({
+    url: api.getUserBySecret,
+    method: 'GET',
     params: parameter
   })
 }
