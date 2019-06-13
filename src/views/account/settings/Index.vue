@@ -35,6 +35,16 @@
                 新消息通知
               </router-link>
             </a-menu-item>
+            <a-menu-item key="/account/settings/workplace">
+              <router-link :to="{ name: 'WorkPlaceSettings' }">
+                卡片设置
+              </router-link>
+            </a-menu-item>
+            <a-menu-item key="/account/settings/commontool">
+              <router-link :to="{ name: 'CommonToolSettings' }">
+                常用工具设置
+              </router-link>
+            </a-menu-item>
           </a-menu>
         </div>
         <div class="account-settings-info-right">

@@ -24,7 +24,7 @@
   </a-modal>
 </template>
 <script>
-import { getTalkMembers } from '@/api/chat'
+import { getTalkMembers } from '@/api/talk'
 
 export default {
   data () {

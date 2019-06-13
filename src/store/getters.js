@@ -8,6 +8,10 @@ const getters = {
   welcome: state => state.user.welcome,
   roles: state => state.user.roles,
   userInfo: state => state.user.info,
+  /** 当前用户的id */
+  userId: state => state.user.info.id,
+  /** 当前用户的密级 */
+  userSecretLevel: state => state.user.info.secretLevel,
   addRouters: state => state.permission.addRouters,
   multiTab: state => state.app.multiTab,
   messageListMap: state => state.chat.messageListMap,
@@ -16,7 +20,13 @@ const getters = {
   currentChat: state => state.chat.currentChat,
   chatList: state => state.chat.recentChatList,
   userFriendList: state => state.chat.userFriendList,
-  flushTokenTimerId: state => state.chat.flushTokenTimerId
+  flushTokenTimerId: state => state.chat.flushTokenTimerId,
+  showSearchContent: state => state.chat.showSearchContent,
+  searchResultList: state => state.chat.searchResultList,
+  searchGroupResultList: state => state.chat.searchGroupResultList,
+  searchContactsResultList: state => state.chat.searchContactsResultList,
+  /** 用户的登陆状态 */
+  onlineState: state => state.talk.onlineState
 }
 
 export default getters

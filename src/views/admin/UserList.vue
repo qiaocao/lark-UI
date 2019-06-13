@@ -1,189 +1,203 @@
 <template>
   <div>
-    <a-card :bordered="false">
-      <a-row :gutter="8">
-        <a-col :span="5">
-          <a-card :bordered="true" title="组织树" v-show="cardvisible">
-            <a-row>
-              <a-col :span="6">
-                <a-tree
-                  ref="orgtree"
-                  :treeData="orgTree"
-                  @select="handleClick"
-                />
-              </a-col>
-            </a-row>
-          </a-card>
-        </a-col>
-        <a-col :span="19">
-          <a-card :bordered="true" title="人员信息列表" v-show="cardvisible">
-            <div class="table-page-search-wrapper">
-              <a-form layout="inline">
-                <a-row>
-                  <a-col :span="5" :offset="1">
-                    <a-form-item label="姓名">
-                      <a-input v-model="queryParam.name"/>
-                    </a-form-item>
-                  </a-col>
-                  <a-col :span="5" :offset="1">
-                    <a-form-item label="在职状态">
-                      <a-select placeholder="请选择" v-model="queryParam.inservice">
-                        <a-select-option value="1">在职</a-select-option>
-                        <a-select-option value="2">离职</a-select-option>
-                      </a-select>
-                    </a-form-item>
-                  </a-col>
-                  <a-col :span="4" :offset="1">
-                    <a-form-item label="状态">
-                      <a-select placeholder="请选择" v-model="queryParam.status">
-                        <a-select-option value="1">启用</a-select-option>
-                        <a-select-option value="2">禁用</a-select-option>
-                      </a-select>
-                    </a-form-item>
-                  </a-col>
-                  <a-col :span="4" :offset="1">
-                    <span class="table-page-search-submitButtons">
-                      <a-button type="primary" @click="searchUser">查询</a-button>
-                      <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
-                      <a-button type="primary" icon="plus" style="margin-left: 70px" @click="openEditModal('','1')">新增用户</a-button>
-                    </span>
-                  </a-col>
-                </a-row>
-                <a-row>
-                  <s-table
-                    ref="stable"
-                    size="default"
-                    :columns="columns"
-                    :data="loadData"
-                    :alert="false"
-                  >
-                    <span slot="action" slot-scope="text, record">
-                      <template>
-                        <a @click="openEditModal(record,'2')">编辑</a>
-                        <a-divider type="vertical"/>
-                      </template>
-                      <template>
-                        <a @click="handleDel(record)">删除</a>
-                      </template>
-                    </span>
-                  </s-table>
-                </a-row>
-              </a-form>
-            </div>
-          </a-card>
-        </a-col>
-      </a-row>
-      <a-row :gutter="8">
-        <a-card :bordered="true" title="人员基础信息" v-show="editvisible">
-          <a href="#" slot="extra" @click="cacenlEdit">返回</a>
-          <a-form :form="editForm">
-            <a-row>
-              <a-col :span="10" :offset="1">
-                <a-form-item
-                  :labelCol="labelCol"
-                  :wrapperCol="wrapperCol"
-                  label="姓名"
-                >
-                  <a-input v-decorator="['name',{rules: [{ required: true, message: '请输入姓名' },{ max:10,message:'长度不能超过10个字'}]}]"/>
-                </a-form-item>
-              </a-col>
-              <a-col :span="10" :offset="1">
-                <a-form-item
-                  :labelCol="labelCol"
-                  :wrapperCol="wrapperCol"
-                  label="密级"
-                >
-                  <a-select placeholder="请选择" v-decorator="['slevel',{rules: [{ required: true, message: '请选择密级' }]}]">
-                    <a-select-option value="1">一般</a-select-option>
-                    <a-select-option value="2">重要</a-select-option>
-                    <a-select-option value="3">核心</a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="10" :offset="1">
-                <a-form-item
-                  :labelCol="labelCol"
-                  :wrapperCol="wrapperCol"
-                  label="身份证号"
-                >
-                  <a-input
-                    v-decorator="['cardno',{rules: [{ required: true, message: '请输入身份证号' },{pattern: /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/, message: '身份证输入格式有误'}]}]"/>
-                </a-form-item>
-              </a-col>
-              <a-col :span="10" :offset="1">
-                <a-form-item
-                  :labelCol="labelCol"
-                  :wrapperCol="wrapperCol"
-                  label="在职状态"
-                >
-                  <a-select placeholder="请选择" v-decorator="['inservice',{rules: [{ required: true, message: '请选择在职状态' }]}]">
-                    <a-select-option value="1">在职</a-select-option>
-                    <a-select-option value="2">离职</a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="10" :offset="1">
-                <a-form-item
-                  :labelCol="labelCol"
-                  :wrapperCol="wrapperCol"
-                  label="状态"
-                >
-                  <a-switch defaultChecked v-decorator="['status']"/>
-                </a-form-item>
-              </a-col>
-            </a-row>
-          </a-form>
+    <a-row :gutter="8">
+      <a-col :span="5">
+        <a-card :bordered="true" title="组织树" v-show="cardvisible">
+          <a-row>
+            <a-col :span="6">
+              <a-tree
+                ref="orgtree"
+                :treeData="orgTree"
+                @select="handleClick"
+              />
+            </a-col>
+          </a-row>
         </a-card>
-        <a-card :bordered="true" title="组织信息" v-show="editvisible">
+      </a-col>
+      <a-col :span="19">
+        <a-card :bordered="true" title="人员信息列表" v-show="cardvisible">
+          <div class="table-page-search-wrapper">
+            <a-form layout="inline">
+              <a-row :gutter="32">
+                <a-col :span="6">
+                  <a-form-item label="姓名">
+                    <a-input v-model="queryParam.name"/>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="6">
+                  <a-form-item label="状态">
+                    <a-select placeholder="请选择" v-model="queryParam.inservice">
+                      <a-select-option value="1">在职</a-select-option>
+                      <a-select-option value="2">离职</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="6">
+                  <a-form-item label="密级">
+                    <a-select placeholder="请选择" v-model="queryParam.secretLevel">
+                      <a-select-option value="30">非密</a-select-option>
+                      <a-select-option value="40">一般一类</a-select-option>
+                      <a-select-option value="50">一般二类</a-select-option>
+                      <a-select-option value="60">重要一类</a-select-option>
+                      <a-select-option value="70">重要二类</a-select-option>
+                      <a-select-option value="80">核心一类</a-select-option>
+                      <a-select-option value="90">核心二类</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="6">
+                  <span class="table-page-search-submitButtons">
+                    <a-button type="primary" @click="searchUser">查询</a-button>
+                    <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
+                    <a-button type="primary" style="margin-left: 30px" @click="openEditModal('','1')">新增用户</a-button>
+                  </span>
+                </a-col>
+              </a-row>
+              <a-row>
+                <s-table
+                  ref="stable"
+                  size="default"
+                  :columns="columns"
+                  :data="loadData"
+                  :alert="false"
+                >
+                  <span slot="action" slot-scope="text, record">
+                    <template>
+                      <a @click="openEditModal(record,'2')">编辑</a>
+                      <a-divider type="vertical"/>
+                    </template>
+                    <template>
+                      <a @click="handleDel(record)">删除</a>
+                    </template>
+                  </span>
+                </s-table>
+              </a-row>
+            </a-form>
+          </div>
+        </a-card>
+      </a-col>
+    </a-row>
+    <a-row :gutter="8">
+      <a-card :bordered="true" title="人员基础信息" v-show="editvisible">
+        <a href="#" slot="extra" @click="cacenlEdit">返回</a>
+        <a-form :form="editForm">
           <a-row>
             <a-col :span="10" :offset="1">
               <a-form-item
                 :labelCol="labelCol"
                 :wrapperCol="wrapperCol"
-                label="所属组织"
+                label="姓名"
               >
-                <org-treeSelect :values="userinfo.orgid" :dataSource="orgTree"></org-treeSelect>
+                <a-input v-decorator="['name',{rules: [{ required: true, message: '请输入姓名' },{ max:10,message:'长度不能超过10个字'}]}]"/>
+              </a-form-item>
+            </a-col>
+            <a-col :span="10" :offset="1">
+              <a-form-item
+                :labelCol="labelCol"
+                :wrapperCol="wrapperCol"
+                label="密级"
+              >
+                <a-select placeholder="请选择" v-decorator="['secretLevel',{rules: [{ required: true, message: '请选择密级' }]}]">
+                  <a-select-option value="30">非密</a-select-option>
+                  <a-select-option value="40">一般一类</a-select-option>
+                  <a-select-option value="50">一般二类</a-select-option>
+                  <a-select-option value="60">重要一类</a-select-option>
+                  <a-select-option value="70">重要二类</a-select-option>
+                  <a-select-option value="80">核心一类</a-select-option>
+                  <a-select-option value="90">核心二类</a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
           </a-row>
-        </a-card>
-        <a-card :bordered="true" title="角色信息" v-show="editvisible">
           <a-row>
             <a-col :span="10" :offset="1">
               <a-form-item
                 :labelCol="labelCol"
                 :wrapperCol="wrapperCol"
-                label="选择角色"
+                label="身份证号"
               >
-                <Role-checked :values="rolechecked"></Role-checked>
+                <a-input
+                  v-decorator="['pid',{rules: [{ required: true, message: '请输入身份证号' },{pattern: /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/, message: '身份证输入格式有误'}]}]"/>
+              </a-form-item>
+            </a-col>
+            <a-col :span="10" :offset="1">
+              <a-form-item
+                :labelCol="labelCol"
+                :wrapperCol="wrapperCol"
+                label="在职状态"
+              >
+                <a-select placeholder="请选择" v-decorator="['inservice',{rules: [{ required: true, message: '请选择在职状态' }]}]">
+                  <a-select-option value="1">在职</a-select-option>
+                  <a-select-option value="2">离职</a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
           </a-row>
-          <a-row type="flex" justify="end">
-            <a-col>
-              <a-button type="primary" @click="saveUserInfo">保存</a-button>
+          <a-row>
+            <a-col :span="10" :offset="1">
+              <a-form-item
+                :labelCol="labelCol"
+                :wrapperCol="wrapperCol"
+                label="状态"
+              >
+                <a-switch defaultChecked v-decorator="['status']"/>
+              </a-form-item>
             </a-col>
           </a-row>
-        </a-card>
-      </a-row>
-    </a-card>
+        </a-form>
+      </a-card>
+      <a-card :bordered="true" title="组织信息" v-show="editvisible">
+        <a-row>
+          <a-col :span="10" :offset="1">
+            <a-form-item
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+              label="所属组织"
+              v-decorator="['orgid',{initialValue:orgid}]"
+            >
+              <a-tree-select
+                :dropdownStyle="{ maxHeight: '200px', overflow: 'auto' }"
+                :treeData="OrgTreeSelects"
+                treeDefaultExpandAll
+                allowClear
+                @change="onChange"
+                style="width:100%"
+                :value="orgid"
+              ></a-tree-select>
+            </a-form-item>
+          </a-col>
+        </a-row>
+      </a-card>
+      <a-card :bordered="true" title="角色信息" v-show="editvisible">
+        <a-row>
+          <a-col :span="10" :offset="1">
+            <a-form-item
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+              label="选择角色"
+            >
+              <Role-checked :values="rolechecked" @changerolecheck="changerolecheck"></Role-checked>
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row type="flex" justify="end">
+          <a-col>
+            <a-button type="primary" @click="saveUserInfo">保存</a-button>
+          </a-col>
+        </a-row>
+      </a-card>
+    </a-row>
   </div>
 </template>
 <script>
 import STable from '@/components/table/'
-import OrgTreeSelect from '@/components/admin/OrgTreeSelect'
 import RoleChecked from '@/components/admin/RoleChecked'
 import { setTimeout } from 'timers'
-import { getUserList, adduser, updateuser, deluser, getOrgTree } from '@/api/admin'
+import { getUserPage, adduser, updateuser, deluser, getOrgTree, saveuserRole, getUserRole } from '@/api/admin'
 export default {
   name: 'UserList',
   components: {
     STable,
-    OrgTreeSelect,
     RoleChecked
   },
   data () {
@@ -210,8 +224,8 @@ export default {
       // 表头
       columns: [
         {
-          title: '账号',
-          dataIndex: 'accout'
+          title: '出入证号',
+          dataIndex: 'empCode'
         },
         {
           title: '姓名',
@@ -219,15 +233,28 @@ export default {
         },
         {
           title: '密级',
-          dataIndex: 'slevel'
+          dataIndex: 'secretLevel',
+          key: 'secretLevel',
+          customRender: function (secretLevel) {
+            const config = {
+              '30': '非密',
+              '40': '一般一类',
+              '50': '一般二类',
+              '60': '重要一类',
+              '70': '重要二类',
+              '80': '核心一类',
+              '90': '核心二类'
+            }
+            return config[secretLevel]
+          }
+        },
+        {
+          title: '组织机构',
+          dataIndex: 'orgName'
         },
         {
           title: '身份证号',
-          dataIndex: 'cardno'
-        },
-        {
-          title: '在职状态',
-          dataIndex: 'inservice'
+          dataIndex: 'pid'
         },
         {
           title: '状态',
@@ -242,31 +269,53 @@ export default {
       ],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        return getUserList(Object.assign(parameter, this.queryParam)).then(res => {
-          const result = res.result
-          return result
+        return getUserPage(Object.assign(parameter, this.queryParam)).then(res => {
+          return res.result
         })
       },
       orgTree: [],
+      OrgTreeSelects: [],
       // 用户对应角色
       rolechecked: [],
-      editType: ''
+      editType: '',
+      dataSource: [],
+      // 绑定树选择的值
+      orgid: '',
+      orgname: ''
+      // // 用于解决冲突值，截取select剩余值
+      // orgId: ''
     }
   },
   created () {
     // 获取树形组织信息
-    console.log('getOrgTree')
-    getOrgTree().then(res => {
-      this.orgTree = res.result
+    getOrgTree({ 'parentTreeId': 'root' }).then(res => {
+      this.orgTree = res.result.data
+      this.OrgTreeSelects = this.genernateTree(res.result.data)
     })
   },
   methods: {
+    /**
+     * 处理后台返回值 替换名字 id=>key label=>title
+     * 处理与树型绑定值冲突问题
+     */
+    genernateTree (value) {
+      value.forEach(item => {
+        // item.value = item.key
+        item.value = item.id + 'select'
+        item.title = item.label
+        item.key = item.id
+        if (item.children && item.children.length) {
+          this.genernateTree(item.children)
+        }
+      })
+      return value
+    },
     /**
      * 点击树节点刷新人员信息
      */
     handleClick (item, e) {
       this.queryParam = {
-        'orgname': item[0]
+        'orgCode': item[0]
       }
       this.$refs.stable.refresh(true)
     },
@@ -277,34 +326,85 @@ export default {
       this.$refs.stable.loadData({}, this.queryParam, {})
     },
     /**
+     * 保存用户对应角色
+     */
+    saveUserRole (userId) {
+      return saveuserRole(
+        { 'userId': userId, 'roles': this.rolechecked.join(',') }
+      ).then(
+        res => {
+          if (res.status === 200) {
+            this.editvisible = false
+            this.cardvisible = true
+            this.$notification['success']({
+              message: '新增成功',
+              duration: 2
+            })
+            // 关闭编辑框
+            this.editvisible = false
+            this.cardvisible = true
+            // 刷新员工列表
+            this.$refs.stable.refresh(true)
+          } else {
+            this.$notification['error']({
+              message: res.message,
+              duration: 4
+            })
+          }
+        }
+      )
+    },
+    /**
+     * 保存人员组织信息
+     */
+    // saveUserOrg (userId) {
+    //   console.log('this.orgname', this.orgname,this.orgname[0])
+    //   return saveUserOrg(
+    //     { 'userId': userId, 'orgCode': this.orgid, 'orgName': this.orgname[0]||'' }
+    //   ).then(
+    //     res => {
+    //       if (res.status === 200) {
+    //         this.editvisible = false
+    //         this.cardvisible = true
+    //         this.$notification['success']({
+    //           message: '新增成功',
+    //           duration: 2
+    //         })
+    //         // 关闭编辑框
+    //         this.editvisible = false
+    //         this.cardvisible = true
+    //         // 刷新员工列表
+    //         this.$refs.stable.refresh(true)
+    //       } else {
+    //         this.$notification['error']({
+    //           message: res.message,
+    //           duration: 4
+    //         })
+    //       }
+    //     }
+    //   )
+    // },
+    /**
      * 保存修改内容
+     * TODO 三个请求不在前台嵌套调用，无法做事务处理，是否由后台统一接口
      */
     saveUserInfo () {
+      const _this = this
       this.editForm.validateFields((err, values) => {
-        // 如果有必填项限制，在这里加 TODO，且需要有对应的提醒信息，tab页无法动态设置展示
-        values.orgid = this.userinfo.orgid
-        values.role = this.rolechecked
+        // 除了用户基础信息必填项限制，在这里加，且需要有对应的提醒信息
+        values.orgCode = this.orgid.replace('select', '')
+        values.orgName = this.orgname[0] || ''
         if (!err) {
           if (this.editType === '1') {
             return adduser(
               values
             ).then(
               res => {
-                if (res.status === '200') {
-                  this.editvisible = false
-                  this.cardvisible = true
-                  this.$notification['success']({
-                    message: '新增成功',
-                    duration: 2
-                  })
-                  // 关闭编辑框
-                  // this.visible = false
-                  this.editvisible = false
-                  this.cardvisible = true
-                  // 刷新员工列表
-                  this.$refs.stable.refresh(true)
+                if (res.status === 200) {
+                  // 保存用户角色信息调用新请求
+                  _this.saveUserRole(res.result.id)
                 } else {
-                  this.$notification['error']({
+                  _this.$notification['error']({
                     message: res.message,
                     duration: 4
                   })
@@ -312,23 +412,16 @@ export default {
               }
             )
           } else {
+            values.id = this.userinfo.id
             return updateuser(
               values
             ).then(
               res => {
-                if (res.status === '200') {
-                  this.$notification['success']({
-                    message: '修改成功',
-                    duration: 2
-                  })
-                  // 关闭编辑框
-                  // this.visible = false
-                  this.editvisible = false
-                  this.cardvisible = true
-                  // 刷新员工列表
-                  this.$refs.stable.refresh(true)
+                if (res.status === 200) {
+                  // 保存用户角色信息调用新请求
+                  _this.saveUserRole(values.id)
                 } else {
-                  this.$notification['error']({
+                  _this.$notification['error']({
                     message: res.message,
                     duration: 4
                   })
@@ -359,42 +452,45 @@ export default {
       if (type === '2') {
         // 拷贝选中信息内容到userinfo
         this.userinfo = Object.assign({}, item)
-        this.rolechecked = []
-        // 角色多选项选中
-        const userrole = this.userinfo.role
-        userrole.forEach((r) => {
-          this.rolechecked.push(r.id)
-        })
         setTimeout(() => {
           this.editForm.setFieldsValue({
             name: this.userinfo.name,
             inservice: this.userinfo.inservice,
-            slevel: this.userinfo.slevel,
-            cardno: this.userinfo.cardno,
+            secretLevel: this.userinfo.secretLevel,
+            pid: this.userinfo.pid,
             status: this.userinfo.status === '启用'
           })
         }, 0)
+        this.orgid = item.orgCode === undefined ? '' : item.orgCode + 'select'
+        this.editvisible = true
+        this.cardvisible = false
+        return getUserRole({ 'id': item.id }).then(res => {
+          if (res.result.data.length > 0) {
+            this.rolechecked = res.result.data.map(role => role.id)
+          }
+        })
       } else {
         // add
         setTimeout(() => {
           this.editForm.setFieldsValue({
             name: '',
             inservice: '',
-            slevel: '',
-            cardno: '',
+            secretLevel: '',
+            pid: '',
             status: true
           })
         }, 0)
-        this.userinfo.orgid = ''
+        // this.orgId = ''
         this.rolechecked = []
+        this.editvisible = true
+        this.cardvisible = false
       }
-      this.editvisible = true
-      this.cardvisible = false
     },
     /**
      * 单条删除用户信息
      */
     handleDel (item) {
+      const _this = this
       this.$confirm({
         title: '警告',
         content: `确认要删除 ${item.name} 的信息吗?`,
@@ -404,41 +500,46 @@ export default {
         onOk () {
           // 在这里调用删除接口
           return deluser(
-            item
+            item.id
           ).then(
             res => {
-              if (res.status === '200') {
-                this.$notification['success']({
+              if (res.status === 200) {
+                _this.$refs.stable.refresh(true)
+                _this.$notification['success']({
                   message: '删除成功',
                   duration: 2
                 })
               } else {
-                this.$notification['error']({
+                _this.$notification['error']({
                   message: res.message,
                   duration: 4
                 })
               }
             }
           ).catch(() =>
-            this.$notification['error']({
+            _this.$notification['error']({
               message: '删除异常，请联系系统管理员',
               duration: 4
             })
           )
         },
         onCancel: () => {
-          this.$notification['info']({
+          _this.$notification['info']({
             message: '取消删除操作',
             duration: 4
           })
         }
       })
     },
-    changOrg (value) {
-      this.userinfo.orgid = value
-    },
     changerolecheck (value) {
       this.rolechecked = value
+    },
+    /**
+     * change事件
+     */
+    onChange (value, name) {
+      this.orgid = value
+      this.orgname = name
     }
   }
 }

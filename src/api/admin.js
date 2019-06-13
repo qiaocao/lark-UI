@@ -7,37 +7,59 @@ import { axios } from '@/utils/request'
 
 const api = {
   orgTree: '/admin/org/tree',
+  getuserpage: '/admin/user/page',
+  getuser: '/admin/org/user',
+  getuserrole: '/admin/role/userRole',
   user: '/admin/user',
+  adduser: '/admin/user/addUser',
   org: '/admin/org',
-  role: '/admin/role/page'
+  getrole: '/admin/role/page',
+  role: '/admin/role',
+  rolepermission: '/admin/role/permission',
+  userrole: '/admin/user/roles',
+  getmsgpage: '/admin/notice/page',
+  getmsg: '/admin/notice/no-page',
+  msg: 'admin/notice',
+  upload: '/admin/fileupload',
+  getmenu: '/admin/menu/page',
+  getmenuall: '/admin/menu/all',
+  menu: '/admin/menu',
+  menuelement: '/admin/menu/element'
 }
 
 export default api
 /**
- * 获取员工列表
- * @param {userinfo}
+ * 获取用户列表（分页）
  */
-export function getUserList (parameter) {
+export function getUserPage (parameter) {
   return axios({
-    url: api.user,
+    url: api.getuserpage,
     method: 'get',
     params: parameter
   })
 }
 /**
- * 获取角色列表
- * @param {userinfo}
+ * 获取用户列表
  */
-export function getRoleList (parameter) {
+export function getUserList (parameter) {
   return axios({
-    url: api.role,
+    url: api.getuser,
+    method: 'get',
+    params: parameter
+  })
+}
+/**
+ * 获取用户角色
+ */
+export function getUserRole (parameter) {
+  return axios({
+    url: api.getuserrole,
     method: 'get',
     params: parameter
   })
 }
 /**
  * 获取树结构组织信息
- * @param {userinfo}
  */
 export function getOrgTree (parameter) {
   return axios({
@@ -47,19 +69,17 @@ export function getOrgTree (parameter) {
   })
 }
 /**
- * 新增员工信息
- * @param {userinfo}
+ * 新增用户信息
  */
 export function adduser (parameter) {
   return axios({
-    url: api.user,
+    url: api.adduser,
     method: 'post',
     data: parameter
   })
 }
 /**
- * 修改员工信息
- * @param {userinfo}
+ * 修改用户信息
  */
 export function updateuser (parameter) {
   return axios({
@@ -69,19 +89,26 @@ export function updateuser (parameter) {
   })
 }
 /**
- * 删除员工信息
- * @param {userinfo}
+ * 修改用户角色信息
+ */
+export function saveuserRole (parameter) {
+  return axios({
+    url: api.userrole,
+    method: 'get',
+    params: parameter
+  })
+}
+/**
+ * 删除用户信息
  */
 export function deluser (parameter) {
   return axios({
-    url: api.user,
-    method: 'delete',
-    data: parameter
+    url: api.user + '/' + parameter,
+    method: 'delete'
   })
 }
 /**
  * 新增组织信息
- * @param {userinfo}
  */
 export function addorg (parameter) {
   return axios({
@@ -92,7 +119,6 @@ export function addorg (parameter) {
 }
 /**
  * 修改组织信息
- * @param {userinfo}
  */
 export function updateorg (parameter) {
   return axios({
@@ -103,12 +129,179 @@ export function updateorg (parameter) {
 }
 /**
  * 删除组织信息
- * @param {userinfo}
  */
 export function delorg (parameter) {
   return axios({
-    url: api.org,
-    method: 'delete',
+    url: api.org + '/' + parameter,
+    method: 'delete'
+  })
+}
+/**
+ * 获取角色列表
+ */
+export function getRoleList (parameter) {
+  return axios({
+    url: api.getrole,
+    method: 'get',
+    params: parameter
+  })
+}
+/**
+ * 获取角色权限
+ */
+export function getRolePermission (parameter) {
+  return axios({
+    url: api.rolepermission,
+    method: 'get',
+    params: parameter
+  })
+}
+/**
+ * 修改角色权限
+ */
+export function updateRolePermission (parameter) {
+  return axios({
+    url: api.rolepermission,
+    method: 'put',
     data: parameter
   })
 }
+/**
+ * 修改角色
+ */
+export function updateRole (parameter) {
+  return axios({
+    url: api.role,
+    method: 'put',
+    data: parameter
+  })
+}
+/**
+ * 删除角色
+ */
+export function delRole (parameter) {
+  return axios({
+    url: api.role + '/' + parameter,
+    method: 'delete'
+  })
+}
+/**
+ * 禁用角色
+ */
+export function disabledRole (parameter) {
+  return axios({
+    url: api.role,
+    method: 'put',
+    params: parameter
+  })
+}
+/**
+ * 获取消息列表（分页）
+ */
+export function getMsgPage (parameter) {
+  return axios({
+    url: api.getmsgpage,
+    method: 'get',
+    params: parameter
+  })
+}
+/**
+ * 获取消息列表（最近6条）
+ */
+export function getMsg (parameter) {
+  return axios({
+    url: api.getmsg,
+    method: 'get',
+    params: parameter
+  })
+}
+/**
+ * 消息发布
+ */
+export function saveMsg (parameter) {
+  return axios({
+    url: api.msg,
+    method: 'post',
+    params: parameter
+  })
+}
+/**
+ * 文件上传
+ */
+export function uploadFile (parameter) {
+  return axios({
+    url: api.upload,
+    method: 'post',
+    params: parameter
+  })
+}
+/**
+ * 菜单查询（分页）
+ */
+export function getMenuList (parameter) {
+  return axios({
+    url: api.getmenu,
+    method: 'get',
+    params: parameter
+  })
+}
+/**
+ * 菜单查询（不分页）
+ */
+export function getMenuListAll (parameter) {
+  return axios({
+    url: api.getmenuall,
+    method: 'get',
+    params: parameter
+  })
+}
+/**
+ * 新增菜单
+ */
+export function addMenu (parameter) {
+  return axios({
+    url: api.menu,
+    method: 'post',
+    data: parameter
+  })
+}
+/**
+ * 修改菜单
+ */
+export function updateMenu (parameter) {
+  return axios({
+    url: api.menu,
+    method: 'put',
+    data: parameter
+  })
+}
+/**
+ * 删除菜单
+ */
+export function delMenu (parameter) {
+  return axios({
+    url: api.menu + '/' + parameter,
+    method: 'delete'
+  })
+}
+/**
+ * 根据菜单id获取按钮信息
+ */
+export function getMenuElement (parameter) {
+  return axios({
+    url: api.menuelement,
+    method: 'get',
+    params: parameter
+  })
+}
+/**
+ * 根据菜单id获取按钮信息
+ */
+export function saveMenuElement (parameter) {
+  return axios({
+    url: api.menuelement,
+    method: 'post',
+    data: parameter
+  })
+}
+// saveUserOrg

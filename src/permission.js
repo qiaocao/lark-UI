@@ -25,7 +25,7 @@ router.beforeEach((to, from, next) => {
         store
           .dispatch('GetInfo')
           .then(res => {
-            const roles = res.result && res.result.role
+            const roles = res.result && res.result.userRole
             store.dispatch('GenerateRoutes', { roles }).then(() => {
               // 根据roles权限生成可访问的路由表
               // 动态添加可访问路由表
@@ -39,6 +39,10 @@ router.beforeEach((to, from, next) => {
                 next({ path: redirect })
               }
             })
+          })
+          .then(() => {
+            // 用户信息获取成功后进行websocket连接
+            Vue.prototype.SocketGlobal.connect()
           })
           .catch(() => {
             notification.error({
@@ -77,9 +81,6 @@ router.afterEach(() => {
  *    <a v-action:edit @click="edit(record)">修改</a>
  *
  *  - 当前用户没有权限时，组件上使用了该指令则会被隐藏
- *  - 当后台权限跟 pro 提供的模式不同时，只需要针对这里的权限过滤进行修改即可
- *
- *  @see https://github.com/sendya/ant-design-pro-vue/pull/53
  */
 const action = Vue.directive('action', {
   bind: function (el, binding, vnode) {

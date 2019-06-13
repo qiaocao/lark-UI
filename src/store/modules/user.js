@@ -61,17 +61,15 @@ const user = {
         })
       })
     },
-
     // 获取用户信息
     GetInfo ({ commit }) {
       return new Promise((resolve, reject) => {
         getInfo().then(response => {
           const result = response.result
-
           // 判断用户角色
-          if (result.role && result.role.permissions.length > 0) {
-            const role = result.role
-            role.permissions = result.role.permissions
+          if (result.userRole && result.userRole.frontPermissionList.length > 0) {
+            const role = result.userRole
+            role.permissions = result.userRole.frontPermissionList
             role.permissions.map(per => {
               if (per.actionEntitySet != null && per.actionEntitySet.length > 0) {
                 const action = per.actionEntitySet.map(action => { return action.action })
@@ -79,7 +77,7 @@ const user = {
               }
             })
             role.permissionList = role.permissions.map(permission => { return permission.permissionId })
-            commit('SET_ROLES', result.role)
+            commit('SET_ROLES', result.userRole)
             commit('SET_INFO', result)
           } else {
             reject(new Error('getInfo: roles必须是非空数组!'))
@@ -90,8 +88,6 @@ const user = {
           // commit('SET_RECENT_CHAT_LIST', result.chat.chatList)
           // ChatListUtils.setChatList(user.state.info.id, result.chat.chatList)
           resolve(response)
-        }).then(() => {
-
         }).catch(error => {
           reject(error)
         })
@@ -104,6 +100,9 @@ const user = {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
         Vue.ls.remove(ACCESS_TOKEN)
+
+        // 断开websocket连接
+        Vue.prototype.SocketGlobal.close(3400, '退出登陆')
 
         logout(state.token).then(() => {
           resolve()
