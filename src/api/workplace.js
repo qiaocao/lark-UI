@@ -1,7 +1,7 @@
 import { axios } from '@/utils/request'
 
 const api = {
-  workplace: '/workplace/myself'
+  workplace: '/portal/workplace/myself'
 }
 
 export default api
