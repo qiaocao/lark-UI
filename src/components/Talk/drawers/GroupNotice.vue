@@ -3,14 +3,13 @@
   <a-drawer
     title="群公告"
     placement="right"
-    :getContainer="mountEle"
     :wrapStyle="{marginTop: '64px'}"
     :width="448"
     :closable="false"
     @close="onClose"
     :visible="activeOption=='groupNotice'">
 
-    <div class="notice-p"> &nbsp;&nbsp;&nbsp;&nbsp;{{ item.content }} <p></p></div>
+    <div class="notice-p"> {{ item.content }} <p></p></div>
     <span class="notice-s">发布时间 : {{ item.createTime }}</span>
   </a-drawer>
 </template>
@@ -67,7 +66,9 @@ export default {
 
 <style lang='less' scope>
   .notice-p{
-    //  height:508px;
+     text-align:left;
+     text-indent:2em;
+     padding-bottom:10px;
      border-bottom: 1px solid #cccccc;
      font-size: 20px;
      margin-bottom: 20px

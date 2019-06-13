@@ -44,6 +44,9 @@ export default {
   beforeDestroy () {
     this.activeOption = ''
   },
+  updated () {
+    // this.lazyLoading()
+  },
   methods: {
     onSearch (value) {
       console.log(value)
@@ -74,14 +77,18 @@ export default {
       // if(contentH - viewH - scrollTop <= 100) { //到达底部100px时,加载新内容
       // if(scrollTop/(contentH -viewH)>=0.95){ //到达底部100px时,加载新内容
       //  && scrollTop == (offsetHeight - clientHeight)
+      // || clientHeight < scrollHeight
       if (scrollTop + clientHeight >= scrollHeight) {
         clearTimeout(this.timer)
         this.timer = setTimeout(() => {
           if (this.activeOption === 'talkHistory') {
             this.getHistory()
-            console.log('000', '111')
+            // if (clientHeight > scrollHeight) {
+            //   // return false
+            //   console.log('00', '00')
+            // }
           }
-        }, 1200)
+        }, 1000)
       } else {
       }
     }
@@ -166,6 +173,7 @@ export default {
   margin-bottom: 20px;
 }
 .history_box{
-  padding:0
+  padding:0;
+  margin-bottom: 50px
 }
 </style>

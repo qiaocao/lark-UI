@@ -2,12 +2,12 @@
   <a-layout v-if="Object.keys(chatInfo).length" class="conv-box">
 
     <!-- 聊天设置选项的抽屉组件 -->
-    <!-- <talk-history :activeOption="activeOption" @closeDrawer="triggerDrawer"></talk-history>
+    <talk-history :activeOption="activeOption" @closeDrawer="triggerDrawer"></talk-history>
     <group-notice :activeOption="activeOption" @closeDrawer="triggerDrawer"></group-notice>
     <talk-setting :activeOption="activeOption" @closeDrawer="triggerDrawer"></talk-setting>
     <talk-file :activeOption="activeOption" @closeDrawer="triggerDrawer"></talk-file>
     <mark-message :activeOption="activeOption" @closeDrawer="triggerDrawer"></mark-message>
-    <more-info :activeOption="activeOption" @closeDrawer="triggerDrawer"></more-info>-->
+    <more-info :activeOption="activeOption" @closeDrawer="triggerDrawer"></more-info>
     <a-layout-header class="conv-box-header">
       <a-row type="flex" justify="space-between">
         <a-col :span="14" class="conv-title">
@@ -101,7 +101,7 @@
           <!-- 输入框 -->
           <textarea
             v-show="!Object.keys(fileUpload).length"
-            v-focus
+
             size="large"
             class="textarea-input"
             v-model="messageContent"
