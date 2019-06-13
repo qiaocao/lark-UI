@@ -1,5 +1,5 @@
 <template>
-  <div style="margin-bottom: 64px">
+  <div style="margin-bottom: 64px;">
     <div class="antd-pro-pages-dashboard-analysis-twoColLayout" :class="isDesktop() ? 'desktop' : ''">
       <grid-layout
         :layout.sync="cardList"
