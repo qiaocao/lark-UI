@@ -13,7 +13,6 @@
       </div>
     </div>
     <section class="main-todo" v-show="todos.length" v-cloak>
-
       <ul class="todo-list">
         <li
           v-for="todo in filteredTodos"
