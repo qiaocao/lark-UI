@@ -12,7 +12,7 @@
             <span class="table-page-search-submitButtons">
               <a-button type="primary" @click="search">查询</a-button>
               <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
-              <a-button type="primary" style="margin-left: 30px" @click="addMenu()">新增菜单</a-button>
+              <!-- <a-button type="primary" style="margin-left: 30px" @click="addMenu()">新增菜单</a-button> -->
             </span>
           </a-col>
         </a-row>
@@ -46,7 +46,7 @@
           :wrapperCol="wrapperCol"
           label="菜单名称"
         >
-          <a-input v-decorator="['title',{rules: [{ required: true, message: '请填写菜单名称' }]}]" :disabled="inDetail"/>
+          <a-input v-decorator="['title',{rules: [{ required: true, message: '请填写菜单名称' }]}]" :disabled="true"/>
         </a-form-item>
         <a-form-item
           :labelCol="labelCol"
@@ -56,7 +56,7 @@
         >
           <a-select
             size="default"
-            :disabled="inDetail"
+            :disabled="true"
             v-decorator="['parentId',{initialValue:parentId}]"
           >
             <a-select-option v-for="menu in menulist" :value="menu.id" :key="menu.id">
