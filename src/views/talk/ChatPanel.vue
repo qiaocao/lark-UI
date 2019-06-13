@@ -121,11 +121,11 @@
         </keep-alive>
       </div>
       <div v-show="activeKey == '2'" class="info-area">
-        <group-info :selected="activeGroup" @t="s"></group-info>
+        <group-info :selected="activeGroup" @clickSend="handleClickSend"></group-info>
       </div>
 
       <div v-show="activeKey == '3'" class="info-area">
-        <contacts-info :selected="activeContacts"></contacts-info>
+        <contacts-info :selected="activeContacts" @clickSend="handleClickSend"></contacts-info>
       </div>
     </a-layout>
 
@@ -234,10 +234,8 @@ export default {
     this.getGroupList()
   },
   methods: {
-    s (val) {
+    handleClickSend () {
       this.activeKey = '1'
-      // console.log('0202', val)
-      this.activeChat = val
     },
     /* 切换面板 */
     changePane (activeKey) {
