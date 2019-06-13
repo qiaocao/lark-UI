@@ -9,7 +9,7 @@
 import RouteView from './RouteView'
 
 export default {
-  name: 'GeneralContent',
+  name: 'MonitorContent',
   components: {
     RouteView
   }
@@ -20,5 +20,8 @@ export default {
 
 .main-content{
     margin: 0;
+    height: calc(100vh - 72px);
+    overflow-y: overlay;
+    overflow-x: hidden;
 }
 </style>
