@@ -148,7 +148,7 @@ import {
 import SearchInput from './SearchInput'
 import SearchArea from './SearchArea'
 import SearchRecordModal from './SearchRecordModal'
-
+import { mapGetters } from 'vuex'
 export default {
   name: 'ChatPanel',
   components: {
@@ -187,6 +187,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['searchResultList', 'searchGroupResultList', 'searchContactsResultList']),
     currentTalk () {
       return this.$store.state.talk.currentTalk
     },
@@ -205,20 +206,11 @@ export default {
       return this.$store.state.talk.contactsTree
     },
     showSearchContent () {
-      if (this.$store.state.chat.showSearchContent === null) {
+      if (this.$store.state.talk.showSearchContent === null) {
         return true/*  */
       } else {
-        return this.$store.state.chat.showSearchContent
+        return this.$store.state.talk.showSearchContent
       }
-    },
-    searchResultList () {
-      return this.$store.state.chat.searchResultList
-    },
-    searchGroupResultList () {
-      return this.$store.state.chat.searchGroupResultList
-    },
-    searchContactsResultList () {
-      return this.$store.state.chat.searchContactsResultList
     }
   },
   watch: {

@@ -26,7 +26,14 @@ const talk = {
     /** 当前正在进行研讨的消息列表 */
     curMessageList: [],
     /** 草稿Map */
-    draftMap: new Map()
+    draftMap: new Map(),
+
+    // ***********************************
+    // 是否显示搜索结果
+    showSearchContent: null,
+    searchResultList: [],
+    searchGroupResultList: [],
+    searchContactsResultList: []
   },
 
   mutations: {
@@ -65,6 +72,20 @@ const talk = {
      */
     SET_DRAFT_MAP (state, draft) {
       state.draftMap.set(draft[0], draft[1])
+    },
+
+    // ***********************************
+    SET_SHOW_SEARCH_CONTENT: function (state, showSearchContent) {
+      state.showSearchContent = showSearchContent
+    },
+    SET_SEARCH_RESULT_LIST: function (state, searchResultList) {
+      state.searchResultList = searchResultList
+    },
+    SET_SEARCH_GROUP_RESULT_LIST: function (state, searchGroupResultList) {
+      state.searchGroupResultList = searchGroupResultList
+    },
+    SET_SEARCH_CONTACTS_RESULT_LIST: function (state, searchContactsResultList) {
+      state.searchContactsResultList = searchContactsResultList
     }
   },
 
