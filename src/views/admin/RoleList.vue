@@ -250,7 +250,7 @@ export default {
         const setlist = this.mdl.permissions[i].actionEntitySetList
         setlist.forEach(item => {
           item.defaultCheck = this.tempSelected[i].some(selected => {
-            return (selected.split('-')[0] === item.method)
+            return (selected === item.id)
           })
         })
       }
@@ -289,11 +289,11 @@ export default {
           this.mdl.permissions.forEach(permission => {
             // 过滤需要选中的多选框
             const defaultcheck = permission.actionEntitySetList.filter(entity => entity.defaultCheck === true)
-            permissionsAction[permission.menuId] = defaultcheck.map((entity, i) => entity.method + '-' + i)
+            permissionsAction[permission.menuId] = defaultcheck.map((entity, i) => entity.id)
             // 指定多选框的隐藏值和显示值
             // key 值在后面添加index 以保证其唯一性
             permission.actionEntitySetList.forEach((per, i) => {
-              per.value = per.method + '-' + i
+              per.value = per.id
               per.label = per.description
             })
           })
