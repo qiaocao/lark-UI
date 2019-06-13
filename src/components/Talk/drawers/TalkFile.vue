@@ -64,5 +64,7 @@ export default {
 </script>
 
  <style lang="less" scope>
-
+    .ant-avatar-image{
+      border-radius: 0
+    }
 </style>
