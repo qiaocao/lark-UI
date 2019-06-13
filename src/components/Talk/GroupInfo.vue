@@ -116,9 +116,10 @@ export default {
       )
     },
     sendMessage (event) {
-      console.log('这里应该跳转到聊天页')
       const sen = this.groupInfo
-      this.$emit('t', sen.id)
+      sen.reOrder = true
+      sen.addUnread = false
+      this.$emit('changeTab')
       this.$router.push({
         path: '/talk/ChatPanel/ChatBox',
         query: new RecentContact(sen)

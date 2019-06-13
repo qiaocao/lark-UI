@@ -108,8 +108,17 @@ export default {
         this.loadingState = false
       })
     },
-    sendMessage (event) {
-      console.log('这里应该跳转到聊天页')
+    sendMessage () {
+      const sen = this.ContactsInfo
+      console.log(this.ContactsInfo)
+      sen.reOrder = true
+      sen.addUnread = false
+      this.$emit('changeTab')
+      this.$router.push({
+        path: '/talk/ChatPanel/ChatBox',
+        query: new RecentContact(sen)
+      })
+      this.$store.dispatch('UpdateRecentContacts', sen)
     }
   }
 }

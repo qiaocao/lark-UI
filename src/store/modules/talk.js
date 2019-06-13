@@ -129,28 +129,29 @@ const talk = {
     //  将index中的constructor 传进来  直接生成最近联系人列表
     UpdateRecentContacts ({ commit, state }, freshItem) {
       const recentContacts = state.recentContacts
-      // 从payload中生成最近联系人项
+
+      let oldItem = {}
       const newItem = new RecentContact(freshItem)
-      // 判断该联系人是否已经存在于最近联系人列表
+
       const index = recentContacts.findIndex(element => element.id === newItem.id)
-      // 原未读消息数
-      let oUnread = 0
-      // 若已存在，先删除
       if (index > -1) {
-        oUnread = recentContacts[index].unreadNum
+        oldItem = recentContacts[index]
         this._vm.$delete(recentContacts, index)
       }
-      // 查询置顶联系人数量
       const TopNum = recentContacts.filter(element => element.isTop).length
 
       // 设置未读消息数
       if (freshItem.addUnread && router.currentRoute.query.id !== newItem.id) {
-        newItem.unreadNum = oUnread + 1
+        newItem.unreadNum = oldItem.unreadNum + 1
       } else {
+        newItem.lastMessage = oldItem.lastMessage || ''
+        newItem.time = oldItem.time || ''
+        newItem.atMe = oldItem.atMe || ''
         newItem.unreadNum = 0
         // TODO: 告知服务器消息的状态
         // ···
       }
+
       // 更新列表顺序
       if (freshItem.reOrder) {
         newItem.isTop
@@ -165,7 +166,6 @@ const talk = {
             : recentContacts.splice(TopNum, 0, newItem)
         }
       }
-      // 更新，实际在操作的过程中已经更新了
       commit('SET_RECENT_CONTACTS', recentContacts)
     },
     /**

@@ -94,13 +94,13 @@ class RecentContact {
     this.time = time
     this.lastMessage = lastMessage
     this.avatar = avatar
-    this.atMe = JSON.parse(atMe)
-    this.secretLevel = JSON.parse(secretLevel)
-    this.unreadNum = JSON.parse(unreadNum)
-    this.memberNum = JSON.parse(memberNum)
-    this.isTop = JSON.parse(isTop)
-    this.isMute = JSON.parse(isMute)
-    this.isGroup = JSON.parse(isGroup)
+    this.atMe = atMe ? JSON.parse(atMe) : atMe
+    this.secretLevel = secretLevel ? JSON.parse(secretLevel) : secretLevel
+    this.unreadNum = unreadNum ? JSON.parse(unreadNum) : unreadNum
+    this.memberNum = memberNum ? JSON.parse(memberNum) : memberNum
+    this.isTop = isTop ? JSON.parse(isTop) : isTop
+    this.isMute = isMute ? JSON.parse(isMute) : isMute
+    this.isGroup = isGroup ? JSON.parse(isGroup) : isGroup
   }
 }
 
