@@ -7,23 +7,15 @@
         class="card-list"
       >
         <a-list-item style="padding: 3px 21px 3px 21px" slot="renderItem" slot-scope="item">
-          <a-list-item-meta v-if="item.type=='message'" :description="item.detail">
-            <div slot="title">{{ item.title }}</div>
-            <a-avatar slot="avatar" :src="item.avatar" />
-          </a-list-item-meta>
-
-          <a-list-item-meta v-else-if="item.type=='notice'" :description="item.detail">
-            <a-tag v-if="item.level=='new'" color="red">{{ item.level }}</a-tag>
-            <div slot="title">{{ item.title }}</div>
-            <a-avatar slot="avatar" :src="item.avatar" />
-          </a-list-item-meta>
-          <a-list-item-meta v-else-if="item.type=='todos'" :description="item.detail">
-            <div slot="title">{{ item.title }}</div>
-            <a-avatar slot="avatar" :src="item.avatar" />
-          </a-list-item-meta>
-          <a-list-item-meta v-else-if="item.type=='collection'" :description="item.detail">
-            <div slot="title">{{ item.title }}</div>
-            <a-avatar slot="avatar" :src="item.avatar" />
+          <a-list-item-meta>
+            <a-avatar slot="avatar" :src="item.user.avatar"/>
+            <div slot="title" style="width:240px">
+              <span>{{ item.user.nickname }}</span>&nbsp;
+              在&nbsp;
+              <a href="#">{{ item.project.name }}</a>&nbsp;
+              <span>{{ item.project.action }}</span>&nbsp;
+              <a href="#">{{ item.project.event }}</a>
+            </div>
           </a-list-item-meta>
           <div>{{ item.date|timeFormat }}</div>
         </a-list-item>
@@ -54,15 +46,12 @@ export default {
   },
   filters: { timeFormat: toWeiXinString },
   mounted () {
-    console.log('this.listData')
-    console.log(this.listData)
   }
 }
 </script>
 <style lang="less" scoped>
     .card-list{
       .ant-list-item{
-        cursor: pointer;
         transition: background-color 218ms;
         border-bottom: 0px solid #e8e8e8;
       }

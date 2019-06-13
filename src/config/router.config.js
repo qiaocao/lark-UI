@@ -9,31 +9,25 @@ export const asyncRouterMap = [
     name: 'index',
     component: BasicLayout,
     meta: { title: '首页' },
-    redirect: '/dashboard/workplace',
+    redirect: '/dashboard/monitor',
     children: [
       // dashboard
       {
         path: '/dashboard',
         name: 'dashboard',
-        redirect: '/dashboard/workplace',
+        redirect: '/dashboard/monitor',
         component: GeneralView,
-        meta: { title: '工作舱', keepAlive: true, icon: 'home', permission: [ 'dashboard' ] },
+        meta: { title: '工作舱', keepAlive: true, hideHeader: true, icon: 'home', permission: [ 'dashboard' ] },
+        hideChildrenInMenu: true,
         children: [
-          {
-            path: '/dashboard/workplace',
-            name: 'Workplace',
-            component: () => import('@/views/dashboard/Workplace'),
-            meta: { title: '数据看板', keepAlive: true, icon: 'fund', permission: [ 'dashboard' ] }
-          },
           {
             path: '/dashboard/monitor',
             name: 'Analysis',
             component: () => import('@/views/dashboard/Monitor'),
-            meta: { title: '工作台', keepAlive: false, icon: 'dashboard', permission: [ 'dashboard' ] }
+            meta: { title: '工作台', keepAlive: true, icon: 'dashboard', permission: [ 'dashboard' ], hidden: true }
           }
         ]
       },
-      // talk
       {
         path: '/talk',
         name: 'talk',
@@ -192,7 +186,7 @@ export const asyncRouterMap = [
       // account
       {
         path: '/account',
-        component: RouteView,
+        component: GeneralView,
         redirect: '/account/center',
         name: 'account',
         // 在侧导航中隐藏

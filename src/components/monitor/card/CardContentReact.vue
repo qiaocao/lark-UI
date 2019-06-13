@@ -11,20 +11,6 @@
             <div slot="title">{{ item.title }}</div>
             <a-avatar slot="avatar" :src="item.avatar" />
           </a-list-item-meta>
-
-          <a-list-item-meta v-else-if="item.type=='notice'" :description="item.detail">
-            <a-tag v-if="item.level=='new'" color="red">{{ item.level }}</a-tag>
-            <div slot="title">{{ item.title }}</div>
-            <a-avatar slot="avatar" :src="item.avatar" />
-          </a-list-item-meta>
-          <a-list-item-meta v-else-if="item.type=='todos'" :description="item.detail">
-            <div slot="title">{{ item.title }}</div>
-            <a-avatar slot="avatar" :src="item.avatar" />
-          </a-list-item-meta>
-          <a-list-item-meta v-else-if="item.type=='collection'" :description="item.detail">
-            <div slot="title">{{ item.title }}</div>
-            <a-avatar slot="avatar" :src="item.avatar" />
-          </a-list-item-meta>
           <div>{{ item.date|timeFormat }}</div>
         </a-list-item>
       </a-list>
@@ -54,8 +40,6 @@ export default {
   },
   filters: { timeFormat: toWeiXinString },
   mounted () {
-    console.log('this.listData')
-    console.log(this.listData)
   }
 }
 </script>

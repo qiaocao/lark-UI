@@ -45,6 +45,7 @@
 import { getUserList, getOrgTree } from '@/api/admin'
 
 export default {
+  name: 'UserTransfer',
   data () {
     return {
       orgTree: [],

@@ -7,23 +7,13 @@
         class="card-list"
       >
         <a-list-item style="padding: 3px 21px 3px 21px" slot="renderItem" slot-scope="item">
-          <a-list-item-meta v-if="item.type=='message'" :description="item.detail">
-            <div slot="title">{{ item.title }}</div>
-            <a-avatar slot="avatar" :src="item.avatar" />
-          </a-list-item-meta>
 
-          <a-list-item-meta v-else-if="item.type=='notice'" :description="item.detail">
-            <a-tag v-if="item.level=='new'" color="red">{{ item.level }}</a-tag>
+          <a-tag v-if="item.type=='new'" color="red">最新</a-tag>
+          <a-tag v-else-if="item.type=='top'" color="orange">置顶</a-tag>
+          <a-tag v-else color="green">通知</a-tag>
+          <a-list-item-meta>
+
             <div slot="title">{{ item.title }}</div>
-            <a-avatar slot="avatar" :src="item.avatar" />
-          </a-list-item-meta>
-          <a-list-item-meta v-else-if="item.type=='todos'" :description="item.detail">
-            <div slot="title">{{ item.title }}</div>
-            <a-avatar slot="avatar" :src="item.avatar" />
-          </a-list-item-meta>
-          <a-list-item-meta v-else-if="item.type=='collection'" :description="item.detail">
-            <div slot="title">{{ item.title }}</div>
-            <a-avatar slot="avatar" :src="item.avatar" />
           </a-list-item-meta>
           <div>{{ item.date|timeFormat }}</div>
         </a-list-item>
@@ -54,8 +44,6 @@ export default {
   },
   filters: { timeFormat: toWeiXinString },
   mounted () {
-    console.log('this.listData')
-    console.log(this.listData)
   }
 }
 </script>
