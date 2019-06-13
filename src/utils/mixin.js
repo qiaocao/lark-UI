@@ -56,11 +56,13 @@ const mixinSecret = {
   filters: {
     // 人员密级
     peopleSecret: (code) => {
-      return code ? SECRETLEVEL_ENUM.get(code).people : SECRETLEVEL_ENUM.get('default')
+      const codeNumber = Number.parseInt(code)
+      return codeNumber ? SECRETLEVEL_ENUM.get(codeNumber).people : SECRETLEVEL_ENUM.get('default')
     },
     // 资源密级
     fileSecret: (code) => {
-      return code ? SECRETLEVEL_ENUM.get(code).file : SECRETLEVEL_ENUM.get('default')
+      const codeNumber = Number.parseInt(code)
+      return codeNumber ? SECRETLEVEL_ENUM.get(codeNumber).file : SECRETLEVEL_ENUM.get('default')
     }
   }
 }

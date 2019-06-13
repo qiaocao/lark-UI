@@ -1,7 +1,12 @@
+/**
+ * @todo 这个模块已经不维护
+ * @todo 关于研讨的状态全部存储在talk模块中
+ */
+
 import modules from './conf'
 import { Chat, ChatListUtils, MessageInfoType, MessageTargetType, transform } from '../../utils/talk/chatUtils'
 import conf from '@/api/index'
-import { getGroupList, getContactsTree, getRecentContacts } from '@/api/chat'
+// import { getGroupList, getContactsTree, getRecentContacts } from '@/api/talk'
 
 const chat = {
   state: {
@@ -197,58 +202,58 @@ const chat = {
      * if anything affects group list, dispatch this action
      * @author jihainan
      */
-    GetGroupList ({ commit }) {
-      return new Promise((resolve, reject) => {
-        getGroupList().then(response => {
-          if (response.status === 200) {
-            commit('SET_GROUP_LIST', [ ...response.result.data ])
-          } else {
-            reject(new Error('getGroupList: 服务器发生错误!'))
-          }
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-      })
-    },
+    // GetGroupList ({ commit }) {
+    //   return new Promise((resolve, reject) => {
+    //     getGroupList().then(response => {
+    //       if (response.status === 200) {
+    //         commit('SET_GROUP_LIST', [ ...response.result.data ])
+    //       } else {
+    //         reject(new Error('getGroupList: 服务器发生错误!'))
+    //       }
+    //       resolve(response)
+    //     }).catch(error => {
+    //       reject(error)
+    //     })
+    //   })
+    // },
     /**
      * 获取联系人树
      * 当联系人数据被改变，dispatch这个方法
      * @author jihainan
      */
-    GetContactsTree ({ commit }) {
-      return new Promise((resolve, reject) => {
-        getContactsTree().then(response => {
-          if (response.status === 200) {
-            commit('SET_CONTACTS_TREE', [ ...response.result.data ])
-          } else {
-            reject(new Error('getContactsTree: 服务器发生错误!'))
-          }
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-      })
-    },
+    // GetContactsTree ({ commit }) {
+    //   return new Promise((resolve, reject) => {
+    //     getContactsTree().then(response => {
+    //       if (response.status === 200) {
+    //         commit('SET_CONTACTS_TREE', [ ...response.result.data ])
+    //       } else {
+    //         reject(new Error('getContactsTree: 服务器发生错误!'))
+    //       }
+    //       resolve(response)
+    //     }).catch(error => {
+    //       reject(error)
+    //     })
+    //   })
+    // },
     /**
      * 获取最近联系人列表
      * 当最近联系人有变化时，dispatch这个方法
      * @author jihainan
      */
-    GetRecentContacts ({ commit }) {
-      return new Promise((resolve, reject) => {
-        getRecentContacts().then(response => {
-          if (response.status === 200) {
-            commit('SET_RECENT_CHAT_LIST', [ ...response.result.data ])
-          } else {
-            reject(new Error('getRecentContacts: 服务器发生错误'))
-          }
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-      })
-    }
+    // GetRecentContacts ({ commit }) {
+    //   return new Promise((resolve, reject) => {
+    //     getRecentContacts().then(response => {
+    //       if (response.status === 200) {
+    //         commit('SET_RECENT_CHAT_LIST', [ ...response.result.data ])
+    //       } else {
+    //         reject(new Error('getRecentContacts: 服务器发生错误'))
+    //       }
+    //       resolve(response)
+    //     }).catch(error => {
+    //       reject(error)
+    //     })
+    //   })
+    // }
   },
   modules,
   strict: process.env.NODE_ENV !== 'production'

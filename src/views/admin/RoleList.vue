@@ -33,7 +33,7 @@
       :columns="columns"
       :data="loadData"
     >
-    <!--TODO 目前只提供了按角色查询权限的接口，这部分提供方法后再做
+      <!--TODO 目前只提供了按角色查询权限的接口，这部分提供方法后再做
       <div
         slot="expandedRowRender"
         slot-scope="record"
@@ -160,7 +160,7 @@
               {{ permission.title }}：
             </a-col>
             <a-col :span="20">
-              <a-checkbox-group :options="permission.actionEntitySetList" v-model="tempSelected[index]" @change="checkChange"/>
+              <a-checkbox-group :options="permission.actionEntitySetList" v-model="tempSelected[index]" :value="tempSelected[index]" @change="checkChange"/>
             </a-col>
           </a-row>
         </a-form-item>
@@ -172,7 +172,6 @@
 <script>
 import { STable } from '@/components'
 import { getRoleList, getRolePermission, delRole, disabledRole, updateRole, updateRolePermission } from '@/api/admin'
-import { axios } from '../../utils/request';
 export default {
   name: 'Rolelist',
   components: {
@@ -233,23 +232,25 @@ export default {
       rolePerMap: new Map(),
       rolePermissions: [],
       detailModel: false,
-      tempSelected:[]
+      tempSelected: []
     }
   },
   created () {
   },
   methods: {
     /**
-     * 为了解决checkgroup无法点击的问题
+     * 多选框绑定值修改时对应调整this.mdl内容
+     * 用于向后台传递数据
+     * 这里用中间值tempSelected绑定多选框，是为了解决无法多选框无法点击的问题
      */
     checkChange (a) {
-      for(var i in this.tempSelected){
+      for (var i in this.tempSelected) {
         this.mdl.permissions[i].selected = this.tempSelected[i]
         // 遍历权限list 修改defaultChecked值
         const setlist = this.mdl.permissions[i].actionEntitySetList
         setlist.forEach(item => {
           item.defaultCheck = this.tempSelected[i].some(selected => {
-            return (selected === item.method)
+            return (selected.split('-')[0] === item.method)
           })
         })
       }
@@ -279,16 +280,20 @@ export default {
      * 权限分配弹出框
      */
     handlePermission (record) {
+      this.tempSelected = []
       const permissionsAction = {}
       this.mdl = Object.assign({}, record)
       getRolePermission({ id: this.mdl.id })
         .then(res => {
-          this.mdl.permissions = res.result.data
+          this.mdl.permissions = Object.assign([], res.result.data)
           this.mdl.permissions.forEach(permission => {
+            // 过滤需要选中的多选框
             const defaultcheck = permission.actionEntitySetList.filter(entity => entity.defaultCheck === true)
-            permissionsAction[permission.menuId] = defaultcheck.map(entity => entity.method)
-            permission.actionEntitySetList.forEach(per => {
-              per.value = per.method
+            permissionsAction[permission.menuId] = defaultcheck.map((entity, i) => entity.method + '-' + i)
+            // 指定多选框的隐藏值和显示值
+            // key 值在后面添加index 以保证其唯一性
+            permission.actionEntitySetList.forEach((per, i) => {
+              per.value = per.method + '-' + i
               per.label = per.description
             })
           })
@@ -300,6 +305,7 @@ export default {
           for (var i in this.mdl.permissions) {
             this.tempSelected.push(this.mdl.permissions[i].selected)
           }
+          console.log('this.tempSelected', this.tempSelected)
           this.perVisible = true
         })
     },
