@@ -24,8 +24,7 @@ const api = {
   getmenu: '/admin/menu/page',
   getmenuall: '/admin/menu/all',
   menu: '/admin/menu',
-  menuelement: '/admin/menu/element'
-
+  menuelement: '/admin/menu/element',
   // 临时增加，方便测试
   getUserBySecret: 'admin/user/list'
 }
@@ -308,6 +307,7 @@ export function saveMenuElement (parameter) {
   })
 }
 // saveUserOrg
+/**
  * 临时增加，通过密级获取用户列表
  * @param {Object} parameter {secretLevel: 60}
  */
@@ -318,4 +318,3 @@ export function getUserBySecret (parameter) {
     params: parameter
   })
 }
-

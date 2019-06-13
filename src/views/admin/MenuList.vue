@@ -115,7 +115,6 @@
 <script>
 import { STable } from '@/components'
 import { getMenuList, getMenuElement, addMenu, updateMenu, delMenu, getMenuListAll, saveMenuElement } from '@/api/admin'
-import { setTimeout } from 'timers'
 export default {
   name: 'MenuList',
   components: {
@@ -265,7 +264,7 @@ export default {
       this.descriptions.forEach(item => {
         if (this.methodMap.get(item) === undefined) {
           this.$notification['info']({
-            message: '请为'+ item +'按钮选择请求方式',
+            message: '请为' + item + '按钮选择请求方式',
             duration: 2
           })
           checkResult = false
