@@ -1,5 +1,5 @@
 // eslint-disable-next-line
-import { UserLayout, BasicLayout, RouteView, BlankLayout, PageView, GeneralView } from '@/components/layouts'
+import { UserLayout, BasicLayout, RouteView, PageView, GeneralView, MonitorView } from '@/components/layouts'
 import { RecentContact } from '@/utils/talk'
 
 export const asyncRouterMap = [
@@ -16,7 +16,7 @@ export const asyncRouterMap = [
         path: '/dashboard',
         name: 'dashboard',
         redirect: '/dashboard/monitor',
-        component: GeneralView,
+        component: MonitorView,
         meta: { title: '工作舱', keepAlive: true, hideHeader: true, icon: 'home', permission: [ 'dashboard' ] },
         hideChildrenInMenu: true,
         children: [
@@ -92,6 +92,28 @@ export const asyncRouterMap = [
             meta: {
               title: '角色管理',
               icon: 'switcher',
+              keepAlive: true,
+              permission: ['role']
+            }
+          },
+          {
+            path: '/list/msg-list',
+            name: 'MsgList',
+            component: () => import('@/views/admin/NotificationList'),
+            meta: {
+              title: '消息列表',
+              icon: 'bell',
+              keepAlive: true,
+              permission: ['role']
+            }
+          },
+          {
+            path: '/list/menu-list',
+            name: 'MenuList',
+            component: () => import('@/views/admin/MenuList'),
+            meta: {
+              title: '菜单管理',
+              icon: 'ordered-list',
               keepAlive: true,
               permission: ['role']
             }

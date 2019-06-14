@@ -37,7 +37,7 @@
         <div class="info-list">
           <div>
             <p class="attr">密级</p>
-            <p class="val">{{ groupInfo.securityClass }}</p>
+            <p class="val">{{ groupInfo.secretLevel | fileSecret }}</p>
           </div>
           <div>
             <p class="attr">主题</p>
@@ -70,17 +70,7 @@ export default {
     selected: {
       type: String,
       default: '',
-      required: true,
-      id: '111',
-      name: 'sss',
-      time: '时间',
-      lastMessage: '阿斯顿',
-      avater: 'sss',
-      atMe: false,
-      unreadNum: '0',
-      isTop: false,
-      isMute: false,
-      isGroup: true
+      required: true
     }
   },
   data () {
@@ -100,8 +90,7 @@ export default {
   methods: {
     /** 通过id获取联系人信息 */
     getData (groupId) {
-      ;[this.groupInfo, this.loadingState] = [{}, true]
-      /*  */
+      [this.groupInfo, this.loadingState] = [{}, true]
       getGroupInfo(groupId).then(
         res => {
           if (res.status === 200) {
@@ -116,15 +105,15 @@ export default {
       )
     },
     sendMessage (event) {
-      const sen = this.groupInfo
-      sen.reOrder = true
-      sen.addUnread = false
-      this.$emit('changeTab')
+      const groupItem = this.groupInfo
+      this.$emit('clickSend')
       this.$router.push({
         path: '/talk/ChatPanel/ChatBox',
-        query: new RecentContact(sen)
+        query: new RecentContact(groupItem)
       })
-      this.$store.dispatch('UpdateRecentContacts', sen)
+      groupItem.reOrder = true
+      groupItem.addUnread = false
+      this.$store.dispatch('UpdateRecentContacts', groupItem)
     }
   }
 }

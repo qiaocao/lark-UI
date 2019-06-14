@@ -13,19 +13,19 @@
           </ul>
         </div>
       </li>
-      <li v-for="(item,index) in NewItems" class="history_cotent" :key="index" :value="item.value">
+      <li v-for="(itemFile,index) in NewItems" class="history_cotent" :key="index" :value="item.value">
 
         <a-list-item-meta class="file_name">
-          <a class="file_a" slot="title">{{ item.name.last }}</a>
-          <a-avatar slot="avatar" :src="item.url"/>
+          <a class="file_a" slot="title">{{ itemFile.name.last }}</a>
+          <a-avatar slot="avatar" :src="itemFile.url"/>
         </a-list-item-meta>
-        <span class="file_sp">{{ item.name.title }}</span>
-        <div class="file_time">{{ item.time }}</div>
+        <span class="file_sp">{{ itemFile.name.title }}</span>
+        <div class="file_time">{{ itemFile.time }}</div>
         <a href>
           <div class="secret secret1">
-            <a-tag color="orange" v-if="item.Concentrated === 'secret'">保密</a-tag>
-            <a-tag color="tomato" v-if="item.Concentrated === 'top-secret'">机密</a-tag>
-            <a-tag color v-if="item.Concentrated === 'no-secret'">非密</a-tag>
+            <a-tag color="orange" v-if="itemFile.Concentrated === 'secret'">保密</a-tag>
+            <a-tag color="tomato" v-if="itemFile.Concentrated === 'top-secret'">机密</a-tag>
+            <a-tag color v-if="itemFile.Concentrated === 'no-secret'">非密</a-tag>
           </div>
         </a>
         <a class="down">下载</a>
