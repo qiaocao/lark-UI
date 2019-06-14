@@ -3,8 +3,7 @@
     :grid="{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 3, xl: 3, xxl: 4 }"
     :dataSource="cardList"
   >
-    <a-list-item slot="renderItem" slot-scope="item, index">
-      {{ item.id }}
+    <a-list-item slot="renderItem" slot-scope="item, index" :key="item.id">
       <a-card
         hoverable
         style="width: 240px"
@@ -15,14 +14,14 @@
           slot="cover"
         />
         <template class="ant-card-actions" slot="actions">
-          <a-icon @click="click($event)" type="plus" v-if="isPlus" />
-          <a-icon type="ellipsis" v-if="isPlus"/>
-          <a-icon type="check" v-if="isDelete"/>
-          <a-tooltip placement="left" v-if="isDelete" >
+          <a-icon @click="click($event, index), getDataId (item.id)" type="plus" v-if="isPlus[index]" />
+          <a-icon type="ellipsis" v-if="isPlus[index]"/>
+          <a-icon type="check" v-if="isDelete[index]"/>
+          <a-tooltip placement="left" v-if="isDelete[index]" >
             <template slot="title">
               <span>删除卡片</span>
             </template>
-            <a-icon @click="clickD()" type="delete"/>
+            <a-icon @click="clickDelete($event, index), deleteId(item.id)" type="delete"/>
           </a-tooltip>
         </template>
         <a-card-meta
@@ -31,6 +30,8 @@
         </a-card-meta>
       </a-card>
     </a-list-item>
+    <div v-text="t" style="display:none"></div>
+
   </a-list>
 </template>
 <script>
@@ -40,49 +41,63 @@ export default {
     return {
       cardList: [],
       cardIdList: [],
-      isPlus: true,
-      isDelete: false
+      isPlus: [],
+      isDelete: [],
+      t: ''
     }
   },
   created () {
     this.getAllCards()
   },
   methods: {
+    click (event, index) {
+      this.isPlus[index] = false
+      this.t = Math.random()
+      this.isDelete[index] = true
+    },
+    clickDelete (event, index) {
+      this.isDelete[index] = false
+      this.isPlus[index] = true
+      this.t = Math.random()
+    },
     getAllCards () {
       this.$http.get('/workplace/all')
         .then(res => {
           const datas = res.result.data
           datas.map(res => {
             this.cardList.push(res)
+            this.isPlus.push(true)
+            this.isDelete.push(false)
           })
         })
     },
-    getCard () {
-      this.$http.get('/workplace/card').then(res => {
-        this.cardIdList = res.result.data
+
+    // 创建cardId
+    getDataId (cardId) {
+      this.$http.get('/workplace/card', {
+        params: {
+          cardId: cardId,
+          userId: this.$store.state.user.name
+        }
+      }).then(res => {
       })
     },
-    click (event) {
-      var target = event.target || window.event.srcElement
-      // 获取对应元素的id值
-      const idd = target.getAttribute('data-id')
-      for (let i = 0; i < this.cardList.length; i++) {
-        console.log('111', this.cardList[i].id)
-        const id = this.cardList[i]
-        if (this.isPlus === true && id === idd) {
-          this.isPlus = false
-          this.isDelete = true
+    // 删除cardId
+    deleteId (cardId) {
+      this.$http.get('/workplace/card', {
+        params: {
+          cardId: cardId,
+          userId: this.$store.state.user.name
         }
-      }
+      }).then(res => {
 
-      this.getCard()
-    },
-    clickD () {
-      if (this.isDelete === true) {
-        this.isDelete = false
-        this.isPlus = true
-      }
+      })
     }
+    // getCard () {
+    //   this.$http.get('/workplace/card').then(res => {
+    //     this.cardIdList = res.result.data
+    //   })
+    // },
   }
 }
 </script>
