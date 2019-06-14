@@ -14,7 +14,13 @@
           slot="cover"
         />
         <template class="ant-card-actions" slot="actions">
-          <a-icon @click="click($event, index), getDataId (item.id)" type="plus" v-if="isPlus[index]" />
+          <!-- <a-icon @click="click($event, index), pushId(item.id)" type="plus" v-if="isPlus[index]" /> -->
+          <a-tooltip placement="left" v-if="isPlus[index]" >
+            <template slot="title">
+              <span>添加卡片</span>
+            </template>
+            <a-icon @click="click($event, index), pushId(item.id)" type="plus"/>
+          </a-tooltip>
           <a-icon type="ellipsis" v-if="isPlus[index]"/>
           <a-icon type="check" v-if="isDelete[index]"/>
           <a-tooltip placement="left" v-if="isDelete[index]" >
@@ -52,8 +58,8 @@ export default {
   methods: {
     click (event, index) {
       this.isPlus[index] = false
-      this.t = Math.random()
       this.isDelete[index] = true
+      this.t = Math.random()
     },
     clickDelete (event, index) {
       this.isDelete[index] = false
@@ -73,7 +79,7 @@ export default {
     },
 
     // 创建cardId
-    getDataId (cardId) {
+    pushId (cardId) {
       this.$http.get('/workplace/card', {
         params: {
           cardId: cardId,
