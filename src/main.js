@@ -14,10 +14,12 @@ import '@/utils/filter'
 import { SocketApi } from '@/utils/talk' // global filter
 
 Vue.config.productionTip = false
-
 Vue.use(VueAxios, router)
 Vue.prototype.publicPath = process.env.BASE_URL
-Vue.prototype.SocketGlobal = new SocketApi()
+Vue.prototype.SocketGlobal = new SocketApi({
+  ip: '127.0.0.1',
+  port: '8181'
+})
 
 new Vue({
   router,
