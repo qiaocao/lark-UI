@@ -18,12 +18,11 @@
 
     <div class="message-content">
 
-      <!-- 需要判断什么时候显示 -- 群消息 且 不是当前用户发送的 且 设置了显示群昵称的 -->
+      <!-- 显示发送人 -->
       <div v-if="!isMe() && messageInfo.isGroup" class="message-nickname">
         <span>{{ messageInfo.username }}</span>
       </div>
 
-      <!-- 判断消息类型：图片 文字 文件 -->
       <div class="message-bubble left right ">
         <div class="bubble-content">
           <div class="plain">
@@ -61,7 +60,7 @@
                       【{{ JSON.parse(messageInfo.secretLevel) | fileSecret }}】
                     </span>
                   </div>
-                  <span class="download">下载</span>
+                  <a :href="messageInfo.content.src" class="download" :download="messageInfo.content.title">下载</a>
                 </div>
               </a-spin>
 
