@@ -153,7 +153,6 @@
               :labelCol="labelCol"
               :wrapperCol="wrapperCol"
               label="所属组织"
-              v-decorator="['orgid',{initialValue:orgid}]"
             >
               <a-tree-select
                 :dropdownStyle="{ maxHeight: '200px', overflow: 'auto' }"
@@ -480,7 +479,7 @@ export default {
             status: true
           })
         }, 0)
-        // this.orgId = ''
+        this.orgid = ''
         this.rolechecked = []
         this.editvisible = true
         this.cardvisible = false

@@ -21,6 +21,7 @@
             <span class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchRole">查询</a-button>
               <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
+              <a-button type="primary" style="margin-left: 30px" @click="handleAdd()">新增角色</a-button>
             </span>
           </a-col>
         </a-row>
@@ -64,10 +65,11 @@
           </a>
           <a-menu slot="overlay">
             <a-menu-item>
-              <a @click="rolesDetail(record)">详情</a>
+              <!-- <a @click="rolesdisabled(record)">禁用</a> -->
+              <a @click="appointUsers(record)">指定用户</a>
             </a-menu-item>
             <a-menu-item>
-              <a @click="rolesdisabled(record)">禁用</a>
+              <a @click="rolesDetail(record)">详情</a>
             </a-menu-item>
             <a-menu-item>
               <a @click="rolesDelete(record)">删除</a>
@@ -89,16 +91,15 @@
           :wrapperCol="wrapperCol"
           label="角色标识"
         >
-          <a-input placeholder="唯一识别码" disabled="disabled" v-decorator="['code']"/>
+          <a-input :disabled="inDetail||inEdit" v-decorator="['code']"/>
         </a-form-item>
-
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
           label="角色名称"
           hasFeedback
         >
-          <a-input placeholder="起一个名字" v-decorator="['name',{rules: [{ required: true, message: '请填写角色名称' }]}]" :disabled="detailModel"/>
+          <a-input placeholder="起一个名字" v-decorator="['name',{rules: [{ required: true, message: '请填写角色名称' }]}]" :disabled="inDetail"/>
         </a-form-item>
         <!--
         <a-form-item
@@ -120,25 +121,25 @@
           label="描述"
           hasFeedback
         >
-          <a-textarea :rows="5" v-decorator="['description']" :disabled="detailModel"/>
+          <a-textarea :rows="5" v-decorator="['description']" :disabled="inDetail"/>
         </a-form-item>
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
           label="创建人"
           hasFeedback
-          v-if="detailModel"
+          v-if="inDetail"
         >
-          <a-input v-decorator="['creatorId']" :disabled="detailModel"/>
+          <a-input v-decorator="['creatorId']" :disabled="inDetail"/>
         </a-form-item>
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
           label="创建时间"
           hasFeedback
-          v-if="detailModel"
+          v-if="inDetail"
         >
-          <a-input v-decorator="['createTime']" :disabled="detailModel"/>
+          <a-input v-decorator="['createTime']" :disabled="inDetail"/>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -166,16 +167,19 @@
         </a-form-item>
       </a-form>
     </a-modal>
+    <user-transfer ref="model" @ok="handleSaveOk"/>
   </a-card>
 </template>
 
 <script>
 import { STable } from '@/components'
-import { getRoleList, getRolePermission, delRole, disabledRole, updateRole, updateRolePermission } from '@/api/admin'
+import UserTransfer from '@/components/admin/UserTransfer'
+import { getRoleList, getRolePermission, delRole, disabledRole, updateRole, addRole, updateRolePermission, getRoleUser, saveRoleUser } from '@/api/admin'
 export default {
   name: 'Rolelist',
   components: {
-    STable
+    STable,
+    UserTransfer
   },
   data () {
     return {
@@ -231,8 +235,12 @@ export default {
       // 角色权限map <key 角色id value 角色权限 json数组>
       rolePerMap: new Map(),
       rolePermissions: [],
-      detailModel: false,
-      tempSelected: []
+      inDetail: false,
+      inAdd: false,
+      inEdit: false,
+      tempSelected: [],
+      // 角色id
+      roleid: ''
     }
   },
   created () {
@@ -265,13 +273,31 @@ export default {
      * 编辑弹出框
      */
     handleEdit (record) {
-      this.detailModel = false
+      this.inDetail = false
+      this.inAdd = false
+      this.inEdit = true
       this.mdl = Object.assign({}, record)
       setTimeout(() => {
         this.editForm.setFieldsValue({
           code: record.code,
           name: record.name,
-          describe: record.description
+          description: record.description
+        })
+      }, 0)
+      this.editVisible = true
+    },
+    /**
+     * 新增弹出框
+     */
+    handleAdd () {
+      this.inDetail = false
+      this.inEdit = false
+      this.inAdd = true
+      setTimeout(() => {
+        this.editForm.setFieldsValue({
+          code: '',
+          name: '',
+          description: ''
         })
       }, 0)
       this.editVisible = true
@@ -285,6 +311,9 @@ export default {
       this.mdl = Object.assign({}, record)
       getRolePermission({ id: this.mdl.id })
         .then(res => {
+          const resData = res.result.data
+          // 隐藏“工作舱”
+          resData.splice(resData.findIndex(item => item.title === '工作舱'), 1)
           this.mdl.permissions = Object.assign([], res.result.data)
           this.mdl.permissions.forEach(permission => {
             // 过滤需要选中的多选框
@@ -315,33 +344,64 @@ export default {
     handleEditOk () {
       this.editForm.validateFields((err, values) => {
         if (!err) {
-          values.id = this.mdl.id
-          return updateRole(
-            values
-          ).then(
-            res => {
-              if (res.status === 200) {
-                this.$notification['success']({
-                  message: '修改成功',
-                  duration: 2
-                })
-                // 关闭编辑框
-                this.editVisible = false
-                // 刷新员工列表
-                this.$refs.stable.refresh(true)
-              } else {
-                this.$notification['error']({
-                  message: res.message,
-                  duration: 4
-                })
+          if (this.inAdd) {
+            // 新增
+            return addRole(
+              values
+            ).then(
+              res => {
+                if (res.status === 200) {
+                  this.$notification['success']({
+                    message: '操作成功',
+                    duration: 2
+                  })
+                  // 关闭编辑框
+                  this.editVisible = false
+                  // 刷新列表
+                  this.$refs.stable.refresh(true)
+                } else {
+                  this.$notification['error']({
+                    message: res.message,
+                    duration: 4
+                  })
+                }
               }
-            }
-          ).catch(() =>
-            this.$notification['error']({
-              message: '出现异常，请联系系统管理员',
-              duration: 4
-            })
-          )
+            ).catch(() =>
+              this.$notification['error']({
+                message: '出现异常，请联系系统管理员',
+                duration: 4
+              })
+            )
+          } else {
+            // 编辑
+            values.id = this.mdl.id
+            return updateRole(
+              values
+            ).then(
+              res => {
+                if (res.status === 200) {
+                  this.$notification['success']({
+                    message: '操作成功',
+                    duration: 2
+                  })
+                  // 关闭编辑框
+                  this.editVisible = false
+                  // 刷新列表
+                  this.$refs.stable.refresh(true)
+                } else {
+                  this.$notification['error']({
+                    message: res.message,
+                    duration: 4
+                  })
+                }
+              }
+            ).catch(() =>
+              this.$notification['error']({
+                message: '出现异常，请联系系统管理员',
+                duration: 4
+              })
+            )
+          }
         }
       })
     },
@@ -379,7 +439,7 @@ export default {
      * 详情
      */
     rolesDetail (record) {
-      this.detailModel = true
+      this.inDetail = true
       this.mdl = Object.assign({}, record)
       setTimeout(() => {
         this.editForm.setFieldsValue({
@@ -479,6 +539,44 @@ export default {
           })
         }
       })
+    },
+    /**
+     * 指定用户
+     */
+    appointUsers (record) {
+      this.roleid = record.id
+      return getRoleUser(
+        { 'id': record.id }
+      ).then(res => {
+        if (res.status === 200) {
+          this.$refs.model.beginChooseUser(res.result.data)
+        } else {
+          this.$notification['error']({
+            message: '获取人员失败',
+            duration: 4
+          })
+        }
+      })
+    },
+    /**
+     * 穿梭框点击确认
+     */
+    handleSaveOk (returnData) {
+      return saveRoleUser({ 'id': this.roleid, 'users': returnData.join(',') }).then(
+        res => {
+          if (res.status === 200) {
+            this.$notification['success']({
+              message: '操作成功',
+              duration: 2
+            })
+          } else {
+            this.$notification['error']({
+              message: res.message,
+              duration: 4
+            })
+          }
+        }
+      )
     }
   }
 }
