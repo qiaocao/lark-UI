@@ -91,14 +91,17 @@ class RecentContact {
   constructor ({ id, name, time, lastMessage, avatar, atMe, secretLevel, unreadNum, memberNum, isTop, isMute, isGroup } = {}) {
     if (!id) throw new Error('RecentContact: id不能为空！')
     if (!name) throw new Error('RecentContact: name不能为空！')
+    // 固有信息(任何时候都需要有的属性)
     this.id = id
     this.name = name
-    this.time = time
-    this.lastMessage = lastMessage
-    this.avatar = avatar
-    this.atMe = atMe ? JSON.parse(atMe) : false
+    this.avatar = avatar || ''
     this.secretLevel = secretLevel ? JSON.parse(secretLevel) : 60
+    // 有新消息时变更(有消息更新时需要有)
     this.unreadNum = unreadNum ? JSON.parse(unreadNum) : 0
+    this.time = time || ''
+    this.lastMessage = lastMessage || ''
+    this.atMe = atMe ? JSON.parse(atMe) : false
+    // 涉及到设置时变更(任何时候都需要有)
     this.memberNum = memberNum ? JSON.parse(memberNum) : 0
     this.isTop = isTop ? JSON.parse(isTop) : false
     this.isMute = isMute ? JSON.parse(isMute) : false
