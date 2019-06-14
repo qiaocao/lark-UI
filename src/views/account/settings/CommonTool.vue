@@ -21,7 +21,8 @@
             <a slot="title">{{ item.title }}</a>
           </a-list-item-meta>
           <div slot="actions">
-            <a>加入常用</a>
+            <a @click="addId(item.id), isShow($event, index)" v-if="flag[index]">加入常用</a>
+            <a v-if="flags[index]">已添加</a>
           </div>
           <div class="list-content">
             <div class="list-content-item">
@@ -42,58 +43,56 @@
           </div>
         </a-list-item>
       </a-list>
-
+      <div v-text="t" style="display:none"></div>
+      <!--  style="display:none " -->
     </a-card>
   </div>
 </template>
 
 <script>
-
-const data = []
-data.push({
-  title: 'PDM',
-  avatar: '/tools/Icon-PDM.png',
-  description: '项目数据管理系统，管理结果数据。',
-  owner: '一室',
-  startAt: '2018-07-26 22:44',
-  star: 3,
-  downloadNum: 133
-})
-data.push({
-  title: 'MPM',
-  avatar: '/tools/Icon-MPM.png',
-  description: '项目管理信息系统，对项目进行管理。',
-  owner: '十一室',
-  startAt: '2018-07-26 22:44',
-  star: 4,
-  downloadNum: 121
-})
-data.push({
-  title: '协同办公',
-  avatar: '/tools/Icon-OA.png',
-  description: '日常办公',
-  owner: '八室',
-  startAt: '2018-07-26 22:44',
-  star: 1,
-  downloadNum: 12
-})
-data.push({
-  title: 'TDM',
-  avatar: '/tools/Icon-TDM.png',
-  description: '试验数据管理信息系统',
-  owner: '九室',
-  startAt: '2018-07-26 22:44',
-  star: 3,
-  downloadNum: 3
-})
-
 export default {
   name: 'StandardList',
   components: {
   },
   data () {
     return {
-      data
+      flags: [],
+      flag: [],
+      data: [],
+      t: ''
+    }
+  },
+  created () {
+    this.getData()
+  },
+  methods: {
+    addId (id) {
+      this.$http.get('/workplace/card', {
+        params: {
+          id: id,
+          userId: this.$store.state.user.name
+        }
+      }).then(res => {
+      })
+    },
+    isShow ($event, index) {
+      // console.log('index', this.flag)
+      this.t = Math.random()
+      this.flag[index] = false
+      console.log('show', this.flag[index], index)
+
+      this.flags[index] = true
+    },
+    getData () {
+      this.$http.get('/setting/commontool').then(res => {
+        const datas = res.result.data
+        datas.map(res => {
+          this.data.push(res)
+          this.flags.push(false)
+          this.flag.push(true)
+          // console.log('data', this.data)
+        })
+      })
     }
   }
 }
