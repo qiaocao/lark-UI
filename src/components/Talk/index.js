@@ -16,7 +16,6 @@ import ContactsTree from './ContactsTree'
 import ContactsInfo from './ContactsInfo'
 import GroupItem from './GroupItem'
 import GroupInfo from './GroupInfo'
-import Face from './Face'
 import ContactsItem from './ContactsItem'
 
 export {
@@ -50,7 +49,6 @@ export {
   GroupItem,
   // 群组信息组件
   GroupInfo,
-  Face,
   // 联系人项
   ContactsItem
 }

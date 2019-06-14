@@ -121,11 +121,11 @@
         </keep-alive>
       </div>
       <div v-show="activeKey == '2'" class="info-area">
-        <group-info :selected="activeGroup" @t="s"></group-info>
+        <group-info :selected="activeGroup" @clickSend="handleClickSend"></group-info>
       </div>
 
       <div v-show="activeKey == '3'" class="info-area">
-        <contacts-info :selected="activeContacts"></contacts-info>
+        <contacts-info :selected="activeContacts" @clickSend="handleClickSend"></contacts-info>
       </div>
     </a-layout>
 
@@ -148,7 +148,7 @@ import {
 import SearchInput from './SearchInput'
 import SearchArea from './SearchArea'
 import SearchRecordModal from './SearchRecordModal'
-
+import { mapGetters } from 'vuex'
 export default {
   name: 'ChatPanel',
   components: {
@@ -187,6 +187,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['searchResultList', 'searchGroupResultList', 'searchContactsResultList']),
     currentTalk () {
       return this.$store.state.talk.currentTalk
     },
@@ -205,20 +206,11 @@ export default {
       return this.$store.state.talk.contactsTree
     },
     showSearchContent () {
-      if (this.$store.state.chat.showSearchContent === null) {
+      if (this.$store.state.talk.showSearchContent === null) {
         return true/*  */
       } else {
-        return this.$store.state.chat.showSearchContent
+        return this.$store.state.talk.showSearchContent
       }
-    },
-    searchResultList () {
-      return this.$store.state.chat.searchResultList
-    },
-    searchGroupResultList () {
-      return this.$store.state.chat.searchGroupResultList
-    },
-    searchContactsResultList () {
-      return this.$store.state.chat.searchContactsResultList
     }
   },
   watch: {
@@ -234,10 +226,8 @@ export default {
     this.getGroupList()
   },
   methods: {
-    s (val) {
+    handleClickSend () {
       this.activeKey = '1'
-      // console.log('0202', val)
-      this.activeChat = val
     },
     /* 切换面板 */
     changePane (activeKey) {
@@ -353,12 +343,12 @@ export default {
   }
 
   // 群组标签页样式
-  .group-contacts-container {
-  }
+  // .group-contacts-container {
+  // }
 
   // 联系人标签页样式
-  .contacts-container {
-  }
+  // .contacts-container {
+  // }
 
   // 让最近 群组 联系人tab页的内容可以滚动的样式
   .tab-content-container {
