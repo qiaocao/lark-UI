@@ -104,7 +104,7 @@ export const asyncRouterMap = [
               title: '消息列表',
               icon: 'bell',
               keepAlive: true,
-              permission: ['role']
+              permission: ['notice']
             }
           },
           {
@@ -115,7 +115,7 @@ export const asyncRouterMap = [
               title: '菜单管理',
               icon: 'ordered-list',
               keepAlive: true,
-              permission: ['role']
+              permission: ['menu']
             }
           },
           {
