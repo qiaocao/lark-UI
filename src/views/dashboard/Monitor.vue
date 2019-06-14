@@ -1,10 +1,10 @@
 <template>
-  <div style="margin-bottom: 64px">
+  <div style="margin-bottom: 64px;">
     <div class="antd-pro-pages-dashboard-analysis-twoColLayout" :class="isDesktop() ? 'desktop' : ''">
       <grid-layout
         :layout.sync="cardList"
         :col-num="2"
-        :row-height="52"
+        :row-height="61"
         :max-rows="12"
         :is-draggable="true"
         :is-resizable="false"

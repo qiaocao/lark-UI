@@ -26,6 +26,8 @@ const api = {
   menu: '/admin/menu',
   menuelement: '/admin/menu/element',
   roleuser: '/admin/role/user'
+  // 临时增加，方便测试
+  getUserBySecret: 'admin/user/list'
 }
 
 export default api
@@ -333,5 +335,17 @@ export function saveRoleUser (parameter) {
     url: api.roleuser,
     method: 'put',
     data: parameter
+  })
+}
+// saveUserOrg
+/**
+ * 临时增加，通过密级获取用户列表
+ * @param {Object} parameter {secretLevel: 60}
+ */
+export function getUserBySecret (parameter) {
+  return axios({
+    url: api.getUserBySecret,
+    method: 'GET',
+    params: parameter
   })
 }
