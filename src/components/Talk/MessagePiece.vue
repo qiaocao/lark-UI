@@ -18,12 +18,11 @@
 
     <div class="message-content">
 
-      <!-- 需要判断什么时候显示 -- 群消息 且 不是当前用户发送的 且 设置了显示群昵称的 -->
+      <!-- 显示发送人 -->
       <div v-if="!isMe() && messageInfo.isGroup" class="message-nickname">
         <span>{{ messageInfo.username }}</span>
       </div>
 
-      <!-- 判断消息类型：图片 文字 文件 -->
       <div class="message-bubble left right ">
         <div class="bubble-content">
           <div class="plain">
@@ -45,7 +44,7 @@
                   @error="handleImg"
                   @click="handlePreview('open')"
                   :src="messageInfo.content.src"
-                  :alt="messageInfo.content.title + '.' + messageInfo.content.extension" >
+                  :alt="messageInfo.content.title" >
 
                 <a-button
                   v-if="imgLoading === 3"
@@ -61,13 +60,13 @@
                       【{{ JSON.parse(messageInfo.secretLevel) | fileSecret }}】
                     </span>
                   </div>
-                  <span class="download">下载</span>
+                  <a :href="messageInfo.content.src" class="download" :download="messageInfo.content.title">下载</a>
                 </div>
               </a-spin>
 
               <a-modal :visible="previewVisible" :closable="false" :footer="null" @cancel="handlePreview('close')">
                 <img
-                  :alt="messageInfo.content.title + '.' + messageInfo.content.extension"
+                  :alt="messageInfo.content.title"
                   style="width: 100%"
                   :src="messageInfo.content.src" />
               </a-modal>
@@ -79,11 +78,8 @@
                 <a-icon type="file" theme="twoTone" style="fontSize: 26px" />
               </div>
               <div class="file-message-info">
-                <a-tooltip placement="topLeft">
-                  <template slot="title">
-                    <span>{{ messageInfo.content.title }}.{{ messageInfo.content.extension }}</span>
-                  </template>
-                  <span>{{ messageInfo.content.title }}.{{ messageInfo.content.extension }}</span>
+                <a-tooltip placement="topLeft" :title="messageInfo.content.title">
+                  <span>{{ messageInfo.content.title }}</span>
                 </a-tooltip>
 
                 <div class="file-option">
@@ -107,7 +103,6 @@
 
 <script>
 import { toWeiXinString } from '@/utils/util'
-import { mixinSecret } from '@/utils/mixin'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -133,7 +128,6 @@ export default {
       previewVisible: false
     }
   },
-  mixins: [mixinSecret],
   computed: {
     ...mapGetters(['userInfo'])
   },
@@ -336,7 +330,7 @@ export default {
                 margin-right: 5px;
               }
               &-info {
-                max-width: 185px;
+                width: 185px;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;

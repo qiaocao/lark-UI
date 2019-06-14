@@ -99,3 +99,32 @@ export function getTalkHistory () {
     method: 'GET'
   })
 }
+
+export function download (params, path, title) {
+  return axios({
+    url: path,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    data: params,
+    responseType: 'blob'
+  }).then(res => {
+    const headers = res.headers
+    const blob = new Blob([res.data], {
+      type: headers['content-type']
+    })
+    // const objectUrl = URL.createObjectURL(blob)
+    // window.location.href = objectUrl
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    if (!title) {
+      const fileName = headers['content-disposition']
+      title = fileName.includes('filename=') ? fileName.split('=')[1] : '未命名的文件'
+    }
+    a.download = title
+    a.click()
+  }).catch((err) => {
+    throw (err)
+  })
+}
