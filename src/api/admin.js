@@ -25,7 +25,7 @@ const api = {
   getmenuall: '/admin/menu/all',
   menu: '/admin/menu',
   menuelement: '/admin/menu/element',
-  roleuser: '/admin/role/user'
+  roleuser: '/admin/role/user',
   // 临时增加，方便测试
   getUserBySecret: 'admin/user/list'
 }
