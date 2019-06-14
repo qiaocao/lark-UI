@@ -484,8 +484,8 @@ export default {
 
   // 修改上传文件列表的样式
   // TODO: 修改文件上传的样式
-  .upload-list-inline {
-  }
+  // .upload-list-inline {
+  // }
 
   // 消息密级样式
   .s-60, .s-undefined {
