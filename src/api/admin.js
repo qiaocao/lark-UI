@@ -24,7 +24,8 @@ const api = {
   getmenu: '/admin/menu/page',
   getmenuall: '/admin/menu/all',
   menu: '/admin/menu',
-  menuelement: '/admin/menu/element'
+  menuelement: '/admin/menu/element',
+  roleuser: '/admin/role/user'
 }
 
 export default api
@@ -167,6 +168,16 @@ export function updateRolePermission (parameter) {
   })
 }
 /**
+ * 新增角色
+ */
+export function addRole (parameter) {
+  return axios({
+    url: api.role,
+    method: 'post',
+    data: parameter
+  })
+}
+/**
  * 修改角色
  */
 export function updateRole (parameter) {
@@ -304,4 +315,23 @@ export function saveMenuElement (parameter) {
     data: parameter
   })
 }
-// saveUserOrg
+/**
+ * 根据角色id获取用户
+ */
+export function getRoleUser (parameter) {
+  return axios({
+    url: api.roleuser,
+    method: 'get',
+    params: parameter
+  })
+}
+/**
+ * 保存角色对应用户
+ */
+export function saveRoleUser (parameter) {
+  return axios({
+    url: api.roleuser,
+    method: 'put',
+    data: parameter
+  })
+}
