@@ -49,8 +49,6 @@ export default {
   data () {
     return {
       orgTree: [],
-      // key orgid value userJson
-      orgUserMap: new Map(),
       // key userid value userinfo
       // 用于存储人员信息
       userMap: new Map(),
@@ -68,9 +66,6 @@ export default {
       queryparamter: {}
     }
   },
-  mounted () {
-
-  },
   created () {
     // 获取树形组织信息
     getOrgTree({ 'parentTreeId': 'root' }).then(res => {
@@ -87,6 +82,8 @@ export default {
      *      类型：字符串 多个人员id半角逗号隔开
      * oinfo 非必填 临时记录父组件传值，作为组件的标志区分，用于一个模块多次不同场景调用子组件的场景
      *      类型：字符串
+     * 注：TODO 由于后台暂未提供根据人员id 数组等方式支持多个人员信息的查询
+     * 该方法暂不能使用，如果入参提供是完整的人员信息，使用方法beginChooseUser
      */
     beginChoose: function (keys, oinfo) {
       if (keys !== undefined) {
@@ -96,6 +93,26 @@ export default {
         this.targetKeys = keyarr
       }
       this.pdata = oinfo
+      this.memberVisible = true
+    },
+    /**
+     * 打开人员选择器
+     * userArr 非必填 transfer组件中已选中的人员
+     *         类型：数组 [{人员信息}]
+     * 与beginChoose区别：参数为人员信息Json {人员id 人员姓名name}
+     */
+    beginChooseUser: function (userArr) {
+      this.targetKeys = []
+      this.ds = []
+      this.userMap = new Map()
+      // const item = { 'key': '', 'title': '' }
+      userArr.forEach(item => {
+        this.targetKeys.push(item.id)
+        item.key = item.id
+        item.title = item.name
+        this.ds.push(item)
+        this.userMap.set(item.id, item)
+      })
       this.memberVisible = true
     },
     /**
@@ -136,29 +153,44 @@ export default {
      */
     getUsers () {
       this.tLoading = true
-      const orgid = this.queryparamter.orgCode
+      if (this.queryparamter.orgCode === undefined) {
+        this.tLoading = false
+        return
+      }
       getUserList(this.queryparamter).then((res) => {
         const members = res.result.data
-        let arr = []
-        // 已获取的组织人员信息不重复获取
-        if (this.orgUserMap.get(orgid) === undefined) {
-          members.forEach((item) => {
-            item.key = item.id
-            item.title = item.name
-            arr.push(item)
-          })
-          this.orgUserMap.set(orgid, arr)
-        } else {
-          arr = this.orgUserMap.get(orgid)
-        }
+        // 每次刷新更改绑定数据源时，需要合并右侧已选中的集合
+        this.joinDs(this.targetKeys, members)
         this.tLoading = false
-        this.ds = arr
       }).catch(() =>
         this.$notification['error']({
           message: '出现异常，请联系系统管理员',
           duration: 4
         })
       )
+    },
+    /**
+     * 合并数据源
+     * 同时给新数据源指定key和title值
+     */
+    joinDs (oldds, newds) {
+      newds.forEach((item) => {
+        item.key = item.id
+        item.title = item.name
+        this.userMap.set(item.id, item)
+      })
+      oldds.forEach((oldval) => {
+        let check = false
+        check = newds.some(newval => {
+          if (newval.id === oldval) {
+            return true
+          }
+        })
+        if (!check) {
+          newds.push(this.userMap.get(oldval))
+        }
+      })
+      this.ds = newds
     },
     /**
      * 根据父组件传值，显示已选中信息
@@ -185,29 +217,12 @@ export default {
      * 根据key存入员工完整信息
      */
     selectChange (sourceSelectedKeys, targetSelectedKeys) {
-      if (sourceSelectedKeys.length > 0) {
-        sourceSelectedKeys.forEach((userkey) => {
-          this.ds.some((item) => {
-            if (item.key === userkey) {
-              this.userMap.set(item.key, item)
-            }
-          })
-        })
-      }
     },
     /**
      * 点击新增/撤销
      */
     handleChange (targetKeys, direction, moveKeys) {
-      // 按优先选择的信息放着前面的方式展现
-      if (direction === 'right') {
-        moveKeys.forEach(item => {
-          // 目标区域绑定人员
-          this.targetKeys.push(item)
-        })
-      } else {
-        this.targetKeys = targetKeys
-      }
+      this.targetKeys = targetKeys
     },
     close () {
       this.$emit('close')
@@ -225,7 +240,7 @@ export default {
       const userarr = []
       const tk = this.targetKeys
       tk.forEach(item => { userarr.push(this.userMap.get(item)) })
-      this.$emit('ok', userarr, this.pdata)
+      this.$emit('ok', this.targetKeys, this.pdata)
       this.memberVisible = false
     },
     handleCancel () {

@@ -46,7 +46,7 @@
           :wrapperCol="wrapperCol"
           label="菜单名称"
         >
-          <a-input v-decorator="['title',{rules: [{ required: true, message: '请填写菜单名称' }]}]" :disabled="true"/>
+          <a-input :value="title" :disabled="true"/>
         </a-form-item>
         <a-form-item
           :labelCol="labelCol"
@@ -57,8 +57,9 @@
           <a-select
             size="default"
             :disabled="true"
-            v-decorator="['parentId',{initialValue:parentId}]"
+            :value="parentId"
           >
+            <!-- v-decorator="['parentId',{initialValue:parentId}]" -->
             <a-select-option v-for="menu in menulist" :value="menu.id" :key="menu.id">
               {{ menu.title }}
             </a-select-option>
@@ -114,7 +115,8 @@
 </template>
 <script>
 import { STable } from '@/components'
-import { getMenuList, getMenuElement, addMenu, updateMenu, delMenu, getMenuListAll, saveMenuElement } from '@/api/admin'
+import { getMenuList, getMenuElement, delMenu, getMenuListAll, saveMenuElement } from '@/api/admin'
+// addMenu, updateMenu,
 export default {
   name: 'MenuList',
   components: {
@@ -124,6 +126,7 @@ export default {
     return {
       // 父级菜单id
       parentId: '',
+      title: '',
       visible: false,
       form: this.$form.createForm(this),
       // 行信息
@@ -287,54 +290,55 @@ export default {
      * menu，element两个接口
      */
     handleOk () {
-      this.form.validateFields((err, values) => {
-        if (!err) {
-          if (this.inAdd) {
-            // TODO 如果上级菜单是空，默认给root
-            return addMenu(
-              values
-            ).then(
-              res => {
-                if (res.status === 200) {
-                  this.menuid = res.result.id
-                  this.saveElement()
-                } else {
-                  this.$notification['error']({
-                    message: res.message,
-                    duration: 4
-                  })
-                }
-              }
-            ).catch(() =>
-              this.$notification['error']({
-                message: '出现异常，请联系系统管理员',
-                duration: 4
-              })
-            )
-          } else {
-            values.id = this.menuid
-            return updateMenu(
-              values
-            ).then(
-              res => {
-                if (res.status === 200) {
-                  this.saveElement()
-                } else {
-                  this.$notification['error']({
-                    message: res.message,
-                    duration: 4
-                  })
-                }
-              }
-            ).catch(() =>
-              this.$notification['error']({
-                message: '出现异常，请联系系统管理员',
-                duration: 4
-              })
-            )
-          }
-        }
-      })
+      this.saveElement()
+      // 暂不支持对菜单内容修改
+      // this.form.validateFields((err, values) => {
+      //   if (!err) {
+      //     if (this.inAdd) {
+      //       return addMenu(
+      //         values
+      //       ).then(
+      //         res => {
+      //           if (res.status === 200) {
+      //             this.menuid = res.result.id
+      //             this.saveElement()
+      //           } else {
+      //             this.$notification['error']({
+      //               message: res.message,
+      //               duration: 4
+      //             })
+      //           }
+      //         }
+      //       ).catch(() =>
+      //         this.$notification['error']({
+      //           message: '出现异常，请联系系统管理员',
+      //           duration: 4
+      //         })
+      //       )
+      //     } else {
+      //       values.id = this.menuid
+      //       return updateMenu(
+      //         values
+      //       ).then(
+      //         res => {
+      //           if (res.status === 200) {
+      //             this.saveElement()
+      //           } else {
+      //             this.$notification['error']({
+      //               message: res.message,
+      //               duration: 4
+      //             })
+      //           }
+      //         }
+      //       ).catch(() =>
+      //         this.$notification['error']({
+      //           message: '出现异常，请联系系统管理员',
+      //           duration: 4
+      //         })
+      //       )
+      //     }
+      //   }
+      // })
     },
     /**
      * 新增菜单
@@ -372,6 +376,8 @@ export default {
       this.selectMethod = new Map()
       this.methodMap = new Map()
       if (record.id !== undefined) {
+        this.title = record.title
+        this.parentId = record.parentId
         return getMenuElement({ 'menuId': record.id }).then(res => {
           if (res.status === 200) {
             res.result.data.forEach(item => {
@@ -383,13 +389,6 @@ export default {
               this.methodMap.set(item.description, item.method)
             })
           }
-          this.$nextTick(() => {
-            // 表单中绑定信息项
-            this.form.setFieldsValue({
-              title: record.title,
-              parentId: record.parentId === undefined ? '' : record.parentId + ''
-            })
-          })
           this.visible = true
         }).catch(() =>
           this.$notification['error']({
