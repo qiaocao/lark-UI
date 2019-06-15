@@ -11,7 +11,7 @@
     <a-avatar
       :class="['message-avatar', {send: isMe(), receive: !isMe()}]"
       shape="square"
-      :src="isMe() ? userInfo.avatar : messageInfo.avatar"
+      :src="isMe() ? avatar : messageInfo.avatar"
       :size="40">
       <span>{{ messageInfo.username }}</span>
     </a-avatar>
@@ -129,7 +129,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['userInfo'])
+    ...mapGetters(['avatar', 'userId'])
   },
   watch: {
     messageInfo: {
@@ -149,7 +149,7 @@ export default {
      * @param {String} fromId 消息发送者的id
      */
     isMe () {
-      return this.messageInfo.fromId === this.userInfo.id
+      return this.messageInfo.fromId === this.userId
     },
     /**
      * 图片加载过程处理

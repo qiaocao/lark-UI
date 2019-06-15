@@ -230,7 +230,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['onlineState', 'userInfo']),
+    ...mapGetters(['onlineState', 'userSecretLevel', 'userId', 'avatar', 'nickname']),
     messageList: {
       get: function () {
         return this.$store.state.talk.curMessageList
@@ -363,7 +363,7 @@ export default {
     handleSendSecretLevel (item) {
       item = item ? item.key : 60
       // 当前用户可发送的全部密级
-      const allSendMenu = [60, 70, 80].filter(item => item <= this.userInfo.secretLevel)
+      const allSendMenu = [60, 70, 80].filter(item => item <= this.userSecretLevel)
       // 当前研讨的密级
       const talkSecretLevel = this.chatInfo.secretLevel
       // 设置发送按钮的密级
@@ -410,9 +410,9 @@ export default {
       // 判断组建消息成功，继续添加新的属性
       if (tweet.type) {
         tweet.id = uuidv4()
-        tweet.username = this.userInfo.name
-        tweet.avatar = this.userInfo.avatar
-        tweet.fromId = this.userInfo.id
+        tweet.username = this.nickname
+        tweet.avatar = this.avatar
+        tweet.fromId = this.userId
         tweet.toId = this.chatInfo.id
         tweet.atId = []
         tweet.secretLevel = secretLevel
@@ -436,10 +436,10 @@ export default {
 
         // 添加发件人信息,发送websocket消息
         // TODO: 修改发信人信息
-        // tweet.contactInfo.id = this.userInfo.id
-        // tweet.contactInfo.name = this.userInfo.name
-        // tweet.contactInfo.avatar = this.userInfo.avatar
-        // tweet.contactInfo.secretLevel = this.userInfo.secretLevel
+        // tweet.contactInfo.id = this.userId
+        // tweet.contactInfo.name = this.nickname
+        // tweet.contactInfo.avatar = this.avatar
+        // tweet.contactInfo.secretLevel = this.userSecretLevel
         // tweet.contactInfo.unreadNum = 0
         // tweet.contactInfo.time = this.chatInfo.time
         // tweet.contactInfo.lastMessage = this.chatInfo.lastMessage
