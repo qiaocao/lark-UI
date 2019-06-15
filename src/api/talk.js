@@ -5,7 +5,7 @@ const api = {
   groupInfo: 'talk/group/info',
   groupList: 'talk/group/list',
   contactsInfo: 'talk/contacts/info',
-  contactsTree: 'talk/contacts/tree',
+  contactsTree: 'admin/org/orgUsers',
   recentContacts: 'talk/recent/list',
   talkMap: 'talk/message/map',
   talkHistory: 'talk/history'
@@ -41,7 +41,7 @@ export function getContactsInfo (contactsId) {
   return axios({
     url: api.contactsInfo,
     method: 'GET',
-    params: contactsId
+    params: { id: contactsId }
   })
 }
 
@@ -63,7 +63,8 @@ export function getGroupList () {
 export function getContactsTree () {
   return axios({
     url: api.contactsTree,
-    method: 'GET'
+    method: 'GET',
+    params: { parentTreeId: 'root' }
   })
 }
 
