@@ -153,6 +153,7 @@ const talk = {
 
       let oldItem = {}
       const newItem = new RecentContact(freshItem)
+      const { lastMessage, time, atMe } = newItem
 
       const index = recentContacts.findIndex(element => element.id === newItem.id)
       if (index > -1) {
@@ -164,10 +165,10 @@ const talk = {
       // 设置未读消息数
       if (freshItem.addUnread && router.currentRoute.query.id !== newItem.id) {
         newItem.unreadNum = oldItem.unreadNum + 1
-      } else {
-        newItem.lastMessage = oldItem.lastMessage || ''
-        newItem.time = oldItem.time || ''
-        newItem.atMe = oldItem.atMe || ''
+      } else if (index > -1) {
+        newItem.lastMessage = lastMessage || oldItem.lastMessage
+        newItem.time = time || oldItem.time
+        newItem.atMe = atMe || oldItem.atMe
         newItem.unreadNum = 0
         // TODO: 告知服务器消息的状态
         // ···

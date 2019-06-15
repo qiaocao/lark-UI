@@ -435,7 +435,21 @@ export default {
         this.chatInfo.time = format(tweet.time, 'hh:mm')
 
         // 添加发件人信息,发送websocket消息
-        tweet.contactInfo = this.chatInfo
+        // TODO: 修改发信人信息
+        // tweet.contactInfo.id = this.userInfo.id
+        // tweet.contactInfo.name = this.userInfo.name
+        // tweet.contactInfo.avatar = this.userInfo.avatar
+        // tweet.contactInfo.secretLevel = this.userInfo.secretLevel
+        // tweet.contactInfo.unreadNum = 0
+        // tweet.contactInfo.time = this.chatInfo.time
+        // tweet.contactInfo.lastMessage = this.chatInfo.lastMessage
+        // // TODO: 对是否@做判断
+        // tweet.contactInfo.atMe = false
+        // tweet.contactInfo.memberNum = this.chatInfo.memberNum
+        // tweet.contactInfo.isTop =
+        // tweet.contactInfo
+        // tweet.contactInfo
+        // tweet.contactInfo
         const baseMessage = new SocketMessage({ code: this.chatInfo.isGroup ? 1 : 0, data: tweet })
         this.SocketGlobal.send(baseMessage.toString())
 
