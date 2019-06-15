@@ -43,7 +43,7 @@
                   @load="handleImg"
                   @error="handleImg"
                   @click="handlePreview('open')"
-                  :src="messageInfo.content.src"
+                  :src="messageInfo.content.src + '?t=' + new Date().getTime()"
                   :alt="messageInfo.content.title" >
 
                 <a-button
