@@ -43,31 +43,10 @@ class Tweet {
    * @param {String | Object} content 消息的内容
    * @param {Date} time 消息发送时间
    * @param {Boolean} isGroup 消息分类 ture - 群消息， - 私聊消息
+   * @param {String} contactId 发信人或群组id
    */
-  constructor ({ id, username, avatar, fromId, toId, atId, secretLevel, type, content, time, isGroup, contactInfo } = {}) {
-    // if (id instanceof String) { this.id = id } else { throw Error('id 数据类型错误') }
-    this.id = id
-    // if (avatar instanceof String) { this.avatar = avatar } else { throw Error('avatar 数据类型错误') }
-    this.avatar = avatar
-    // if (username instanceof String) { this.username = username } else { throw Error('username 数据类型错误') }
-    this.username = username
-    // if (fromId instanceof String) { this.fromId = fromId } else { throw Error('fromId 数据类型错误') }
-    this.fromId = fromId
-    // if (toId instanceof String) { this.toId = toId } else { throw Error('toId 数据类型错误') }
-    this.toId = toId
-    // if (atId instanceof Array) { this.atId = atId } else { throw Error('atId 数据类型错误') }
-    this.atId = atId
-    // if (secretLevel instanceof Number) { this.secretLevel = secretLevel } else { throw Error('secretLevel 数据类型错误') }
-    this.secretLevel = secretLevel
-    // if (type instanceof Number) { this.type = type } else { throw Error('type 数据类型错误') }
-    this.type = type
-    // if (time instanceof Date) { this.time = time } else { throw Error('time 数据类型错误') }
-    this.time = time
-    // if (code instanceof Number) { this.code = code } else { throw Error('code 数据类型错误') }
-    this.isGroup = isGroup
-    // if (content instanceof String || content instanceof Object) { this.content = content } else { throw Error('content 数据类型错误') }
-    this.content = content
-    this.contactInfo = contactInfo
+  constructor ({ id, username, avatar, fromId, toId, atId, secretLevel, type, content, time, isGroup, contactId } = {}) {
+    Object.assign(this, arguments[0])
   }
 }
 
