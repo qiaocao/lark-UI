@@ -219,12 +219,6 @@ export default {
       this.activeChat = newValue.id
     }
   },
-  created () {
-    // 页面创建时获取列表信息
-    this.getRecentContacts()
-    this.getContactsTree()
-    this.getGroupList()
-  },
   methods: {
     handleClickSend () {
       this.activeKey = '1'
