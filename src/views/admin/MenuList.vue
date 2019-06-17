@@ -28,8 +28,8 @@
         <a @click="detailMenu(record)">详情</a>
         <a-divider type="vertical" />
         <a @click="editMenu(record)">编辑</a>
-        <a-divider type="vertical" />
-        <a @click="delMenu(record)">删除</a>
+        <!-- <a-divider type="vertical" />
+        <a @click="delMenu(record)">删除</a> -->
       </span>
     </s-table>
     <a-modal
