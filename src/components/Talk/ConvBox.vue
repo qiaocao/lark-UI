@@ -230,7 +230,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['onlineState', 'userInfo']),
+    ...mapGetters(['onlineState', 'userSecretLevel', 'userId', 'avatar', 'nickname']),
     messageList: {
       get: function () {
         return this.$store.state.talk.curMessageList
@@ -343,11 +343,8 @@ export default {
         { group: true, name: 'markMessage', message: '标记信息', type: 'tags' },
         { group: false, name: 'talkHistory', message: '聊天内容', type: 'file-text' },
         { group: false, name: 'talkFile', message: '文件', type: 'folder-open' },
-        { group: true, name: 'moreInfo', message: '更多', type: 'ellipsis' },
-        { group: false, name: 'personMoreInfo', message: '更多', type: 'ellipsis' }]
-      if (isGroup === true) {
-        optionList.pop()
-      }
+        { group: false, name: isGroup ? 'moreInfo' : 'personMoreInfo', message: '更多', type: 'ellipsis' }]
+
       return isGroup ? optionList : optionList.filter(item => !item.group)
     },
     /**
@@ -363,7 +360,7 @@ export default {
     handleSendSecretLevel (item) {
       item = item ? item.key : 60
       // 当前用户可发送的全部密级
-      const allSendMenu = [60, 70, 80].filter(item => item <= this.userInfo.secretLevel)
+      const allSendMenu = [60, 70, 80].filter(item => item <= this.userSecretLevel)
       // 当前研讨的密级
       const talkSecretLevel = this.chatInfo.secretLevel
       // 设置发送按钮的密级
@@ -393,72 +390,81 @@ export default {
      */
     sendMessage (secretLevel) {
       const tweet = new Tweet()
+      const { status, name, response } = this.fileUpload
       const content = this.messageContent
-      const { status, name, response } = { ...this.fileUpload }
-
-      if (status && status === 'done') {
-        // 组建图片或文件类消息
-        this.generateFileMsg(tweet, response.url, name, extensionStr(name))
-      } else if (content.replace(/\n/g, '').trim() === '') {
-        this.$message.warning('消息内容不能为空')
-      } else if (this.messageContent.length > 2000) {
-        this.$message.warning('消息内容不能超过2000个字符,以文件发送')
+      // 如果有文件消息，发送文件消息，忽略文字消息
+      if (status === 'done') {
+        this.generateFileMsg(
+          tweet,
+          response.url,
+          name,
+          extensionStr(name)
+        )
       } else {
-        // 组建文本类结构体
-        this.generateTextMsg(tweet, content)
-      }
-      // 判断组建消息成功，继续添加新的属性
-      if (tweet.type) {
-        tweet.id = uuidv4()
-        tweet.username = this.userInfo.name
-        tweet.avatar = this.userInfo.avatar
-        tweet.fromId = this.userInfo.id
-        tweet.toId = this.chatInfo.id
-        tweet.atId = []
-        tweet.secretLevel = secretLevel
-        tweet.time = new Date()
-        tweet.isGroup = this.chatInfo.isGroup
-
-        // 将消息加入当前消息列表(栈操作)
-        this.messageList.push(tweet)
-
-        // 更新当前联系人信息
-        if (tweet.type === 1) {
-          this.chatInfo.lastMessage = content
-          this.messageContent = ''
-        } else if (tweet.type === 2) {
-          this.chatInfo.lastMessage = '[图片]:' + tweet.content.title
-        } else if (tweet.type === 3) {
-          this.chatInfo.lastMessage = '[文件]:' + tweet.content.title
+        // 没有文件消息，验证文字消息的合法性
+        if (content.replace(/\n/g, '').trim() === '') {
+          this.$message.warning('消息内容不能为空')
+        } else if (content.length > 2000) {
+          this.$message.warning('消息内容不能超过2000个字符')
+        } else {
+          this.generateTextMsg(tweet, content)
         }
+      }
+      // 如果消息类型属性存在，消息内容创建成功
+      if (tweet.type) {
+        this.generateBaseInfo(tweet, secretLevel)
+        this.updateChatInfo(tweet)
+        this.addSenderInfo(tweet)
+        const baseMessage = new SocketMessage({
+          code: this.chatInfo.isGroup ? 1 : 0,
+          data: tweet
+        }).toString()
+        this.SocketGlobal.send(baseMessage)
+        // 将消息放进当前的消息列表
+        this.messageList.push(tweet)
+        this.$store.dispatch('UpdateRecentContacts', {
+          ...this.chatInfo,
+          reOrder: true,
+          addUnread: false
+        })
 
-        this.chatInfo.time = format(tweet.time, 'hh:mm')
-
-        // 添加发件人信息,发送websocket消息
-        // TODO: 修改发信人信息
-        // tweet.contactInfo.id = this.userInfo.id
-        // tweet.contactInfo.name = this.userInfo.name
-        // tweet.contactInfo.avatar = this.userInfo.avatar
-        // tweet.contactInfo.secretLevel = this.userInfo.secretLevel
-        // tweet.contactInfo.unreadNum = 0
-        // tweet.contactInfo.time = this.chatInfo.time
-        // tweet.contactInfo.lastMessage = this.chatInfo.lastMessage
-        // // TODO: 对是否@做判断
-        // tweet.contactInfo.atMe = false
-        // tweet.contactInfo.memberNum = this.chatInfo.memberNum
-        // tweet.contactInfo.isTop =
-        // tweet.contactInfo
-        // tweet.contactInfo
-        // tweet.contactInfo
-        const baseMessage = new SocketMessage({ code: this.chatInfo.isGroup ? 1 : 0, data: tweet })
-        this.SocketGlobal.send(baseMessage.toString())
-
-        // 更新最近联系人列表
-        this.$store.dispatch('UpdateRecentContacts', { ...this.chatInfo, reOrder: true, addUnread: false })
-        // 发完消息滚动到最下方
         this.scrollToBottom()
         this.fileUpload = {}
       }
+    },
+    /** 添加发信人信息或者群组信息 */
+    addSenderInfo (tweet) {
+      if (tweet.isGroup) {
+        tweet.contactId = this.chatInfo.id
+      } else {
+        console.log(this.userId)
+        tweet.contactId = this.userId
+      }
+    },
+    /** 更新当前联系人信息 */
+    updateChatInfo (tweet) {
+      this.chatInfo.time = format(tweet.time, 'hh:mm')
+      if (tweet.type === 1) {
+        this.chatInfo.lastMessage = tweet.content
+        this.messageContent = ''
+      } else if (tweet.type === 2) {
+        this.chatInfo.lastMessage = '[图片]:' + tweet.content.title
+      } else if (tweet.type === 3) {
+        this.chatInfo.lastMessage = '[文件]:' + tweet.content.title
+      }
+    },
+    /** 生成消息体中的基本信息 */
+    generateBaseInfo (tweet, secretLevel) {
+      const { userId, avatar, nickname, chatInfo } = this
+      tweet.id = uuidv4()
+      tweet.username = nickname
+      tweet.avatar = avatar
+      tweet.fromId = userId
+      tweet.toId = chatInfo.id
+      tweet.atId = []
+      tweet.secretLevel = secretLevel
+      tweet.time = new Date()
+      tweet.isGroup = chatInfo.isGroup
     },
     /** 生成文字消息 */
     generateTextMsg (tweet, content) {

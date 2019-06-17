@@ -9,7 +9,20 @@ export function welcome () {
   const index = Math.floor((Math.random() * arr.length))
   return arr[index]
 }
+/**
+ * card定位公式 i%2*width + i/2*height
+ * @param {i}
+ */
+// export function deCodeUniPostion (i) {
+//   const widthGrid = 1
+//   const heightGrid = 5
+//   return widthGrid * i % 2 + heightGrid * i / 2
+// }
 
+// export function enCodeUniPostion (code) {
+//   const widthGrid = 1
+//   const heightGrid = 5
+// }
 /**
  * 触发 window.resize
  */
