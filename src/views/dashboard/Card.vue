@@ -20,32 +20,14 @@
           </a-menu-item>
         </a-menu>
       </a-dropdown>
-      <!-- <a-popover
-        placement="left"
-        slot="extra"
-        trigger="click">
-        <template slot="content">
-          <a slot="content">移除卡片</a>
-        </template>
-        <a href="#"><a-icon type="ellipsis" /></a>
-      </a-popover> -->
       <div v-if="content.type=='info'">
         <card-content-info :listData="contentData"/>
-        <!-- <div style="justify-content: center;position: absolute;bottom: 0;width: 100%;">
-          <a-button class="footer-more" size="small" ghost block>全部</a-button>
-        </div> -->
       </div>
       <div v-else-if="content.type=='react'">
         <card-content-react :listData="contentData"/>
-        <!-- <div style="justify-content: center;position: absolute;bottom: 0;width: 100%;">
-          <a-button class="footer-more" size="small" ghost block>全部</a-button>
-        </div> -->
       </div>
       <div v-else-if="content.type=='activity'">
         <card-content-activity :listData="contentData"/>
-        <!-- <div style="justify-content: center;position: absolute;bottom: 0;width: 100%;">
-          <a-button class="footer-more" size="small" ghost block>全部</a-button>
-        </div> -->
       </div>
       <div v-else-if="content.type=='local'" style="height: 100%">
         <card-content-local :listData="contentData"/>
