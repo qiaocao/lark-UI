@@ -389,6 +389,10 @@ export default {
      * @author jihainan
      */
     sendMessage (secretLevel) {
+      if (this.sendDisabled) {
+        this.$message.warning('还不能发送消息！')
+        return
+      }
       const tweet = new Tweet()
       const { status, name, response } = this.fileUpload
       const content = this.messageContent
@@ -434,11 +438,27 @@ export default {
     },
     /** 添加发信人信息或者群组信息 */
     addSenderInfo (tweet) {
+      const {
+        chatInfo,
+        userId,
+        nickname,
+        avatar,
+        userSecretLevel } = this
+      tweet.contactInfo = {}
       if (tweet.isGroup) {
-        tweet.contactId = this.chatInfo.id
+        tweet.contactInfo.id = chatInfo.id
+        tweet.contactInfo.name = chatInfo.name
+        tweet.contactInfo.avatar = chatInfo.avatar
+        tweet.contactInfo.secretLevel = chatInfo.secretLevel
+        tweet.contactInfo.memberNum = chatInfo.memberNum
+        tweet.contactInfo.isGroup = true
       } else {
-        console.log(this.userId)
-        tweet.contactId = this.userId
+        tweet.contactInfo.id = userId
+        tweet.contactInfo.name = nickname
+        tweet.contactInfo.avatar = avatar
+        tweet.contactInfo.secretLevel = userSecretLevel
+        tweet.contactInfo.memberNum = 2
+        tweet.contactInfo.isGroup = false
       }
     },
     /** 更新当前联系人信息 */
