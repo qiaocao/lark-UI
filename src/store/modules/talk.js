@@ -142,12 +142,12 @@ const talk = {
       })
     },
     /**
-     * 跟新最近联系人列表
-     * @param {RecentContact,reOrder,addUnread} freshItem
-     * {{...RecentContact}, reOrder: true, addUnread: true}
-     * 将要处理的数据，结构为最近联系人的结构加上reOrder和addUnread属性
+     * 更新最近联系人列表
+     * @param {...Tweet.contactInfo, reOrder, addUnread} freshItem
+     * { id, name, avatar, secretLevel, memberNum, isGroup, reOrder, addUnread }
+     * reOrder: 重新排序
+     * addUnread: 增加未读消息数量
      */
-    //  将index中的constructor 传进来  直接生成最近联系人列表
     UpdateRecentContacts ({ commit, state }, freshItem) {
       const recentContacts = state.recentContacts
 
