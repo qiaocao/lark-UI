@@ -17,15 +17,16 @@ const api = {
   role: '/admin/role',
   rolepermission: '/admin/role/permission',
   userrole: '/admin/user/roles',
-  getmsgpage: '/admin/notice/page',
+  getnoticepage: '/admin/notice/page',
   getmsg: '/admin/notice/no-page',
-  msg: 'admin/notice',
+  notice: 'admin/notice',
+  noticesend: 'admin/notice/send',
   upload: '/admin/fileupload',
   getmenu: '/admin/menu/page',
   getmenuall: '/admin/menu/all',
   menu: '/admin/menu',
   menuelement: '/admin/menu/element',
-  roleuser: '/admin/role/user'
+  roleuser: '/admin/role/user',
   // 临时增加，方便测试
   getUserBySecret: 'admin/user/list'
 }
@@ -211,11 +212,12 @@ export function disabledRole (parameter) {
 /**
  * 获取消息列表（分页）
  */
-export function getMsgPage (parameter) {
+export function getNoticePage (parameter) {
   return axios({
-    url: api.getmsgpage,
+    url: api.getnoticepage,
     method: 'get',
     params: parameter
+    // data: parameter
   })
 }
 /**
@@ -229,13 +231,42 @@ export function getMsg (parameter) {
   })
 }
 /**
+ * 消息保存
+ */
+export function addNotice (parameter) {
+  return axios({
+    url: api.notice,
+    method: 'post',
+    data: parameter
+  })
+}
+/**
+ * 消息修改
+ */
+export function updateNotice (parameter) {
+  return axios({
+    url: api.notice,
+    method: 'put',
+    data: parameter
+  })
+}
+/**
  * 消息发布
  */
-export function saveMsg (parameter) {
+export function sendNotice (parameter) {
   return axios({
-    url: api.msg,
+    url: api.noticesend,
     method: 'post',
-    params: parameter
+    data: parameter
+  })
+}
+/**
+ * 消息删除
+ */
+export function delNotice (parameter) {
+  return axios({
+    url: api.notice + '/' + parameter,
+    method: 'delete'
   })
 }
 /**
