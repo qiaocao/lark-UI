@@ -7,14 +7,6 @@ const api = {
 
 export default api
 
-export function getWorkplace (parameter) {
-  return axios({
-    url: api.workplace,
-    method: 'get',
-    params: parameter
-  })
-}
-
 export function moveCard (parameter) {
   return axios({
     url: api.card,
