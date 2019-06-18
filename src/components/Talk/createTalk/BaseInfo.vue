@@ -74,8 +74,8 @@
     <a-divider />
     <div class="step-form-style-desc">
       <h3>说明</h3>
-      <h4>你妈的傻逼，臭傻逼</h4>
-      <p>你妈的傻逼，臭傻逼你妈的傻逼，臭傻逼你妈的傻逼，臭傻逼你妈的傻逼，臭傻逼</p>
+      <h4>群组创建注意事项</h4>
+      <p>群组创建注意事项，群组创建注意事项，群组创建注意事项，群组创建注意事项</p>
     </div>
   </div>
 </template>
@@ -109,7 +109,7 @@ export default {
       e.preventDefault()
       this.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
-          this.$emit('nextStep')
+          this.$emit('nextStep', values, 1)
           console.log('创建的数据：', values)
         }
       })
