@@ -120,7 +120,6 @@ export default {
       }).then(res => {
       })
       this.getId()
-      this.getSelfWorkplace()
     },
     getId () {
       for (let i = 0; i < this.cardList.length; i++) {
