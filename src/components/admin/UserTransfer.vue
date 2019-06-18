@@ -33,7 +33,7 @@
           :dataSource="ds"
           showSearch
           @search="usersFilter"
-          :listStyle=listStyle
+          :listStyle="listStyle"
           :targetKeys="targetKeys"
           @change="handleChange"
           :render="renderItem"
