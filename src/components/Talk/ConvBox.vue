@@ -275,8 +275,7 @@ export default {
       immediate: true
     },
     messageList: function (newValue) {
-      // 消息列表发生变化，更新缓存
-      this.$store.state.talk.talkMap.set(this.chatInfo.id, newValue)
+      this.$store.commit('SET_TALK_MAP', [[this.chatInfo.id, newValue]])
       // 滚动到最下方
       this.scrollToBottom()
     }
