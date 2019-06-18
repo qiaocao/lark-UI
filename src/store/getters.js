@@ -5,14 +5,6 @@ const getters = {
   multiTab: state => state.app.multiTab,
 
   token: state => state.user.token,
-<<<<<<< HEAD
-  avatar: state => state.user.avatar,
-  nickname: state => state.user.name, // 用户
-  welcome: state => state.user.welcome,
-  roles: state => state.user.roles,
-  userInfo: state => state.user.info,
-  userId: state => state.user.info.pid, // 身份证
-=======
   welcome: state => state.user.welcome,
   roles: state => state.user.roles,
   userInfo: state => state.user.info,
@@ -23,7 +15,6 @@ const getters = {
   /** 用户名 */
   nickname: state => state.user.name,
   /** 用户密级 */
->>>>>>> e9145ba911fbb4f691464f4ee45e52a132bd4595
   userSecretLevel: state => state.user.info.secretLevel,
 
   addRouters: state => state.permission.addRouters,

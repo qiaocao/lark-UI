@@ -89,11 +89,7 @@ export default {
   },
   methods: {
     getSelfWorkplace () {
-<<<<<<< HEAD
       this.$http.get('https://www.easy-mock.com/mock/5d08b9479c70473bff4ca382/lark/api_copy/portal/workplace/myself')
-=======
-      this.$http.get('/portal/workplace/myself')
->>>>>>> e9145ba911fbb4f691464f4ee45e52a132bd4595
         .then(res => {
           this.cardList = res.result.data
           this.cardList.map(res => {
