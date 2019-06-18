@@ -2,7 +2,7 @@
   <page-layout :avatar="avatar">
     <div slot="headerContent">
       <div class="title">
-        {{ timeFix }}，{{ user.name }}
+        {{ timeFix }}，{{ nickname }}
         <span class="welcome-text">，{{ welcome() }}</span>
       </div>
       <div>主任设计师 | 十一室 - 工程信息化组</div>
@@ -144,8 +144,6 @@ import HeadInfo from '@/components/tools/HeadInfo'
 import Radar from '@/components/chart/Radar'
 import HeatMap from '@/components/chart/Heatmap'
 
-import { getRoleList, getServiceList } from '@/api/manage'
-
 const DataSet = require('@antv/data-set')
 
 export default {
@@ -159,8 +157,6 @@ export default {
   data () {
     return {
       timeFix: timeFix(),
-      avatar: '',
-      user: {},
 
       projects: [],
       loading: true,
@@ -211,21 +207,7 @@ export default {
     }
   },
   computed: {
-    userInfo () {
-      return this.$store.getters.userInfo
-    }
-  },
-  created () {
-    this.user = this.userInfo
-    this.avatar = this.userInfo.avatar
-
-    getRoleList().then(res => {
-      console.log('workplace -> call getRoleList()', res)
-    })
-
-    getServiceList().then(res => {
-      console.log('workplace -> call getServiceList()', res)
-    })
+    ...mapGetters(['nickname', 'welcome', 'avatar']),
   },
   mounted () {
     this.getProjects()
@@ -235,7 +217,6 @@ export default {
     this.initHeatMap()
   },
   methods: {
-    ...mapGetters(['nickname', 'welcome']),
     getProjects () {
       this.$http.get('/list/search/projects').then(res => {
         this.projects = res.result && res.result.data
