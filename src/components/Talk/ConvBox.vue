@@ -224,6 +224,7 @@ export default {
         'done': 'success',
         'error': 'exception'
       },
+      messageList: [],
 
       imgFormat: ['jpg', 'jpeg', 'png', 'gif'],
       fileFormat: ['doc', 'docx', 'jpg', 'jpeg', 'png', 'gif', 'xls', 'xlsx', 'pdf', 'gif', 'exe', 'msi', 'swf', 'sql', 'apk', 'psd']
@@ -231,14 +232,14 @@ export default {
   },
   computed: {
     ...mapGetters(['onlineState', 'userSecretLevel', 'userId', 'avatar', 'nickname']),
-    messageList: {
-      get: function () {
-        return this.$store.state.talk.curMessageList
-      },
-      set: function (messageList) {
-        this.$store.commit('SET_CUR_MESSAGE_LIST', messageList)
-      }
-    },
+    // messageList: {
+    //   get: function () {
+    //     return this.$store.state.talk.curMessageList
+    //   },
+    //   set: function (messageList) {
+    //     this.$store.commit('SET_CUR_MESSAGE_LIST', messageList)
+    //   }
+    // },
     emojisNative () {
       return packData
     },
@@ -275,8 +276,7 @@ export default {
       immediate: true
     },
     messageList: function (newValue) {
-      // 消息列表发生变化，更新缓存
-      this.$store.state.talk.talkMap.set(this.chatInfo.id, newValue)
+      this.$store.commit('SET_TALK_MAP', [[this.chatInfo.id, newValue]])
       // 滚动到最下方
       this.scrollToBottom()
     }
@@ -373,16 +373,19 @@ export default {
      * 获取缓存消息
      */
     getCacheMessage () {
-      const cacheMessage = this.$store.state.talk.talkMap.get(this.chatInfo.id)
-      if (cacheMessage) {
-        // 在缓存中取到历史研讨记录
-        this.messageList = cacheMessage
-      } else {
-        // 未在缓存中取到记录，向服务端请求数据
-        getTalkHistory().then(res => {
-          if (res.status === 200) this.messageList = res.result.data
-        })
-      }
+      // this.messageList = []
+      this.messageList = this.$store.state.talk.talkMap.get(this.chatInfo.id) || []
+      // this.messageList = cacheMessage
+      // console.log(cacheMessage)
+      // if (cacheMessage) {
+      //   // 在缓存中取到历史研讨记录
+      //   this.messageList = cacheMessage
+      // } else {
+      //   // 未在缓存中取到记录，向服务端请求数据
+      //   getTalkHistory().then(res => {
+      //     if (res.status === 200) this.messageList = res.result.data
+      //   })
+      // }
     },
     /**
      * 发送消息

@@ -8,8 +8,6 @@ import MarkMessage from './drawers/MarkMessage'
 import MoreInfo from './drawers/MoreInfo'
 import TalkFile from './drawers/TalkFile'
 
-import CreateTalk from './CreateTalk'
-
 import ConvBox from './ConvBox'
 import RecentContactsItem from './RecentContactsItem'
 import ContactsTree from './ContactsTree'
@@ -17,6 +15,8 @@ import ContactsInfo from './ContactsInfo'
 import GroupItem from './GroupItem'
 import GroupInfo from './GroupInfo'
 import ContactsItem from './ContactsItem'
+
+import CreateTalk from './createTalk/CreateTalk'
 
 export {
   // 消息展示组件
@@ -34,9 +34,6 @@ export {
   // 研讨文件
   TalkFile,
 
-  // 创建新的研讨
-  CreateTalk,
-
   // 研讨对话框组件
   ConvBox,
   // 联系人组件
@@ -50,5 +47,7 @@ export {
   // 群组信息组件
   GroupInfo,
   // 联系人项
-  ContactsItem
+  ContactsItem,
+  // 创建新的研讨
+  CreateTalk
 }

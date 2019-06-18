@@ -1,45 +1,45 @@
+<!--
+组件使用指南
+组件功能：一个带有Transfer穿梭框，Transfer左侧组织树，点击组织节点，可根据节点查询该组织下人员名单
+        父组件可传已选择的人员信息 类型为人员信息的JSON数组 参数非必填
+
+使用方法：组件引入后，使用如下方法
+        <user-transfer ref="transfer" @ok="handleSaveOk"/>
+        this.$refs.transfer.beginChooseUser(传到子组件的参数，非必填)
+
+         可自定义子组件的确认方法(change事件)
+         返回值结构同样为人员信息的JSON数组
+-->
 <template>
-  <a-modal
-    title="选择人员"
-    :visible="memberVisible"
-    :confirmLoading="confirmLoading"
-    @ok="handleOk"
-    @cancel="handleCancel"
-    width="1300px"
-    :destroyOnClose="destroyOnClose"
-  >
-    <a-row :gutter="10">
-      <a-col :span="6">
-        <a-card title="组织信息">
-          <a-tree
-            ref="orgtreeref"
-            :treeData="orgTree"
-            @select="handleClick"
-          />
-        </a-card>
-      </a-col>
-      <a-col :span="18">
-        <a-spin :spinning="tLoading">
-          <a-transfer
-            :titles="['可选择人员', '已选择人员']"
-            :dataSource="ds"
-            showSearch
-            @search="usersFilter"
-            :listStyle="{
-              width: '430px',
-              height: '430px',
-            }"
-            :targetKeys="targetKeys"
-            @change="handleChange"
-            @selectChange="selectChange"
-            :render="renderItem"
-            :operations="['添加','移除']"
-          >
-          </a-transfer>
-        </a-spin>
-      </a-col>
-    </a-row>
-  </a-modal>
+  <a-row :gutter="10">
+    <a-col :span="6">
+      <a-card title="组织信息">
+        <a-tree
+          :treeData="orgTree"
+          @select="handleClick"
+        />
+      </a-card>
+    </a-col>
+    <a-col :span="18">
+      <a-spin :spinning="tLoading">
+        <a-transfer
+          :titles="['可选择人员', '已选择人员']"
+          :dataSource="ds"
+          showSearch
+          @search="usersFilter"
+          :listStyle="{
+            width: '200px',
+            height: '430px',
+          }"
+          :targetKeys="targetKeys"
+          @change="handleChange"
+          :render="renderItem"
+          :operations="['添加','移除']"
+        >
+        </a-transfer>
+      </a-spin>
+    </a-col>
+  </a-row>
 </template>
 <script>
 import { getUserList, getOrgTree } from '@/api/admin'
@@ -57,20 +57,14 @@ export default {
       // 页3 transfer右侧绑定数据源
       targetKeys: [],
       props: 'props',
-      memberVisible: false,
-      confirmLoading: false,
       tLoading: false,
-      destroyOnClose: true,
-      // 临时记录父组件传值，作为组件的标志区分，用于一个页多次不同场景调用子组件的场景
-      pdata: '1',
       queryparamter: {}
     }
   },
   created () {
     // 获取树形组织信息
     getOrgTree({ 'parentTreeId': 'root' }).then(res => {
-      const treeData = this.handleVal(res.result.data)
-      this.orgTree = Object.assign(this.orgTree, treeData)
+      this.orgTree = this.handleVal(res.result.data)
     })
   },
   props: {
@@ -78,28 +72,8 @@ export default {
   methods: {
     /**
      * 打开人员选择器
-     * keys 非必填 已选择人员id
-     *      类型：字符串 多个人员id半角逗号隔开
-     * oinfo 非必填 临时记录父组件传值，作为组件的标志区分，用于一个模块多次不同场景调用子组件的场景
-     *      类型：字符串
-     * 注：TODO 由于后台暂未提供根据人员id 数组等方式支持多个人员信息的查询
-     * 该方法暂不能使用，如果入参提供是完整的人员信息，使用方法beginChooseUser
-     */
-    beginChoose: function (keys, oinfo) {
-      if (keys !== undefined) {
-        this.queryparamter = { 'id': keys }
-        this.initUsers()
-        const keyarr = keys === undefined ? [] : keys.split(',')
-        this.targetKeys = keyarr
-      }
-      this.pdata = oinfo
-      this.memberVisible = true
-    },
-    /**
-     * 打开人员选择器
      * userArr 非必填 transfer组件中已选中的人员
      *         类型：数组 [{人员信息}]
-     * 与beginChoose区别：参数为人员信息Json {人员id 人员姓名name}
      */
     beginChooseUser: function (userArr) {
       this.targetKeys = []
@@ -113,7 +87,6 @@ export default {
         this.ds.push(item)
         this.userMap.set(item.id, item)
       })
-      this.memberVisible = true
     },
     /**
      * 点击组织机构树，获取该组织下人员信息
@@ -193,60 +166,15 @@ export default {
       this.ds = newds
     },
     /**
-     * 根据父组件传值，显示已选中信息
-     */
-    initUsers () {
-      if (this.queryparamter !== {}) {
-        this.tLoading = true
-        getUserList(this.queryparamter).then((res) => {
-          const members = res.result.data
-          const arr = []
-          members.forEach((item) => {
-            item.key = item.id
-            item.title = item.name
-            arr.push(item)
-            this.userMap.set(item.key, item)
-          })
-          this.tLoading = false
-          this.ds = arr
-        })
-      }
-    },
-    /**
-     * 选中条目的事件
-     * 根据key存入员工完整信息
-     */
-    selectChange (sourceSelectedKeys, targetSelectedKeys) {
-    },
-    /**
      * 点击新增/撤销
      */
     handleChange (targetKeys, direction, moveKeys) {
       this.targetKeys = targetKeys
-    },
-    close () {
-      this.$emit('close')
-      this.memberVisible = false
-    },
-    /**
-     * 确定按钮
-     * 传参到父组件
-     * 返回参数
-     * 参数1 选中的人员信息 类型 人员信息json数组
-     * 参数2 父组件传的字符串标识信息
-     */
-    handleOk () {
-      // 点击确定返回人员基础信息，根据人员主键获取人员信息
       const userarr = []
-      const tk = this.targetKeys
-      tk.forEach(item => { userarr.push(this.userMap.get(item)) })
-      this.$emit('ok', this.targetKeys, this.pdata)
-      this.memberVisible = false
+      this.targetKeys.forEach(item => { userarr.push(this.userMap.get(item)) })
+      this.$emit('ok', userarr)
     },
-    handleCancel () {
-      this.close()
-    },
-    // TODO 如需在人员信息上拼接其他人员信息 {item.title} - {item.orgname} - {item.secretLevel}
+    // 如需在人员信息上拼接其他人员信息 {item.title} - {item.orgname} - {item.secretLevel}
     renderItem (item) {
       const customLabel = (
         <span class="custom-item">

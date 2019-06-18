@@ -50,6 +50,7 @@
           <div class="tool-name">试验数据管理系统</div>
         </div>
       </div>
+      <!-- <a-button type="primary" @click="validate" :loading="loading">提交</a-button> -->
     </footer-tool-bar>
   </div>
 </template>
@@ -85,7 +86,7 @@ export default {
   },
   methods: {
     getSelfWorkplace () {
-      this.$http.get('/workplace/myself')
+      this.$http.get('/portal/workplace/myself')
         .then(res => {
           this.cardList = res.result.data
         })

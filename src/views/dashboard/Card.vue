@@ -7,32 +7,27 @@
       :bordered="true"
       :title="content.title"
       :style="{ minHeight: '350px', borderRadius: '4px' }">
-      <a-popover
-        placement="left"
-        slot="extra"
-        trigger="click">
-        <template slot="content">
-          <a slot="content">移除卡片</a>
-        </template>
-        <a href="#"><a-icon type="ellipsis" /></a>
-      </a-popover>
+      <a-dropdown :trigger="['click']" placement="bottomLeft" slot="extra">
+        <a class="ant-dropdown-link" href="#">
+          <a-icon type="ellipsis" />
+        </a>
+        <a-menu slot="overlay">
+          <a-menu-item>
+            <a href="javascript:;">移除卡片</a>
+          </a-menu-item>
+          <a-menu-item>
+            <a href="javascript:;">查看全部</a>
+          </a-menu-item>
+        </a-menu>
+      </a-dropdown>
       <div v-if="content.type=='info'">
         <card-content-info :listData="contentData"/>
-        <div style="justify-content: center;position: absolute;bottom: 0;width: 100%;">
-          <a-button class="footer-more" size="small" ghost block>全部</a-button>
-        </div>
       </div>
       <div v-else-if="content.type=='react'">
         <card-content-react :listData="contentData"/>
-        <div style="justify-content: center;position: absolute;bottom: 0;width: 100%;">
-          <a-button class="footer-more" size="small" ghost block>全部</a-button>
-        </div>
       </div>
       <div v-else-if="content.type=='activity'">
         <card-content-activity :listData="contentData"/>
-        <div style="justify-content: center;position: absolute;bottom: 0;width: 100%;">
-          <a-button class="footer-more" size="small" ghost block>全部</a-button>
-        </div>
       </div>
       <div v-else-if="content.type=='local'" style="height: 100%">
         <card-content-local :listData="contentData"/>
@@ -42,6 +37,40 @@
       </div>
       <div v-else-if="content.type=='intro'">
         <card-content-intro/>
+        <a-row :gutter="8">
+          <a-col :span="12">
+            <chart-card title="周工作量" total="84">
+              <a-tooltip title="体现上周工作在云雀上的使用情况" slot="action">
+                <a-icon type="info-circle-o" />
+              </a-tooltip>
+              <div>
+                <mini-area />
+              </div>
+              <template slot="footer">日均<span> {{ '12' }}</span></template>
+            </chart-card>
+          </a-col>
+          <a-col :span="12">
+            <chart-card :loading="loading" title="工作目标完成率" total="78%">
+              <a-tooltip title="体现计划、任务、todo等可量化工作的完成情况" slot="action">
+                <a-icon type="info-circle-o" />
+              </a-tooltip>
+              <div>
+                <mini-progress color="rgb(19, 194, 194)" :target="80" :percentage="78" height="8px" />
+              </div>
+              <template slot="footer">
+                <trend flag="down" style="margin-right: 16px;">
+                  <span slot="term">同周比</span>
+                  12%
+                </trend>
+                <trend flag="up">
+                  <span slot="term">日环比</span>
+                  80%
+                </trend>
+              </template>
+            </chart-card>
+          </a-col>
+        </a-row>
+
       </div>
     </a-card>
   </div>
@@ -53,6 +82,10 @@ import CardContentReact from '@/components/monitor/card/CardContentReact'
 import CardContentActivity from '@/components/monitor/card/CardContentActivity'
 import CardContentGraph from '@/components/monitor/card/CardContentGraph'
 import CardContentIntro from '@/components/monitor/card/CardContentIntro'
+import ChartCard from '@/components/chart/ChartCard'
+import MiniArea from '@/components/chart/MiniArea'
+import MiniProgress from '@/components/chart/MiniProgress'
+import Trend from '@/components/chart/Trend'
 
 export default {
   name: 'Card',
@@ -62,7 +95,11 @@ export default {
     CardContentReact,
     CardContentActivity,
     CardContentGraph,
-    CardContentIntro
+    CardContentIntro,
+    ChartCard,
+    MiniArea,
+    MiniProgress,
+    Trend
   },
   data () {
     return {

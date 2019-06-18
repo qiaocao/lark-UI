@@ -167,19 +167,19 @@
         </a-form-item>
       </a-form>
     </a-modal>
-    <user-transfer ref="model" @ok="handleSaveOk"/>
+    <user-model ref="model" @ok="handleSaveOk"/>
   </a-card>
 </template>
 
 <script>
 import { STable } from '@/components'
-import UserTransfer from '@/components/admin/UserTransfer'
+import UserModel from '@/components/admin/UserTransferModel'
 import { getRoleList, getRolePermission, delRole, disabledRole, updateRole, addRole, updateRolePermission, getRoleUser, saveRoleUser } from '@/api/admin'
 export default {
   name: 'Rolelist',
   components: {
     STable,
-    UserTransfer
+    UserModel
   },
   data () {
     return {
@@ -344,7 +344,6 @@ export default {
           for (var i in this.mdl.permissions) {
             this.tempSelected.push(this.mdl.permissions[i].selected)
           }
-          console.log('this.tempSelected', this.tempSelected)
           this.perVisible = true
         })
     },
@@ -559,7 +558,7 @@ export default {
         { 'id': record.id }
       ).then(res => {
         if (res.status === 200) {
-          this.$refs.model.beginChooseUser(res.result.data)
+          this.$refs.model.begin(res.result.data)
         } else {
           this.$notification['error']({
             message: '获取人员失败',
@@ -572,7 +571,8 @@ export default {
      * 穿梭框点击确认
      */
     handleSaveOk (returnData) {
-      return saveRoleUser({ 'id': this.roleid, 'users': returnData.join(',') }).then(
+      const ids = returnData.map(item => item.id)
+      return saveRoleUser({ 'id': this.roleid, 'users': ids.join(',') }).then(
         res => {
           if (res.status === 200) {
             this.$notification['success']({
