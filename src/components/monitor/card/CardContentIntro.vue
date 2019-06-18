@@ -8,34 +8,26 @@
         <a-col :span="18">
           <div class="title">
             {{ timeFix }}，{{ user.name }}
-            <span class="welcome-text">，{{ welcome() }}</span>
+            <span class="welcome-text">，{{ welcome }}</span>
           </div>
-          <div>主任设计师 | 十一室 - 工程信息化组</div>
-        </a-col>
-      </a-row>
-      <a-row class="more-info" type="flex" justify="center">
-        <a-col :span="8">
-          <head-info title="任务数" content="56" :center="false" :bordered="false"/>
-        </a-col>
-        <a-col :span="8">
-          <head-info title="团队排名" content="8/24" :center="false" :bordered="false"/>
-        </a-col>
-        <a-col :span="8">
-          <head-info title="任务完成率" content="56%" :center="false"/>
+          <!-- TODO fanjiao返回内容暂未提供职位、组织信息，这里暂显示人员密级 -->
+          <!-- <div>主任设计师 | 十一室 - 工程信息化组</div> -->
+          <div>人员密级 | {{user.secretLevel | peopleSecret}}</div>
         </a-col>
       </a-row>
     </div>
   </div>
 </template>
 <script>
-import { timeFix } from '@/utils/util'
-import { mapGetters } from 'vuex'
+import { timeFix, welcome } from '@/utils/util'
+// import { mapGetters } from 'vuex'
 import HeadInfo from '@/components/tools/HeadInfo'
 export default {
   components: { HeadInfo },
   data () {
     return {
       timeFix: timeFix(),
+      welcome: welcome(),
       avatar: '',
       user: {}
     }
@@ -50,7 +42,7 @@ export default {
     this.avatar = this.userInfo.avatar
   },
   methods: {
-    ...mapGetters(['nickname', 'welcome'])
+    // ...mapGetters(['nickname', 'welcome'])
   }
 }
 </script>

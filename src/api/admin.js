@@ -18,7 +18,6 @@ const api = {
   rolepermission: '/admin/role/permission',
   userrole: '/admin/user/roles',
   getnoticepage: '/admin/notice/page',
-  getmsg: '/admin/notice/no-page',
   notice: 'admin/notice',
   noticesend: 'admin/notice/send',
   upload: '/admin/fileupload',
@@ -218,16 +217,6 @@ export function getNoticePage (parameter) {
     method: 'get',
     params: parameter
     // data: parameter
-  })
-}
-/**
- * 获取消息列表（最近6条）
- */
-export function getMsg (parameter) {
-  return axios({
-    url: api.getmsg,
-    method: 'get',
-    params: parameter
   })
 }
 /**
