@@ -224,6 +224,7 @@ export default {
         'done': 'success',
         'error': 'exception'
       },
+      messageList: [],
 
       imgFormat: ['jpg', 'jpeg', 'png', 'gif'],
       fileFormat: ['doc', 'docx', 'jpg', 'jpeg', 'png', 'gif', 'xls', 'xlsx', 'pdf', 'gif', 'exe', 'msi', 'swf', 'sql', 'apk', 'psd']
@@ -231,14 +232,14 @@ export default {
   },
   computed: {
     ...mapGetters(['onlineState', 'userSecretLevel', 'userId', 'avatar', 'nickname']),
-    messageList: {
-      get: function () {
-        return this.$store.state.talk.curMessageList
-      },
-      set: function (messageList) {
-        this.$store.commit('SET_CUR_MESSAGE_LIST', messageList)
-      }
-    },
+    // messageList: {
+    //   get: function () {
+    //     return this.$store.state.talk.curMessageList
+    //   },
+    //   set: function (messageList) {
+    //     this.$store.commit('SET_CUR_MESSAGE_LIST', messageList)
+    //   }
+    // },
     emojisNative () {
       return packData
     },
@@ -373,8 +374,8 @@ export default {
      */
     getCacheMessage () {
       // this.messageList = []
-      const cacheMessage = this.$store.state.talk.talkMap.get(this.chatInfo.id) || []
-      this.messageList = cacheMessage
+      this.messageList = this.$store.state.talk.talkMap.get(this.chatInfo.id) || []
+      // this.messageList = cacheMessage
       // console.log(cacheMessage)
       // if (cacheMessage) {
       //   // 在缓存中取到历史研讨记录
