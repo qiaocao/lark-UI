@@ -186,8 +186,9 @@ const talk = {
      * 获取联系人树
      */
     GetContactsTree ({ commit }) {
+      const root = 'root'
       return new Promise((resolve, reject) => {
-        getContactsTree().then(response => {
+        getContactsTree(root).then(response => {
           if (response.status === 200) {
             commit('SET_CONTACTS_TREE', [ ...response.result.data ])
           } else {

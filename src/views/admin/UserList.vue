@@ -3,22 +3,18 @@
     <a-row :gutter="8">
       <a-col :span="5">
         <a-card :bordered="true" title="组织树" v-show="cardvisible">
-          <a-row>
-            <a-col :span="6">
-              <a-tree
-                ref="orgtree"
-                :treeData="orgTree"
-                @select="handleClick"
-              />
-            </a-col>
-          </a-row>
+          <a-tree
+            ref="orgtree"
+            :treeData="orgTree"
+            @select="handleClick"
+          />
         </a-card>
       </a-col>
       <a-col :span="19">
         <a-card :bordered="true" title="人员信息列表" v-show="cardvisible">
           <div class="table-page-search-wrapper">
             <a-form layout="inline">
-              <a-row :gutter="32">
+              <a-row :gutter="8">
                 <a-col :span="6">
                   <a-form-item label="姓名">
                     <a-input v-model="queryParam.name"/>
@@ -49,7 +45,7 @@
                   <span class="table-page-search-submitButtons">
                     <a-button type="primary" @click="searchUser">查询</a-button>
                     <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
-                    <a-button type="primary" style="margin-left: 30px" @click="openEditModal('','1')">新增用户</a-button>
+                    <a-button type="primary" style="margin-left: 8px" @click="openEditModal('','1')">新增用户</a-button>
                   </span>
                 </a-col>
               </a-row>
