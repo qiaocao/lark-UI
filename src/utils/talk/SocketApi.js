@@ -3,6 +3,8 @@
  * @author jihainan
  */
 import store from '@/store'
+import notification from 'ant-design-vue/es/notification'
+
 class SocketApi {
   /**
    * 构造函数
@@ -61,8 +63,11 @@ class SocketApi {
     ws.onopen = openEvent => {
       self.lastInteractionTime(new Date().getTime())
 
-      // 获取该用户所有的未读消息
+      // 请求研讨相关的数据
       store.dispatch('GetTalkMap')
+      store.dispatch('GetRecentContacts')
+      store.dispatch('GetGroupList')
+      store.dispatch('GetContactsTree')
 
       // 设置在线状态为已连接
       store.commit('SET_ONLINE_STATE', ws.OPEN)
@@ -79,15 +84,46 @@ class SocketApi {
       const received = JSON.parse(messageEvent.data)
 
       switch (received.code) {
+        // 处理消息 更新消息缓存-->最近联系人列表
         case 0:
-        // 接收到私聊消息
-        // eslint-disable-next-line no-fallthrough
         case 1:
-          // 接收到群组消息
-          // 更新最近联系人列表
-          store.dispatch('UpdateRecentContacts', { ...received.data.contactInfo, reOrder: true, addUnread: true })
-          // 更新消息缓存
-          store.dispatch('UpdateTalkMap', received.data)
+          store
+            .dispatch('UpdateTalkMap', received.data)
+            .then(() => {
+              store.dispatch('UpdateRecentContacts', {
+                ...received.data.contactInfo,
+                reOrder: true,
+                addUnread: true
+              })
+            })
+            .catch(error => {
+              console.log(error)
+              const key = `talk${Date.now()}`
+              notification.warning({
+                message: '消息同步出错',
+                description: '研讨消息同步出错，点击同步按钮重新同步',
+                duration: null,
+                btn: (h) => {
+                  return h('a-button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small',
+                      icon: 'reload'
+                    },
+                    on: {
+                      click: () => {
+                        store.dispatch('GetTalkMap')
+                          .then(() => {
+                            store.dispatch('GetRecentContacts')
+                          })
+                          .then(() => notification.close(key))
+                      }
+                    }
+                  }, '同步')
+                },
+                key
+              })
+            })
           break
         default:
           break

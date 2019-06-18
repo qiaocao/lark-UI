@@ -39,7 +39,7 @@
         <card-content-intro/>
         <a-row :gutter="8">
           <a-col :span="12">
-            <chart-card title="周工作量" :total="84">
+            <chart-card title="周工作量" total="84">
               <a-tooltip title="体现上周工作在云雀上的使用情况" slot="action">
                 <a-icon type="info-circle-o" />
               </a-tooltip>

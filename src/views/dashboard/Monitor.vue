@@ -86,7 +86,7 @@ export default {
   },
   methods: {
     getSelfWorkplace () {
-      this.$http.get('/workplace/myself')
+      this.$http.get('/portal/workplace/myself')
         .then(res => {
           this.cardList = res.result.data
         })
