@@ -10,6 +10,14 @@
               </a-form-item>
             </a-col>
             <a-col :span="4">
+              <a-form-item label="消息类型">
+                <a-select placeholder="请选择" v-model="queryParam.type">
+                  <a-select-option value="admin">管理员公告</a-select-option>
+                  <a-select-option value="system">系统消息</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col :span="4">
               <a-form-item label="发布状态">
                 <a-select placeholder="请选择" v-model="queryParam.isSend">
                   <a-select-option value="0">未发布</a-select-option>
@@ -63,7 +71,7 @@
           :wrapperCol="wrapperCol"
           label="标题"
         >
-          <a-input v-decorator="['title']"/>
+          <a-input v-decorator="['title',{rules: [{ required: true, message: '请填写标题' }]}]" />
         </a-form-item>
         <!-- <a-form-item
           :labelCol="labelCol"
@@ -72,6 +80,16 @@
         >
           <a>文件名|支持点击下载</a>
         </a-form-item> -->
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="消息类型"
+        >
+          <a-select placeholder="请选择" v-decorator="['type',{rules: [{ required: true, message: '请填写消息类型' }]}]" >
+            <a-select-option value="admin">管理员公告</a-select-option>
+            <a-select-option value="system">系统消息</a-select-option>
+          </a-select>
+        </a-form-item>
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
@@ -130,6 +148,18 @@ export default {
         {
           title: '内容',
           dataIndex: 'content'
+        },
+        {
+          title: '消息类型',
+          dataIndex: 'type',
+          key: 'type',
+          customRender: function (type) {
+            const config = {
+              'admin': '管理员公告',
+              'system': '系统消息'
+            }
+            return config[type]
+          }
         },
         {
           title: '发布状态',
