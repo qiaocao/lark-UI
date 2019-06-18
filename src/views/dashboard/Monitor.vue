@@ -14,7 +14,7 @@
         :use-css-transforms="true"
       >
         <grid-item
-          v-for="grid in cardList"
+          v-for="(grid, indexs) in cardList"
           dragAllowFrom=".ant-card-head"
           :minH="cardSize.minH"
           :maxH="cardSize.maxH"
@@ -22,9 +22,12 @@
           :key="grid.id"
           :x="grid.x"
           :y="grid.y"
-          :w="grid.w"
-          :h="grid.h"
-          :i="grid.i">
+          :w="1"
+          :h="5"
+          :i="grid.i"
+          @moved="moved"
+          @move="click(indexs)"
+        >
           <l-card :cardData="grid"></l-card>
         </grid-item>
       </grid-layout>
@@ -68,8 +71,11 @@ export default {
     return {
 
       cardList: [],
-      cardSize: { maxH: 5, minH: 5, maxW: 1, minW: 1 }
+      cardSize: { maxH: 5, minH: 5, maxW: 1, minW: 1 },
       // items: generateItems(50, i => ({ id: i, data: 'Draggable' + i }))
+      is: [],
+      ids: [],
+      index: ''
     }
   },
   components: {
@@ -81,15 +87,44 @@ export default {
   created () {
     this.getSelfWorkplace()
   },
-  mounted () {
-
-  },
   methods: {
     getSelfWorkplace () {
-      this.$http.get('/portal/workplace/myself')
+      this.$http.get('https://www.easy-mock.com/mock/5d08b9479c70473bff4ca382/lark/api_copy/portal/workplace/myself')
         .then(res => {
           this.cardList = res.result.data
+          this.cardList.map(res => {
+            this.is.push(res.i)
+            this.ids.push(res.id)
+          })
+          this.cardList.forEach(item => {
+            item.x = 1 * parseInt(item.i % 2)
+            item.y = 5 * parseInt(item.i / 2)
+          })
         })
+    },
+    click (index) {
+      this.index = index
+    },
+    moved (a, newX, newY) {
+      console.log('MOVED i=' + a + ', X=' + newX + ', Y=' + newY)
+      const i = (2 * newY) / 5
+      const index = this.index
+      this.$http.get('/portal/workplace/myself', {
+        params: {
+          userid: '211221',
+          list: {
+            cardId: this.ids[index],
+            i: Math.round(i)
+          }
+        }
+      }).then(res => {
+      })
+      this.getId()
+    },
+    getId () {
+      for (let i = 0; i < this.cardList.length; i++) {
+        this.ids.push(this.cardList[i].id)
+      }
     }
   }
 }
