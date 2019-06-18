@@ -73,7 +73,12 @@ export default {
           datas.map(res => {
             this.cardList.push(res)
             this.isPlus.push(true)
-            this.isDelete.push(false)
+            // this.isDelete.push(false)
+            if (res.boolean === false) {
+              this.isDelete.push(true)
+            } else {
+              this.isDelete.push(false)
+            }
           })
         })
     },

@@ -6,11 +6,11 @@ const getters = {
 
   token: state => state.user.token,
   avatar: state => state.user.avatar,
-  nickname: state => state.user.name,
+  nickname: state => state.user.name, // 用户
   welcome: state => state.user.welcome,
   roles: state => state.user.roles,
   userInfo: state => state.user.info,
-  userId: state => state.user.info.id,
+  userId: state => state.user.info.pid, // 身份证
   userSecretLevel: state => state.user.info.secretLevel,
 
   addRouters: state => state.permission.addRouters,
