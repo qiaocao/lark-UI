@@ -19,7 +19,7 @@ class SocketApi {
     this.wsProtocol = wsProtocol
     this.ip = ip
     this.port = port
-    this.url = 'ws://127.0.0.1:8181'
+    this.url = 'ws://' + this.ip + ':' + this.port
     this.binaryType = binaryType
 
     if (paramStr) {
@@ -44,10 +44,12 @@ class SocketApi {
 
   /**
    * 建立websocket连接
+   * @param {String} userId 用户id
    */
-  connect () {
-    const ws = new WebSocket(this.url)
-    // 设置在线状态为重连中
+  connect (userId) {
+    userId = userId || store.getters.userId
+    const ws = new WebSocket(this.url + '?userId=' + userId)
+    // 设置在线状态为连接中
     store.commit('SET_ONLINE_STATE', ws.CONNECTING)
     this.ws = ws
 
@@ -55,7 +57,7 @@ class SocketApi {
 
     const self = this
 
-    // websocket连接打开
+    // 已经建立websocket连接
     ws.onopen = openEvent => {
       self.lastInteractionTime(new Date().getTime())
 

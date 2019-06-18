@@ -161,7 +161,7 @@
               {{ permission.title }}：
             </a-col>
             <a-col :span="20">
-              <a-checkbox-group :options="permission.actionEntitySetList" v-model="tempSelected[index]" :value="tempSelected[index]" @change="checkChange"/>
+              <a-checkbox-group :options="permission.actionEntitySetList" v-model="tempSelected[index]" :value="tempSelected[index]" @change="checkChange" :disabled="checkboxdisabled[index]"/>
             </a-col>
           </a-row>
         </a-form-item>
@@ -240,7 +240,9 @@ export default {
       inEdit: false,
       tempSelected: [],
       // 角色id
-      roleid: ''
+      roleid: '',
+      // 多选框禁用
+      checkboxdisabled: []
     }
   },
   created () {
@@ -313,7 +315,15 @@ export default {
         .then(res => {
           const resData = res.result.data
           // 隐藏“工作舱”
-          resData.splice(resData.findIndex(item => item.title === '工作舱'), 1)
+          // resData.splice(resData.findIndex(item => item.title === '工作舱'), 1)
+          // 按钮多选框禁用‘工作舱’和‘登录’
+          resData.forEach((item, index) => {
+            if (item.title === '工作舱' || item.title === '登录') {
+              this.checkboxdisabled[index] = true
+            } else {
+              this.checkboxdisabled[index] = false
+            }
+          })
           this.mdl.permissions = Object.assign([], res.result.data)
           this.mdl.permissions.forEach(permission => {
             // 过滤需要选中的多选框
