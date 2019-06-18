@@ -12,7 +12,7 @@
           <a-form-item
             label="联系方式"
           >
-            <a-input v-decorator="['telephone']"/>
+            <a-input v-decorator="['oTel']"/>
           </a-form-item>
           <a-form-item
             label="描述"
@@ -98,7 +98,7 @@ export default {
     const user = this.userInfo()
     this.$nextTick(() => {
       // 表单中绑定信息项
-      this.form.setFieldsValue(pick(user, 'name', 'telephone'))
+      this.form.setFieldsValue(pick(user, 'name', 'oTel', 'description'))
     })
   },
   methods: {
@@ -108,7 +108,6 @@ export default {
      * 提交修改内容
      */
     submitInfo () {
-      console.log('userInfo', this.userInfo())
       const _this = this
       // 触发表单验证
       this.form.validateFields((err, values) => {

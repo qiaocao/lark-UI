@@ -103,8 +103,9 @@ export default {
       })
     },
     sendMessage () {
-      const contactItem = this.contactsInfo
       this.$emit('clickSend')
+      const contactItem = this.contactsInfo
+      console.log('asdf')
       this.$router.push({
         path: '/talk/ChatPanel/ChatBox',
         query: new RecentContact(contactItem)

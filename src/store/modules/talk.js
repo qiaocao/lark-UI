@@ -6,6 +6,80 @@ import modules from './conf'
 import router from '@/router'
 import { getGroupList, getContactsTree, getRecentContacts, getTalkMap } from '@/api/talk'
 import { Tweet, RecentContact } from '@/utils/talk'
+import { format } from '@/utils/util'
+
+/**
+ * 设置置顶状态
+ * @param {String} id 联系人id
+ * @param {Array} recentContacts 最近联系人列表
+ * @returns {Boolean}
+ */
+function setIsTop (recentContacts, id) {
+  const contactItems = recentContacts.filter(item => item.id === id)
+  if (contactItems.length) return false
+  else return contactItems[0].isTop
+}
+
+/**
+ * 设置免打扰状态
+ * @param {String} id 联系人id
+ * @param {Boolean} isGroup 是否为群组
+ * @param {Array} groupList 群组列表
+ * @returns {Boolean}
+ */
+function setIsMute (groupList, isGroup, id) {
+  if (isGroup) {
+    const groupItem = groupList.filter(item => item.id === id)
+    if (groupItem.length) return groupItem[0].isMute
+    else return false
+  } else return false
+}
+
+/**
+ * 设置未读消息数量
+ * @param {Array} recentContacts 最近联系人
+ * @param {String} id 联系人id
+ * @param {Boolean} addUnread 增加未读消息数
+ * @param {String} currentId 当前联系人id
+ * @returns {Boolean}
+ */
+function setUnreadNum (recentContacts, id, addUnread, currentId) {
+  if (id === currentId) return 0
+  if (addUnread) {
+    const recentItem = recentContacts.filter(item => item.id === id)
+    if (recentItem.length) {
+      return recentItem[0].unreadNum + 1
+    } else return 1
+  } else return 0
+}
+
+/**
+ * 设置消息相关信息
+ * @param {Map} talkMap 存储研讨消息的Map
+ * @param {String} id 联系人id
+ * @param {Object} recentContact 要处理的项
+ */
+function setMessageInfo (id, talkMap, recentContact) {
+  if (talkMap.has(id)) {
+    const talkList = talkMap.get(id)
+    if (talkList.length) {
+      recentContact.time = format(
+        new Date(talkList[talkList.length - 1].time),
+        'hh:mm')
+      recentContact.lastMessage = talkList[talkList.length - 1].content
+      // TODO: @功能以后再说
+      recentContact.atMe = false
+    } else {
+      recentContact.time = ''
+      recentContact.lastMessage = ''
+      recentContact.atMe = false
+    }
+  } else {
+    recentContact.time = ''
+    recentContact.lastMessage = ''
+    recentContact.atMe = false
+  }
+}
 
 const talk = {
   state: {
@@ -51,12 +125,13 @@ const talk = {
     },
     /**
      * 更新talkMap
-     * @param {Object} state talk状态
      * @param {Array} talkMapList 赋值数组
      */
     SET_TALK_MAP (state, talkMapList) {
       talkMapList.forEach(function (item) {
-        state.talkMap.set(item[0], item[1])
+        if (item[1] instanceof Array) {
+          state.talkMap.set(item[0], item[1])
+        }
       })
     },
     SET_CURRENT_TALK (state, currentTalk) {
@@ -143,37 +218,31 @@ const talk = {
       })
     },
     /**
-     * 跟新最近联系人列表
-     * @param {RecentContact,reOrder,addUnread} freshItem
-     * {{...RecentContact}, reOrder: true, addUnread: true}
-     * 将要处理的数据，结构为最近联系人的结构加上reOrder和addUnread属性
+     * 更新最近联系人列表
+     * @param {...Tweet.contactInfo, reOrder, addUnread} freshItem
+     * { id, name, avatar, secretLevel, memberNum, isGroup, reOrder, addUnread }
+     * reOrder: 重新排序
+     * addUnread: 增加未读消息数量
      */
-    //  将index中的constructor 传进来  直接生成最近联系人列表
     UpdateRecentContacts ({ commit, state }, freshItem) {
-      const recentContacts = state.recentContacts
-
-      let oldItem = {}
+      const { recentContacts, groupList, talkMap } = state
       const newItem = new RecentContact(freshItem)
-
-      const index = recentContacts.findIndex(element => element.id === newItem.id)
+      // 设置状态
+      newItem.isTop = setIsTop(recentContacts, freshItem.id)
+      newItem.isMute = setIsMute(groupList, freshItem.isGroup, freshItem.id)
+      setMessageInfo(freshItem.id, talkMap, newItem)
+      newItem.unreadNum = setUnreadNum(
+        recentContacts,
+        freshItem.id,
+        freshItem.addUnread,
+        router.currentRoute.query.id)
+      // TODO: 告知服务器消息的状态
+      // ···
+      const index = recentContacts.findIndex(element => element.id === freshItem.id)
       if (index > -1) {
-        oldItem = recentContacts[index]
         this._vm.$delete(recentContacts, index)
       }
       const TopNum = recentContacts.filter(element => element.isTop).length
-
-      // 设置未读消息数
-      if (freshItem.addUnread && router.currentRoute.query.id !== newItem.id) {
-        newItem.unreadNum = oldItem.unreadNum + 1
-      } else {
-        newItem.lastMessage = oldItem.lastMessage || ''
-        newItem.time = oldItem.time || ''
-        newItem.atMe = oldItem.atMe || ''
-        newItem.unreadNum = 0
-        // TODO: 告知服务器消息的状态
-        // ···
-      }
-
       // 更新列表顺序
       if (freshItem.reOrder) {
         newItem.isTop

@@ -14,3 +14,11 @@ export function moveCard (parameter) {
     params: parameter
   })
 }
+
+export function moveCard (parameter) {
+  return axios({
+    url: api.card,
+    method: 'post',
+    params: parameter
+  })
+}
