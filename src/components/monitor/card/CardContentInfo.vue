@@ -7,10 +7,10 @@
         class="card-list"
       >
         <a-list-item style="padding: 3px 21px 3px 21px" slot="renderItem" slot-scope="item">
-
-          <a-tag v-if="item.type=='new'" color="red">最新</a-tag>
-          <a-tag v-else-if="item.type=='top'" color="orange">置顶</a-tag>
-          <a-tag v-else color="green">通知</a-tag>
+          <!-- TODO fanjiao如果这里过滤消息只显示公告，此处标签可以删掉 -->
+          <a-tag v-if="item.type=='system'" color="red">系统通知</a-tag>
+          <a-tag v-else-if="item.type=='admin'" color="orange">管理员公告</a-tag>
+          <a v-else></a>
           <a-list-item-meta>
 
             <div slot="title">{{ item.title }}</div>

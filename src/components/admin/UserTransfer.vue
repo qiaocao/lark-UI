@@ -5,10 +5,16 @@
 
 使用方法：组件引入后，使用如下方法
         <user-transfer ref="transfer" @ok="handleSaveOk"/>
-        this.$refs.transfer.beginChooseUser(传到子组件的参数，非必填)
+        this.$refs.transfer.beginChooseUser(传到子组件的参数，查询项)
 
-         可自定义子组件的确认方法(change事件)
-         返回值结构同样为人员信息的JSON数组
+        目前只支持两个查询项：密级和不包含身份证号
+        const test = "{'secretLevels':'40,50','exPid':'110101******38688'}"
+        eval("("+test+")")
+
+        可自定义子组件的确认方法(change事件)
+        返回值结构同样为人员信息的JSON数组
+
+        支持更改穿梭框尺寸 listStyle 默认 430px 430px
 -->
 <template>
   <a-row :gutter="10">
@@ -27,10 +33,7 @@
           :dataSource="ds"
           showSearch
           @search="usersFilter"
-          :listStyle="{
-            width: '430px',
-            height: '430px',
-          }"
+          :listStyle="listStyle"
           :targetKeys="targetKeys"
           @change="handleChange"
           :render="renderItem"
@@ -56,9 +59,10 @@ export default {
       ds: [],
       // 页3 transfer右侧绑定数据源
       targetKeys: [],
-      props: 'props',
+      // props: 'props',
       tLoading: false,
-      queryparamter: {}
+      queryparamter: {},
+      userfilter: {}
     }
   },
   created () {
@@ -68,18 +72,27 @@ export default {
     })
   },
   props: {
+    listStyle: {
+      type: Object,
+      required: false,
+      default: () => ({
+        width: '430px', height: '430px'
+      })
+    }
   },
   methods: {
     /**
      * 打开人员选择器
      * userArr 非必填 transfer组件中已选中的人员
      *         类型：数组 [{人员信息}]
+     * filter 非必填 人员信息过滤
+     * 目前只支持两个查询项：密级和不包含id [{'secretLevels':'40','50'...},{'exId':'27d43f6b4fa34d','27d43'...}]
      */
-    beginChooseUser: function (userArr) {
+    beginChooseUser: function (userArr, filter) {
       this.targetKeys = []
       this.ds = []
       this.userMap = new Map()
-      // const item = { 'key': '', 'title': '' }
+      this.userfilter = filter
       userArr.forEach(item => {
         this.targetKeys.push(item.id)
         item.key = item.id
@@ -129,6 +142,15 @@ export default {
       if (this.queryparamter.orgCode === undefined) {
         this.tLoading = false
         return
+      }
+      // 添加筛选项
+      console.log('this.userfilter', this.userfilter)
+      if (this.userfilter) {
+        this.queryparamter.secretLevels = this.userfilter.secretLevels || ''
+        this.queryparamter.pId = this.userfilter.exPid || ''
+      } else {
+        this.queryparamter.secretLevels = ''
+        this.queryparamter.pId = ''
       }
       getUserList(this.queryparamter).then((res) => {
         const members = res.result.data
