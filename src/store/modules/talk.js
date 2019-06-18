@@ -16,8 +16,8 @@ import { format } from '@/utils/util'
  */
 function setIsTop (recentContacts, id) {
   const contactItems = recentContacts.filter(item => item.id === id)
-  if (contactItems.length) return false
-  else return contactItems[0].isTop
+  if (contactItems.length) return contactItems[0].isTop
+  else return false
 }
 
 /**
@@ -280,10 +280,11 @@ const talk = {
      * 更新缓存中的消息map
      * @param {Tweet} newMessage 新消息
      */
-    UpdateTalkMap ({ state, commit }, newMessage) {
+    UpdateTalkMap ({ state, commit, rootState, getters }, newMessage) {
+      if (newMessage.fromId === getters.userId) return
       const tempMessageList = state.talkMap.get(newMessage.contactInfo.id) || []
       tempMessageList.push(new Tweet(newMessage))
-      commit('SET_TALK_MAP', [newMessage.contactInfo.id, tempMessageList])
+      commit('SET_TALK_MAP', [[newMessage.contactInfo.id, tempMessageList]])
     },
     /**
      * 更新缓存中的草稿信息

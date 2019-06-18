@@ -28,7 +28,7 @@
           showSearch
           @search="usersFilter"
           :listStyle="{
-            width: '430px',
+            width: '200px',
             height: '430px',
           }"
           :targetKeys="targetKeys"
