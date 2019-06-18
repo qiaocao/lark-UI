@@ -373,17 +373,19 @@ export default {
      * 获取缓存消息
      */
     getCacheMessage () {
-      this.messageList = []
-      const cacheMessage = this.$store.state.talk.talkMap.get(this.chatInfo.id)
-      if (cacheMessage) {
-        // 在缓存中取到历史研讨记录
-        this.messageList = cacheMessage
-      } else {
-        // 未在缓存中取到记录，向服务端请求数据
-        getTalkHistory().then(res => {
-          if (res.status === 200) this.messageList = res.result.data
-        })
-      }
+      // this.messageList = []
+      const cacheMessage = this.$store.state.talk.talkMap.get(this.chatInfo.id) || []
+      this.messageList = cacheMessage
+      // console.log(cacheMessage)
+      // if (cacheMessage) {
+      //   // 在缓存中取到历史研讨记录
+      //   this.messageList = cacheMessage
+      // } else {
+      //   // 未在缓存中取到记录，向服务端请求数据
+      //   getTalkHistory().then(res => {
+      //     if (res.status === 200) this.messageList = res.result.data
+      //   })
+      // }
     },
     /**
      * 发送消息
