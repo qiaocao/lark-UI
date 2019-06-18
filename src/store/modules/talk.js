@@ -125,12 +125,13 @@ const talk = {
     },
     /**
      * 更新talkMap
-     * @param {Object} state talk状态
      * @param {Array} talkMapList 赋值数组
      */
     SET_TALK_MAP (state, talkMapList) {
       talkMapList.forEach(function (item) {
-        state.talkMap.set(item[0], item[1])
+        if (item[1] instanceof Array) {
+          state.talkMap.set(item[0], item[1])
+        }
       })
     },
     SET_CURRENT_TALK (state, currentTalk) {
