@@ -104,7 +104,7 @@ export default {
         [2, '[图片]'],
         [3, '[文件]']
       ])
-      return messageCases.get(type) + title
+      return messageCases.get(type || 1) + (title || '')
     }
   }
 }

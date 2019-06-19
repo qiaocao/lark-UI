@@ -73,13 +73,13 @@ function setMessageInfo (id, talkMap, recentContact) {
       recentContact.atMe = false
     } else {
       recentContact.time = ''
-      recentContact.lastMessage = ''
+      recentContact.lastMessage = {}
       recentContact.sender = ''
       recentContact.atMe = false
     }
   } else {
     recentContact.time = ''
-    recentContact.lastMessage = ''
+    recentContact.lastMessage = {}
     recentContact.sender = ''
     recentContact.atMe = false
   }
