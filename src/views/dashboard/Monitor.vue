@@ -97,8 +97,8 @@ export default {
             this.ids.push(res.id)
           })
           this.cardList.forEach(item => {
-            item.x = 1 * parseInt(item.i % 2)
-            item.y = 5 * parseInt(item.i / 2)
+            item.x = (item.i % 2)
+            item.y = 5 * (parseInt(item.i / 2))
           })
         })
     },
@@ -107,14 +107,15 @@ export default {
     },
     moved (a, newX, newY) {
       console.log('MOVED i=' + a + ', X=' + newX + ', Y=' + newY)
-      const i = (2 * newY) / 5
+      const i = parseInt((2 * newY) / 5)
       const index = this.index
+      const uId = this.$store.getters.userId
       this.$http.get('/portal/workplace/myself', {
         params: {
-          userid: '211221',
+          userId: uId,
           list: {
             cardId: this.ids[index],
-            i: Math.round(i)
+            i: i
           }
         }
       }).then(res => {
