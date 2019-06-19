@@ -63,7 +63,7 @@ export default {
 }
 </script>
 
- <style lang="less" scope>
+ <style lang="less" scoped>
     .ant-avatar-image{
       border-radius: 0
     }

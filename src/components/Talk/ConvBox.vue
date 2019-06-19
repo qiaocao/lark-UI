@@ -579,6 +579,7 @@ export default {
     }
     // 消息展示区域
     &-message {
+      height: calc(100vh - 306px);
       display: flex;
       position: relative;
       overflow: hidden;

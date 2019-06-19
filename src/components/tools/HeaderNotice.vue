@@ -10,9 +10,9 @@
     <template slot="content">
       <a-spin :spinning="loadding">
         <a-list>
-          <a-list-item v-for="msg in msglist" :key="msg.id">
+          <a-list-item v-for="msg in msglist.slice(0,6)" :key="msg.id">
             <router-link :to="{ name: 'MsgList' }">
-              <a-list-item-meta :description="getTimeDiff(msg.crtTime)" :title="msg.title">
+              <a-list-item-meta :description="msg.date|timeFormat" :title="msg.title">
                 <a-avatar style="background-color: white" slot="avatar" :src="getImgPath(msg.type)"/>
               </a-list-item-meta>
             </router-link>
@@ -35,7 +35,8 @@
 </template>
 
 <script>
-import { getMsg } from '@/api/admin'
+import { getNotice } from '@/api/workplace'
+import { toWeiXinString } from '@/utils/util'
 export default {
   name: 'HeaderNotice',
   data () {
@@ -45,11 +46,12 @@ export default {
       msglist: []
     }
   },
+  filters: { timeFormat: toWeiXinString },
   methods: {
     fetchNotice () {
       if (!this.visible) {
         this.loadding = true
-        return getMsg().then(res => {
+        return getNotice().then(res => {
           if (res.status === 200) {
             this.msglist = res.result.data
             this.loadding = false
@@ -64,44 +66,11 @@ export default {
      * 根据消息类型获取消息图标
      */
     getImgPath (item) {
-      if (item === '1') {
+      if (item === 'admin') {
         return '/tools/Icon-msg-admin.png'
       } else {
         return '/tools/Icon-msg-sys.png'
       }
-    },
-    /**
-     * 点击消息内容，将当前页刷新为消息管理页
-     */
-    clickMsg () {
-
-    },
-    getTimeDiff (value) {
-      var minute = 1000 * 60
-      var hour = minute * 60
-      var day = hour * 24
-      var week = day * 7
-      var month = day * 30
-      // 获取当前时间
-      const nowTime = new Date().getTime()
-      const time = nowTime - value
-      let result
-      if (time < 0) {
-        result = ''
-      } else if (time / month >= 1) {
-        result = '发布于' + parseInt(time / month) + '月前'
-      } else if (time / week >= 1) {
-        result = '发布于' + parseInt(time / week) + '周前'
-      } else if (time / day >= 1) {
-        result = '发布于' + parseInt(time / day) + '天前'
-      } else if (time / hour >= 1) {
-        result = '发布于' + parseInt(time / hour) + '小时前'
-      } else if (time / minute >= 1) {
-        result = '发布于' + parseInt(time / minute) + '分钟前'
-      } else {
-        result = '刚刚发布'
-      }
-      return result
     }
   }
 }

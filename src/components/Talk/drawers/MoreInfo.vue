@@ -71,7 +71,7 @@ export default {
   }
 }
 </script>
-<style lang="less" scope>
+<style lang="less" scoped>
     .add_box{
       margin: 0 50px 0 2px;
       width: 60px;
