@@ -67,7 +67,7 @@ export default {
       this.t = Math.random()
     },
     getAllCards () {
-      this.$http.get('/workplace/all')
+      this.$http.get('/portal/userCard/cards')
         .then(res => {
           const datas = res.result.data
           datas.map(res => {
@@ -83,9 +83,9 @@ export default {
         })
     },
 
-    // 创建cardId
+    // 选择card
     pushId (cardId) {
-      this.$http.get('/workplace/card', {
+      this.$http.post('/workplace/card', {
         params: {
           cardId: cardId,
           userId: this.$store.state.user.name
