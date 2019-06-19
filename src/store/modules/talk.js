@@ -66,17 +66,21 @@ function setMessageInfo (id, talkMap, recentContact) {
       recentContact.time = format(
         new Date(talkList[talkList.length - 1].time),
         'hh:mm')
+      recentContact.sender = talkList[talkList.length - 1].username
       recentContact.lastMessage = talkList[talkList.length - 1].content
+
       // TODO: @功能以后再说
       recentContact.atMe = false
     } else {
       recentContact.time = ''
       recentContact.lastMessage = ''
+      recentContact.sender = ''
       recentContact.atMe = false
     }
   } else {
     recentContact.time = ''
     recentContact.lastMessage = ''
+    recentContact.sender = ''
     recentContact.atMe = false
   }
 }
@@ -275,8 +279,8 @@ const talk = {
      * 更新缓存中的消息map
      * @param {Tweet} newMessage 新消息
      */
-    UpdateTalkMap ({ state, commit, rootState, getters }, newMessage) {
-      if (newMessage.fromId === getters.userId) return
+    UpdateTalkMap ({ state, commit, rootGetters }, newMessage) {
+      if (newMessage.fromId === rootGetters.userId) return
       const tempMessageList = state.talkMap.get(newMessage.contactInfo.id) || []
       tempMessageList.push(new Tweet(newMessage))
       commit('SET_TALK_MAP', [[newMessage.contactInfo.id, tempMessageList]])

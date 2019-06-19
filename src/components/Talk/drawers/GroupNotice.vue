@@ -64,7 +64,7 @@ export default {
 }
 </script>
 
-<style lang='less' scope>
+<style lang='less' scoped>
   .notice-p{
      text-align:left;
      text-indent:2em;

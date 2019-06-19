@@ -144,7 +144,7 @@ class SocketApi {
     }
 
     ws.onerror = errorEvent => {
-      self.colse(4001, '连接出现错误')
+      self.close(4001, '连接出现错误')
       // 出错的处理逻辑
       // ···
     }
@@ -186,7 +186,7 @@ class SocketApi {
    * @param {Number} code 关闭原因代码
    * @param {String} reason 关闭原因描述
    */
-  colse (code, reason) {
+  close (code, reason) {
     // 设置登陆状态为正在断开
     store.commit('SET_ONLINE_STATE', this.ws.CLOSING)
 

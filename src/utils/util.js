@@ -202,3 +202,9 @@ export function extensionStr (file) {
   const index = file.lastIndexOf('.')
   return index < 0 ? 'undefined' : file.substr(index + 1)
 }
+/**
+ * 卡片拖拽坐标
+ */
+export function cardDrag (i) {
+  return 1(i % 2) + 5(i / 2)
+}
