@@ -388,10 +388,11 @@ export default {
        * "groupId": "",
        * "levels": ""
        */
-      const { status, response: { fileId, fileName, readPath, fileExt } } = this.fileUpload
+      const { status } = this.fileUpload
       const content = this.messageContent
       // 如果有文件消息，发送文件消息，忽略文字消息
       if (status === 'done') {
+        const { fileId, fileName, readPath, fileExt } = this.fileUpload.response
         this.generateFileMsg(
           tweet,
           fileId,
@@ -413,7 +414,7 @@ export default {
       // 如果消息类型属性存在，消息内容创建成功
       if (tweet.content && tweet.content.type) {
         this.generateBaseInfo(tweet, secretLevel)
-        this.updateChatInfo(tweet)
+        // this.updateChatInfo(tweet)
         this.addSenderInfo(tweet)
         const baseMessage = new SocketMessage({
           code: this.chatInfo.isGroup ? 1 : 0,
@@ -429,7 +430,9 @@ export default {
         })
 
         this.scrollToBottom()
-        this.fileUpload = {}
+        tweet.content.type === 1
+          ? this.messageContent = ''
+          : this.fileUpload = {}
       }
     },
     /** 添加发信人信息或者群组信息 */
