@@ -41,7 +41,8 @@
   </a-list>
 </template>
 <script>
-
+import pushId from '../../../api/setting.js'
+import deleteId from '../../../api/admin.js'
 export default {
   data () {
     return {
@@ -85,24 +86,26 @@ export default {
 
     // 选择card
     pushId (cardId) {
-      this.$http.post('/workplace/card', {
-        params: {
-          cardId: cardId,
-          userId: this.$store.state.user.name
-        }
-      }).then(res => {
-      })
+      pushId.pushId(cardId)
+      // this.$http.post('/workplace/card', {
+      //   params: {
+      //     cardId: cardId,
+      //     userId: this.$store.state.user.name
+      //   }
+      // }).then(res => {
+      // })
     },
     // 删除cardId
     deleteId (cardId) {
-      this.$http.get('/workplace/card', {
-        params: {
-          cardId: cardId,
-          userId: this.$store.state.user.name
-        }
-      }).then(res => {
+      deleteId.deleteId(cardId)
+      // this.$http.get('/workplace/card', {
+      //   params: {
+      //     cardId: cardId,
+      //     userId: this.$store.state.user.name
+      //   }
+      // }).then(res => {
 
-      })
+      // })
     }
     // getCard () {
     //   this.$http.get('/workplace/card').then(res => {

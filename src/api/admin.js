@@ -369,3 +369,16 @@ export function getUserBySecret (parameter) {
     params: parameter
   })
 }
+/**
+ * 删除card
+ */
+export function deleteId (parameter) {
+  return axios({
+    url: api.getUserBySecret,
+    method: 'GET',
+    params: {
+      cardId: parameter,
+      userId: this.$store.state.user.name
+    }
+  })
+}

@@ -4,6 +4,8 @@ const api = {
   AllCommonTools: '/portal/userCard/cards',
   SelfCommonTools: '/setting/commontools/self',
   CheckCommonTools: '/portal/userCard/myself'
+  // settingCard: '/workplace/card'
+
 }
 
 export default api
@@ -53,5 +55,25 @@ export function delCheckCommonTools (parameter) {
     url: api.CheckCommonTools,
     method: 'delete',
     params: parameter
+  })
+}
+/**
+ * 传递卡片id
+ */
+// export function settingCard (parameter) {
+//   return axios({
+//     url: api.settingCard,
+//     method: 'post',
+//     params: parameter
+//   })
+// }
+export function pushId (cardId) {
+  return axios({
+    url: api.settingCard,
+    model: 'post',
+    params: {
+      cardId: cardId,
+      userId: this.$store.state.user.name
+    }
   })
 }
