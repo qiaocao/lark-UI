@@ -53,6 +53,9 @@ export default {
         avatar: 头像 String
         time: 时间 String
         atMe: 是否有人@我 Boolean
+        secretLevel: 联系人密级
+        unreadNum 未读消息数
+        memberNum 成员数量
         isTop: 是否置顶 Boolean
         isMute: 是否免打扰 Boolean
         isGroup: 是否群组 Boolean
