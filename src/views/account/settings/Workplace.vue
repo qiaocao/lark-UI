@@ -67,20 +67,25 @@ export default {
       this.t = Math.random()
     },
     getAllCards () {
-      this.$http.get('/workplace/all')
+      this.$http.get('/portal/userCard/cards')
         .then(res => {
           const datas = res.result.data
           datas.map(res => {
             this.cardList.push(res)
             this.isPlus.push(true)
-            this.isDelete.push(false)
+            // this.isDelete.push(false)
+            if (res.boolean === false) {
+              this.isDelete.push(true)
+            } else {
+              this.isDelete.push(false)
+            }
           })
         })
     },
 
-    // 创建cardId
+    // 选择card
     pushId (cardId) {
-      this.$http.get('/workplace/card', {
+      this.$http.post('/workplace/card', {
         params: {
           cardId: cardId,
           userId: this.$store.state.user.name
