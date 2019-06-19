@@ -41,8 +41,8 @@
   </a-list>
 </template>
 <script>
-import pushId from '../../../api/setting.js'
-import deleteId from '../../../api/admin.js'
+import settingJs from '../../../api/setting.js'
+import adimJs from '../../../api/admin.js'
 export default {
   data () {
     return {
@@ -86,7 +86,7 @@ export default {
 
     // 选择card
     pushId (cardId) {
-      pushId.settingCard(cardId)
+      settingJs.settingCard(cardId)
       // this.$http.post('/workplace/card', {
       //   params: {
       //     cardId: cardId,
@@ -97,7 +97,7 @@ export default {
     },
     // 删除cardId
     deleteId (cardId) {
-      deleteId.deleteId(cardId)
+      adimJs.deleteId(cardId)
       // this.$http.get('/workplace/card', {
       //   params: {
       //     cardId: cardId,
