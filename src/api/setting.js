@@ -1,9 +1,9 @@
 import { axios } from '@/utils/request'
 
 const api = {
-  AllCommonTools: '/setting/commontools/all',
+  AllCommonTools: '/portal/userCard/cards',
   SelfCommonTools: '/setting/commontools/self',
-  CheckCommonTools: '/setting/commontools/check'
+  CheckCommonTools: '/portal/userCard/myself'
 }
 
 export default api
