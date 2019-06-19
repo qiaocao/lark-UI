@@ -27,7 +27,8 @@ const api = {
   menuelement: '/admin/menu/element',
   roleuser: '/admin/role/user',
   // 临时增加，方便测试
-  getUserBySecret: 'admin/user/list'
+  getUserBySecret: 'admin/user/list',
+  deleteId: '/workplace/card'
 }
 
 export default api

@@ -3,8 +3,8 @@ import { axios } from '@/utils/request'
 const api = {
   AllCommonTools: '/portal/userCard/cards',
   SelfCommonTools: '/setting/commontools/self',
-  CheckCommonTools: '/portal/userCard/myself'
-  // settingCard: '/workplace/card'
+  CheckCommonTools: '/portal/userCard/myself',
+  settingCard: '/workplace/card'
 
 }
 
@@ -67,12 +67,12 @@ export function delCheckCommonTools (parameter) {
 //     params: parameter
 //   })
 // }
-export function pushId (cardId) {
+export function settingCard (parameter) {
   return axios({
     url: api.settingCard,
     model: 'post',
     params: {
-      cardId: cardId,
+      cardId: parameter,
       userId: this.$store.state.user.name
     }
   })

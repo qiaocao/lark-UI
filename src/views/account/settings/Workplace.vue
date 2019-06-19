@@ -86,7 +86,7 @@ export default {
 
     // 选择card
     pushId (cardId) {
-      pushId.pushId(cardId)
+      pushId.settingCard(cardId)
       // this.$http.post('/workplace/card', {
       //   params: {
       //     cardId: cardId,
