@@ -13,11 +13,55 @@
       </div>
     </div>
     <section class="main-todo" v-show="todos.length" v-cloak>
-      <ul class="todo-list">
+      <ul class="todo-list" v-show="liId == 0">
         <li
           v-for="todo in filteredTodos"
           class="todo"
           :key="todo.id"
+          :class="{ completed: todo.completed, editing: todo == editedTodo }">
+          <div class="view">
+            <input class="toggle" type="checkbox" v-model="todo.completed">
+            <label @dblclick="editTodo(todo)">{{ todo.title }}</label>
+            <button class="destroy" @click="removeTodo(todo)"></button>
+          </div>
+          <input
+            class="edit"
+            type="text"
+            v-model="todo.title"
+            v-todo-focus="todo == editedTodo"
+            @blur="doneEdit(todo)"
+            @keyup.enter="doneEdit(todo)"
+            @keyup.esc="cancelEdit(todo)">
+        </li>
+      </ul>
+      <ul class="todo-list" v-show="liId == 1">
+        <li
+          v-for="todo in filteredTodos"
+          class="todo"
+          :key="todo.id"
+          v-show="todo.completed === false"
+          :class="{ completed: todo.completed, editing: todo == editedTodo }">
+          <div class="view">
+            <input class="toggle" type="checkbox" v-model="todo.completed">
+            <label @dblclick="editTodo(todo)">{{ todo.title }}</label>
+            <button class="destroy" @click="removeTodo(todo)"></button>
+          </div>
+          <input
+            class="edit"
+            type="text"
+            v-model="todo.title"
+            v-todo-focus="todo == editedTodo"
+            @blur="doneEdit(todo)"
+            @keyup.enter="doneEdit(todo)"
+            @keyup.esc="cancelEdit(todo)">
+        </li>
+      </ul>
+      <ul class="todo-list" v-show="liId == 2">
+        <li
+          v-for="todo in filteredTodos"
+          class="todo"
+          :key="todo.id"
+          v-show="todo.completed === true"
           :class="{ completed: todo.completed, editing: todo == editedTodo }">
           <div class="view">
             <input class="toggle" type="checkbox" v-model="todo.completed">
@@ -40,9 +84,12 @@
         <strong>{{ remaining }}</strong> {{ remaining | pluralize }} 未完
       </span>
       <ul class="filters">
-        <li><a href="#/all" :class="{ selected: visibility == 'all' }">全部</a></li>
+        <li><a href="#" @click="liId = 0">全部</a></li>
+        <li><a href="#" @click="liId = 1">未完</a></li>
+        <li><a href="#" @click="liId = 2">已完</a></li>
+        <!-- <li><a href="#/all" :class="{ selected: visibility == 'all' }">全部</a></li>
         <li><a href="#/active" :class="{ selected: visibility == 'active' }">未完</a></li>
-        <li><a href="#/completed" :class="{ selected: visibility == 'completed' }">已完</a></li>
+        <li><a href="#/completed" :class="{ selected: visibility == 'completed' }">已完</a></li> -->
       </ul>
       <button class="clear-completed" @click="removeCompleted" v-show="todos.length > remaining">
         清除
@@ -88,7 +135,8 @@ export default {
       todos: todoStorage.fetch(),
       newTodo: '',
       editedTodo: null,
-      visibility: 'all'
+      visibility: 'all',
+      liId: 0
     }
   },
   watch: {
