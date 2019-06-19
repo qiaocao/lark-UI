@@ -97,8 +97,6 @@ const talk = {
     talkMap: new Map(),
     /** 当前正在进行的研讨 */
     currentTalk: {},
-    /** 当前正在进行研讨的消息列表 */
-    curMessageList: [],
     /** 草稿Map */
     draftMap: new Map(),
 
@@ -136,9 +134,6 @@ const talk = {
     },
     SET_CURRENT_TALK (state, currentTalk) {
       state.currentTalk = currentTalk
-    },
-    SET_CUR_MESSAGE_LIST (state, curMessageList) {
-      state.curMessageList = curMessageList
     },
     /**
      * 更新draftMap

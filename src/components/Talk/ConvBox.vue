@@ -165,7 +165,6 @@ import { LandingStatus } from '@/utils/constants'
 // 引入密级常量
 import { SocketMessage, Tweet } from '@/utils/talk'
 import { format, extensionStr } from '@/utils/util'
-import { getTalkHistory } from '@/api/talk'
 import VEmojiPicker from 'v-emoji-picker'
 import packData from 'v-emoji-picker/data/emojis.json'
 import { mapGetters } from 'vuex'
@@ -232,14 +231,6 @@ export default {
   },
   computed: {
     ...mapGetters(['onlineState', 'userSecretLevel', 'userId', 'avatar', 'nickname']),
-    // messageList: {
-    //   get: function () {
-    //     return this.$store.state.talk.curMessageList
-    //   },
-    //   set: function (messageList) {
-    //     this.$store.commit('SET_CUR_MESSAGE_LIST', messageList)
-    //   }
-    // },
     emojisNative () {
       return packData
     },
@@ -373,19 +364,11 @@ export default {
      * 获取缓存消息
      */
     getCacheMessage () {
-      // this.messageList = []
-      this.messageList = this.$store.state.talk.talkMap.get(this.chatInfo.id) || []
-      // this.messageList = cacheMessage
-      // console.log(cacheMessage)
-      // if (cacheMessage) {
-      //   // 在缓存中取到历史研讨记录
-      //   this.messageList = cacheMessage
-      // } else {
-      //   // 未在缓存中取到记录，向服务端请求数据
-      //   getTalkHistory().then(res => {
-      //     if (res.status === 200) this.messageList = res.result.data
-      //   })
-      // }
+      const hasCache = this.$store.state.talk.talkMap.has(this.chatInfo.id)
+      if (!hasCache) {
+        this.$store.commit('SET_TALK_MAP', [[this.chatInfo.id, []]])
+      }
+      this.messageList = this.$store.state.talk.talkMap.get(this.chatInfo.id)
     },
     /**
      * 发送消息
