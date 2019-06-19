@@ -58,14 +58,14 @@
                 <mini-progress color="rgb(19, 194, 194)" :target="80" :percentage="78" height="8px" />
               </div>
               <template slot="footer">
-                <trend flag="down" style="margin-right: 16px;">
+                <!-- <trend flag="down" style="margin-right: 16px;">
                   <span slot="term">同周比</span>
                   12%
                 </trend>
                 <trend flag="up">
                   <span slot="term">日环比</span>
                   80%
-                </trend>
+                </trend> -->
               </template>
             </chart-card>
           </a-col>
