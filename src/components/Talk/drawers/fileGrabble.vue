@@ -1,8 +1,15 @@
 <template>
   <div>
-    <input type="text" class="seek_inp" placeholder="输入要搜索内容" v-model="searchVal" >
-    <a-button type="primary" icon="search" style="border-radius:0"></a-button>
-
+    <!-- <input type="text" class="seek_inp" placeholder="输入要搜索内容" v-model="searchVal" >
+    <a-button type="primary" icon="search" style="border-radius:0 5px 5px 0"></a-button> -->
+    <a-input-search
+      placeholder="输入要搜索内容"
+      @search="onSearch"
+      enterButton
+      type="text"
+      v-model="searchVal"
+      style="margin-bottom: 20px"
+    />
     <ul class="history_box">
       <li>
         <div class="nav_box">
@@ -17,7 +24,7 @@
 
         <a-list-item-meta class="file_name">
           <a class="file_a" slot="title">{{ newItem.name.last }}</a>
-          <a-avatar slot="avatar" :src="newItem.url"/>
+          <a-avatar slot="avatar" :src="newItem.url" style="border-radius:0"/>
         </a-list-item-meta>
         <span class="file_sp">{{ newItem.name.title }}</span>
         <div class="file_time">{{ newItem.time }}</div>
@@ -109,14 +116,23 @@ export default {
 </script>
 
 <style lang="less" scoped>
-ul{
+.seek_inp{
+  width: 90%;
+  height: 30px;
+  outline: none;
+  border: 1px solid #cccccc;
+  border-radius: 5px 0 0 5px;
+  margin-bottom: 20px;
+}
+.history_box{
   margin-bottom: 100px;
   overflow: hidden;
-  .history_box{
-  height: 55px;
-  margin-bottom: 50px;
+  list-style: none;
+  padding: 0;
+  .history_cotent{
+    height: 55px;
+    margin-bottom: 5px;
   }
-
 }
 .ant-list-item-meta{
   float: left;
@@ -185,4 +201,5 @@ ul{
     }
   }
 }
+
 </style>

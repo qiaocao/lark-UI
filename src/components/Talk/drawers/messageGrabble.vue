@@ -1,7 +1,15 @@
 <template>
   <div>
-    <input type="text" class="seek_inp" placeholder="输入要搜索内容" v-model="searchVal" >
-    <a-button type="primary" icon="search" style="border-radius:0"></a-button>
+    <!-- <input type="text" class="seek_inp" placeholder="输入要搜索内容" v-model="searchVal" >
+    <a-button type="primary" icon="search" style="border-radius:0"></a-button> -->
+    <a-input-search
+      placeholder="输入要搜索内容"
+      @search="onSearch"
+      enterButton
+      type="text"
+      v-model="searchVal"
+      style="margin-bottom: 20px"
+    />
     <ul class="history_box">
       <li v-for="(item,index) in NewItems" class="history_cotent" :key="index" :value="item.value">
         <img :src="item.avatar" class="content_l" alt>
