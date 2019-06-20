@@ -18,10 +18,10 @@ const api = {
   rolepermission: '/admin/role/permission',
   userrole: '/admin/user/roles',
   getnoticepage: '/admin/notice/page',
-  getmsg: '/admin/notice/no-page',
   notice: 'admin/notice',
   noticesend: 'admin/notice/send',
-  upload: '/admin/fileupload',
+  // upload: '/fdfs/file/thumbImage',
+  upload: '/fdfs/file/upload',
   getmenu: '/admin/menu/page',
   getmenuall: '/admin/menu/all',
   menu: '/admin/menu',
@@ -50,6 +50,15 @@ export function getUserList (parameter) {
     url: api.getuser,
     method: 'get',
     params: parameter
+  })
+}
+/**
+ * 根据用户id获取用户信息
+ */
+export function getuser (parameter) {
+  return axios({
+    url: api.user + '/' + parameter,
+    method: 'get'
   })
 }
 /**
@@ -221,16 +230,6 @@ export function getNoticePage (parameter) {
   })
 }
 /**
- * 获取消息列表（最近6条）
- */
-export function getMsg (parameter) {
-  return axios({
-    url: api.getmsg,
-    method: 'get',
-    params: parameter
-  })
-}
-/**
  * 消息保存
  */
 export function addNotice (parameter) {
@@ -276,7 +275,8 @@ export function uploadFile (parameter) {
   return axios({
     url: api.upload,
     method: 'post',
-    params: parameter
+    data: parameter,
+    headers: { 'Content-Type': 'multipart/form-data' }
   })
 }
 /**
