@@ -24,32 +24,46 @@ class SocketMessage {
 }
 
 /**
- * 消息体类
+ * @description 消息体类
  * @param {String} id 消息的id
  * @param {String} username 发送者姓名
  * @param {String} avatar 发送者头像地址
  * @param {String} fromId 发送者id
  * @param {String} toId 接受者id
  * @param {Array} atId 被at成员的id
- * @param {Number} secretLevel 消息密级 60 - 非密，70 - 秘密，80 - 机密
- * @param {Number} type 消息类型 1 - 文本消息，2 - 文件消息，3 - 图片消息
- * @param {String | Object} content 消息的内容
+ * @param {Object} content 消息内容
+ * {
+ *  id-String-文件id,文本传'0',
+ *  url-String-文件地址,文本传'0',
+ *  type-Number-消息类型 1 - 文本消息，2 - 图片消息，3 - 文件消息
+ *  extension-String-文件后缀,文本传'0',
+ *  title-String-文件名或文本内容,
+ *  secretLevel-Number-密级 60 - 非密，70 - 秘密，80 - 机密
+ * }
  * @param {Date} time 消息发送时间
  * @param {Boolean} isGroup 消息分类 ture - 群消息， - 私聊消息
- * @param {Object} contactInfo 联系人信息{id,name,avatar,secretLevel,memberNum,isGroup}
+ * @param {Object} contactInfo 联系人信息
+ * {
+ *  id-String-联系人或者群组id,
+ *  name-String-联系人或者群组名称,
+ *  avatar-String-联系人或者群组头像,
+ *  secretLevel-Number-联系人或者群组密级,
+ *  memberNum-Number-对话中成员的数量,
+ *  isGroup-Boolean-是否为群组
+ * }
  */
 class Tweet {
-  constructor ({ id, username, avatar, fromId, toId, atId, secretLevel, type, content, time, isGroup, contactInfo } = {}) {
+  constructor ({ id, username, avatar, fromId, toId, atId, content, time, isGroup, contactInfo } = {}) {
     Object.assign(this, arguments[0])
   }
 }
 
 /**
- * 最近联系人类
+ * @description 最近联系人类
  * @param {String} id id
  * @param {String} name 名称
  * @param {String} time 最后聊天时间 hh:mm
- * @param {String} lastMessage 最后一条消息
+ * @param {Object} lastMessage 最后一条消息 与Tweet中的content结构一致
  * @param {String} avatar 头像地址
  * @param {Boolean} atMe 是否at我
  * @param {Number} secretLevel 联系人密级
@@ -75,7 +89,7 @@ class RecentContact {
     // 与实时消息有关的属性
     this.unreadNum = unreadNum ? JSON.parse(unreadNum) : 0
     this.time = time || ''
-    this.lastMessage = lastMessage || ''
+    this.lastMessage = lastMessage || {}
     this.atMe = atMe ? JSON.parse(atMe) : false
     this.sender = sender || ''
 
