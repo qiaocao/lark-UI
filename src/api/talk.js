@@ -4,7 +4,7 @@ const api = {
   talkMembers: 'talk/members',
   groupInfo: 'talk/group/info',
   groupList: 'talk/group/list',
-  contactsInfo: 'talk/contacts/info',
+  contactsInfo: 'admin/user/',
   contactsTree: 'admin/org/orgUsers',
   recentContacts: 'talk/recent/list',
   talkMap: 'talk/message/map',
@@ -37,11 +37,10 @@ export function getGroupInfo (groupId) {
  * 通过联系人id获取联系人详细信息
  * @param {String} contactsId 联系人id
  */
-export function getContactsInfo (contactsId) {
+export function getContactsInfo (id) {
   return axios({
-    url: api.contactsInfo,
-    method: 'GET',
-    params: { id: contactsId }
+    url: api.contactsInfo + id,
+    method: 'GET'
   })
 }
 
