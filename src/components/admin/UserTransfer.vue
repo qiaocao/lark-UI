@@ -86,7 +86,7 @@ export default {
      * userArr 非必填 transfer组件中已选中的人员
      *         类型：数组 [{人员信息}]
      * filter 非必填 人员信息过滤
-     * 目前只支持两个查询项：密级和不包含id [{'secretLevels':'40','50'...},{'exId':'27d43f6b4fa34d','27d43'...}]
+     * 目前只支持两个查询项：密级和不包含人员身份证号 {'secretLevels':'40,50','exPid':'110101******38688'}
      */
     beginChooseUser: function (userArr, filter) {
       this.targetKeys = []
@@ -144,7 +144,6 @@ export default {
         return
       }
       // 添加筛选项
-      console.log('this.userfilter', this.userfilter)
       if (this.userfilter) {
         this.queryparamter.secretLevels = this.userfilter.secretLevels || ''
         this.queryparamter.pId = this.userfilter.exPid || ''
