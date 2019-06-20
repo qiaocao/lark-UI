@@ -218,15 +218,6 @@ export default {
   // 密级标识样式
   .secret-tip {
     display: inline;
-    .s-60 {
-      color: #b2b2b2;
-    }
-    .s-70 {
-      color: orange;
-    }
-    .s-80 {
-      color: tomato;
-    }
   }
 
   .message-piece {
@@ -256,8 +247,8 @@ export default {
       overflow: hidden;
 
       .message-nickname {
-        height: 22px;
-        line-height: 24px;
+        height: 20px;
+        line-height: 22px;
         font-size: 12px;
         font-weight: 400;
         padding-left: 10px;
@@ -309,8 +300,8 @@ export default {
 
             .img-message {
               img {
-                max-width: 450px;
-                min-width: 85px;
+                max-width: 400px;
+                min-width: 100px;
               }
               &-option {
                 text-align: right;
