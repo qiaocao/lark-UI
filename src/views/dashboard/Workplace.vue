@@ -69,7 +69,6 @@ export default {
   mixins: [mixin, mixinDevice],
   data () {
     return {
-
       cardList: [],
       cardSize: { maxH: 5, minH: 5, maxW: 1, minW: 1 },
       // items: generateItems(50, i => ({ id: i, data: 'Draggable' + i }))
@@ -91,15 +90,18 @@ export default {
     getSelfWorkplace () {
       this.$http.get('/portal/userCard/myself')
         .then(res => {
-          this.cardList = res.result.data
-          this.cardList.map(res => {
-            this.is.push(res.i)
-            this.ids.push(res.id)
-          })
-          this.cardList.forEach(item => {
-            item.x = 1 * parseInt(item.i % 2)
-            item.y = 5 * parseInt(item.i / 2)
-          })
+          const dataTemp = res.result.data
+          for (var i = 0; dataTemp.length; i++) {
+            this.cardList.id = dataTemp[i].id
+            this.cardList.x = 1 * parseInt(dataTemp[i].i % 2)
+            this.cardList.y = 5 * parseInt(dataTemp[i].i / 2)
+            this.cardList.w = 1
+            this.cardList.h = 5
+            this.cardList.i = dataTemp[i].i
+            this.cardList.type = dataTemp[i].type
+            this.cardList.title = dataTemp[i].title
+            this.cardList.url = dataTemp[i].url
+          }
         })
     },
     click (index) {
