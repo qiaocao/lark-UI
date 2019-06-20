@@ -8,35 +8,33 @@
     <talk-file :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <mark-message :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <more-info :activeOption="activeOption" @closeDrawer="triggerDrawer" />
+
     <a-layout-header class="conv-box-header">
-      <a-row type="flex" justify="space-between">
-        <a-col :span="14" class="conv-title">
-          <!-- 需要对名字的字数做限制 -->
-          <span>{{ chatInfo.name }}</span>
-          <!-- 若为群组时显示成员数量 -->
-          <span v-show="chatInfo.isGroup">( {{ chatInfo.memberNum }} )</span>
-          <!-- 显示密级 -->
-          <span :class="'s-' + chatInfo.secretLevel">【{{ chatInfo.secretLevel | fileSecret }}】</span>
-        </a-col>
+      <div class="conv-title">
+        <!-- 需要对名字的字数做限制 -->
+        <span>{{ chatInfo.name }}</span>
+        <!-- 若为群组时显示成员数量 -->
+        <span v-show="chatInfo.isGroup">( {{ chatInfo.memberNum }} )</span>
+        <!-- 显示密级 -->
+        <span :class="'s-' + chatInfo.secretLevel">【{{ chatInfo.secretLevel | fileSecret }}】</span>
+      </div>
 
-        <a-col :span="10" class="conv-option">
-          <div v-if="!isPopup" style="float: right">
-            <!-- 需要判断是否为群聊，操作选项不同 -->
-            <a-tooltip
-              v-for="(item, index) in optionFilter(chatInfo.isGroup)"
-
-              :key="index"
-              placement="bottom"
-              :overlayStyle="{fontSize: '12px'}"
-            >
-              <template slot="title">
-                <span>{{ item.message }}</span>
-              </template>
-              <a-icon @click="triggerDrawer(item.name)" style="marginLeft: 20px" :type="item.type" />
-            </a-tooltip>
-          </div>
-        </a-col>
-      </a-row>
+      <div class="conv-option">
+        <div v-if="!isPopup">
+          <!-- 需要判断是否为群聊，操作选项不同 -->
+          <a-tooltip
+            v-for="(item, index) in optionFilter(chatInfo.isGroup)"
+            :key="index"
+            placement="bottom"
+            :overlayStyle="{fontSize: '12px'}"
+          >
+            <template slot="title">
+              <span>{{ item.message }}</span>
+            </template>
+            <a-icon @click="triggerDrawer(item.name)" style="marginLeft: 20px" :type="item.type" />
+          </a-tooltip>
+        </div>
+      </div>
     </a-layout-header>
 
     <a-layout-content class="conv-box-message">
@@ -529,34 +527,19 @@ export default {
     color: black;
   }
 
-  // 修改上传文件列表的样式
-  // TODO: 修改文件上传的样式
-  // .upload-list-inline {
-  // }
-
-  // 消息密级样式
-  .s-60, .s-undefined {
-    font-size: 14px;
-    color: #b2b2b2;
-  }
-  .s-70 {
-    font-size: 14px;
-    color: orange;
-  }
-  .s-80 {
-    font-size: 14px;
-    color: tomato;
-  }
-
   .conv-box {
-    height: 100%;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 64px);
+    overflow: hidden;
 
     // 头部区域
     &-header {
-      position: relative;
-      top: 0;
       height: 55px;
       width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
 
       line-height: 55px;
       padding: 0 20px;
@@ -577,6 +560,8 @@ export default {
       }
 
       .conv-option {
+        // 右对齐
+        overflow: hidden;
         font-size: 18px;
 
         .anticon:hover {
@@ -586,11 +571,9 @@ export default {
     }
     // 消息展示区域
     &-message {
-      height: calc(100vh - 306px);
       display: flex;
-      position: relative;
-      overflow: hidden;
-      flex-grow: 1;
+      flex-direction: column;
+      flex: 1;
 
       .talk-main-box {
         position: relative;
@@ -600,8 +583,8 @@ export default {
           overflow: overlay;
         }
 
-        .talk-main{
-          position: absolute;
+        .talk-main {
+          // position: absolute;
           box-sizing: border-box;
           min-height: 100%;
           min-width: 360px;
@@ -609,9 +592,10 @@ export default {
           padding: 4px 16px 16px;
           background: rgba(255, 255, 255, 0);
           overflow: hidden;
-          .talk-item{
+          .talk-item {
             display: flex;
             flex-direction: row-reverse;
+            flex-shrink: 0;
           }
 
           .empty-tip {
@@ -625,17 +609,18 @@ export default {
     }
     // 文字编辑区域
     &-editor {
+      height: 185px;
       flex-shrink: 0;
       background-color: #fff;
       display: flex;
       padding: 0;
-      border-top: 1px solid #dcdee0;
       flex-direction: column;
       // 编辑器选项
       .editor-option {
         display: flex;
         height: 40px;
         line-height: 32px;
+        border-top: 1px solid #dcdee0;
         padding: 4px 20px;
         font-size: 20px;
       }
@@ -645,7 +630,7 @@ export default {
         display: flex;
         flex-direction: column;
 
-        .draft-input{
+        .draft-input {
           flex: 1 0 auto;
           width: 100%;
           display: flex;
@@ -653,7 +638,7 @@ export default {
           flex-direction: column;
           cursor: text;
           // 输入框
-          .textarea-input{
+          .textarea-input {
             height: 100px;
             width: 100%;
             line-height: 20px;
@@ -673,13 +658,13 @@ export default {
             }
           }
           // 发送键
-          .send-toolbar{
+          .send-toolbar {
             margin: 4px 0;
             display: flex;
             align-items: flex-end;
+          }
         }
       }
-    }
     }
   }
 
