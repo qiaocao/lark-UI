@@ -27,6 +27,9 @@ const api = {
   menu: '/admin/menu',
   menuelement: '/admin/menu/element',
   roleuser: '/admin/role/user',
+  // 个人卡片设置
+  card: '/portal/userCard/cards',
+  usercard: '/portal/userCard/myself',
   // 临时增加，方便测试
   getUserBySecret: 'admin/user/list'
 }
@@ -368,7 +371,35 @@ export function saveRoleUser (parameter) {
     data: parameter
   })
 }
-// saveUserOrg
+/**
+ * 新增卡片
+ */
+export function addCard (parameter) {
+  return axios({
+    url: api.usercard,
+    method: 'post',
+    data: parameter
+  })
+}
+/**
+ * 删除卡片
+ */
+export function delCard (parameter) {
+  return axios({
+    url: api.usercard,
+    method: 'delete',
+    params: parameter
+  })
+}
+/**
+ * 获取卡片
+ */
+export function getCard () {
+  return axios({
+    url: api.card,
+    method: 'get'
+  })
+}
 /**
  * 临时增加，通过密级获取用户列表
  * @param {Object} parameter {secretLevel: 60}
