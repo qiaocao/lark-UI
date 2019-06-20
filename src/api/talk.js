@@ -13,11 +13,17 @@ const api = {
 
 export default api
 
-export function getTalkMembers (parameter) {
+/**
+ * 获取当前研讨中的成员
+ * @param {String} contactId
+ */
+export function getTalkMembers (contactId) {
   return axios({
     url: api.talkMembers,
     method: 'get',
-    params: parameter
+    params: {
+      contactId: contactId
+    }
   })
 }
 
@@ -29,7 +35,9 @@ export function getGroupInfo (groupId) {
   return axios({
     url: api.groupInfo,
     method: 'GET',
-    params: groupId
+    params: {
+      groupId: groupId
+    }
   })
 }
 
@@ -41,24 +49,28 @@ export function getContactsInfo (contactsId) {
   return axios({
     url: api.contactsInfo,
     method: 'GET',
-    params: { id: contactsId }
+    params: {
+      id: contactsId
+    }
   })
 }
 
 /**
  * 获取群组列表
- * @author jihainan
+ * @param {String} userId 当前用户id
  */
-export function getGroupList () {
+export function getGroupList (userId) {
   return axios({
     url: api.groupList,
-    method: 'GET'
+    method: 'GET',
+    params: {
+      userId: userId
+    }
   })
 }
 
 /**
  * 获取联系人树
- * @author jihainan
  */
 export function getContactsTree () {
   return axios({
@@ -70,62 +82,44 @@ export function getContactsTree () {
 
 /**
  * 获取最近联系人列表
- * @author jihainan
+ * @param {String} userId 当前用户id
  */
-export function getRecentContacts () {
+export function getRecentContacts (userId) {
   return axios({
     url: api.recentContacts,
-    method: 'GET'
+    method: 'GET',
+    params: {
+      userId: userId
+    }
   })
 }
 
 /**
  * 获取未读消息
- * @author jihainan
+ * @param {String} userId 当前用户id
  */
-export function getTalkMap () {
+export function getTalkMap (userId) {
   return axios({
     url: api.talkMap,
-    method: 'GET'
+    method: 'GET',
+    params: {
+      userId: userId
+    }
   })
 }
 
 /**
  * 获取指定联系人的研讨记录
- * @author jihainan
+ * @param {String} userId 当前用户id
+ * @param {String} contactId 指定联系人id
  */
-export function getTalkHistory () {
+export function getTalkHistory (userId, contactId) {
   return axios({
     url: api.talkHistory,
-    method: 'GET'
-  })
-}
-
-export function download (params, path, title) {
-  return axios({
-    url: path,
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    data: params,
-    responseType: 'blob'
-  }).then(res => {
-    const headers = res.headers
-    const blob = new Blob([res.data], {
-      type: headers['content-type']
-    })
-    // const objectUrl = URL.createObjectURL(blob)
-    // window.location.href = objectUrl
-    const a = document.createElement('a')
-    a.href = URL.createObjectURL(blob)
-    if (!title) {
-      const fileName = headers['content-disposition']
-      title = fileName.includes('filename=') ? fileName.split('=')[1] : '未命名的文件'
+    method: 'GET',
+    params: {
+      userId: userId,
+      contactId: contactId
     }
-    a.download = title
-    a.click()
-  }).catch((err) => {
-    throw (err)
   })
 }
