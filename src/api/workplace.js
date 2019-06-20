@@ -15,22 +15,6 @@ export function moveCard (parameter) {
     params: parameter
   })
 }
-
-export function moveCard (parameter) {
-  return axios({
-    url: api.card,
-    method: 'post',
-    params: parameter
-  })
-}
-
-export function moveCard (parameter) {
-  return axios({
-    url: api.card,
-    method: 'post',
-    params: parameter
-  })
-}
 /**
  * 工作舱-公告、首页右上角消息弹窗
  * created by fanjiao

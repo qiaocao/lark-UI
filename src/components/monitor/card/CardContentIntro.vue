@@ -12,7 +12,7 @@
           </div>
           <!-- TODO fanjiao返回内容暂未提供职位、组织信息，这里暂显示人员密级 -->
           <!-- <div>主任设计师 | 十一室 - 工程信息化组</div> -->
-          <div>人员密级 | {{user.secretLevel | peopleSecret}}</div>
+          <div>人员密级 | {{ user.secretLevel | peopleSecret }}</div>
         </a-col>
       </a-row>
     </div>

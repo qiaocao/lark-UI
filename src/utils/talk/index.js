@@ -55,12 +55,13 @@ class Tweet {
  * @param {Number} secretLevel 联系人密级
  * @param {Number} unreadNum 未读消息数
  * @param {Number} memberNum 成员数量
+ * @param {String} sender 消息发出者姓名
  * @param {Boolean} isTop 是否置顶
  * @param {Boolean} isMute 是否免打扰
  * @param {Boolean} isGroup 是否为群组
  */
 class RecentContact {
-  constructor ({ id, name, time, lastMessage, avatar, atMe, secretLevel, unreadNum, memberNum, isTop, isMute, isGroup } = {}) {
+  constructor ({ id, name, time, lastMessage, avatar, atMe, secretLevel, unreadNum, memberNum, sender, isTop, isMute, isGroup } = {}) {
     if (!id) throw new Error('RecentContact: id不能为空！')
     if (!name) throw new Error('RecentContact: name不能为空！')
     // 固定属性
@@ -76,6 +77,7 @@ class RecentContact {
     this.time = time || ''
     this.lastMessage = lastMessage || ''
     this.atMe = atMe ? JSON.parse(atMe) : false
+    this.sender = sender || ''
 
     // 用户私有化的属性
     this.isTop = isTop ? JSON.parse(isTop) : false

@@ -72,7 +72,7 @@ export default {
 }
 </script>
 
-<style lang="less" scope>
+<style lang="less" scoped>
 .login_img{
   text-align: center;
   color: #cccccc

@@ -99,7 +99,7 @@ export default {
   }
 }
 </script>
-<style lang="less" scope>
+<style lang="less" scoped>
 .current {
   display: -webkit-box;
   word-break: break-all;

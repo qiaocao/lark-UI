@@ -9,21 +9,21 @@ export const asyncRouterMap = [
     name: 'index',
     component: BasicLayout,
     meta: { title: '首页' },
-    redirect: '/dashboard/monitor',
+    redirect: '/dashboard/workplace',
     children: [
       // dashboard
       {
         path: '/dashboard',
         name: 'dashboard',
-        redirect: '/dashboard/monitor',
+        redirect: '/dashboard/workplace',
         component: MonitorView,
         meta: { title: '工作舱', keepAlive: true, hideHeader: true, icon: 'home', permission: [ 'dashboard' ] },
         hideChildrenInMenu: true,
         children: [
           {
-            path: '/dashboard/monitor',
+            path: '/dashboard/workplace',
             name: 'Analysis',
-            component: () => import('@/views/dashboard/Monitor'),
+            component: () => import('@/views/dashboard/Workplace'),
             meta: { title: '工作台', keepAlive: true, icon: 'dashboard', permission: [ 'dashboard' ], hidden: true }
           }
         ]
