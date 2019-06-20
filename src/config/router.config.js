@@ -70,7 +70,7 @@ export const asyncRouterMap = [
             meta: {
               title: '用户管理',
               icon: 'team',
-              keepAlive: true,
+              keepAlive: false,
               permission: ['user']
             }
           },
@@ -81,7 +81,7 @@ export const asyncRouterMap = [
             meta: {
               title: '组织管理',
               icon: 'cluster',
-              keepAlive: true,
+              keepAlive: false,
               permission: ['org']
             }
           },
@@ -92,7 +92,7 @@ export const asyncRouterMap = [
             meta: {
               title: '角色管理',
               icon: 'switcher',
-              keepAlive: true,
+              keepAlive: false,
               permission: ['role']
             }
           },
@@ -103,7 +103,7 @@ export const asyncRouterMap = [
             meta: {
               title: '消息列表',
               icon: 'bell',
-              keepAlive: true,
+              keepAlive: false,
               permission: ['notice']
             }
           },
@@ -114,7 +114,7 @@ export const asyncRouterMap = [
             meta: {
               title: '菜单管理',
               icon: 'ordered-list',
-              keepAlive: true,
+              keepAlive: false,
               permission: ['menu']
             }
           },
@@ -125,7 +125,7 @@ export const asyncRouterMap = [
             meta: {
               title: '服务管理',
               icon: 'switcher',
-              keepAlive: true,
+              keepAlive: false,
               permission: ['jj']
             }
           }
