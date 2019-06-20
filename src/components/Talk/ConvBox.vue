@@ -2,41 +2,39 @@
   <a-layout v-if="Object.keys(chatInfo).length" class="conv-box">
 
     <!-- 聊天设置选项的抽屉组件 -->
-    <talk-history :activeOption="activeOption" @closeDrawer="triggerDrawer"></talk-history>
-    <group-notice :activeOption="activeOption" @closeDrawer="triggerDrawer"></group-notice>
-    <talk-setting :activeOption="activeOption" @closeDrawer="triggerDrawer"></talk-setting>
-    <talk-file :activeOption="activeOption" @closeDrawer="triggerDrawer"></talk-file>
-    <mark-message :activeOption="activeOption" @closeDrawer="triggerDrawer"></mark-message>
-    <more-info :activeOption="activeOption" @closeDrawer="triggerDrawer"></more-info>
+    <talk-history :activeOption="activeOption" @closeDrawer="triggerDrawer" />
+    <group-notice :activeOption="activeOption" @closeDrawer="triggerDrawer" />
+    <talk-setting :activeOption="activeOption" @closeDrawer="triggerDrawer" />
+    <talk-file :activeOption="activeOption" @closeDrawer="triggerDrawer" />
+    <mark-message :activeOption="activeOption" @closeDrawer="triggerDrawer" />
+    <more-info :activeOption="activeOption" @closeDrawer="triggerDrawer" />
+
     <a-layout-header class="conv-box-header">
-      <a-row type="flex" justify="space-between">
-        <a-col :span="14" class="conv-title">
-          <!-- 需要对名字的字数做限制 -->
-          <span>{{ chatInfo.name }}</span>
-          <!-- 若为群组时显示成员数量 -->
-          <span v-show="chatInfo.isGroup">( {{ chatInfo.memberNum }} )</span>
-          <!-- 显示密级 -->
-          <span :class="'s-' + chatInfo.secretLevel">【{{ chatInfo.secretLevel | fileSecret }}】</span>
-        </a-col>
+      <div class="conv-title">
+        <!-- 需要对名字的字数做限制 -->
+        <span>{{ chatInfo.name }}</span>
+        <!-- 若为群组时显示成员数量 -->
+        <span v-show="chatInfo.isGroup">( {{ chatInfo.memberNum }} )</span>
+        <!-- 显示密级 -->
+        <span :class="'s-' + chatInfo.secretLevel">【{{ chatInfo.secretLevel | fileSecret }}】</span>
+      </div>
 
-        <a-col :span="10" class="conv-option">
-          <div v-if="!isPopup" style="float: right">
-            <!-- 需要判断是否为群聊，操作选项不同 -->
-            <a-tooltip
-              v-for="(item, index) in optionFilter(chatInfo.isGroup)"
-
-              :key="index"
-              placement="bottom"
-              :overlayStyle="{fontSize: '12px'}"
-            >
-              <template slot="title">
-                <span>{{ item.message }}</span>
-              </template>
-              <a-icon @click="triggerDrawer(item.name)" style="marginLeft: 20px" :type="item.type" />
-            </a-tooltip>
-          </div>
-        </a-col>
-      </a-row>
+      <div class="conv-option">
+        <div v-if="!isPopup">
+          <!-- 需要判断是否为群聊，操作选项不同 -->
+          <a-tooltip
+            v-for="(item, index) in optionFilter(chatInfo.isGroup)"
+            :key="index"
+            placement="bottom"
+            :overlayStyle="{fontSize: '12px'}"
+          >
+            <template slot="title">
+              <span>{{ item.message }}</span>
+            </template>
+            <a-icon @click="triggerDrawer(item.name)" style="marginLeft: 20px" :type="item.type" />
+          </a-tooltip>
+        </div>
+      </div>
     </a-layout-header>
 
     <a-layout-content class="conv-box-message">
@@ -164,7 +162,6 @@ import { MessagePiece, TalkHistory, MoreInfo, GroupNotice, TalkSetting, MarkMess
 import { LandingStatus } from '@/utils/constants'
 // 引入密级常量
 import { SocketMessage, Tweet } from '@/utils/talk'
-import { format, extensionStr } from '@/utils/util'
 import VEmojiPicker from 'v-emoji-picker'
 import packData from 'v-emoji-picker/data/emojis.json'
 import { mapGetters } from 'vuex'
@@ -184,7 +181,7 @@ export default {
     MoreInfo
   },
   props: {
-    /** 聊天对话框的基本信息 */
+    /** 聊天对话框的基本信息--结构同最近联系人 */
     chatInfo: {
       type: Object,
       default: () => ({}),
@@ -275,10 +272,6 @@ export default {
   mounted () {
     // 页面创建时，消息滚动到最近一条
     this.scrollToBottom()
-
-    // 每次滚动到最底部
-    this.$nextTick(() => {
-    })
   },
   methods: {
     /**
@@ -325,7 +318,6 @@ export default {
     },
     /**
      * 通过isGroup属性过滤聊天选项
-     * @author jihainan
      */
     optionFilter (isGroup) {
       // 聊天操作选项
@@ -340,7 +332,6 @@ export default {
     },
     /**
      * 根据drawerName打开对应的抽屉
-     * @author jihainan
      */
     triggerDrawer (drawerName) {
       this.activeOption = drawerName
@@ -372,7 +363,6 @@ export default {
     },
     /**
      * 发送消息
-     * @author jihainan
      */
     sendMessage (secretLevel) {
       if (this.sendDisabled) {
@@ -380,15 +370,34 @@ export default {
         return
       }
       const tweet = new Tweet()
-      const { status, name, response } = this.fileUpload
+      /**
+       * 文件上传响应体中包含以下属性
+       * "fileId": "AAAWUHAAGAAAAxkAAG",
+       * "fileName": "api-ms-win-core-namedpipe-l1-1-0.dll",
+       * "fileExt": "",
+       * "fileType": "",
+       * "sizes": 18744,
+       * "path": "20190619",
+       * "readPath": "",
+       * "createTime": "2019-06-19 14:52:22",
+       * "creator": "登陆人id_测试",
+       * "updateTime": "2019-06-19 14:52:22",
+       * "updator": "登陆人id_测试",
+       * "groupId": "",
+       * "levels": ""
+       */
+      const { status } = this.fileUpload
       const content = this.messageContent
       // 如果有文件消息，发送文件消息，忽略文字消息
       if (status === 'done') {
+        const { fileId, fileName, readPath, fileExt } = this.fileUpload.response
         this.generateFileMsg(
           tweet,
-          response.url,
-          name,
-          extensionStr(name)
+          fileId,
+          readPath,
+          fileExt,
+          fileName,
+          secretLevel
         )
       } else {
         // 没有文件消息，验证文字消息的合法性
@@ -397,13 +406,13 @@ export default {
         } else if (content.length > 2000) {
           this.$message.warning('消息内容不能超过2000个字符')
         } else {
-          this.generateTextMsg(tweet, content)
+          this.generateTextMsg(tweet, content, secretLevel)
         }
       }
       // 如果消息类型属性存在，消息内容创建成功
-      if (tweet.type) {
+      if (tweet.content && tweet.content.type) {
         this.generateBaseInfo(tweet, secretLevel)
-        this.updateChatInfo(tweet)
+        // this.updateChatInfo(tweet)
         this.addSenderInfo(tweet)
         const baseMessage = new SocketMessage({
           code: this.chatInfo.isGroup ? 1 : 0,
@@ -419,7 +428,9 @@ export default {
         })
 
         this.scrollToBottom()
-        this.fileUpload = {}
+        tweet.content.type === 1
+          ? this.messageContent = ''
+          : this.fileUpload = {}
       }
     },
     /** 添加发信人信息或者群组信息 */
@@ -448,16 +459,17 @@ export default {
       }
     },
     /** 更新当前联系人信息 */
+    // TODO: 这个地方可以不处理，在刷新最近联系人列表处统一处理
     updateChatInfo (tweet) {
-      this.chatInfo.time = format(tweet.time, 'hh:mm')
-      if (tweet.type === 1) {
-        this.chatInfo.lastMessage = tweet.content
-        this.messageContent = ''
-      } else if (tweet.type === 2) {
-        this.chatInfo.lastMessage = '[图片]:' + tweet.content.title
-      } else if (tweet.type === 3) {
-        this.chatInfo.lastMessage = '[文件]:' + tweet.content.title
-      }
+      // this.chatInfo.time = format(tweet.time, 'hh:mm')
+      // if (tweet.content.type === 1) {
+      //   this.chatInfo.lastMessage.title = tweet.content.title
+      //   this.messageContent = ''
+      // } else if (tweet.type === 2) {
+      //   this.chatInfo.lastMessage = '[图片]:' + tweet.content.title
+      // } else if (tweet.type === 3) {
+      //   this.chatInfo.lastMessage = '[文件]:' + tweet.content.title
+      // }
     },
     /** 生成消息体中的基本信息 */
     generateBaseInfo (tweet, secretLevel) {
@@ -468,23 +480,30 @@ export default {
       tweet.fromId = userId
       tweet.toId = chatInfo.id
       tweet.atId = []
-      tweet.secretLevel = secretLevel
       tweet.time = new Date()
       tweet.isGroup = chatInfo.isGroup
     },
     /** 生成文字消息 */
-    generateTextMsg (tweet, content) {
-      tweet.type = 1
-      tweet.content = content
+    generateTextMsg (tweet, content, secretLevel) {
+      tweet.content = {
+        id: '0',
+        url: '0',
+        type: 1,
+        extension: '0',
+        title: content,
+        secretLevel: secretLevel
+      }
     },
     /** 生成图片和文件类消息 */
-    generateFileMsg (tweet, src, title, extension) {
+    generateFileMsg (tweet, id, url, extension, title, secretLevel) {
       const index = this.imgFormat.indexOf(extension)
-      tweet.type = index < 0 ? 3 : 2
       tweet.content = {
+        id: id,
+        url: url,
+        type: index < 0 ? 3 : 2,
+        extension: extension,
         title: title,
-        src: src,
-        extension: extension
+        secretLevel: secretLevel
       }
     }
   },
@@ -508,34 +527,19 @@ export default {
     color: black;
   }
 
-  // 修改上传文件列表的样式
-  // TODO: 修改文件上传的样式
-  // .upload-list-inline {
-  // }
-
-  // 消息密级样式
-  .s-60, .s-undefined {
-    font-size: 14px;
-    color: #b2b2b2;
-  }
-  .s-70 {
-    font-size: 14px;
-    color: orange;
-  }
-  .s-80 {
-    font-size: 14px;
-    color: tomato;
-  }
-
   .conv-box {
-    height: 100%;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 64px);
+    overflow: hidden;
 
     // 头部区域
     &-header {
-      position: relative;
-      top: 0;
       height: 55px;
       width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
 
       line-height: 55px;
       padding: 0 20px;
@@ -556,6 +560,8 @@ export default {
       }
 
       .conv-option {
+        // 右对齐
+        overflow: hidden;
         font-size: 18px;
 
         .anticon:hover {
@@ -565,11 +571,9 @@ export default {
     }
     // 消息展示区域
     &-message {
-      height: calc(100vh - 306px);
       display: flex;
-      position: relative;
-      overflow: hidden;
-      flex-grow: 1;
+      flex-direction: column;
+      flex: 1;
 
       .talk-main-box {
         position: relative;
@@ -579,8 +583,8 @@ export default {
           overflow: overlay;
         }
 
-        .talk-main{
-          position: absolute;
+        .talk-main {
+          // position: absolute;
           box-sizing: border-box;
           min-height: 100%;
           min-width: 360px;
@@ -588,9 +592,10 @@ export default {
           padding: 4px 16px 16px;
           background: rgba(255, 255, 255, 0);
           overflow: hidden;
-          .talk-item{
+          .talk-item {
             display: flex;
             flex-direction: row-reverse;
+            flex-shrink: 0;
           }
 
           .empty-tip {
@@ -604,17 +609,18 @@ export default {
     }
     // 文字编辑区域
     &-editor {
+      height: 185px;
       flex-shrink: 0;
       background-color: #fff;
       display: flex;
       padding: 0;
-      border-top: 1px solid #dcdee0;
       flex-direction: column;
       // 编辑器选项
       .editor-option {
         display: flex;
         height: 40px;
         line-height: 32px;
+        border-top: 1px solid #dcdee0;
         padding: 4px 20px;
         font-size: 20px;
       }
@@ -624,7 +630,7 @@ export default {
         display: flex;
         flex-direction: column;
 
-        .draft-input{
+        .draft-input {
           flex: 1 0 auto;
           width: 100%;
           display: flex;
@@ -632,7 +638,7 @@ export default {
           flex-direction: column;
           cursor: text;
           // 输入框
-          .textarea-input{
+          .textarea-input {
             height: 100px;
             width: 100%;
             line-height: 20px;
@@ -652,13 +658,13 @@ export default {
             }
           }
           // 发送键
-          .send-toolbar{
+          .send-toolbar {
             margin: 4px 0;
             display: flex;
             align-items: flex-end;
+          }
         }
       }
-    }
     }
   }
 

@@ -279,6 +279,7 @@ export default {
       this.people3id = this.currentitem.people3id
       this.people4id = this.currentitem.people4id
       this.people5id = this.currentitem.people5id
+      this.type = '2'
     },
     /**
      * 获取父节点 用于点击树节点触发右侧form表单 获取上级组织信息
@@ -373,6 +374,7 @@ export default {
      * 组件主要负责人点击保存触发
      */
     handleSaveOk (returnData, type) {
+      console.log('returnData', returnData)
       const username = []
       const userid = []
       returnData.forEach(item => {

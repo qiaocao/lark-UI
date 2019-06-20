@@ -7,7 +7,7 @@
         style="margin-bottom: 24px;"
       />
 
-      <UserTransfer @userarr="handleUserSelect" />
+      <UserTransfer @userarr="handleUserSelect" :listStyle="listStyle" />
 
       <a-form-item :wrapperCol="{span: 14, offset: 10}">
         <a-button :loading="loading" type="primary" @click="nextStep">提交</a-button>
@@ -34,7 +34,10 @@ export default {
   data () {
     return {
       loading: false,
-      userList: []
+      userList: [],
+      listStyle: {
+        width: '200px', height: '450px'
+      }
     }
   },
   computed: {

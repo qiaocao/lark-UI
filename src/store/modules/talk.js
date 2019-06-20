@@ -73,13 +73,13 @@ function setMessageInfo (id, talkMap, recentContact) {
       recentContact.atMe = false
     } else {
       recentContact.time = ''
-      recentContact.lastMessage = ''
+      recentContact.lastMessage = {}
       recentContact.sender = ''
       recentContact.atMe = false
     }
   } else {
     recentContact.time = ''
-    recentContact.lastMessage = ''
+    recentContact.lastMessage = {}
     recentContact.sender = ''
     recentContact.atMe = false
   }
@@ -167,9 +167,9 @@ const talk = {
     /**
      * 获取群组列表
      */
-    GetGroupList ({ commit }) {
+    GetGroupList ({ commit, rootGetters }) {
       return new Promise((resolve, reject) => {
-        getGroupList().then(response => {
+        getGroupList(rootGetters.userId).then(response => {
           if (response.status === 200) {
             commit('SET_GROUP_LIST', [ ...response.result.data ])
           } else {
@@ -202,9 +202,9 @@ const talk = {
     /**
      * 获取最近联系人列表(用于初始化最近联系人列表)
      */
-    GetRecentContacts ({ commit }) {
+    GetRecentContacts ({ commit, rootGetters }) {
       return new Promise((resolve, reject) => {
-        getRecentContacts().then(response => {
+        getRecentContacts(rootGetters.userId).then(response => {
           if (response.status === 200) {
             commit('SET_RECENT_CONTACTS', [ ...response.result.data ])
           } else {
@@ -261,9 +261,9 @@ const talk = {
     /**
      * 获取所有未读消息的map(初始化缓存中的消息列表)
      */
-    GetTalkMap ({ commit }) {
+    GetTalkMap ({ commit, rootGetters }) {
       return new Promise((resolve, reject) => {
-        getTalkMap().then(response => {
+        getTalkMap(rootGetters.userId).then(response => {
           if (response.status === 200) {
             commit('SET_TALK_MAP', [ ...response.result.data ])
           } else {
