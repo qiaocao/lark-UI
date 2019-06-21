@@ -2,6 +2,7 @@ import Vue from 'vue'
 import { login, getInfo, logout } from '@/api/login'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 import { welcome } from '@/utils/util'
+import { FILE_SERVER_IP } from '@/utils/constants'
 
 const user = {
   state: {
@@ -74,7 +75,7 @@ const user = {
           }
 
           commit('SET_NAME', { name: result.name, welcome: welcome() })
-          commit('SET_AVATAR', result.avatar)
+          commit('SET_AVATAR', FILE_SERVER_IP + result.avatar)
           resolve(response)
         }).catch(error => {
           reject(error)
