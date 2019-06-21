@@ -23,16 +23,16 @@
       <li v-for="(newItem,index) in NewItems" class="history_cotent" :key="index" :value="newItem.value">
 
         <a-list-item-meta class="file_name">
-          <a class="file_a" slot="title">{{ newItem.name.last }}</a>
-          <a-avatar slot="avatar" :src="newItem.url" style="border-radius:0"/>
+          <a class="file_a" slot="title">{{ newItem.fileName }}</a> <!-- 文件名 -->
+          <a-avatar slot="avatar" :src="newItem.url" style="border-radius:0"/>  <!-- 文件图片 -->
         </a-list-item-meta>
-        <span class="file_sp">{{ newItem.name.title }}</span>
-        <div class="file_time">{{ newItem.time }}</div>
+        <span class="file_sp">{{ newItem.reviser }}</span><!-- 人名  -->
+        <div class="file_time">{{ newItem.time }}</div> <!-- 上传时间 -->
         <a href>
           <div class="secret secret1">
-            <a-tag color="orange" v-if="newItem.Concentrated === 'secret'">保密</a-tag>
-            <a-tag color="tomato" v-if="newItem.Concentrated === 'top-secret'">机密</a-tag>
-            <a-tag color v-if="newItem.Concentrated === 'no-secret'">非密</a-tag>
+            <a-tag color="orange" v-if="newItem.levels === '40'">秘密</a-tag>
+            <a-tag color="tomato" v-if="newItem.levels === '60'">机密</a-tag>
+            <a-tag color v-if="newItem.levels === '30'">非密</a-tag>
           </div>
         </a>
         <a class="down">下载</a>
@@ -81,8 +81,10 @@ export default {
     },
 
     getData (callback) {
-      this.$http.get('https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/file').then(data => {
-        callback(data)
+      this.$http.post('/group/filelist').then(data => {
+        // callback(data.result.data)
+        this.data = data.result.data
+        console.log('11111111111', this.data)
       })
     },
     onLoadMore () {
@@ -105,7 +107,7 @@ export default {
       var _this = this
       var NewItems = []
       this.data.map(function (item) {
-        if (item.name.last.search(_this.searchVal) !== -1) {
+        if (item.fileName.search(_this.searchVal) !== -1) {
           NewItems.push(item)
         }
       })

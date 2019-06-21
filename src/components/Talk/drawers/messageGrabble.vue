@@ -15,7 +15,7 @@
         <img :src="item.avatar" class="content_l" alt>
         <div class="content_r">
           <h3>{{ item.name }}</h3>
-          <p @click="isCurrent()" :class="{'current':flag}">{{ item.lastMessage }}</p>
+          <p @click="isCurrent(item.lastMessage)" :class="{'current':flag}">{{ item.lastMessage }}</p>
         </div>
         <div class="history_right">
           <span>{{ item.time }}</span>
@@ -31,8 +31,11 @@
 
 </template>
 <script>
+import vScroll from 'vue-scroll'
 export default {
   name: 'Rabble',
+  directives: { scroll },
+
   data () {
     return {
       searchVal: '',
@@ -55,12 +58,17 @@ export default {
   updated () {
     // this.lazyLoading()
   },
+  components: {
+    vScroll
+  },
   methods: {
     onSearch (value) {
       console.log(value)
     },
-    isCurrent () {
-      this.flag = !this.flag
+    isCurrent (str) {
+      if (str.length > 100) {
+        this.flag = !this.flag
+      }
     },
     getHistory () {
       this.$http
@@ -73,12 +81,13 @@ export default {
           this.items.push(...dataa)
         })
     },
+
     // 滚动获取数据
     lazyLoading () {
       const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
       const clientHeight = document.documentElement.clientHeight
       const scrollHeight = document.documentElement.scrollHeight
-      if (scrollTop + clientHeight >= scrollHeight) {
+      if (scrollTop + clientHeight === scrollHeight) {
         clearTimeout(this.timer)
         this.timer = setTimeout(() => {
           if (this.activeOption === 'talkHistory') {

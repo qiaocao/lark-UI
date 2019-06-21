@@ -13,17 +13,32 @@
       :wrapStyle="{marginTop: '64px'}"
 
     >
-      <div class="add_box">
-        <a-button class="add">
-          <a-icon class="add_icon" type="plus" />
-        </a-button>
-        <p>添加</p>
-      </div>
       <div class="user_box">
         <img :src="items.avatar" alt="">
+        <div class="secret" style="margin: 6px 0 0 20px, width:30px">
+          <a-tag color="orange" v-if="items.secretLevel === '40'">秘密</a-tag>
+          <a-tag color="tomato" v-if="items.secretLevel === '60'">机密</a-tag>
+          <a-tag color="" v-if="items.secretLevel === '30'">非密</a-tag>
+        </div>
         <p>{{ items.name }}</p>
       </div>
-      <div class="switch">
+      <div style="margin-top: 30px">
+        <h4 class="float">备注:</h4>
+        <p class="line_height">{{ items.remark }}</p>
+      </div>
+      <div style="margin-top: 30px">
+        <h4 class="float">电话:</h4>
+        <p class="line_height">{{ items.phone }}</p>
+      </div>
+      <div style="margin-top: 30px">
+        <h4 class="float">职称:</h4>
+        <p class="line_height">{{ items.proTitle }}</p>
+      </div>
+      <div style="margin-top: 30px">
+        <h4 class="float">人员所在组织:</h4>
+        <p class="line_height">{{ items.orgName }}</p>
+      </div>
+      <!-- <div class="switch">
         <div class="switch_top">
           <p>消息免打扰</p>
           <a-switch checkedChildren="开" unCheckedChildren="关" :defaultChecked="false"/>
@@ -32,7 +47,7 @@
           <p>置顶聊天</p>
           <a-switch checkedChildren="开" unCheckedChildren="关" :defaultChecked="false"/>
         </div>
-      </div>
+      </div> -->
     </a-drawer>
   </div>
 </template>
@@ -59,8 +74,8 @@ export default {
     }
   },
   created () {
-    this.$http.get('/admin/user/front/info').then((item) => {
-      this.items = item.result
+    this.$http.get('/talk/contacts/info').then((item) => {
+      this.items = item.result.data
     })
   },
   methods: {
@@ -72,6 +87,21 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+    .secret{
+      display: inline-block;
+      float: right;
+    }
+    .float{
+      float: left;
+      margin-right: 20px;
+      margin-bottom: 0;
+    }
+    .line_height{
+      line-height: 25px;
+      display: inline-block;
+      text-align:left;
+      text-indent:2em;
+    }
     .add_box{
       margin: 0 50px 0 2px;
       width: 60px;
@@ -92,12 +122,12 @@ export default {
     }
     .user_box{
       margin: 0 5px 0 2px;
-      width: 60px;
+      width: 100%;
       display: inline-block;
       img{
         width: 60px;
         height: 60px;
-        display: block;
+        display: inline-block;
       }
       p{
         width: 60px;
