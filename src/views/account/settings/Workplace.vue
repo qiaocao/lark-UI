@@ -8,11 +8,11 @@
         hoverable
         style="width: 240px"
       >
-        <!-- <img
+        <img
           alt="example"
-          :src="item.icon"
+          :src="cardImg[index]"
           slot="cover"
-        /> -->
+        />
         <template class="ant-card-actions" slot="actions">
           <a-tooltip placement="left" v-if="isPlus[index]" >
             <template slot="title">
@@ -31,7 +31,7 @@
         </template>
         <a-card-meta
           :title="item.title"
-          :description="item.detail">
+          :description="item.description">
         </a-card-meta>
       </a-card>
     </a-list-item>
@@ -46,7 +46,8 @@ export default {
       cardList: [],
       isPlus: [],
       isDelete: [],
-      t: ''
+      t: '',
+      cardImg: ['/card/collection.png', '/card/message.png', '/card/notice.png', '/card/todo.png', '/card/collection.png', '/card/message.png']
     }
   },
   created () {

@@ -3,7 +3,9 @@ import { axios } from '@/utils/request'
 const api = {
   workplace: '/portal/workplace/myself',
   card: '/portal/workplace/move',
-  notice: '/workplace/notice'
+  // notice: '/workplace/notice'
+  // update by fanjiao 接口联调
+  notice: '/portal/notice/orgNotice'
 }
 
 export default api
