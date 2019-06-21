@@ -28,7 +28,7 @@
           @moved="moved"
           @move="click(indexs)"
         >
-          <l-card :cardData="grid"></l-card>
+          <l-card :cardData="grid" @refreshCard="refreshCard"></l-card>
         </grid-item>
       </grid-layout>
     </div>
@@ -88,10 +88,11 @@ export default {
   },
   methods: {
     getSelfWorkplace () {
+      this.cardList = []
       this.$http.get('/portal/userCard/myself')
         .then(res => {
           const dataTemp = res.result.data
-          for (var i = 0; dataTemp.length; i++) {
+          for (var i = 0; i< dataTemp.length; i++) {
             const temp = {}
             temp.id = dataTemp[i].id
             temp.x = 1 * parseInt(dataTemp[i].i % 2)
@@ -105,6 +106,12 @@ export default {
             this.cardList.push(temp)
           }
         })
+    },
+    /**
+     * 子组件点击移除卡片后触发 by fanjiao
+     */
+    refreshCard () {
+      this.getSelfWorkplace()
     },
     click (index) {
       this.index = index
