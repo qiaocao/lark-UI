@@ -205,7 +205,7 @@ export default {
       // 输入框内容
       messageContent: '',
       // 发送消息的密级，默认为非密
-      sendSecretLevel: 60,
+      sendSecretLevel: 30,
       // 发送键的可选密级选项
       sendMenuList: [],
       // 控制表情选择框不自动关闭
@@ -340,9 +340,9 @@ export default {
      * 设置发送消息的密级
      */
     handleSendSecretLevel (item) {
-      item = item ? item.key : 60
+      item = item ? item.key : 30
       // 当前用户可发送的全部密级
-      const allSendMenu = [60, 70, 80].filter(item => item <= this.userSecretLevel)
+      const allSendMenu = [30, 40, 60].filter(item => item <= this.userSecretLevel)
       // 当前研讨的密级
       const talkSecretLevel = this.chatInfo.secretLevel
       // 设置发送按钮的密级
