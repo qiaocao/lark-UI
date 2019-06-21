@@ -101,7 +101,7 @@ export default {
   computed: {
     ...mapGetters(['userSecretLevel', 'userId', 'avatar', 'nickname']),
     secretOption () {
-      return [60, 70, 80].filter(item => item <= this.userSecretLevel)
+      return [30, 40, 60].filter(item => item <= this.userSecretLevel)
     }
   },
   methods: {
