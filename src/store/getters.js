@@ -8,8 +8,10 @@ const getters = {
   welcome: state => state.user.welcome,
   roles: state => state.user.roles,
   userInfo: state => state.user.info,
+  /** 用户id(非身份证号) */
+  userId: state => state.user.info.id,
   /** 用户身份证号 */
-  userId: state => state.user.info.pId,
+  userPId: state => state.user.info.pId,
   /** 用户头像 */
   avatar: state => state.user.avatar,
   /** 用户名 */

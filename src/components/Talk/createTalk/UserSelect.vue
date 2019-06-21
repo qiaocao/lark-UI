@@ -7,7 +7,11 @@
         style="margin-bottom: 24px;"
       />
 
-      <UserTransfer @userarr="handleUserSelect" :listStyle="listStyle" />
+      <UserTransfer
+        ref="groupUserTransfer"
+        @ok="handleUserSelect"
+        :listStyle="listStyle"
+      />
 
       <a-form-item :wrapperCol="{span: 14, offset: 10}">
         <a-button :loading="loading" type="primary" @click="nextStep">提交</a-button>
@@ -41,23 +45,36 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['userId', 'avatar', 'nickname', 'userSecretLevel'])
+    ...mapGetters(['userId', 'userPId', 'avatar', 'nickname', 'userSecretLevel'])
+  },
+  mounted () {
+    const secretListMap = new Map([
+      [30, [30]],
+      [40, [30, 40, 50]],
+      [60, [30, 40, 50, 60, 70]]
+    ])
+    this.$refs.groupUserTransfer.beginChooseUser([], {
+      secretLevels: secretListMap.get(this.groupInfo.levels).join(),
+      exPid: this.userPId
+    })
   },
   methods: {
     nextStep () {
-      // if (this.userList.length < 2) {
-      //   this.$message.warning('成员数量不符合要求', 5)
-      //   return
-      // }
+      if (this.userList.length < 1) {
+        this.$notification.warning({message: '请选择群组成员'})
+        return
+      } else if (this.userList.length < 2) {
+        this.$notification.warning({message: '成员数量不满足要求'})
+        return
+      }
       const members = this.userList.map(item => {
         const newItem = {}
-        const { pid, secretLevel, img } = item
-        newItem.userId = pid
+        const { id, secretLevel, img } = item
+        newItem.userId = id
         newItem.userLevels = secretLevel
         newItem.img = img
         return newItem
       })
-
       this.$emit('nextStep', members, 2)
     },
     prevStep () {
