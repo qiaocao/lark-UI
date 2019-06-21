@@ -61,10 +61,10 @@ export default {
   methods: {
     nextStep () {
       if (this.userList.length < 1) {
-        this.$notification.warning({message: '请选择群组成员'})
+        this.$notification.warning({ message: '请选择群组成员' })
         return
       } else if (this.userList.length < 2) {
-        this.$notification.warning({message: '成员数量不满足要求'})
+        this.$notification.warning({ message: '成员数量不满足要求' })
         return
       }
       const members = this.userList.map(item => {
