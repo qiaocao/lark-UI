@@ -124,6 +124,57 @@ class SocketApi {
               })
             })
           break
+        case 3:
+          // 接收到创建群组的消息-->更新最近联系人-->更新群组列表
+          const {
+            groupId,
+            groupName,
+            groupImg,
+            levels
+          } = received.data.zzGroup
+          store
+            .dispatch('UpdateRecentContacts', {
+              id: groupId,
+              name: groupName,
+              avatar: groupImg,
+              secretLevel: levels,
+              memberNum: received.data.userList.length,
+              isGroup: true,
+              reOrder: true,
+              addUnread: false
+            })
+            .then(() => {
+              store.dispatch('GetGroupList')
+            })
+            .catch(error => {
+              console.log(error)
+              const key = `talk${Date.now()}`
+              notification.warning({
+                message: '有新的群组',
+                description: '新增群组同步出错，点击手动同步',
+                duration: null,
+                btn: (h) => {
+                  return h('a-button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small',
+                      icon: 'reload'
+                    },
+                    on: {
+                      click: () => {
+                        store.dispatch('GetRecentContacts')
+                          .then(() => {
+                            store.dispatch('GetGroupList')
+                          })
+                          .then(() => notification.close(key))
+                      }
+                    }
+                  }, '同步')
+                },
+                key
+              })
+            })
+          break
         default:
           break
       }
