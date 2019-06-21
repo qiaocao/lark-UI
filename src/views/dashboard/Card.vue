@@ -104,7 +104,7 @@ export default {
   },
   data () {
     return {
-      loading: true,
+      loading: false,
       headStyle: { height: '52px', 'border-top': '4px solid #1890ff', 'border-bottom': 'none' },
       bodyStyle: { padding: '0', height: '295px' },
       content: this.cardData,
