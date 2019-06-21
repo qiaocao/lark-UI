@@ -92,15 +92,17 @@ export default {
         .then(res => {
           const dataTemp = res.result.data
           for (var i = 0; dataTemp.length; i++) {
-            this.cardList.id = dataTemp[i].id
-            this.cardList.x = 1 * parseInt(dataTemp[i].i % 2)
-            this.cardList.y = 5 * parseInt(dataTemp[i].i / 2)
-            this.cardList.w = 1
-            this.cardList.h = 5
-            this.cardList.i = dataTemp[i].i
-            this.cardList.type = dataTemp[i].type
-            this.cardList.title = dataTemp[i].title
-            this.cardList.url = dataTemp[i].url
+            const temp = {}
+            temp.id = dataTemp[i].id
+            temp.x = 1 * parseInt(dataTemp[i].i % 2)
+            temp.y = 5 * parseInt(dataTemp[i].i / 2)
+            temp.w = 1
+            temp.h = 5
+            temp.i = dataTemp[i].i
+            temp.type = dataTemp[i].type
+            temp.title = dataTemp[i].title
+            temp.url = dataTemp[i].url
+            this.cardList.push(temp)
           }
         })
     },
@@ -108,12 +110,10 @@ export default {
       this.index = index
     },
     moved (a, newX, newY) {
-      console.log('MOVED i=' + a + ', X=' + newX + ', Y=' + newY)
       const i = (2 * newY) / 5
       const index = this.index
       this.$http.get('/portal/userCard/myself', {
         params: {
-          userid: '211221',
           list: {
             cardId: this.ids[index],
             i: Math.round(i)
