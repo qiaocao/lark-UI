@@ -28,7 +28,7 @@
           @moved="moved"
           @move="click(indexs)"
         >
-          <l-card :cardData="grid"></l-card>
+          <l-card :cardData="grid" @refreshCard="refreshCard"></l-card>
         </grid-item>
       </grid-layout>
     </div>
@@ -69,7 +69,6 @@ export default {
   mixins: [mixin, mixinDevice],
   data () {
     return {
-
       cardList: [],
       cardSize: { maxH: 5, minH: 5, maxW: 1, minW: 1 },
       // items: generateItems(50, i => ({ id: i, data: 'Draggable' + i }))
@@ -89,29 +88,39 @@ export default {
   },
   methods: {
     getSelfWorkplace () {
+      this.cardList = []
       this.$http.get('/portal/userCard/myself')
         .then(res => {
-          this.cardList = res.result.data
-          this.cardList.map(res => {
-            this.is.push(res.i)
-            this.ids.push(res.id)
-          })
-          this.cardList.forEach(item => {
-            item.x = 1 * parseInt(item.i % 2)
-            item.y = 5 * parseInt(item.i / 2)
-          })
+          const dataTemp = res.result.data
+          for (var i = 0; i< dataTemp.length; i++) {
+            const temp = {}
+            temp.id = dataTemp[i].id
+            temp.x = 1 * parseInt(dataTemp[i].i % 2)
+            temp.y = 5 * parseInt(dataTemp[i].i / 2)
+            temp.w = 1
+            temp.h = 5
+            temp.i = dataTemp[i].i
+            temp.type = dataTemp[i].type
+            temp.title = dataTemp[i].title
+            temp.url = dataTemp[i].url
+            this.cardList.push(temp)
+          }
         })
+    },
+    /**
+     * 子组件点击移除卡片后触发 by fanjiao
+     */
+    refreshCard () {
+      this.getSelfWorkplace()
     },
     click (index) {
       this.index = index
     },
     moved (a, newX, newY) {
-      console.log('MOVED i=' + a + ', X=' + newX + ', Y=' + newY)
       const i = (2 * newY) / 5
       const index = this.index
       this.$http.get('/portal/userCard/myself', {
         params: {
-          userid: '211221',
           list: {
             cardId: this.ids[index],
             i: Math.round(i)

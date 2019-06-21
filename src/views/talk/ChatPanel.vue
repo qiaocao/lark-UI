@@ -251,9 +251,6 @@ export default {
         query: currentTalk
       })
     },
-    delChat (chat) {
-      this.$store.commit('DEL_CHAT', chat)
-    },
     /** 展示群组详细信息 */
     showGroup (group) {
       this.activeGroup = group.id

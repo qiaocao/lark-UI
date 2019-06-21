@@ -16,8 +16,8 @@ import { format } from '@/utils/util'
  */
 function setIsTop (recentContacts, id) {
   const contactItems = recentContacts.filter(item => item.id === id)
-  if (contactItems.length) return false
-  else return contactItems[0].isTop
+  if (contactItems.length) return contactItems[0].isTop
+  else return false
 }
 
 /**
@@ -66,17 +66,21 @@ function setMessageInfo (id, talkMap, recentContact) {
       recentContact.time = format(
         new Date(talkList[talkList.length - 1].time),
         'hh:mm')
+      recentContact.sender = talkList[talkList.length - 1].username
       recentContact.lastMessage = talkList[talkList.length - 1].content
+
       // TODO: @功能以后再说
       recentContact.atMe = false
     } else {
       recentContact.time = ''
-      recentContact.lastMessage = ''
+      recentContact.lastMessage = {}
+      recentContact.sender = ''
       recentContact.atMe = false
     }
   } else {
     recentContact.time = ''
-    recentContact.lastMessage = ''
+    recentContact.lastMessage = {}
+    recentContact.sender = ''
     recentContact.atMe = false
   }
 }
@@ -97,8 +101,6 @@ const talk = {
     talkMap: new Map(),
     /** 当前正在进行的研讨 */
     currentTalk: {},
-    /** 当前正在进行研讨的消息列表 */
-    curMessageList: [],
     /** 草稿Map */
     draftMap: new Map(),
 
@@ -137,9 +139,6 @@ const talk = {
     SET_CURRENT_TALK (state, currentTalk) {
       state.currentTalk = currentTalk
     },
-    SET_CUR_MESSAGE_LIST (state, curMessageList) {
-      state.curMessageList = curMessageList
-    },
     /**
      * 更新draftMap
      * @param {Object} state talk状态
@@ -168,9 +167,9 @@ const talk = {
     /**
      * 获取群组列表
      */
-    GetGroupList ({ commit }) {
+    GetGroupList ({ commit, rootGetters }) {
       return new Promise((resolve, reject) => {
-        getGroupList().then(response => {
+        getGroupList(rootGetters.userId).then(response => {
           if (response.status === 200) {
             commit('SET_GROUP_LIST', [ ...response.result.data ])
           } else {
@@ -203,9 +202,9 @@ const talk = {
     /**
      * 获取最近联系人列表(用于初始化最近联系人列表)
      */
-    GetRecentContacts ({ commit }) {
+    GetRecentContacts ({ commit, rootGetters }) {
       return new Promise((resolve, reject) => {
-        getRecentContacts().then(response => {
+        getRecentContacts(rootGetters.userId).then(response => {
           if (response.status === 200) {
             commit('SET_RECENT_CONTACTS', [ ...response.result.data ])
           } else {
@@ -262,9 +261,9 @@ const talk = {
     /**
      * 获取所有未读消息的map(初始化缓存中的消息列表)
      */
-    GetTalkMap ({ commit }) {
+    GetTalkMap ({ commit, rootGetters }) {
       return new Promise((resolve, reject) => {
-        getTalkMap().then(response => {
+        getTalkMap(rootGetters.userId).then(response => {
           if (response.status === 200) {
             commit('SET_TALK_MAP', [ ...response.result.data ])
           } else {
@@ -280,10 +279,11 @@ const talk = {
      * 更新缓存中的消息map
      * @param {Tweet} newMessage 新消息
      */
-    UpdateTalkMap ({ state, commit }, newMessage) {
+    UpdateTalkMap ({ state, commit, rootGetters }, newMessage) {
+      if (newMessage.fromId === rootGetters.userId) return
       const tempMessageList = state.talkMap.get(newMessage.contactInfo.id) || []
       tempMessageList.push(new Tweet(newMessage))
-      commit('SET_TALK_MAP', [newMessage.contactInfo.id, tempMessageList])
+      commit('SET_TALK_MAP', [[newMessage.contactInfo.id, tempMessageList]])
     },
     /**
      * 更新缓存中的草稿信息

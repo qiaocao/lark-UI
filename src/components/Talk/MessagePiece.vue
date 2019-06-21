@@ -27,23 +27,23 @@
         <div class="bubble-content">
           <div class="plain">
             <!-- 纯文本信息 -->
-            <div v-if="messageInfo.type === 1">
+            <div v-if="messageInfo.content.type === 1">
               <div class="secret-tip">
-                <span :class="'s-' + messageInfo.secretLevel">
-                  【{{ JSON.parse(messageInfo.secretLevel) | fileSecret }}】
+                <span :class="'s-' + messageInfo.content.secretLevel">
+                  【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】
                 </span>
               </div>
-              <pre>{{ messageInfo.content }}</pre>
+              <pre>{{ messageInfo.content.title }}</pre>
             </div>
 
             <!-- 图片消息 -->
-            <div v-if="messageInfo.type === 2" class="img-message">
+            <div v-if="messageInfo.content.type === 2" class="img-message">
               <a-spin :spinning="imgLoading === 1" size="small">
                 <img
                   @load="handleImg"
                   @error="handleImg"
                   @click="handlePreview('open')"
-                  :src="messageInfo.content.src + '?t=' + new Date().getTime()"
+                  :src="messageInfo.content.url + '?t=' + new Date().getTime()"
                   :alt="messageInfo.content.title" >
 
                 <a-button
@@ -56,11 +56,11 @@
 
                 <div class="img-message-option">
                   <div class="secret-tip">
-                    <span :class="'s-' + messageInfo.secretLevel">
-                      【{{ JSON.parse(messageInfo.secretLevel) | fileSecret }}】
+                    <span :class="'s-' + messageInfo.content.secretLevel">
+                      【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】
                     </span>
                   </div>
-                  <a :href="messageInfo.content.src" class="download" :download="messageInfo.content.title">下载</a>
+                  <a :href="messageInfo.content.url" class="download" :download="messageInfo.content.title">下载</a>
                 </div>
               </a-spin>
 
@@ -68,12 +68,12 @@
                 <img
                   :alt="messageInfo.content.title"
                   style="width: 100%"
-                  :src="messageInfo.content.src" />
+                  :src="messageInfo.content.url" />
               </a-modal>
             </div>
 
             <!-- 文件消息 -->
-            <div v-if="messageInfo.type === 3" class="file-message">
+            <div v-if="messageInfo.content.type === 3" class="file-message">
               <div class="file-message-icon">
                 <a-icon type="file" theme="twoTone" style="fontSize: 26px" />
               </div>
@@ -84,8 +84,8 @@
 
                 <div class="file-option">
                   <div class="secret-tip">
-                    <span :class="'s-' + messageInfo.secretLevel">
-                      【{{ JSON.parse(messageInfo.secretLevel) | fileSecret }}】
+                    <span :class="'s-' + messageInfo.content.secretLevel">
+                      【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】
                     </span>
                   </div>
                   <span class="download">下载</span>
@@ -135,7 +135,7 @@ export default {
     messageInfo: {
       handler: function () {
         // 处理图片的加载状态
-        if (this.messageInfo.content.src) this.imgLoading = 1
+        if (this.messageInfo.content.url) this.imgLoading = 1
         else this.imgLoading = 0
       },
       immediate: true,
@@ -163,7 +163,7 @@ export default {
         this.imgLoading = 3
       }
       if (event.type === 'click') {
-        this.messageInfo.content.src = this.messageInfo.content.src + '?t=' + Math.random()
+        this.messageInfo.content.url = this.messageInfo.content.url + '?t=' + Math.random()
       }
     },
     /**
@@ -218,15 +218,6 @@ export default {
   // 密级标识样式
   .secret-tip {
     display: inline;
-    .s-60 {
-      color: #b2b2b2;
-    }
-    .s-70 {
-      color: orange;
-    }
-    .s-80 {
-      color: tomato;
-    }
   }
 
   .message-piece {
@@ -256,8 +247,8 @@ export default {
       overflow: hidden;
 
       .message-nickname {
-        height: 22px;
-        line-height: 24px;
+        height: 20px;
+        line-height: 22px;
         font-size: 12px;
         font-weight: 400;
         padding-left: 10px;
@@ -309,8 +300,8 @@ export default {
 
             .img-message {
               img {
-                max-width: 450px;
-                min-width: 85px;
+                max-width: 400px;
+                min-width: 100px;
               }
               &-option {
                 text-align: right;

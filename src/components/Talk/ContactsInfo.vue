@@ -94,7 +94,7 @@ export default {
 
       getContactsInfo(contactsId).then(res => {
         if (res.status === 200) {
-          this.contactsInfo = res.result.data
+          this.contactsInfo = res.result
         }
 
         this.loadingState = false

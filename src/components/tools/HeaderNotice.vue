@@ -12,14 +12,16 @@
         <a-list>
           <a-list-item v-for="msg in msglist.slice(0,6)" :key="msg.id">
             <router-link :to="{ name: 'MsgList' }">
-              <a-list-item-meta :description="msg.date|timeFormat" :title="msg.title">
+              <!-- TODO 接口暂未提供发布时间 -->
+              <!-- <a-list-item-meta :description="msg.date|timeFormat" :title="msg.title"> -->
+              <a-list-item-meta :title="msg.title">
                 <a-avatar style="background-color: white" slot="avatar" :src="getImgPath(msg.type)"/>
               </a-list-item-meta>
             </router-link>
           </a-list-item>
           <a-list-item key="item-all" style="margin-left:45px;margin-top:10px">
             <router-link :to="{ name: 'MsgList' }">
-              <a-list-item-meta title="查看全部">
+              <a-list-item-meta title="查看全部" @click="visible = false">
               </a-list-item-meta>
             </router-link>
           </a-list-item>
@@ -46,12 +48,17 @@ export default {
       msglist: []
     }
   },
+  computed: {
+    userInfo () {
+      return this.$store.getters.userInfo
+    }
+  },
   filters: { timeFormat: toWeiXinString },
   methods: {
     fetchNotice () {
       if (!this.visible) {
         this.loadding = true
-        return getNotice().then(res => {
+        return getNotice({ 'orgCode': this.userInfo.orgCode }).then(res => {
           if (res.status === 200) {
             this.msglist = res.result.data
             this.loadding = false

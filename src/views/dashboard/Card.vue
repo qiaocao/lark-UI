@@ -13,7 +13,7 @@
         </a>
         <a-menu slot="overlay">
           <a-menu-item>
-            <a href="javascript:;">移除卡片</a>
+            <a href="javascript:;" @click="removeCard(content.id)">移除卡片</a>
           </a-menu-item>
           <a-menu-item>
             <a href="javascript:;">查看全部</a>
@@ -30,7 +30,7 @@
         <card-content-activity :listData="contentData"/>
       </div>
       <div v-else-if="content.type=='local'" style="height: 100%">
-        <card-content-local :listData="contentData"/>
+        <card-content-local/>
       </div>
       <div v-else-if="content.type=='graph'">
         <card-content-graph :listData="contentData"/>
@@ -58,11 +58,16 @@
                 <mini-progress color="rgb(19, 194, 194)" :target="80" :percentage="78" height="8px" />
               </div>
               <template slot="footer">
+<<<<<<< HEAD
                 <!-- <trend flag="down" style="margin-right: 16px;">
+=======
+                <!-- term 是组件trend 必填项 添加:term="''"暂屏蔽控制台抛错 by fanjiao -->
+                <trend flag="down" style="margin-right: 16px;" :term="''">
+>>>>>>> master
                   <span slot="term">同周比</span>
                   12%
                 </trend>
-                <trend flag="up">
+                <trend flag="up" :term="''">
                   <span slot="term">日环比</span>
                   80%
                 </trend> -->
@@ -86,7 +91,7 @@ import ChartCard from '@/components/chart/ChartCard'
 import MiniArea from '@/components/chart/MiniArea'
 import MiniProgress from '@/components/chart/MiniProgress'
 import Trend from '@/components/chart/Trend'
-
+import { delCard } from '@/api/admin'
 export default {
   name: 'Card',
   components: {
@@ -116,9 +121,14 @@ export default {
       required: true
     }
   },
+  computed: {
+    userInfo () {
+      return this.$store.getters.userInfo
+    }
+  },
   created () {
-    if (this.content.type !== 'intro') {
-      this.$http.get(this.content.url)
+    if (this.content.type !== 'intro' && this.content.type !== 'local' && this.content.type !== 'activity') {
+      this.$http.get('portal' + this.content.url + '?' + 'orgCode=' + this.userInfo.orgCode)
         .then(res => {
           this.loading = false
           this.contentData = res.result.data
@@ -128,6 +138,34 @@ export default {
   mounted () {
     if (this.content.type === 'intro') {
       this.loading = false
+    }
+  },
+  methods: {
+    /**
+     * 移除卡片
+     */
+    removeCard (cardId) {
+      delCard({ 'cardId': cardId }).then(
+        res => {
+          if (res.status === 200) {
+            this.$emit('refreshCard')
+            this.$notification['success']({
+              message: '操作成功',
+              duration: 2
+            })
+          } else {
+            this.$notification['error']({
+              message: res.message,
+              duration: 4
+            })
+          }
+        }
+      ).catch(() =>
+        this.$notification['error']({
+          message: '发生异常，请联系系统管理员',
+          duration: 4
+        })
+      )
     }
   }
 }
