@@ -1,10 +1,9 @@
 /**
  * websocket接口类
- * @author jihainan
  */
 import store from '@/store'
 import notification from 'ant-design-vue/es/notification'
-
+import { LandingStatus } from '@/utils/constants'
 class SocketApi {
   /**
    * 构造函数
@@ -52,7 +51,7 @@ class SocketApi {
     userId = userId || store.getters.userId
     const ws = new WebSocket(this.url + '?userId=' + userId)
     // 设置在线状态为连接中
-    store.commit('SET_ONLINE_STATE', ws.CONNECTING)
+    store.commit('SET_ONLINE_STATE', LandingStatus.LANDING)
     this.ws = ws
 
     ws.binaryType = this.binaryType
@@ -70,7 +69,7 @@ class SocketApi {
       store.dispatch('GetContactsTree')
 
       // 设置在线状态为已连接
-      store.commit('SET_ONLINE_STATE', ws.OPEN)
+      store.commit('SET_ONLINE_STATE', LandingStatus.ONLINE)
 
       // 定时发送心跳
       self.pingIntervalId = setInterval(() => {
@@ -137,7 +136,7 @@ class SocketApi {
       clearInterval(self.pingIntervalId)
 
       // 设置在线状态为已断开
-      store.commit('SET_ONLINE_STATE', ws.CLOSED)
+      store.commit('SET_ONLINE_STATE', LandingStatus.OFFLINE)
 
       // 重连的处理逻辑
       self.reconn()
@@ -188,7 +187,7 @@ class SocketApi {
    */
   close (code, reason) {
     // 设置登陆状态为正在断开
-    store.commit('SET_ONLINE_STATE', this.ws.CLOSING)
+    store.commit('SET_ONLINE_STATE', LandingStatus.EXITING)
 
     this.ws.close(code, reason)
   }
