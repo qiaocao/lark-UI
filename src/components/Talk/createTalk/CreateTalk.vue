@@ -63,7 +63,7 @@ export default {
         const createInfo = {
           creator: this.userId,
           updator: this.userId,
-          type: '6'
+          type: '3'
         }
         Object.assign(this.baseInfo, values, createInfo)
       }
@@ -72,7 +72,7 @@ export default {
         console.log('创建的数据：')
         console.log(this.baseInfo)
         const createGroupMsg = new SocketMessage({
-          code: 6,
+          code: 3,
           data: this.baseInfo
         }).toString()
         console.log('发送的数据')

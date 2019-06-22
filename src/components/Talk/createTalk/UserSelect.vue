@@ -49,9 +49,9 @@ export default {
   },
   mounted () {
     const secretListMap = new Map([
-      [30, [30]],
-      [40, [30, 40, 50]],
-      [60, [30, 40, 50, 60, 70]]
+      [60, [60, 70]],
+      [40, [40, 50, 60, 70]],
+      [30, [30, 40, 50, 60, 70]]
     ])
     this.$refs.groupUserTransfer.beginChooseUser([], {
       secretLevels: secretListMap.get(this.groupInfo.levels).join(),
