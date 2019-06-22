@@ -94,7 +94,7 @@ function setMessageInfo (id, talkMap, recentContact) {
  * @param {String} sender 发送者
  */
 function syncUnread2Server (online, reviser, sender) {
-  // 连接断开，添加提醒
+  // TODO: 连接断开，添加提醒
   if (!online) return
   const socketMessage = new SocketMessage({
     code: 9,
