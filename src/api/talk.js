@@ -1,14 +1,15 @@
 import { axios } from '@/utils/request'
 
 const api = {
-  talkMembers: 'talk/members',
-  groupInfo: 'talk/group/info',
-  groupList: 'talk/group/list',
+  talkMembers: 'chat/members',
+  groupInfo: 'chat/group/info',
+  groupList: 'chat/zzGroup/queryGroupListByUserId',
   contactsInfo: 'admin/user/',
   contactsTree: 'admin/org/orgUsers',
-  recentContacts: 'talk/recent/list',
-  talkMap: 'talk/message/map',
-  talkHistory: 'talk/history'
+  recentContacts: 'chat/recent/list',
+  talkMap: 'chat/message/map',
+  talkHistory: 'chat/history',
+  upload: 'chat/zzFileManage/singleFileUpload'
 }
 
 export default api
@@ -118,5 +119,17 @@ export function getTalkHistory (userId, contactId) {
       userId: userId,
       contactId: contactId
     }
+  })
+}
+
+/**
+ * 文件上传
+ */
+export function uploadFile (parameter) {
+  return axios({
+    url: api.upload,
+    method: 'post',
+    data: parameter,
+    headers: { 'Content-Type': 'multipart/form-data' }
   })
 }
