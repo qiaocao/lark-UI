@@ -166,15 +166,15 @@ export default {
 
 <style lang="less">
   // 消息密级样式
-  .s-60, .s-undefined {
+  .s-30, .s-undefined {
     font-size: 14px;
     color: #00be00;
   }
-  .s-70 {
+  .s-40, s-50 {
     font-size: 14px;
     color: #ffb500;
   }
-  .s-80 {
+  .s-60, s-70 {
     font-size: 14px;
     color: #ff0000;
   }

@@ -24,12 +24,12 @@
     <div v-if="Object.keys(groupInfo).length && !loadingState" class="selected-info">
       <div class="info-wrapper">
         <div class="name-and-org">
-          <p>{{ groupInfo.name }}</p>
-          <p>{{ groupInfo.description }}</p>
+          <p>{{ groupInfo.groupName }}</p>
+          <p>{{ groupInfo.groupDescribe }}</p>
         </div>
 
-        <a-avatar class="avatar-img" shape="square" :src="groupInfo.avatar" :size="75">
-          <span>{{ groupInfo.name }}</span>
+        <a-avatar class="avatar-img" shape="square" :src="groupInfo.groupImg" :size="75">
+          <span>{{ groupInfo.groupName }}</span>
         </a-avatar>
       </div>
 
@@ -37,11 +37,11 @@
         <div class="info-list">
           <div>
             <p class="attr">密级</p>
-            <p class="val">{{ groupInfo.secretLevel | fileSecret }}</p>
+            <p class="val">{{ groupInfo.levels | fileSecret }}</p>
           </div>
           <div>
-            <p class="attr">主题</p>
-            <p class="val">{{ groupInfo.subject }}</p>
+            <p class="attr">参与范围</p>
+            <p class="val">{{ groupInfo.scop }}</p>
           </div>
           <div>
             <p class="attr">创建人</p>
@@ -105,7 +105,15 @@ export default {
       )
     },
     sendMessage (event) {
-      const groupItem = this.groupInfo
+      const { groupId, groupName, groupImg, levels, memberNum } = this.groupInfo
+      const groupItem = {
+        id: groupId,
+        name: groupName,
+        avatar: groupImg,
+        secretLevel: levels,
+        memberNum: memberNum,
+        isGroup: true
+      }
       this.$emit('clickSend')
       this.$router.push({
         path: '/talk/ChatPanel/ChatBox',

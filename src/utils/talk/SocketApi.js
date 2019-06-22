@@ -1,10 +1,9 @@
 /**
  * websocket接口类
- * @author jihainan
  */
 import store from '@/store'
 import notification from 'ant-design-vue/es/notification'
-
+import { LandingStatus } from '@/utils/constants'
 class SocketApi {
   /**
    * 构造函数
@@ -52,7 +51,7 @@ class SocketApi {
     userId = userId || store.getters.userId
     const ws = new WebSocket(this.url + '?userId=' + userId)
     // 设置在线状态为连接中
-    store.commit('SET_ONLINE_STATE', ws.CONNECTING)
+    store.commit('SET_ONLINE_STATE', LandingStatus.LANDING)
     this.ws = ws
 
     ws.binaryType = this.binaryType
@@ -70,7 +69,7 @@ class SocketApi {
       store.dispatch('GetContactsTree')
 
       // 设置在线状态为已连接
-      store.commit('SET_ONLINE_STATE', ws.OPEN)
+      store.commit('SET_ONLINE_STATE', LandingStatus.ONLINE)
 
       // 定时发送心跳
       self.pingIntervalId = setInterval(() => {
@@ -125,6 +124,57 @@ class SocketApi {
               })
             })
           break
+        case 3:
+          // 接收到创建群组的消息-->更新最近联系人-->更新群组列表
+          const {
+            groupId,
+            groupName,
+            groupImg,
+            levels
+          } = received.data.zzGroup
+          store
+            .dispatch('UpdateRecentContacts', {
+              id: groupId,
+              name: groupName,
+              avatar: groupImg,
+              secretLevel: levels,
+              memberNum: received.data.userList.length,
+              isGroup: true,
+              reOrder: true,
+              addUnread: false
+            })
+            .then(() => {
+              store.dispatch('GetGroupList')
+            })
+            .catch(error => {
+              console.log(error)
+              const key = `talk${Date.now()}`
+              notification.warning({
+                message: '有新的群组',
+                description: '新增群组同步出错，点击手动同步',
+                duration: null,
+                btn: (h) => {
+                  return h('a-button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small',
+                      icon: 'reload'
+                    },
+                    on: {
+                      click: () => {
+                        store.dispatch('GetRecentContacts')
+                          .then(() => {
+                            store.dispatch('GetGroupList')
+                          })
+                          .then(() => notification.close(key))
+                      }
+                    }
+                  }, '同步')
+                },
+                key
+              })
+            })
+          break
         default:
           break
       }
@@ -137,7 +187,7 @@ class SocketApi {
       clearInterval(self.pingIntervalId)
 
       // 设置在线状态为已断开
-      store.commit('SET_ONLINE_STATE', ws.CLOSED)
+      store.commit('SET_ONLINE_STATE', LandingStatus.OFFLINE)
 
       // 重连的处理逻辑
       self.reconn()
@@ -188,7 +238,7 @@ class SocketApi {
    */
   close (code, reason) {
     // 设置登陆状态为正在断开
-    store.commit('SET_ONLINE_STATE', this.ws.CLOSING)
+    store.commit('SET_ONLINE_STATE', LandingStatus.EXITING)
 
     this.ws.close(code, reason)
   }
