@@ -27,7 +27,7 @@ import sou from './messageGrabble.vue'
 export default {
   name: 'TalkHistoryUser',
   props: {
-    /** 抽屉挂载的元素 */
+    /** 抽屉挂载的元素 */ 
     mountEle: {
       type: String,
       default: '.conv-box',
