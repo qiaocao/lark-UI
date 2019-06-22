@@ -34,8 +34,12 @@ const LandingStatus = {
   OFFLINE: 3
 }
 
+// 文件服务器地址
+const FILE_SERVER_IP = 'http://10.12.97.34:80/'
+
 export {
   SECRETLEVEL_ENUM,
   ErrorType,
-  LandingStatus
+  LandingStatus,
+  FILE_SERVER_IP
 }

@@ -1,14 +1,15 @@
 import { axios } from '@/utils/request'
 
 const api = {
-  talkMembers: 'talk/members',
-  groupInfo: 'talk/group/info',
-  groupList: 'talk/group/list',
-  contactsInfo: 'talk/contacts/info',
+  talkMembers: 'chat/members',
+  groupInfo: 'chat/group/info',
+  groupList: 'chat/zzGroup/queryGroupListByUserId',
+  contactsInfo: 'admin/user/',
   contactsTree: 'admin/org/orgUsers',
-  recentContacts: 'talk/recent/list',
-  talkMap: 'talk/message/map',
-  talkHistory: 'talk/history'
+  recentContacts: 'chat/recent/list',
+  talkMap: 'chat/message/map',
+  talkHistory: 'chat/history',
+  upload: 'chat/zzFileManage/singleFileUpload'
 }
 
 export default api
@@ -45,13 +46,10 @@ export function getGroupInfo (groupId) {
  * 通过联系人id获取联系人详细信息
  * @param {String} contactsId 联系人id
  */
-export function getContactsInfo (contactsId) {
+export function getContactsInfo (id) {
   return axios({
-    url: api.contactsInfo,
-    method: 'GET',
-    params: {
-      id: contactsId
-    }
+    url: api.contactsInfo + id,
+    method: 'GET'
   })
 }
 
@@ -121,5 +119,17 @@ export function getTalkHistory (userId, contactId) {
       userId: userId,
       contactId: contactId
     }
+  })
+}
+
+/**
+ * 文件上传
+ */
+export function uploadFile (parameter) {
+  return axios({
+    url: api.upload,
+    method: 'post',
+    data: parameter,
+    headers: { 'Content-Type': 'multipart/form-data' }
   })
 }

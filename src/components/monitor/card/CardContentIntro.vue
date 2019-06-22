@@ -10,9 +10,10 @@
             {{ timeFix }}，{{ user.name }}
             <span class="welcome-text">，{{ welcome }}</span>
           </div>
-          <!-- TODO fanjiao返回内容暂未提供职位、组织信息，这里暂显示人员密级 -->
           <!-- <div>主任设计师 | 十一室 - 工程信息化组</div> -->
-          <div>人员密级 | {{ user.secretLevel | peopleSecret }}</div>
+          <!-- TODO fanjiao返回内容暂未提供职位、组织信息，这里暂显示人员密级 -->
+          <!-- 由于src\utils\constants.js密级常量中人员密级只提供60/70/80三个等级，如果人员有其他密级，控制台可能会打印错误 -->
+          <!-- <div>人员密级 | {{ user.secretLevel | peopleSecret }}</div> -->
         </a-col>
       </a-row>
     </div>
@@ -20,7 +21,6 @@
 </template>
 <script>
 import { timeFix, welcome } from '@/utils/util'
-// import { mapGetters } from 'vuex'
 import HeadInfo from '@/components/tools/HeadInfo'
 export default {
   components: { HeadInfo },
@@ -40,9 +40,6 @@ export default {
   created () {
     this.user = this.userInfo
     this.avatar = this.userInfo.avatar
-  },
-  methods: {
-    // ...mapGetters(['nickname', 'welcome'])
   }
 }
 </script>
