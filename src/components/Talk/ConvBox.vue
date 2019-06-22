@@ -3,6 +3,7 @@
 
     <!-- 聊天设置选项的抽屉组件 -->
     <talk-history :activeOption="activeOption" @closeDrawer="triggerDrawer" />
+    <!-- <talk-history-user :activeOption="activeOption" @closeDrawer="triggerDrawer" /> -->
     <group-notice :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <talk-setting :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <talk-file :activeOption="activeOption" @closeDrawer="triggerDrawer" />
@@ -158,7 +159,7 @@
 </template>
 
 <script>
-import { MessagePiece, TalkHistory, MoreInfo, GroupNotice, TalkSetting, MarkMessage, TalkFile } from '@/components/Talk'
+import { MessagePiece, TalkHistory, MoreInfo, GroupNotice, TalkSetting, MarkMessage, TalkFile, TalkHistoryUser } from '@/components/Talk'
 import { LandingStatus } from '@/utils/constants'
 // 引入密级常量
 import { SocketMessage, Tweet } from '@/utils/talk'
@@ -174,6 +175,7 @@ export default {
     MessagePiece,
     VEmojiPicker,
     TalkHistory,
+    TalkHistoryUser,
     GroupNotice,
     TalkSetting,
     MarkMessage,
@@ -325,6 +327,7 @@ export default {
         { group: true, name: 'groupNotice', message: '群公告', type: 'notification' },
         { group: true, name: 'markMessage', message: '标记信息', type: 'tags' },
         { group: false, name: 'talkHistory', message: '聊天内容', type: 'file-text' },
+        // { group: false, name: isGroup ? 'talkHistory' : 'talkHistoryUser', message: '聊天内容', type: 'file-text' },
         { group: false, name: 'talkFile', message: '文件', type: 'folder-open' },
         { group: false, name: isGroup ? 'moreInfo' : 'personMoreInfo', message: '更多', type: 'ellipsis' }]
 

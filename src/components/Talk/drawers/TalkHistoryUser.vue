@@ -8,16 +8,16 @@
     :width="448"
     :closable="false"
     @close="onClose"
-    :visible="activeOption=='talkHistory'"
+    :visible="activeOption=='talkHistoryUser'"
     ref="ss"
     v-if="hackReset"
     destroyOnClose
-    key="2"
+    key="1"
   >
 
     <sou></sou>
     <div class="login_img">
-      没有更多信息...
+      ssssssssssssssssssssssssssss没有更多信息...
     </div>
   </a-drawer>
 </template>
@@ -25,7 +25,7 @@
 <script>
 import sou from './messageGrabble.vue'
 export default {
-  name: 'TalkHistory',
+  name: 'TalkHistoryUser',
   props: {
     /** 抽屉挂载的元素 */
     mountEle: {
@@ -52,7 +52,7 @@ export default {
   },
   watch: {
     activeOption (newValue) {
-      if (newValue === 'talkHistory') {
+      if (newValue === 'talkHistoryUser') {
         console.log('在这里加载数据')
       }
     }

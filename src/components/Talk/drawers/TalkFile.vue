@@ -24,7 +24,7 @@ export default {
     /** 抽屉挂载的元素 */
     mountEle: {
       type: String,
-      default: '.conv-box',
+      // default: '.conv-box',
       required: false
     },
     activeOption: {

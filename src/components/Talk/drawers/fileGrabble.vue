@@ -84,7 +84,6 @@ export default {
       this.$http.post('/group/filelist').then(data => {
         // callback(data.result.data)
         this.data = data.result.data
-        console.log('11111111111', this.data)
       })
     },
     onLoadMore () {
