@@ -43,7 +43,7 @@
                   @load="handleImg"
                   @error="handleImg"
                   @click="handlePreview('open')"
-                  :src="messageInfo.content.url + '?t=' + new Date().getTime()"
+                  :src="imgPreviewUrl"
                   :alt="messageInfo.content.title" >
 
                 <a-button
@@ -60,7 +60,8 @@
                       【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】
                     </span>
                   </div>
-                  <a :href="messageInfo.content.url" class="download" :download="messageInfo.content.title">下载</a>
+                  <!-- <a :href="messageInfo.content.url" class="download" :download="messageInfo.content.title">下载</a> -->
+                  <span class="download">下载</span>
                 </div>
               </a-spin>
 
@@ -103,6 +104,7 @@
 
 <script>
 import { toWeiXinString } from '@/utils/util'
+import api from '@/api/talk'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -129,13 +131,16 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['avatar', 'userId'])
+    ...mapGetters(['avatar', 'userId']),
+    imgPreviewUrl () {
+      return api + '?fileId=' + this.messageInfo.content.id
+    }
   },
   watch: {
     messageInfo: {
       handler: function () {
         // 处理图片的加载状态
-        if (this.messageInfo.content.url) this.imgLoading = 1
+        if (this.messageInfo.content.type === 2) this.imgLoading = 1
         else this.imgLoading = 0
       },
       immediate: true,
@@ -163,7 +168,7 @@ export default {
         this.imgLoading = 3
       }
       if (event.type === 'click') {
-        this.messageInfo.content.url = this.messageInfo.content.url + '?t=' + Math.random()
+        this.imgPreviewUrl += '&t=' + Math.random()
       }
     },
     /**
