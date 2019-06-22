@@ -15,9 +15,9 @@
           <a-menu-item>
             <a href="javascript:;" @click="removeCard(content.id)">移除卡片</a>
           </a-menu-item>
-          <a-menu-item>
+          <!-- <a-menu-item>
             <a href="javascript:;">查看全部</a>
-          </a-menu-item>
+          </a-menu-item> -->
         </a-menu>
       </a-dropdown>
       <div v-if="content.type=='info'">
