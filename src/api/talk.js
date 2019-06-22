@@ -2,11 +2,11 @@ import { axios } from '@/utils/request'
 
 const api = {
   talkMembers: 'talk/members',
-  groupInfo: 'talk/group/info',
-  groupList: 'talk/group/list',
+  groupInfo: 'chat/zzGroup/getGroupInfo',
+  groupList: 'chat/zzGroup/queryGroupListByUserId',
   contactsInfo: 'admin/user/',
   contactsTree: 'admin/org/orgUsers',
-  recentContacts: 'talk/recent/list',
+  recentContacts: 'chat/zzGroup/queryContactListById',
   talkMap: 'talk/message/map',
   talkHistory: 'talk/history'
 }
