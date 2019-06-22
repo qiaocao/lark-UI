@@ -4,8 +4,10 @@
  */
 import modules from './conf'
 import router from '@/router'
+import Vue from 'vue'
 import { getGroupList, getContactsTree, getRecentContacts, getTalkMap } from '@/api/talk'
-import { Tweet, RecentContact } from '@/utils/talk'
+import { Tweet, RecentContact, SocketMessage } from '@/utils/talk'
+import { LandingStatus } from '@/utils/constants'
 import { format } from '@/utils/util'
 
 /**
@@ -83,6 +85,26 @@ function setMessageInfo (id, talkMap, recentContact) {
     recentContact.sender = ''
     recentContact.atMe = false
   }
+}
+
+/**
+ * 向研讨服务同步未读消息数
+ * @param {Boolean} online 是否在线
+ * @param {String} reviser 接收者
+ * @param {String} sender 发送者
+ */
+function syncUnread2Server (online, reviser, sender) {
+  // TODO: 连接断开，添加提醒
+  if (!online) return
+  const socketMessage = new SocketMessage({
+    code: 9,
+    data: {
+      reviser: reviser,
+      sender: sender
+    }
+  }).toString()
+  console.log(socketMessage)
+  Vue.prototype.SocketGlobal.send(socketMessage)
 }
 
 const talk = {
@@ -223,8 +245,9 @@ const talk = {
      * reOrder: 重新排序
      * addUnread: 增加未读消息数量
      */
-    UpdateRecentContacts ({ commit, state }, freshItem) {
+    UpdateRecentContacts ({ commit, state, rootGetters }, freshItem) {
       const { recentContacts, groupList, talkMap } = state
+      const index = recentContacts.findIndex(element => element.id === freshItem.id)
       const newItem = new RecentContact(freshItem)
       // 设置状态
       newItem.isTop = setIsTop(recentContacts, freshItem.id)
@@ -235,9 +258,12 @@ const talk = {
         freshItem.id,
         freshItem.addUnread,
         router.currentRoute.query.id)
-      // TODO: 告知服务器消息的状态
-      // ···
-      const index = recentContacts.findIndex(element => element.id === freshItem.id)
+      // 告知服务器未读消息的状态
+      // TODO: 告知服务器的条件还要再加判断
+      syncUnread2Server(
+        rootGetters.onlineState === LandingStatus.ONLINE,
+        rootGetters.userId,
+        freshItem.id)
       if (index > -1) {
         this._vm.$delete(recentContacts, index)
       }

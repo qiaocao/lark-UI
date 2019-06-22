@@ -124,7 +124,7 @@ class SocketApi {
               })
             })
           break
-        case 3:
+        case 10:
           // 接收到创建群组的消息-->更新最近联系人-->更新群组列表
           const {
             groupId,
@@ -174,6 +174,9 @@ class SocketApi {
                 key
               })
             })
+          break
+        case 4:
+          this.ws.send(JSON.stringify(received))
           break
         default:
           break
