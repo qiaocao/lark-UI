@@ -93,9 +93,9 @@ function setMessageInfo (id, talkMap, recentContact) {
  * @param {String} reviser 接收者
  * @param {String} sender 发送者
  */
-function syncUnread2Server (online, reviser, sender) {
+function syncUnread2Server (newUnreasNum, online, reviser, sender) {
   // TODO: 连接断开，添加提醒
-  if (!online) return
+  if (!online || newUnreasNum !== 0) return
   const socketMessage = new SocketMessage({
     code: 9,
     data: {
@@ -261,6 +261,7 @@ const talk = {
       // 告知服务器未读消息的状态
       // TODO: 告知服务器的条件还要再加判断
       syncUnread2Server(
+        newItem.unreadNum,
         rootGetters.onlineState === LandingStatus.ONLINE,
         rootGetters.userId,
         freshItem.id)
