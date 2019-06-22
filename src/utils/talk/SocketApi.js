@@ -16,7 +16,7 @@ class SocketApi {
    * @param {Number} reconnInterval 重连间隔时间 单位：毫秒
    * @param {String} binaryType 返回websocket连接所传输二进制数据的类型
    */
-  constructor ({ wsProtocol, ip = '127.0.0.1', port = '8181', paramStr, param, heartbeatTimeout = 50000, reconnInterval = 1000, binaryType = 'arraybuffer' } = {}) {
+  constructor ({ wsProtocol, ip = '127.0.0.1', port = '9326', paramStr, param, heartbeatTimeout = 50000, reconnInterval = 1000, binaryType = 'arraybuffer' } = {}) {
     this.wsProtocol = wsProtocol
     this.ip = ip
     this.port = port
