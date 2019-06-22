@@ -43,7 +43,7 @@
                   @load="handleImg"
                   @error="handleImg"
                   @click="handlePreview('open')"
-                  :src="messageInfo.content.url + '?t=' + new Date().getTime()"
+                  :src="messageInfo.content.url + '&t=' + new Date().getTime()"
                   :alt="messageInfo.content.title" >
 
                 <a-button
@@ -163,7 +163,7 @@ export default {
         this.imgLoading = 3
       }
       if (event.type === 'click') {
-        this.messageInfo.content.url = this.messageInfo.content.url + '?t=' + Math.random()
+        this.messageInfo.content.url = this.messageInfo.content.url + '&t=' + Math.random()
       }
     },
     /**
