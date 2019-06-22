@@ -28,7 +28,7 @@ export function maximizeWindow () {
  */
 export function closeWindow () {
   if (isLarkClient()) {
-    window.JSInteraction.max()
+    window.JSInteraction.min()
   }
 }
 
