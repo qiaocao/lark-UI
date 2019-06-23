@@ -9,8 +9,10 @@ const api = {
   recentContacts: 'chat/zzGroup/queryContactListById',
   talkMap: 'chat/message/map',
   talkHistory: 'chat/history',
-  upload: 'chat/zzFileManage/singleFileUpload',
-  getFile: 'chat/zzFileManage/GetFile'
+  // 研讨文件上传地址
+  fileUpload: '/api/chat/zzFileManage/singleFileUpload',
+  // 图片预览地址
+  imgPrevie: '/api/chat/zzFileManage/GetFile'
 }
 
 export default api
