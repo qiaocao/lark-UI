@@ -60,8 +60,8 @@
                       【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】
                     </span>
                   </div>
-                  <!-- <a :href="messageInfo.content.url" class="download" :download="messageInfo.content.title">下载</a> -->
-                  <span class="download">下载</span>
+                  <a :href="downloadUrl" class="download" :download="fileDownloadTitle">下载</a>
+                  <!-- <span class="download">下载</span> -->
                 </div>
               </a-spin>
 
@@ -89,7 +89,8 @@
                       【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】
                     </span>
                   </div>
-                  <span class="download">下载</span>
+                  <!-- <span class="download">下载</span> -->
+                  <a :href="downloadUrl" class="download" :download="fileDownloadTitle">下载</a>
                 </div>
               </div>
             </div>
@@ -133,7 +134,16 @@ export default {
   computed: {
     ...mapGetters(['avatar', 'userId']),
     imgPreviewUrl () {
-      return api + '?fileId=' + this.messageInfo.content.id
+      return api.imgPrevie + '?fileId=' + this.messageInfo.content.id
+    },
+    downloadUrl () {
+      return api.fileDownload + '?fileId=' + this.messageInfo.content.id
+    },
+    fileDownloadTitle () {
+      return '[' +
+        this.$options.filters.fileSecret(this.messageInfo.content.secretLevel) +
+        ']' +
+        this.messageInfo.content.title
     }
   },
   watch: {
