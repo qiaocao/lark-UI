@@ -522,7 +522,7 @@ export default {
       const index = this.imgFormat.indexOf(extension)
       tweet.content = {
         id: id,
-        url: url,
+        url: '/api/chat/zzFileManage/GetFile?fileId=eVN8UWex&t=1561193135178',
         type: index < 0 ? 3 : 2,
         extension: extension,
         title: title,
