@@ -77,7 +77,7 @@
           <!-- 上传文件 -->
           <a-upload
             name="file"
-            action="/api/chat/zzFileManage/singleFileUpload"
+            :action="fileUploadUrl"
             listType="picture"
             class="upload-list-inline"
             :showUploadList="false"
@@ -161,8 +161,7 @@
 <script>
 import { MessagePiece, TalkHistory, MoreInfo, GroupNotice, TalkSetting, MarkMessage, TalkFile } from '@/components/Talk'
 import { LandingStatus } from '@/utils/constants'
-// import { uploadFile } from '@/api/talk'
-// 引入密级常量
+import api from '@/api/talk'
 import { SocketMessage, Tweet } from '@/utils/talk'
 import VEmojiPicker from 'v-emoji-picker'
 import packData from 'v-emoji-picker/data/emojis.json'
@@ -237,6 +236,9 @@ export default {
       if (this.onlineState === LandingStatus.ONLINE) {
         return this.fileUpload.status && this.fileUpload.status !== 'done'
       } else return true
+    },
+    fileUploadUrl () {
+      return api.fileUpload
     }
   },
   watch: {
@@ -520,7 +522,7 @@ export default {
       const index = this.imgFormat.indexOf(extension)
       tweet.content = {
         id: id,
-        url: url,
+        url: '/api/chat/zzFileManage/GetFile?fileId=eVN8UWex&t=1561193135178',
         type: index < 0 ? 3 : 2,
         extension: extension,
         title: title,

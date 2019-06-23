@@ -24,12 +24,12 @@
     <div v-if="Object.keys(groupInfo).length && !loadingState" class="selected-info">
       <div class="info-wrapper">
         <div class="name-and-org">
-          <p>{{ groupInfo.groupName }}</p>
-          <p>{{ groupInfo.groupDescribe }}</p>
+          <p>{{ groupInfo.name }}</p>
+          <p>{{ groupInfo.description }}</p>
         </div>
 
-        <a-avatar class="avatar-img" shape="square" :src="groupInfo.groupImg" :size="75">
-          <span>{{ groupInfo.groupName }}</span>
+        <a-avatar class="avatar-img" shape="square" :src="groupInfo.avatar" :size="75">
+          <span>{{ groupInfo.name }}</span>
         </a-avatar>
       </div>
 
@@ -37,11 +37,11 @@
         <div class="info-list">
           <div>
             <p class="attr">密级</p>
-            <p class="val">{{ groupInfo.levels | fileSecret }}</p>
+            <p class="val">{{ groupInfo.securityClass | fileSecret }}</p>
           </div>
           <div>
-            <p class="attr">参与范围</p>
-            <p class="val">{{ groupInfo.scop }}</p>
+            <p class="attr">主题</p>
+            <p class="val">{{ groupInfo.subject }}</p>
           </div>
           <div>
             <p class="attr">创建人</p>
@@ -94,7 +94,7 @@ export default {
       getGroupInfo(groupId).then(
         res => {
           if (res.status === 200) {
-            this.groupInfo = res.result.data
+            this.groupInfo = res.result
           }
 
           this.loadingState = false
@@ -105,12 +105,12 @@ export default {
       )
     },
     sendMessage (event) {
-      const { groupId, groupName, groupImg, levels, memberNum } = this.groupInfo
+      const { id, name, avatar, securityClass, memberNum } = this.groupInfo
       const groupItem = {
-        id: groupId,
-        name: groupName,
-        avatar: groupImg,
-        secretLevel: levels,
+        id: id,
+        name: name,
+        avatar: avatar,
+        secretLevel: JSON.parse(securityClass),
         memberNum: memberNum,
         isGroup: true
       }

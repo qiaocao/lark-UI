@@ -2,14 +2,19 @@ import { axios } from '@/utils/request'
 
 const api = {
   talkMembers: 'chat/members',
-  groupInfo: 'chat/group/info',
+  groupInfo: 'chat/zzGroup/getGroupInfo',
   groupList: 'chat/zzGroup/queryGroupListByUserId',
   contactsInfo: 'admin/user/',
   contactsTree: 'admin/org/orgUsers',
-  recentContacts: 'chat/recent/list',
+  recentContacts: 'chat/zzGroup/queryContactListById',
   talkMap: 'chat/message/map',
   talkHistory: 'chat/history',
-  upload: 'chat/zzFileManage/singleFileUpload'
+  // 研讨文件上传地址
+  fileUpload: '/api/chat/zzFileManage/singleFileUpload',
+  // 图片预览地址
+  imgPrevie: '/api/chat/zzFileManage/GetFile',
+  // 文件下载地址
+  fileDownload: '/api/chat/zzFileManage/downloadFile'
 }
 
 export default api
@@ -102,6 +107,21 @@ export function getTalkMap (userId) {
     method: 'GET',
     params: {
       userId: userId
+    }
+  })
+}
+
+/**
+ * 获取未读消息
+ * @param {String} userId 当前用户id
+ */
+export function getFile (fileId) {
+  return axios({
+    url: api.getFile,
+    method: 'GET',
+    params: {
+      fileId: fileId,
+      t: new Date().getTime()
     }
   })
 }
