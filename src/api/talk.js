@@ -12,7 +12,9 @@ const api = {
   // 研讨文件上传地址
   fileUpload: '/api/chat/zzFileManage/singleFileUpload',
   // 图片预览地址
-  imgPrevie: '/api/chat/zzFileManage/GetFile'
+  imgPrevie: '/api/chat/zzFileManage/GetFile',
+  // 文件下载地址
+  fileDownload: '/api/chat/zzFileManage/downloadFile'
 }
 
 export default api
