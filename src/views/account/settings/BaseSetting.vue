@@ -51,6 +51,7 @@
 import AvatarModal from './AvatarModal'
 import pick from 'lodash.pick'
 import { getuser, updateuser, uploadFile } from '@/api/admin'
+import { FILESERVERIP } from '@/utils/constants'
 export default {
   components: {
     AvatarModal
@@ -64,8 +65,7 @@ export default {
       imageUrl: '/avatar1_200.jpg',
       // 文件名称
       filename: '',
-      user: {},
-      FILESERVERIP: 'http://10.11.24.5:80/'
+      user: {}
     }
   },
   computed: {
@@ -86,7 +86,7 @@ export default {
             // 表单中绑定信息项
             this.form.setFieldsValue(pick(res.result, 'name', 'telephone'))
             if (this.user.avatar) {
-              this.imageUrl = this.FILESERVERIP + this.user.avatar
+              this.imageUrl = FILESERVERIP + this.user.avatar
               console.log(this.imageUrl)
             }
           })
