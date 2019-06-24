@@ -1,11 +1,11 @@
 <template>
   <a-locale-provider :locale="locale">
     <div id="app">
-      <router-view v-if="isLarkClient" />
+      <router-view />
 
-      <div v-else>
+      <!-- <div v-else>
         <NoClient />
-      </div>
+      </div> -->
 
     </div>
   </a-locale-provider>
