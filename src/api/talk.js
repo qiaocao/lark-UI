@@ -9,6 +9,11 @@ const api = {
   recentContacts: 'chat/zzGroup/queryContactListById',
   talkMap: 'chat/message/map',
   talkHistory: 'chat/history',
+  getHistory: 'chat/getHiMsg',
+  getTalksetting: 'talk/group/info',
+  getMoreInfo: '/talk/contacts/info',
+  fileGrabble: '/group/filelist',
+  getContent: 'https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/notice',
   // 研讨文件上传地址
   fileUpload: '/api/chat/zzFileManage/singleFileUpload',
   // 图片预览地址
@@ -151,5 +156,52 @@ export function uploadFile (parameter) {
     method: 'post',
     data: parameter,
     headers: { 'Content-Type': 'multipart/form-data' }
+  })
+}
+/**
+ * 聊天历史记录
+ */
+export function getHistory (parameter) {
+  return axios({
+    url: api.getHistory,
+    method: 'get'
+  })
+}
+
+/**
+ * 群组Talksetting
+ */
+
+export function getTalksetting (parameter) {
+  return axios({
+    url: api.getTalksetting,
+    method: 'get'
+  })
+}
+/**
+ *  MoreInfo
+ */
+export function getMoreInfo (parameter) {
+  return axios({
+    url: api.getMoreInfo,
+    method: 'get'
+  })
+}
+/**
+ * fileGrabble
+ */
+export function fileGrabble (parameter) {
+  return axios({
+    url: api.fileGrabble,
+    method: 'post'
+  })
+}
+/**
+ * GroupNotice
+ */
+export function getContent (parameter) {
+  return axios({
+    url: api.getContent,
+    method: 'post'
   })
 }

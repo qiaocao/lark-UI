@@ -11,7 +11,6 @@
       :width="448"
       :visible="activeOption=='personMoreInfo'"
       :wrapStyle="{marginTop: '64px'}"
-
     >
       <div class="user_box">
         <img :src="items.avatar" alt="">
@@ -52,6 +51,7 @@
   </div>
 </template>
 <script>
+import { getMoreInfo } from '@/api/talk.js'
 export default {
   name: 'PersonMoreInfo',
   props: {
@@ -74,9 +74,16 @@ export default {
     }
   },
   created () {
-    this.$http.get('/talk/contacts/info').then((item) => {
-      this.items = item.result.data
-    })
+
+  },
+  watch: {
+    activeOption (newValue) {
+      if (newValue === 'personMoreInfo') {
+        getMoreInfo().then((item) => {
+          this.items = item.result.data
+        })
+      }
+    }
   },
   methods: {
     onClose () {

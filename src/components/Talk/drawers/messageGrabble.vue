@@ -14,15 +14,16 @@
       <li v-for="(item,index) in NewItems" class="history_cotent" :key="index" :value="item.value">
         <img :src="item.avatar" class="content_l" alt>
         <div class="content_r">
-          <h3>{{ item.name }}</h3>
-          <p @click="isCurrent(item.lastMessage)" :class="{'current':flag}">{{ item.lastMessage }}</p>
+          <h3>{{ item.username }}</h3>
+          <!-- <p @click="isCurrent(item.content.title)" :class="{'current':flag}">{{ item.content.title }}</p> -->
+          <p @click="isCurrent(item.content.title)" :class="{'current':flag}">{{ item.content.title }}</p>
         </div>
         <div class="history_right">
           <span>{{ item.time }}</span>
           <div class="secret" style="margin: 6px 0 0 20px">
-            <a-tag color="orange" v-if="item.Concentrated === 'secret'">秘密</a-tag>
-            <a-tag color="tomato" v-if="item.Concentrated === 'top-secret'">机密</a-tag>
-            <a-tag color="" v-if="item.Concentrated === 'no-secret'">非密</a-tag>
+            <a-tag color="orange" v-if="item.content.secretLevel == '70'">秘密</a-tag>
+            <a-tag color="tomato" v-if="item.content.secretLevel == '80'">机密</a-tag>
+            <a-tag color="" v-if="item.content.secretLevel == '60'">非密</a-tag>
           </div>
         </div>
       </li>
@@ -31,7 +32,7 @@
 
 </template>
 <script>
-import vScroll from 'vue-scroll'
+import { getHistory } from '@/api/talk.js'
 export default {
   name: 'Rabble',
   directives: { scroll },
@@ -47,7 +48,13 @@ export default {
   },
   created () {
     this.activeOption = 'talkHistory'
-    this.getHistory()
+    getHistory().then(data => {
+      const datas = data.result.data[0][1]
+      const dataa = datas.map((item, index, array) => {
+        return item
+      })
+      this.items.push(...dataa)
+    })
   },
   mounted () {
     window.addEventListener('scroll', (this.lazyLoading), true)
@@ -58,9 +65,7 @@ export default {
   updated () {
     // this.lazyLoading()
   },
-  components: {
-    vScroll
-  },
+
   methods: {
     onSearch (value) {
       console.log(value)
@@ -69,17 +74,6 @@ export default {
       if (str.length > 100) {
         this.flag = !this.flag
       }
-    },
-    getHistory () {
-      this.$http
-        .get('https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/history')
-        .then(data => {
-          const datas = data.result.data
-          const dataa = datas.map((item, index, array) => {
-            return item
-          })
-          this.items.push(...dataa)
-        })
     },
 
     // 滚动获取数据
@@ -91,7 +85,8 @@ export default {
         clearTimeout(this.timer)
         this.timer = setTimeout(() => {
           if (this.activeOption === 'talkHistory') {
-            this.getHistory()
+            // this.getHistory()
+            getHistory()
             // if (clientHeight > scrollHeight) {
             //   // return false
             //   console.log('00', '00')
@@ -107,7 +102,7 @@ export default {
       var _this = this
       var NewItems = []
       this.items.map(function (item) {
-        if (item.name.search(_this.searchVal) !== -1 || item.lastMessage.search(_this.searchVal) !== -1 || item.time.search(_this.searchVal) !== -1) {
+        if (item.username.search(_this.searchVal) !== -1 || item.content.title.search(_this.searchVal) !== -1 || item.time.search(_this.searchVal) !== -1) {
           NewItems.push(item)
         }
       })

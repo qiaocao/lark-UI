@@ -12,6 +12,7 @@
     ref="ss"
     v-if="hackReset"
     destroyOnClose
+    key="2"
   >
 
     <sou></sou>

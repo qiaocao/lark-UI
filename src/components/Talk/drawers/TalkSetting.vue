@@ -48,21 +48,24 @@
       </a-row> -->
       <div style="margin-top: 30px">
         <h4 class="float">组名称:</h4>
-        <p class="line_height setting_name">{{ setting.name }}</p>
+        <p class="line_height setting_name">{{ setting.groupName }}</p>
         <div class="secret" style="margin: 6px 0 0 20px,width:30px">
           <a-tag color="orange" v-if="setting.secretLevel === '40'">秘密</a-tag>
           <a-tag color="tomato" v-if="setting.secretLevel === '60'">机密</a-tag>
           <a-tag color="" v-if="setting.secretLevel === '30'">非密</a-tag>
         </div>
       </div>
-
+      <div style="margin-top: 30px">
+        <h4 class="float">创建人:</h4>
+        <p class="line_height">{{ setting.creator }}</p>
+      </div>
       <div style="margin-top: 30px">
         <h4 class="float">描述:</h4>
-        <p class="line_height">{{ setting.description }}</p>
+        <p class="line_height">{{ setting.groupDescribe }}</p>
       </div>
       <div style="margin-top: 30px">
         <h4 class="float">主题:</h4>
-        <p class="line_height">{{ setting.subject }}</p>
+        <p class="line_height">{{ setting.scop }}</p>
       </div>
 
       <div style="margin-top: 30px">
@@ -170,13 +173,14 @@
     </div>
     <ul class="setting_ul">
       <li v-for="(item) in setting" :key="item.key">
-        <img :src="setting.avatar" alt="">
+        <img :src="setting.groupImg" alt="">
         <span>{{ setting.userName }}</span>
       </li>
     </ul>
   </a-drawer>
 </template>
 <script>
+import { getTalksetting } from '@/api/talk.js'
 const data = ['1', '2', '1', '2', '1', '2']
 export default {
   name: 'MoreInfo',
@@ -196,16 +200,12 @@ export default {
       // const ary = []
       if (newValue === 'moreInfo') {
         console.log('在这里加载数据')
-        this.$http.get('talk/group/info').then(res => {
+        getTalksetting().then(res => {
           const datas = res.result.data
           this.setting = datas
         })
       }
     }
-  },
-  created () {
-  },
-  mounted () {
   },
   methods: {
     handleChange (value) {

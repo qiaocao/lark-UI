@@ -54,6 +54,7 @@
 
 </template>
 <script>
+import { fileGrabble } from '@/api/talk.js'
 export default {
   name: 'Rabble',
   data () {
@@ -81,10 +82,9 @@ export default {
     },
 
     getData (callback) {
-      this.$http.post('/group/filelist').then(data => {
+      fileGrabble().then(data => {
         // callback(data.result.data)
         this.data = data.result.data
-        console.log('11111111111', this.data)
       })
     },
     onLoadMore () {
