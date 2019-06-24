@@ -27,6 +27,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import {} from '@/api/talk'
+import { SocketMessage } from '@/utils/talk'
 import BaseInfo from './BaseInfo'
 import UserSelect from './UserSelect'
 import ResultPage from './ResultPage'
@@ -62,15 +63,22 @@ export default {
         const createInfo = {
           creator: this.userId,
           updator: this.userId,
-          type: '6'
+          type: '3'
         }
         Object.assign(this.baseInfo, values, createInfo)
       }
       if (step === 2) {
         Object.assign(this.baseInfo, { userList: values })
+        console.log('创建的数据：')
+        console.log(this.baseInfo)
+        const createGroupMsg = new SocketMessage({
+          code: 3,
+          data: this.baseInfo
+        }).toString()
+        console.log('发送的数据')
+        console.log(createGroupMsg)
+        this.SocketGlobal.send(createGroupMsg)
       }
-      // TODO: 发送请求，创建群组
-      // ···
       if (this.currentTab < 2) {
         this.currentTab += 1
       }

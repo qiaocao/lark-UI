@@ -65,7 +65,7 @@
 
           <div class="group-contacts-container tab-content-container">
             <div v-for="(item, index) in groupList" :key="index" @click="showGroup(item)">
-              <group-item :groupInfo="item" :activated="item.id === activeGroup"></group-item>
+              <group-item :groupInfo="item" :activated="item.groupId === activeGroup"></group-item>
             </div>
 
             <!-- 没有群组或者群组加载失败时的提示信息 -->
@@ -251,12 +251,9 @@ export default {
         query: currentTalk
       })
     },
-    delChat (chat) {
-      this.$store.commit('DEL_CHAT', chat)
-    },
     /** 展示群组详细信息 */
     showGroup (group) {
-      this.activeGroup = group.id
+      this.activeGroup = group.groupId
     },
     /** 展示联系人详细信息 */
     showContacts (key) {

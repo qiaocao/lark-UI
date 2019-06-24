@@ -181,12 +181,12 @@ export default {
   },
   created () {
     // 群成员数据
-    this.$http.get('/talk/members').then(res => {
-      const item = res.result
-      item.map(item => {
-        this.items.push(item)
-      })
-    })
+    // this.$http.get('/talk/members').then(res => {
+    //   const item = res.result
+    //   item.map(item => {
+    //     this.items.push(item)
+    //   })
+    // })
   },
   mounted () {
   },

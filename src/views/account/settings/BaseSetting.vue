@@ -1,7 +1,7 @@
 <template>
   <div class="account-settings-info-view">
-    <a-row :gutter="16">
-      <a-col :md="24" :lg="16">
+    <a-row :gutter="8">
+      <a-col :md="16" :lg="20">
         <a-form layout="vertical" :form="form">
           <a-form-item
             label="姓名"
@@ -23,7 +23,7 @@
           </a-form-item>
         </a-form>
       </a-col>
-      <a-col :md="24" :lg="8" :style="{ minHeight: '180px' }">
+      <a-col :md="8" :lg="4" :style="{ minHeight: '180px' }">
         <div style="margin-left:100px" >
           <a-upload
             name="avatar"
@@ -51,6 +51,7 @@
 import AvatarModal from './AvatarModal'
 import pick from 'lodash.pick'
 import { getuser, updateuser, uploadFile } from '@/api/admin'
+import { FILE_SERVER_IP } from '@/utils/constants'
 export default {
   components: {
     AvatarModal
@@ -64,8 +65,7 @@ export default {
       imageUrl: '/avatar1_200.jpg',
       // 文件名称
       filename: '',
-      user: {},
-      FILESERVERIP: 'http://10.12.97.34:80/'
+      user: {}
     }
   },
   computed: {
@@ -86,7 +86,7 @@ export default {
             // 表单中绑定信息项
             this.form.setFieldsValue(pick(res.result, 'name', 'telephone'))
             if (this.user.avatar) {
-              this.imageUrl = this.FILESERVERIP + this.user.avatar
+              this.imageUrl = FILE_SERVER_IP + this.user.avatar
               console.log(this.imageUrl)
             }
           })
@@ -122,7 +122,7 @@ export default {
         if (res.status === 200) {
           this.imageUrl = res.result
           this.saveInfo({ 'avatar': this.imageUrl })
-          this.imageUrl = this.FILESERVERIP + res.result
+          this.imageUrl = FILE_SERVER_IP + res.result
         }
       })
     },
