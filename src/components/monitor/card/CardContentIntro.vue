@@ -29,7 +29,8 @@ export default {
       timeFix: timeFix(),
       welcome: welcome(),
       avatar: '',
-      user: {}
+      user: {},
+      FILESERVERIP: 'http://10.11.24.5:80/'
     }
   },
   computed: {
@@ -39,7 +40,7 @@ export default {
   },
   created () {
     this.user = this.userInfo
-    this.avatar = this.userInfo.avatar
+    this.avatar = this.FILESERVERIP + this.userInfo.avatar
   }
 }
 </script>
