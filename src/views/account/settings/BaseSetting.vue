@@ -65,7 +65,7 @@ export default {
       // 文件名称
       filename: '',
       user: {},
-      FILESERVERIP: 'http://10.12.97.34:80/'
+      FILESERVERIP: 'http://10.11.24.5:80/'
     }
   },
   computed: {
