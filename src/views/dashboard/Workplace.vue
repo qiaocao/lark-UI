@@ -36,11 +36,15 @@
 
     <footer-tool-bar :style="{height:'72px', width: isSideMenu() && isDesktop() ? `calc(100% - ${sidebarOpened ? 256 : 80}px)` : '100%'}">
       <div class="tool-list">
-        <div class="tool-item">
+        <div class="tool-item" v-for="item in toolList" :key="item.id">
+          <img :src="'/tools/Icon-'+item.description+'.png'" width="40" height="40" :alt="item.description" :title="item.title"/>
+          <div class="tool-name">{{ item.title }}</div>
+        </div>
+        <!-- <div class="tool-item">
           <img src="/tools/Icon-PDM.png" width="40" height="40" alt="PDM" title="项目数据管理系统"/>
           <div class="tool-name">项目数据管理系统</div>
-        </div>
-        <div class="tool-item">
+        </div> -->
+        <!-- <div class="tool-item">
           <img src="/tools/Icon-MPM.png" width="40" height="40" alt="MPM" title="项目管理系统"/>
           <div class="tool-name">项目管理系统</div>
         </div>
@@ -51,7 +55,7 @@
         <div class="tool-item">
           <img src="/tools/Icon-TDM.png" width="40" height="40" alt="TDM" title="试验数据管理系统"/>
           <div class="tool-name">试验数据管理系统</div>
-        </div>
+        </div> -->
       </div>
       <!-- <a-button type="primary" @click="validate" :loading="loading">提交</a-button> -->
     </footer-tool-bar>
@@ -63,7 +67,7 @@ import { mixin, mixinDevice } from '@/utils/mixin'
 import FooterToolBar from '@/components/FooterToolbar'
 import VueGridLayout from 'vue-grid-layout'
 import LCard from '@/views/dashboard/Card'
-
+import { getCommonTools, getUserCard } from '@/api/workplace'
 export default {
   name: 'Monitor',
   mixins: [mixin, mixinDevice],
@@ -74,7 +78,8 @@ export default {
       // items: generateItems(50, i => ({ id: i, data: 'Draggable' + i }))
       is: [],
       ids: [],
-      index: ''
+      index: '',
+      toolList: []
     }
   },
   components: {
@@ -85,11 +90,13 @@ export default {
   },
   created () {
     this.getSelfWorkplace()
+    this.getSelfTools()
   },
   methods: {
     getSelfWorkplace () {
       this.cardList = []
-      this.$http.get('/portal/userCard/myself')
+      // this.$http.get('/portal/userCard/myself')
+      getUserCard()
         .then(res => {
           const dataTemp = res.result.data
           for (var i = 0; i < dataTemp.length; i++) {
@@ -108,6 +115,14 @@ export default {
         })
     },
     /**
+     * 获取个人常用工具栏信息 byfanjiao
+     */
+    getSelfTools () {
+      getCommonTools().then(res => {
+        this.toolList = res.result.data
+      })
+    },
+    /**
      * 子组件点击移除卡片后触发 by fanjiao
      */
     refreshCard () {
@@ -119,7 +134,8 @@ export default {
     moved (a, newX, newY) {
       const i = (2 * newY) / 5
       const index = this.index
-      this.$http.get('/portal/userCard/myself', {
+      // this.$http.get('/portal/userCard/myself', {
+      getUserCard({
         params: {
           list: {
             cardId: this.ids[index],

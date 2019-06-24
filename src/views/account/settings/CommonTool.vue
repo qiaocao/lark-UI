@@ -14,28 +14,28 @@
         <a-input-search style="margin-left: 16px; width: 272px;" />
       </div>
 
-      <a-list size="large" :pagination="{showSizeChanger: true, showQuickJumper: true, pageSize: 5, total: 50}">
+      <a-list size="large">
         <a-list-item :key="index" v-for="(item, index) in data">
           <a-list-item-meta :description="item.description">
-            <a-avatar slot="avatar" size="large" shape="square" :src="item.avatar"/>
+            <a-avatar slot="avatar" size="large" shape="square" :src="'/tools/Icon-'+item.description+'.png'"/>
             <a slot="title">{{ item.title }}</a>
           </a-list-item-meta>
           <div slot="actions">
             <a @click="addId(item.id), isShow($event, index)" v-if="flag[index]">加入常用</a>
-            <a v-if="flags[index]">已添加</a>
+            <a @click="removeId(item.id), isShow($event, index)" v-if="flags[index]">已添加</a>
           </div>
           <div class="list-content">
-            <div class="list-content-item">
+            <!-- <div class="list-content-item">
               <span>所属部门</span>
               <p>{{ item.owner }}</p>
-            </div>
+            </div> -->
+            <!-- <div class="list-content-item">
+              <span>使用量</span>
+              <p>{{ item.downloadNum }}</p>
+            </div> -->
             <div class="list-content-item">
               <span>更新时间</span>
               <p>{{ item.startAt }}</p>
-            </div>
-            <div class="list-content-item">
-              <span>使用量</span>
-              <p>{{ item.downloadNum }}</p>
             </div>
             <div class="list-content-item">
               <a-rate :defaultValue="item.star" disabled />
@@ -44,12 +44,11 @@
         </a-list-item>
       </a-list>
       <div v-text="t" style="display:none"></div>
-      <!--  style="display:none " -->
     </a-card>
   </div>
 </template>
-
 <script>
+import { setCheckCommonTools, getSelfCommonTools, delCheckCommonTools } from '@/api/setting'
 export default {
   name: 'StandardList',
   components: {
@@ -66,31 +65,57 @@ export default {
     this.getData()
   },
   methods: {
+    /**
+     * 添加个人常用工具
+     */
     addId (id) {
-      this.$http.get('/workplace/card', {
-        params: {
-          id: id,
-          userId: this.$store.state.user.name
-        }
-      }).then(res => {
-      })
+      setCheckCommonTools({ 'toolId': id })
+        .then(res => {
+          if (res.status === 200) {
+            this.$notification['success']({
+              message: '操作成功',
+              duration: 2
+            })
+          }
+        })
     },
+    /**
+     * 取消个人常用工具
+     */
+    removeId (id) {
+      delCheckCommonTools({ 'commonToolId': id })
+        .then(res => {
+          if (res.status === 200) {
+            this.$notification['success']({
+              message: '取消常用',
+              duration: 2
+            })
+          }
+        })
+    },
+    /**
+     * 加入常用/已添加 按钮切换
+     */
     isShow ($event, index) {
-      // console.log('index', this.flag)
       this.t = Math.random()
-      this.flag[index] = false
-      console.log('show', this.flag[index], index)
-
-      this.flags[index] = true
+      this.flag[index] = !this.flag[index]
+      this.flags[index] = !this.flags[index]
     },
+    /**
+     * 获取工具
+     */
     getData () {
-      this.$http.get('/setting/commontool').then(res => {
+      getSelfCommonTools().then(res => {
         const datas = res.result.data
-        datas.map(res => {
-          this.data.push(res)
-          this.flags.push(false)
-          this.flag.push(true)
-          // console.log('data', this.data)
+        datas.map(item => {
+          this.data.push(item)
+          if (item.defaultChecked === true) {
+            this.flags.push(true)
+            this.flag.push(false)
+          } else {
+            this.flags.push(false)
+            this.flag.push(true)
+          }
         })
       })
     }
