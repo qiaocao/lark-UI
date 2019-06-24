@@ -3,7 +3,7 @@
     <div v-if="listData.length!=0" class="card-content">
       <a-list
         :bordered="bordered"
-        :dataSource="listData.slice(8)"
+        :dataSource="listData.slice(0, 8)"
         class="card-list"
       >
         <a-list-item style="padding: 3px 21px 3px 21px" slot="renderItem" slot-scope="item">

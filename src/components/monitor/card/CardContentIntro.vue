@@ -22,6 +22,7 @@
 <script>
 import { timeFix, welcome } from '@/utils/util'
 import HeadInfo from '@/components/tools/HeadInfo'
+import { FILESERVERIP } from '@/utils/constants'
 export default {
   components: { HeadInfo },
   data () {
@@ -39,7 +40,7 @@ export default {
   },
   created () {
     this.user = this.userInfo
-    this.avatar = this.userInfo.avatar
+    this.avatar = FILESERVERIP + this.userInfo.avatar
   }
 }
 </script>
