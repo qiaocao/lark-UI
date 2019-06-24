@@ -34,8 +34,11 @@ const LandingStatus = {
   OFFLINE: 3
 }
 
+const FILE_SERVER_IP = 'http://10.11.24.5:80/'
+
 export {
   SECRETLEVEL_ENUM,
   ErrorType,
-  LandingStatus
+  LandingStatus,
+  FILE_SERVER_IP
 }

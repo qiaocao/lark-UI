@@ -318,7 +318,7 @@ export default {
           // resData.splice(resData.findIndex(item => item.title === '工作舱'), 1)
           // 按钮多选框禁用‘工作舱’和‘登录’
           resData.forEach((item, index) => {
-            if (item.title === '工作舱' || item.title === '登录') {
+            if (item.title === '工作舱' || item.title === '登录' || item.title === '个人中心' || item.title === '协同研讨') {
               this.checkboxdisabled[index] = true
             } else {
               this.checkboxdisabled[index] = false

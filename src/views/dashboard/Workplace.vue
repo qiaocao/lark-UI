@@ -28,7 +28,7 @@
           @moved="moved"
           @move="click(indexs)"
         >
-          <l-card :cardData="grid"></l-card>
+          <l-card :cardData="grid" @refreshCard="refreshCard"></l-card>
         </grid-item>
       </grid-layout>
     </div>
@@ -36,11 +36,15 @@
 
     <footer-tool-bar :style="{height:'72px', width: isSideMenu() && isDesktop() ? `calc(100% - ${sidebarOpened ? 256 : 80}px)` : '100%'}">
       <div class="tool-list">
-        <div class="tool-item">
+        <div class="tool-item" v-for="item in toolList" :key="item.id">
+          <img :src="'/tools/Icon-'+item.description+'.png'" width="40" height="40" :alt="item.description" :title="item.title"/>
+          <div class="tool-name">{{ item.title }}</div>
+        </div>
+        <!-- <div class="tool-item">
           <img src="/tools/Icon-PDM.png" width="40" height="40" alt="PDM" title="项目数据管理系统"/>
           <div class="tool-name">项目数据管理系统</div>
-        </div>
-        <div class="tool-item">
+        </div> -->
+        <!-- <div class="tool-item">
           <img src="/tools/Icon-MPM.png" width="40" height="40" alt="MPM" title="项目管理系统"/>
           <div class="tool-name">项目管理系统</div>
         </div>
@@ -51,7 +55,7 @@
         <div class="tool-item">
           <img src="/tools/Icon-TDM.png" width="40" height="40" alt="TDM" title="试验数据管理系统"/>
           <div class="tool-name">试验数据管理系统</div>
-        </div>
+        </div> -->
       </div>
       <!-- <a-button type="primary" @click="validate" :loading="loading">提交</a-button> -->
     </footer-tool-bar>
@@ -63,19 +67,19 @@ import { mixin, mixinDevice } from '@/utils/mixin'
 import FooterToolBar from '@/components/FooterToolbar'
 import VueGridLayout from 'vue-grid-layout'
 import LCard from '@/views/dashboard/Card'
-
+import { getCommonTools, getUserCard } from '@/api/workplace'
 export default {
   name: 'Monitor',
   mixins: [mixin, mixinDevice],
   data () {
     return {
-
       cardList: [],
       cardSize: { maxH: 5, minH: 5, maxW: 1, minW: 1 },
       // items: generateItems(50, i => ({ id: i, data: 'Draggable' + i }))
       is: [],
       ids: [],
-      index: ''
+      index: '',
+      toolList: []
     }
   },
   components: {
@@ -86,32 +90,53 @@ export default {
   },
   created () {
     this.getSelfWorkplace()
+    this.getSelfTools()
   },
   methods: {
     getSelfWorkplace () {
-      this.$http.get('/portal/userCard/myself')
+      this.cardList = []
+      // this.$http.get('/portal/userCard/myself')
+      getUserCard()
         .then(res => {
-          this.cardList = res.result.data
-          this.cardList.map(res => {
-            this.is.push(res.i)
-            this.ids.push(res.id)
-          })
-          this.cardList.forEach(item => {
-            item.x = 1 * parseInt(item.i % 2)
-            item.y = 5 * parseInt(item.i / 2)
-          })
+          const dataTemp = res.result.data
+          for (var i = 0; i < dataTemp.length; i++) {
+            const temp = {}
+            temp.id = dataTemp[i].id
+            temp.x = 1 * parseInt(dataTemp[i].i % 2)
+            temp.y = 5 * parseInt(dataTemp[i].i / 2)
+            temp.w = 1
+            temp.h = 5
+            temp.i = dataTemp[i].i
+            temp.type = dataTemp[i].type
+            temp.title = dataTemp[i].title
+            temp.url = dataTemp[i].url
+            this.cardList.push(temp)
+          }
         })
+    },
+    /**
+     * 获取个人常用工具栏信息 byfanjiao
+     */
+    getSelfTools () {
+      getCommonTools().then(res => {
+        this.toolList = res.result.data
+      })
+    },
+    /**
+     * 子组件点击移除卡片后触发 by fanjiao
+     */
+    refreshCard () {
+      this.getSelfWorkplace()
     },
     click (index) {
       this.index = index
     },
     moved (a, newX, newY) {
-      console.log('MOVED i=' + a + ', X=' + newX + ', Y=' + newY)
       const i = (2 * newY) / 5
       const index = this.index
-      this.$http.get('/portal/userCard/myself', {
+      // this.$http.get('/portal/userCard/myself', {
+      getUserCard({
         params: {
-          userid: '211221',
           list: {
             cardId: this.ids[index],
             i: Math.round(i)

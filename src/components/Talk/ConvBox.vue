@@ -77,14 +77,15 @@
           <!-- 上传文件 -->
           <a-upload
             name="file"
-            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            :action="fileUploadUrl"
             listType="picture"
             class="upload-list-inline"
             :showUploadList="false"
             :headers="headers"
             @change="handleUpload"
+            :beforeUpload="beforeUpload"
             :openFileDialogOnClick="!Object.keys(fileUpload).length">
-
+            <!-- :customRequest="customRequest" -->
             <a-tooltip
               placement="top"
               :title="Object.keys(fileUpload).length ? '有未发送文件' : '选择文件'"
@@ -160,14 +161,13 @@
 <script>
 import { MessagePiece, TalkHistory, MoreInfo, GroupNotice, TalkSetting, MarkMessage, TalkFile } from '@/components/Talk'
 import { LandingStatus } from '@/utils/constants'
-// 引入密级常量
+import api from '@/api/talk'
 import { SocketMessage, Tweet } from '@/utils/talk'
 import VEmojiPicker from 'v-emoji-picker'
 import packData from 'v-emoji-picker/data/emojis.json'
 import { mapGetters } from 'vuex'
 // 生成随机uuid
 import uuidv4 from 'uuid/v4'
-
 export default {
   name: 'ConvBox',
   components: {
@@ -211,7 +211,7 @@ export default {
       // 控制表情选择框不自动关闭
       emojisVisible: false,
       // 文件上传时的请求头部
-      headers: { authorization: 'authorization-text', 'Access-Control-Allow-Origin': '*' },
+      headers: {},
       // 上传的文件
       fileUpload: {},
       // 文件上传状态对应表
@@ -227,7 +227,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['onlineState', 'userSecretLevel', 'userId', 'avatar', 'nickname']),
+    ...mapGetters(['onlineState', 'userSecretLevel', 'userId', 'avatar', 'nickname', 'token']),
     emojisNative () {
       return packData
     },
@@ -236,6 +236,9 @@ export default {
       if (this.onlineState === LandingStatus.ONLINE) {
         return this.fileUpload.status && this.fileUpload.status !== 'done'
       } else return true
+    },
+    fileUploadUrl () {
+      return api.fileUpload
     }
   },
   watch: {
@@ -264,7 +267,10 @@ export default {
       immediate: true
     },
     messageList: function (newValue) {
-      this.$store.commit('SET_TALK_MAP', [[this.chatInfo.id, newValue]])
+      this.$store.commit('SET_TALK_MAP', {
+        fromServer: false,
+        talkMapData: [[this.chatInfo.id, newValue]]
+      })
       // 滚动到最下方
       this.scrollToBottom()
     }
@@ -274,6 +280,23 @@ export default {
     this.scrollToBottom()
   },
   methods: {
+    /**
+     * 重写上传action方法
+     */
+    // customRequest (data) {
+    //   const formData = new FormData()
+    //   formData.append('file', data.file)
+    //   data.onProgress()
+    //   uploadFile(formData).then(res => {
+    //     if (res.status === 200) {
+    //       // const imageUrl = res.result
+    //       // vue-cropper插件img绑定url时，会有跨域问题，图片类型转base64传递到子组件
+    //       this.getBase64(data.file, (imageUrl) => {
+    //         this.$refs.modal.edit(imageUrl)
+    //       })
+    //     }
+    //   })
+    // },
     /**
      * 文件上传状态变化时触发
      * @param {Object} info {file, fileList}
@@ -286,6 +309,9 @@ export default {
         this.$message.error(`${file.name} 上传失败.`)
         this.fileUpload = {}
       }
+    },
+    beforeUpload () {
+      this.headers.authorization = this.token
     },
     /**
      * 清除上传的文件
@@ -357,7 +383,10 @@ export default {
     getCacheMessage () {
       const hasCache = this.$store.state.talk.talkMap.has(this.chatInfo.id)
       if (!hasCache) {
-        this.$store.commit('SET_TALK_MAP', [[this.chatInfo.id, []]])
+        this.$store.commit('SET_TALK_MAP', {
+          fromServer: false,
+          talkMapData: [[this.chatInfo.id, []]]
+        })
       }
       this.messageList = this.$store.state.talk.talkMap.get(this.chatInfo.id)
     },
@@ -499,7 +528,7 @@ export default {
       const index = this.imgFormat.indexOf(extension)
       tweet.content = {
         id: id,
-        url: url,
+        url: '/api/chat/zzFileManage/GetFile?fileId=eVN8UWex&t=1561193135178',
         type: index < 0 ? 3 : 2,
         extension: extension,
         title: title,

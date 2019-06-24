@@ -10,11 +10,10 @@
       >
         <img
           alt="example"
-          :src="item.icon"
+          :src="cardImg[index]"
           slot="cover"
         />
         <template class="ant-card-actions" slot="actions">
-          <!-- <a-icon @click="click($event, index), pushId(item.id)" type="plus" v-if="isPlus[index]" /> -->
           <a-tooltip placement="left" v-if="isPlus[index]" >
             <template slot="title">
               <span>添加卡片</span>
@@ -32,83 +31,114 @@
         </template>
         <a-card-meta
           :title="item.title"
-          :description="item.detail">
+          :description="item.description">
         </a-card-meta>
       </a-card>
     </a-list-item>
     <div v-text="t" style="display:none"></div>
-
   </a-list>
 </template>
 <script>
-
+import { getCard, addCard, delCard } from '@/api/admin'
 export default {
   data () {
     return {
       cardList: [],
-      cardIdList: [],
       isPlus: [],
       isDelete: [],
-      t: ''
+      t: '',
+      cardImg: ['/card/collection.png', '/card/message.png', '/card/notice.png', '/card/todo.png', '/card/collection.png', '/card/message.png']
     }
   },
   created () {
     this.getAllCards()
   },
   methods: {
+    /**
+     * 添加/显示卡片
+     */
     click (event, index) {
       this.isPlus[index] = false
       this.isDelete[index] = true
       this.t = Math.random()
     },
+    /**
+     * 删除/隐藏卡片
+     */
     clickDelete (event, index) {
       this.isDelete[index] = false
       this.isPlus[index] = true
       this.t = Math.random()
     },
+    /**
+     * 获取卡片
+     */
     getAllCards () {
-      this.$http.get('/portal/userCard/cards')
+      getCard()
         .then(res => {
           const datas = res.result.data
           datas.map(res => {
             this.cardList.push(res)
-            this.isPlus.push(true)
-            // this.isDelete.push(false)
-            if (res.boolean === false) {
-              this.isDelete.push(true)
-            } else {
+            if (res.defaultChecked === false) {
               this.isDelete.push(false)
+              this.isPlus.push(true)
+            } else {
+              this.isDelete.push(true)
+              this.isPlus.push(false)
             }
           })
         })
     },
-
-    // 选择card
+    /**
+     * 添加卡片
+     */
     pushId (cardId) {
-      this.$http.post('/workplace/card', {
-        params: {
-          cardId: cardId,
-          userId: this.$store.state.user.name
+      addCard({ 'cardId': cardId }).then(
+        res => {
+          if (res.status === 200) {
+            this.$notification['success']({
+              message: '操作成功',
+              duration: 2
+            })
+          } else {
+            this.$notification['error']({
+              message: res.message,
+              duration: 4
+            })
+          }
         }
-      }).then(res => {
-      })
+      ).catch(() =>
+        this.$notification['error']({
+          message: '发生异常，请联系系统管理员',
+          duration: 4
+        })
+      )
     },
-    // 删除cardId
+    /**
+     * 删除卡片
+     */
     deleteId (cardId) {
-      this.$http.get('/workplace/card', {
-        params: {
-          cardId: cardId,
-          userId: this.$store.state.user.name
+      delCard({ 'cardId': cardId }).then(
+        res => {
+          if (res.status === 200) {
+            this.$notification['success']({
+              message: '操作成功',
+              duration: 2
+            })
+          } else {
+            this.$notification['error']({
+              message: res.message,
+              duration: 4
+            })
+          }
         }
-      }).then(res => {
-
-      })
+      ).catch(() =>
+        this.$notification['error']({
+          message: '发生异常，请联系系统管理员',
+          duration: 4
+        })
+      )
     }
-    // getCard () {
-    //   this.$http.get('/workplace/card').then(res => {
-    //     this.cardIdList = res.result.data
-    //   })
-    // },
   }
 }
 </script>

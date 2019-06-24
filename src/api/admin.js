@@ -20,12 +20,17 @@ const api = {
   getnoticepage: '/admin/notice/page',
   notice: 'admin/notice',
   noticesend: 'admin/notice/send',
-  upload: '/admin/fileupload',
+  // upload: '/fdfs/file/thumbImage',
+  upload: '/fdfs/file/upload',
   getmenu: '/admin/menu/page',
   getmenuall: '/admin/menu/all',
   menu: '/admin/menu',
   menuelement: '/admin/menu/element',
   roleuser: '/admin/role/user',
+  // 个人卡片设置
+  card: '/portal/userCard/cards',
+  usercard: '/portal/userCard/myself',
+  gatelog: '/admin/gateLog/page',
   // 临时增加，方便测试
   getUserBySecret: 'admin/user/list'
 }
@@ -49,6 +54,15 @@ export function getUserList (parameter) {
     url: api.getuser,
     method: 'get',
     params: parameter
+  })
+}
+/**
+ * 根据用户id获取用户信息
+ */
+export function getuser (parameter) {
+  return axios({
+    url: api.user + '/' + parameter,
+    method: 'get'
   })
 }
 /**
@@ -265,7 +279,8 @@ export function uploadFile (parameter) {
   return axios({
     url: api.upload,
     method: 'post',
-    params: parameter
+    data: parameter,
+    headers: { 'Content-Type': 'multipart/form-data' }
   })
 }
 /**
@@ -357,7 +372,45 @@ export function saveRoleUser (parameter) {
     data: parameter
   })
 }
-// saveUserOrg
+/**
+ * 新增卡片
+ */
+export function addCard (parameter) {
+  return axios({
+    url: api.usercard,
+    method: 'post',
+    data: parameter
+  })
+}
+/**
+ * 删除卡片
+ */
+export function delCard (parameter) {
+  return axios({
+    url: api.usercard,
+    method: 'delete',
+    params: parameter
+  })
+}
+/**
+ * 获取卡片
+ */
+export function getCard () {
+  return axios({
+    url: api.card,
+    method: 'get'
+  })
+}
+/**
+ * 获取网关日志
+ */
+export function getGateLog (parameter) {
+  return axios({
+    url: api.gatelog,
+    method: 'get',
+    params: parameter
+  })
+}
 /**
  * 临时增加，通过密级获取用户列表
  * @param {Object} parameter {secretLevel: 60}

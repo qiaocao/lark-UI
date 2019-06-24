@@ -3,7 +3,7 @@
     <div v-if="listData.length!=0" class="card-content">
       <a-list
         :bordered="bordered"
-        :dataSource="listData"
+        :dataSource="listData.slice(0, 8)"
         class="card-list"
       >
         <a-list-item style="padding: 3px 21px 3px 21px" slot="renderItem" slot-scope="item">
@@ -15,7 +15,8 @@
 
             <div slot="title">{{ item.title }}</div>
           </a-list-item-meta>
-          <div>{{ item.date|timeFormat }}</div>
+          <!-- TODO 接口未提供消息发布时间 -->
+          <!-- <div>{{ item.date|timeFormat }}</div> -->
         </a-list-item>
       </a-list>
     </div>

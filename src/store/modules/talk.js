@@ -149,14 +149,25 @@ const talk = {
     },
     /**
      * 更新talkMap
-     * @param {Array} talkMapList 赋值数组
+     * @param {Object} talkMapObject 赋值数组
+     * {
+     *    fromServer: true,
+     *    talkMapData: [['123', {}, {}], ['123', {}, {}]] 或者
+     *                 [['123', [{}, {}]], ['123', [{}, {}]]]
+     * }
      */
-    SET_TALK_MAP (state, talkMapList) {
-      talkMapList.forEach(function (item) {
-        if (item[1] instanceof Array) {
-          state.talkMap.set(item[0], item[1])
-        }
-      })
+    SET_TALK_MAP (state, talkMapObject) {
+      if (talkMapObject.fromServer) {
+        talkMapObject.talkMapData.forEach(function (item) {
+          state.talkMap.set(item[0], item.slice(1))
+        })
+      } else {
+        talkMapObject.talkMapData.forEach(function (item) {
+          if (item[1] instanceof Array) {
+            state.talkMap.set(item[0], item[1])
+          }
+        })
+      }
     },
     SET_CURRENT_TALK (state, currentTalk) {
       state.currentTalk = currentTalk
@@ -260,11 +271,12 @@ const talk = {
         router.currentRoute.query.id)
       // 告知服务器未读消息的状态
       // TODO: 告知服务器的条件还要再加判断
-      syncUnread2Server(
-        newItem.unreadNum,
-        rootGetters.onlineState === LandingStatus.ONLINE,
-        rootGetters.userId,
-        freshItem.id)
+      if (newItem.unreadNum === 0) {
+        syncUnread2Server(
+          rootGetters.onlineState === LandingStatus.ONLINE,
+          rootGetters.userId,
+          freshItem.id)
+      }
       if (index > -1) {
         this._vm.$delete(recentContacts, index)
       }
@@ -292,7 +304,10 @@ const talk = {
       return new Promise((resolve, reject) => {
         getTalkMap(rootGetters.userId).then(response => {
           if (response.status === 200) {
-            commit('SET_TALK_MAP', [ ...response.result.data ])
+            commit('SET_TALK_MAP', {
+              fromServer: true,
+              talkMapData: response.result.data
+            })
           } else {
             reject(new Error('getTalkMap: 服务器发生错误'))
           }
@@ -310,7 +325,10 @@ const talk = {
       if (newMessage.fromId === rootGetters.userId) return
       const tempMessageList = state.talkMap.get(newMessage.contactInfo.id) || []
       tempMessageList.push(new Tweet(newMessage))
-      commit('SET_TALK_MAP', [[newMessage.contactInfo.id, tempMessageList]])
+      commit('SET_TALK_MAP', {
+        fromServer: false,
+        talkMapData: [[newMessage.contactInfo.id, tempMessageList]]
+      })
     },
     /**
      * 更新缓存中的草稿信息
