@@ -37,7 +37,7 @@
         <div class="info-list">
           <div>
             <p class="attr">密级</p>
-            <p class="val">{{ groupInfo.secretLevel | fileSecret }}</p>
+            <p class="val">{{ groupInfo.securityClass | fileSecret }}</p>
           </div>
           <div>
             <p class="attr">主题</p>
@@ -94,7 +94,7 @@ export default {
       getGroupInfo(groupId).then(
         res => {
           if (res.status === 200) {
-            this.groupInfo = res.result.data
+            this.groupInfo = res.result
           }
 
           this.loadingState = false
@@ -105,7 +105,15 @@ export default {
       )
     },
     sendMessage (event) {
-      const groupItem = this.groupInfo
+      const { id, name, avatar, securityClass, memberNum } = this.groupInfo
+      const groupItem = {
+        id: id,
+        name: name,
+        avatar: avatar,
+        secretLevel: JSON.parse(securityClass),
+        memberNum: memberNum,
+        isGroup: true
+      }
       this.$emit('clickSend')
       this.$router.push({
         path: '/talk/ChatPanel/ChatBox',

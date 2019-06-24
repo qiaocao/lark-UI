@@ -1,7 +1,7 @@
 <template>
   <div class="account-settings-info-view">
-    <a-row :gutter="16">
-      <a-col :md="24" :lg="16">
+    <a-row :gutter="8">
+      <a-col :md="16" :lg="20">
         <a-form layout="vertical" :form="form">
           <a-form-item
             label="姓名"
@@ -23,7 +23,7 @@
           </a-form-item>
         </a-form>
       </a-col>
-      <a-col :md="24" :lg="8" :style="{ minHeight: '180px' }">
+      <a-col :md="8" :lg="4" :style="{ minHeight: '180px' }">
         <div style="margin-left:100px" >
           <a-upload
             name="avatar"

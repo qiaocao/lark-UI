@@ -4,10 +4,13 @@
 
 // 密级常量
 const SECRETLEVEL_ENUM = new Map([
-  [60, { people: '非密', file: '非密' }],
-  [70, { people: '一般', file: '秘密' }],
-  [80, { people: '重要', file: '机密' }],
-  ['default', '非密']
+  ['default', '非密'],
+  // 服务端传递的密级参数
+  [30, { people: '非密', file: '非密' }],
+  [40, { people: '一般', file: '秘密' }],
+  [50, { people: '一般', file: '秘密' }],
+  [60, { people: '重要', file: '机密' }],
+  [70, { people: '重要', file: '机密' }]
 ])
 
 // 错误类型
@@ -32,6 +35,7 @@ const LandingStatus = {
 }
 
 const FILESERVERIP = 'http://10.11.24.5:80/'
+
 export {
   SECRETLEVEL_ENUM,
   ErrorType,
