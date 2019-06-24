@@ -67,7 +67,7 @@ import { mixin, mixinDevice } from '@/utils/mixin'
 import FooterToolBar from '@/components/FooterToolbar'
 import VueGridLayout from 'vue-grid-layout'
 import LCard from '@/views/dashboard/Card'
-import { getCommonTools, getUserCard } from '@/api/workplace'
+import { getCommonTools, getUserCard, moveUserCard } from '@/api/workplace'
 export default {
   name: 'Monitor',
   mixins: [mixin, mixinDevice],
@@ -79,7 +79,8 @@ export default {
       is: [],
       ids: [],
       index: '',
-      toolList: []
+      toolList: [],
+      cardmap: new Map()
     }
   },
   components: {
@@ -95,7 +96,6 @@ export default {
   methods: {
     getSelfWorkplace () {
       this.cardList = []
-      // this.$http.get('/portal/userCard/myself')
       getUserCard()
         .then(res => {
           const dataTemp = res.result.data
@@ -129,20 +129,15 @@ export default {
       this.getSelfWorkplace()
     },
     click (index) {
+      alert(11)
       this.index = index
     },
     moved (a, newX, newY) {
-      const i = (2 * newY) / 5
-      const index = this.index
-      // this.$http.get('/portal/userCard/myself', {
-      getUserCard({
-        params: {
-          list: {
-            cardId: this.ids[index],
-            i: Math.round(i)
-          }
-        }
-      }).then(res => {
+      console.log('this.cardmap', this.cardmap)
+      this.cardmap.set(this.ids[this.index], this.index)
+      // const i = (2 * newY) / 5
+      // const index = this.index
+      moveUserCard(this.cardmap).then(res => {
       })
       this.getId()
     },
