@@ -29,7 +29,7 @@
       </a-spin>
     </template>
     <span @click="fetchNotice" class="header-notice">
-      <a-badge count="12">
+      <a-badge :count="msgNum">
         <a-icon style="font-size: 16px; padding: 4px" type="bell" />
       </a-badge>
     </span>
@@ -45,7 +45,8 @@ export default {
     return {
       loadding: false,
       visible: false,
-      msglist: []
+      msglist: [],
+      msgNum: 0
     }
   },
   computed: {
@@ -61,6 +62,7 @@ export default {
         return getNotice({ 'orgCode': this.userInfo.orgCode }).then(res => {
           if (res.status === 200) {
             this.msglist = res.result.data
+            this.msgNum = res.result.count
             this.loadding = false
           }
         })

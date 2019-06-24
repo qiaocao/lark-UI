@@ -15,9 +15,9 @@
           <a-menu-item>
             <a href="javascript:;" @click="removeCard(content.id)">移除卡片</a>
           </a-menu-item>
-          <a-menu-item>
+          <!-- <a-menu-item>
             <a href="javascript:;">查看全部</a>
-          </a-menu-item>
+          </a-menu-item> -->
         </a-menu>
       </a-dropdown>
       <div v-if="content.type=='info'">
@@ -58,12 +58,8 @@
                 <mini-progress color="rgb(19, 194, 194)" :target="80" :percentage="78" height="8px" />
               </div>
               <template slot="footer">
-<<<<<<< HEAD
-                <!-- <trend flag="down" style="margin-right: 16px;">
-=======
                 <!-- term 是组件trend 必填项 添加:term="''"暂屏蔽控制台抛错 by fanjiao -->
                 <trend flag="down" style="margin-right: 16px;" :term="''">
->>>>>>> master
                   <span slot="term">同周比</span>
                   12%
                 </trend>
@@ -108,7 +104,7 @@ export default {
   },
   data () {
     return {
-      loading: true,
+      loading: false,
       headStyle: { height: '52px', 'border-top': '4px solid #1890ff', 'border-bottom': 'none' },
       bodyStyle: { padding: '0', height: '295px' },
       content: this.cardData,

@@ -92,7 +92,7 @@ export default {
       this.$http.get('/portal/userCard/myself')
         .then(res => {
           const dataTemp = res.result.data
-          for (var i = 0; i< dataTemp.length; i++) {
+          for (var i = 0; i < dataTemp.length; i++) {
             const temp = {}
             temp.id = dataTemp[i].id
             temp.x = 1 * parseInt(dataTemp[i].i % 2)

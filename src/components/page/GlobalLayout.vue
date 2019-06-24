@@ -552,7 +552,7 @@ export default {
       padding-left: 24px;
       -webkit-transition: all .3s;
       transition: all .3s;
-      background: #002140;
+      background: #0052CC;
       overflow: hidden;
 
       img, svg, h1 {

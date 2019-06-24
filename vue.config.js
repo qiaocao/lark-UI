@@ -81,7 +81,9 @@ module.exports = {
           'card-head-padding': '8px',
           'card-inner-head-padding': '6px',
           'card-padding-base': '12px',
-          'card-padding-wider': '16px'
+          'card-padding-wider': '16px',
+          'layout-sider-background': '#0052CC',
+          'menu-dark-bg': '#0052CC'
         },
         javascriptEnabled: true
       }
@@ -90,15 +92,10 @@ module.exports = {
 
   devServer: {
     proxy: {
-<<<<<<< HEAD
-      '/api/': {
-        target: ' https://www.easy-mock.com/mock/5cd3d62bd0717344110ebfb4/lark',
-        // target: 'http://10.12.97.30:8765',
-=======
+
       '/api': {
-        // target: ' https://www.easy-mock.com/mock/5cd3d62bd0717344110ebfb4/lark',
-        target: 'http://10.12.97.49:8765',
->>>>>>> master
+        target: ' https://www.easy-mock.com/mock/5cd3d62bd0717344110ebfb4/lark',
+        // target: 'http://10.12.97.49:8765',
         ws: false,
         changeOrigin: true
       },
