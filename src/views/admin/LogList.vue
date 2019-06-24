@@ -44,6 +44,10 @@ export default {
       columns: [
         {
           title: '菜单',
+          dataIndex: 'menu'
+        },
+        {
+          title: '请求',
           dataIndex: 'opt'
         },
         {
