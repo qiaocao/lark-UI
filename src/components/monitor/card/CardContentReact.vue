@@ -25,7 +25,7 @@
 </template>
 <script>
 import { toWeiXinString } from '@/utils/util'
-import { FILESERVERIP } from '@/utils/constants'
+import { FILE_SERVER_IP } from '@/utils/constants'
 export default {
   name: 'CardContent',
   data () {
@@ -33,7 +33,7 @@ export default {
       bordered: false,
       fontSize: { fontSize: '52px' },
       list: [],
-      fileurl: FILESERVERIP
+      fileurl: FILE_SERVER_IP
     }
   },
   props: {

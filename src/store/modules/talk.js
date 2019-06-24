@@ -260,10 +260,12 @@ const talk = {
         router.currentRoute.query.id)
       // 告知服务器未读消息的状态
       // TODO: 告知服务器的条件还要再加判断
-      syncUnread2Server(
-        rootGetters.onlineState === LandingStatus.ONLINE,
-        rootGetters.userId,
-        freshItem.id)
+      if (newItem.unreadNum === 0) {
+        syncUnread2Server(
+          rootGetters.onlineState === LandingStatus.ONLINE,
+          rootGetters.userId,
+          freshItem.id)
+      }
       if (index > -1) {
         this._vm.$delete(recentContacts, index)
       }

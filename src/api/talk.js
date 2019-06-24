@@ -7,7 +7,7 @@ const api = {
   contactsInfo: 'admin/user/',
   contactsTree: 'admin/org/orgUsers',
   recentContacts: 'chat/zzGroup/queryContactListById',
-  talkMap: 'chat/message/map',
+  talkMap: 'chat/zzGroup/queryHistoryMessageById',
   talkHistory: 'chat/history',
   // 研讨文件上传地址
   fileUpload: '/api/chat/zzFileManage/singleFileUpload',
