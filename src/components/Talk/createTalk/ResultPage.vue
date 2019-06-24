@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-form style="margin: 40px auto 0;">
-      <result title="操作成功" :is-success="true" description="" style="max-width: 560px;">
+      <result title="创建成功" :is-success="true" description="" style="max-width: 560px;">
         <div class="information">
           <a-row>
             <a-col :sm="8" :xs="24">群组名称：</a-col>

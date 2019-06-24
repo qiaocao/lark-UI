@@ -81,7 +81,9 @@ module.exports = {
           'card-head-padding': '8px',
           'card-inner-head-padding': '6px',
           'card-padding-base': '12px',
-          'card-padding-wider': '16px'
+          'card-padding-wider': '16px',
+          'layout-sider-background': '#0052CC',
+          'menu-dark-bg': '#0052CC'
         },
         javascriptEnabled: true
       }

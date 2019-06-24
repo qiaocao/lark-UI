@@ -15,9 +15,9 @@
           <a-menu-item>
             <a href="javascript:;" @click="removeCard(content.id)">移除卡片</a>
           </a-menu-item>
-          <a-menu-item>
+          <!-- <a-menu-item>
             <a href="javascript:;">查看全部</a>
-          </a-menu-item>
+          </a-menu-item> -->
         </a-menu>
       </a-dropdown>
       <div v-if="content.type=='info'">
@@ -104,7 +104,7 @@ export default {
   },
   data () {
     return {
-      loading: true,
+      loading: false,
       headStyle: { height: '52px', 'border-top': '4px solid #1890ff', 'border-bottom': 'none' },
       bodyStyle: { padding: '0', height: '295px' },
       content: this.cardData,

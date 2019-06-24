@@ -18,7 +18,7 @@ Vue.use(VueAxios, router)
 Vue.prototype.publicPath = process.env.BASE_URL
 Vue.prototype.SocketGlobal = new SocketApi({
   ip: '127.0.0.1',
-  port: '8181'
+  port: '9326'
 })
 
 new Vue({

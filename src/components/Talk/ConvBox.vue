@@ -77,14 +77,15 @@
           <!-- 上传文件 -->
           <a-upload
             name="file"
-            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            :action="fileUploadUrl"
             listType="picture"
             class="upload-list-inline"
             :showUploadList="false"
             :headers="headers"
             @change="handleUpload"
+            :beforeUpload="beforeUpload"
             :openFileDialogOnClick="!Object.keys(fileUpload).length">
-
+            <!-- :customRequest="customRequest" -->
             <a-tooltip
               placement="top"
               :title="Object.keys(fileUpload).length ? '有未发送文件' : '选择文件'"
@@ -160,14 +161,13 @@
 <script>
 import { MessagePiece, TalkHistory, MoreInfo, GroupNotice, TalkSetting, MarkMessage, TalkFile } from '@/components/Talk'
 import { LandingStatus } from '@/utils/constants'
-// 引入密级常量
+import api from '@/api/talk'
 import { SocketMessage, Tweet } from '@/utils/talk'
 import VEmojiPicker from 'v-emoji-picker'
 import packData from 'v-emoji-picker/data/emojis.json'
 import { mapGetters } from 'vuex'
 // 生成随机uuid
 import uuidv4 from 'uuid/v4'
-
 export default {
   name: 'ConvBox',
   components: {
@@ -205,13 +205,13 @@ export default {
       // 输入框内容
       messageContent: '',
       // 发送消息的密级，默认为非密
-      sendSecretLevel: 60,
+      sendSecretLevel: 30,
       // 发送键的可选密级选项
       sendMenuList: [],
       // 控制表情选择框不自动关闭
       emojisVisible: false,
       // 文件上传时的请求头部
-      headers: { authorization: 'authorization-text', 'Access-Control-Allow-Origin': '*' },
+      headers: {},
       // 上传的文件
       fileUpload: {},
       // 文件上传状态对应表
@@ -227,7 +227,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['onlineState', 'userSecretLevel', 'userId', 'avatar', 'nickname']),
+    ...mapGetters(['onlineState', 'userSecretLevel', 'userId', 'avatar', 'nickname', 'token']),
     emojisNative () {
       return packData
     },
@@ -236,6 +236,9 @@ export default {
       if (this.onlineState === LandingStatus.ONLINE) {
         return this.fileUpload.status && this.fileUpload.status !== 'done'
       } else return true
+    },
+    fileUploadUrl () {
+      return api.fileUpload
     }
   },
   watch: {
@@ -275,6 +278,23 @@ export default {
   },
   methods: {
     /**
+     * 重写上传action方法
+     */
+    // customRequest (data) {
+    //   const formData = new FormData()
+    //   formData.append('file', data.file)
+    //   data.onProgress()
+    //   uploadFile(formData).then(res => {
+    //     if (res.status === 200) {
+    //       // const imageUrl = res.result
+    //       // vue-cropper插件img绑定url时，会有跨域问题，图片类型转base64传递到子组件
+    //       this.getBase64(data.file, (imageUrl) => {
+    //         this.$refs.modal.edit(imageUrl)
+    //       })
+    //     }
+    //   })
+    // },
+    /**
      * 文件上传状态变化时触发
      * @param {Object} info {file, fileList}
      */
@@ -286,6 +306,9 @@ export default {
         this.$message.error(`${file.name} 上传失败.`)
         this.fileUpload = {}
       }
+    },
+    beforeUpload () {
+      this.headers.authorization = this.token
     },
     /**
      * 清除上传的文件
@@ -340,9 +363,9 @@ export default {
      * 设置发送消息的密级
      */
     handleSendSecretLevel (item) {
-      item = item ? item.key : 60
+      item = item ? item.key : 30
       // 当前用户可发送的全部密级
-      const allSendMenu = [60, 70, 80].filter(item => item <= this.userSecretLevel)
+      const allSendMenu = [30, 40, 60].filter(item => item <= this.userSecretLevel)
       // 当前研讨的密级
       const talkSecretLevel = this.chatInfo.secretLevel
       // 设置发送按钮的密级
@@ -499,7 +522,7 @@ export default {
       const index = this.imgFormat.indexOf(extension)
       tweet.content = {
         id: id,
-        url: url,
+        url: '/api/chat/zzFileManage/GetFile?fileId=eVN8UWex&t=1561193135178',
         type: index < 0 ? 3 : 2,
         extension: extension,
         title: title,
