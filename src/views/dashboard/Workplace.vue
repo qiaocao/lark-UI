@@ -129,19 +129,18 @@ export default {
       this.getSelfWorkplace()
     },
     click (index) {
-      alert(11)
       this.index = index
     },
     moved (a, newX, newY) {
-      console.log('this.cardmap', this.cardmap)
-      this.cardmap.set(this.ids[this.index], this.index)
-      // const i = (2 * newY) / 5
-      // const index = this.index
-      moveUserCard(this.cardmap).then(res => {
-      })
       this.getId()
+      const i = (2 * newY) / 5
+      const index = this.index
+      const json = this.ids[index]+':'+ Math.round(i)
+      moveUserCard(json).then(res => {
+      })
     },
     getId () {
+      this.ids = []
       for (let i = 0; i < this.cardList.length; i++) {
         this.ids.push(this.cardList[i].id)
       }
