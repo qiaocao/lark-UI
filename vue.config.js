@@ -96,7 +96,8 @@ module.exports = {
       '/api': {
         // target: ' https://www.easy-mock.com/mock/5cd3d62bd0717344110ebfb4/lark',
         // target: 'http://10.12.97.49:8765',
-        target: 'http://192.168.137.1:8765',
+        target: 'http://10.11.24.6:8089',
+        // target: 'http://192.168.137.1:8765',
         ws: false,
         changeOrigin: true
       },

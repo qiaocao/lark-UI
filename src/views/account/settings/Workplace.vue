@@ -39,8 +39,8 @@
   </a-list>
 </template>
 <script>
-import settingJs from '../../../api/setting.js'
-import adimJs from '../../../api/admin.js'
+import settingJs from '@/api/setting.js'
+import adimJs from '@/api/admin.js'
 import { getCard, addCard, delCard } from '@/api/admin'
 export default {
   data () {

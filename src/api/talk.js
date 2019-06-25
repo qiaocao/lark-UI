@@ -12,8 +12,8 @@ const api = {
   getHistory: 'chat/getHiMsg',
   getTalksetting: 'talk/group/info',
   getMoreInfo: '/talk/contacts/info',
-  fileGrabble: '/group/filelist',
-  getContent: 'https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/notice',
+  fileGrabble: 'http://10.12.97.49:8765/zzGroupFile/groupfile?id=bgv02TWk&page=1&size=5',
+  // getContent: 'https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/notice',
   // 研讨文件上传地址
   fileUpload: '/api/chat/zzFileManage/singleFileUpload',
   // 图片预览地址

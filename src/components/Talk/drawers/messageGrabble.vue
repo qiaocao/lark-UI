@@ -42,7 +42,8 @@ export default {
       searchVal: '',
       items: [],
       flag: true,
-      activeOption: ''
+      activeOption: '',
+      userMessage: false
 
     }
   },
@@ -50,6 +51,7 @@ export default {
     this.activeOption = 'talkHistory'
     getHistory().then(data => {
       const datas = data.result.data[0][1]
+      console.log('000000000', data.result.data[0])
       const dataa = datas.map((item, index, array) => {
         return item
       })
@@ -75,7 +77,12 @@ export default {
         this.flag = !this.flag
       }
     },
+    // isGroupMessage(){}
+    // userMessage () {
+    // if (this.$store.getters.userId === ) {
 
+    // }
+    // },
     // 滚动获取数据
     lazyLoading () {
       const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
