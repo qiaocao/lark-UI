@@ -222,43 +222,43 @@ export const asyncRouterMap = [
                 path: '/account/settings/base',
                 name: 'BaseSettings',
                 component: () => import('@/views/account/settings/BaseSetting'),
-                meta: { title: '基本设置', hidden: true, keepAlive: true, permission: [ 'self' ] }
+                meta: { title: '基本设置', hidden: true, keepAlive: false, permission: [ 'self' ] }
               },
-              {
-                path: '/account/settings/security',
-                name: 'SecuritySettings',
-                component: () => import('@/views/account/settings/Security'),
-                meta: { title: '安全设置', hidden: true, keepAlive: true, permission: [ 'self' ] }
-              },
+              // {
+              //   path: '/account/settings/security',
+              //   name: 'SecuritySettings',
+              //   component: () => import('@/views/account/settings/Security'),
+              //   meta: { title: '安全设置', hidden: true, keepAlive: false, permission: [ 'un' ] }
+              // },
               {
                 path: '/account/settings/custom',
                 name: 'CustomSettings',
                 component: () => import('@/views/account/settings/Custom'),
-                meta: { title: '个性化设置', hidden: true, keepAlive: true, permission: [ 'self' ] }
+                meta: { title: '个性化设置', hidden: true, keepAlive: false, permission: [ 'self' ] }
               },
-              {
-                path: '/account/settings/binding',
-                name: 'BindingSettings',
-                component: () => import('@/views/account/settings/Binding'),
-                meta: { title: '账户绑定', hidden: true, keepAlive: true, permission: [ 'self' ] }
-              },
-              {
-                path: '/account/settings/notification',
-                name: 'NotificationSettings',
-                component: () => import('@/views/account/settings/Notification'),
-                meta: { title: '新消息通知', hidden: true, keepAlive: true, permission: [ 'self' ] }
-              },
+              // {
+              //   path: '/account/settings/binding',
+              //   name: 'BindingSettings',
+              //   component: () => import('@/views/account/settings/Binding'),
+              //   meta: { title: '账户绑定', hidden: true, keepAlive: false, permission: [ 'un' ] }
+              // },
+              // {
+              //   path: '/account/settings/notification',
+              //   name: 'NotificationSettings',
+              //   component: () => import('@/views/account/settings/Notification'),
+              //   meta: { title: '新消息通知', hidden: true, keepAlive: false, permission: [ 'un' ] }
+              // },
               {
                 path: '/account/settings/workplace',
                 name: 'WorkPlaceSettings',
                 component: () => import('@/views/account/settings/Workplace'),
-                meta: { title: '卡片设置', hidden: true, keepAlive: true, permission: [ 'self' ] }
+                meta: { title: '卡片设置', hidden: true, keepAlive: false, permission: [ 'self' ] }
               },
               {
                 path: '/account/settings/commontool',
                 name: 'CommonToolSettings',
                 component: () => import('@/views/account/settings/CommonTool'),
-                meta: { title: '常用工具设置', hidden: true, keepAlive: true, permission: [ 'self' ] }
+                meta: { title: '常用工具设置', hidden: true, keepAlive: false, permission: [ 'self' ] }
               }
             ]
           }
