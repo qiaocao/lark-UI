@@ -107,6 +107,46 @@ function syncUnread2Server (newUnreasNum, online, reviser, sender) {
   Vue.prototype.SocketGlobal.send(socketMessage)
 }
 
+/**
+ * 格式化联系人数据
+ * @param {Array} target 目标数组
+ * @param {Array} target 待处理数组
+ */
+function formatTree (target, todoList) {
+  todoList.forEach(function (element) {
+    let newItem = {}
+    if (element.scopedSlotsTitle === 'orgNode') {
+      // 处理组织节点
+      newItem = {
+        key: element.id,
+        title: element.title,
+        parentId: element.parentId,
+        icon: 'folder',
+        online: false,
+        scopedSlots: {
+          title: 'orgNode'
+        },
+        children: formatTree([], element.children)
+      }
+    } else if (element.scopedSlotsTitle === 'userNode') {
+      // 处理用户节点
+      newItem = {
+        key: element.key,
+        title: element.title,
+        parentId: '',
+        icon: element.icon,
+        online: element.online,
+        scopedSlots: {
+          title: 'userNode'
+        },
+        children: []
+      }
+    }
+    target.push(newItem)
+  })
+  return target
+}
+
 const talk = {
   state: {
     /** 用户的在线状态
@@ -145,7 +185,17 @@ const talk = {
       state.groupList = groupList
     },
     SET_CONTACTS_TREE (state, contactsTree) {
-      state.contactsTree = contactsTree
+      const { id, parentId, title } = contactsTree[0]
+      const newTree = [{
+        key: id,
+        parentId: parentId,
+        title: title,
+        scopedSlots: {
+          title: 'orgNode'
+        },
+        children: formatTree([], contactsTree[0].children)
+      }]
+      state.contactsTree = newTree
     },
     /**
      * 更新talkMap
