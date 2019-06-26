@@ -66,55 +66,56 @@
                 :wrapperCol="wrapperCol"
                 label="人员排序一"
               >
-                <a-input-search
+                <!-- <a-input-search -->
+                <a-input
                   enterButton
                   v-decorator="['people1']"
-                  @search="$refs.model.beginChoose(people1id, '1')"
                 />
+                  <!-- @search="$refs.model.beginChoose(people1id, '1')" -->
               </a-form-item>
               <a-form-item
                 :labelCol="labelCol"
                 :wrapperCol="wrapperCol"
                 label="人员排序二"
               >
-                <a-input-search
+                <a-input
                   enterButton
                   v-decorator="['people2']"
-                  @search="$refs.model.beginChoose(people2id, '2')"
                 />
+                  <!-- @search="$refs.model.beginChoose(people2id, '2')" -->
               </a-form-item>
               <a-form-item
                 :labelCol="labelCol"
                 :wrapperCol="wrapperCol"
                 label="人员排序三"
               >
-                <a-input-search
+                <a-input
                   enterButton
                   v-decorator="['people3']"
-                  @search="$refs.model.beginChoose(people3id, '3')"
                 />
+                  <!-- @search="$refs.model.beginChoose(people3id, '3')" -->
               </a-form-item>
               <a-form-item
                 :labelCol="labelCol"
                 :wrapperCol="wrapperCol"
                 label="人员排序四"
               >
-                <a-input-search
+                <a-input
                   enterButton
                   v-decorator="['people4']"
-                  @search="$refs.model.beginChoose(people4id, '4')"
                 />
+                  <!-- @search="$refs.model.beginChoose(people4id, '4')" -->
               </a-form-item>
               <a-form-item
                 :labelCol="labelCol"
                 :wrapperCol="wrapperCol"
                 label="人员排序五"
               >
-                <a-input-search
+                <a-input
                   enterButton
                   v-decorator="['people5']"
-                  @search="$refs.model.beginChoose(people5id, '5')"
                 />
+                  <!-- @search="$refs.model.beginChoose(people5id, '5')" -->
               </a-form-item>
               <a-form-item
                 :labelCol="labelCol"
@@ -132,27 +133,29 @@
               </a-form-item>
             </a-form>
           </a-row>
-          <a-row>
-            <a-button type="primary" @click="saveOrginfo">
-              保存
-            </a-button>
-            <a-button type="default" @click="delOrg" style="margin-left: 8px">
-              删除
-            </a-button>
+          <a-row type="flex" justify="end">
+            <a-col :span="6">
+              <a-button type="primary" @click="saveOrginfo">
+                保存
+              </a-button>
+              <a-button type="default" @click="delOrg" style="margin-left: 8px">
+                删除
+              </a-button>
+            </a-col>
           </a-row>
-          <user-transfer ref="model" @ok="handleSaveOk" @close="handleSaveClose"/>
+          <!-- <user-transfer ref="model" @ok="handleSaveOk" @close="handleSaveClose"/> -->
         </a-card>
       </a-col>
     </a-row>
   </div>
 </template>
 <script>
-import UserTransfer from '@/components/admin/UserTransfer'
+// import UserTransfer from '@/components/admin/UserTransfer'
 import { getOrgTree, addorg, updateorg, delorg } from '@/api/admin'
 export default {
   name: 'OrgList',
   components: {
-    UserTransfer
+    // UserTransfer
   },
   data () {
     return {
