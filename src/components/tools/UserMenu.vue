@@ -12,17 +12,17 @@
         <!-- 添加登陆状态展示 -->
         <a-badge :status="statusMap.get(onlineState)" :offset="[-10, 23]" :numberStyle="{padding: '4px'}">
           <!-- <a-avatar class="avatar" size="small" :src="avatar()"/> -->
-          <a-avatar class="avatar" size="small" src="/avatar2.jpg"/>
+          <a-avatar class="avatar" size="small" src="/avatar.jpg"/>
         </a-badge>
         <span>{{ nickname() }}</span>
       </span>
       <a-menu slot="overlay" class="user-dropdown-menu-wrapper">
-        <a-menu-item key="0">
+        <!-- <a-menu-item key="0">
           <router-link :to="{ name: 'center' }">
             <a-icon type="user"/>
             <span>个人信息</span>
           </router-link>
-        </a-menu-item>
+        </a-menu-item> -->
         <a-menu-item key="1">
           <router-link :to="{ name: 'settings' }">
             <a-icon type="setting"/>

@@ -5,7 +5,7 @@ const api = {
   groupInfo: 'chat/zzGroup/getGroupInfo',
   groupList: 'chat/zzGroup/queryGroupListByUserId',
   contactsInfo: 'admin/user/',
-  contactsTree: 'admin/org/orgUsers',
+  contactsTree: 'chat/Initialization/getOrgTree',
   recentContacts: 'chat/zzGroup/queryContactListById',
   talkMap: 'chat/zzGroup/queryHistoryMessageById',
   talkHistory: 'chat/history',

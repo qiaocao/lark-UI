@@ -37,7 +37,9 @@
     <footer-tool-bar :style="{height:'72px', width: isSideMenu() && isDesktop() ? `calc(100% - ${sidebarOpened ? 256 : 80}px)` : '100%'}">
       <div class="tool-list">
         <div class="tool-item" v-for="item in toolList" :key="item.id">
-          <img :src="'/tools/Icon-'+item.description+'.png'" width="40" height="40" :alt="item.description" :title="item.title"/>
+          <a :href="item.uri">
+            <img :src="'/tools/Icon-'+item.description+'.png'" width="40" height="40" :alt="item.description" :title="item.title"/>
+          </a>
           <div class="tool-name">{{ item.title }}</div>
         </div>
       </div>
