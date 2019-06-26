@@ -267,7 +267,10 @@ export default {
       immediate: true
     },
     messageList: function (newValue) {
-      this.$store.commit('SET_TALK_MAP', [[this.chatInfo.id, newValue]])
+      this.$store.commit('SET_TALK_MAP', {
+        fromServer: false,
+        talkMapData: [[this.chatInfo.id, newValue]]
+      })
       // 滚动到最下方
       this.scrollToBottom()
     }
@@ -380,7 +383,10 @@ export default {
     getCacheMessage () {
       const hasCache = this.$store.state.talk.talkMap.has(this.chatInfo.id)
       if (!hasCache) {
-        this.$store.commit('SET_TALK_MAP', [[this.chatInfo.id, []]])
+        this.$store.commit('SET_TALK_MAP', {
+          fromServer: false,
+          talkMapData: [[this.chatInfo.id, []]]
+        })
       }
       this.messageList = this.$store.state.talk.talkMap.get(this.chatInfo.id)
     },

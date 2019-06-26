@@ -11,7 +11,7 @@ const getters = {
   /** 用户id(非身份证号) */
   userId: state => state.user.info.id,
   /** 用户身份证号 */
-  userPId: state => state.user.info.pId,
+  userPId: state => state.user.info.pid,
   /** 用户头像 */
   avatar: state => state.user.avatar,
   /** 用户名 */
