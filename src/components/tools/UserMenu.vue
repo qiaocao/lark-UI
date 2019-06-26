@@ -17,14 +17,14 @@
         <span>{{ nickname() }}</span>
       </span>
       <a-menu slot="overlay" class="user-dropdown-menu-wrapper">
-        <!-- <a-menu-item key="0">
-          <router-link :to="{ name: 'center' }">
+        <a-menu-item key="0">
+          <router-link :to="{ name: 'Center' }">
             <a-icon type="user"/>
             <span>个人信息</span>
           </router-link>
         </a-menu-item> -->
         <a-menu-item key="1">
-          <router-link :to="{ name: 'settings' }">
+          <router-link :to="{ name: 'Settings' }">
             <a-icon type="setting"/>
             <span>账户设置</span>
           </router-link>
