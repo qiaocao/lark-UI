@@ -20,14 +20,14 @@
                     <a-input v-model="queryParam.name"/>
                   </a-form-item>
                 </a-col>
-                <a-col :span="6">
+                <!-- <a-col :span="6">
                   <a-form-item label="状态">
                     <a-select placeholder="请选择" v-model="queryParam.inservice">
                       <a-select-option value="1">在职</a-select-option>
                       <a-select-option value="2">离职</a-select-option>
                     </a-select>
                   </a-form-item>
-                </a-col>
+                </a-col> -->
                 <a-col :span="6">
                   <a-form-item label="密级">
                     <a-select placeholder="请选择" v-model="queryParam.secretLevel">
@@ -42,11 +42,17 @@
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
-                  <span class="table-page-search-submitButtons">
-                    <a-button type="primary" @click="searchUser">查询</a-button>
-                    <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
-                    <a-button type="primary" style="margin-left: 8px" @click="openEditModal('','1')">新增用户</a-button>
-                  </span>
+                  <a-row type="flex" justify="end">
+                    <a-col :span="5">
+                      <a-button type="primary" @click="searchUser">查询</a-button>
+                    </a-col>
+                    <a-col :span="5">
+                      <a-button  @click="() => queryParam = {}">重置</a-button>
+                    </a-col>
+                    <a-col :span="5">
+                      <a-button type="primary" @click="openEditModal('','1')">新增用户</a-button>
+                    </a-col>
+                  </a-row>
                 </a-col>
               </a-row>
               <a-row>
@@ -116,7 +122,7 @@
                   v-decorator="['pid',{rules: [{ required: true, message: '请输入身份证号' },{pattern: /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/, message: '身份证输入格式有误'}]}]"/>
               </a-form-item>
             </a-col>
-            <a-col :span="10" :offset="1">
+            <!-- <a-col :span="10" :offset="1">
               <a-form-item
                 :labelCol="labelCol"
                 :wrapperCol="wrapperCol"
@@ -127,7 +133,7 @@
                   <a-select-option value="2">离职</a-select-option>
                 </a-select>
               </a-form-item>
-            </a-col>
+            </a-col> -->
           </a-row>
           <a-row>
             <a-col :span="10" :offset="1">
@@ -350,36 +356,6 @@ export default {
       )
     },
     /**
-     * 保存人员组织信息
-     */
-    // saveUserOrg (userId) {
-    //   console.log('this.orgname', this.orgname,this.orgname[0])
-    //   return saveUserOrg(
-    //     { 'userId': userId, 'orgCode': this.orgid, 'orgName': this.orgname[0]||'' }
-    //   ).then(
-    //     res => {
-    //       if (res.status === 200) {
-    //         this.editvisible = false
-    //         this.cardvisible = true
-    //         this.$notification['success']({
-    //           message: '新增成功',
-    //           duration: 2
-    //         })
-    //         // 关闭编辑框
-    //         this.editvisible = false
-    //         this.cardvisible = true
-    //         // 刷新员工列表
-    //         this.$refs.stable.refresh(true)
-    //       } else {
-    //         this.$notification['error']({
-    //           message: res.message,
-    //           duration: 4
-    //         })
-    //       }
-    //     }
-    //   )
-    // },
-    /**
      * 保存修改内容
      * TODO 三个请求不在前台嵌套调用，无法做事务处理，是否由后台统一接口
      */
@@ -387,17 +363,26 @@ export default {
       const _this = this
       this.editForm.validateFields((err, values) => {
         // 除了用户基础信息必填项限制，在这里加，且需要有对应的提醒信息
-        values.orgCode = this.orgid.replace('select', '')
-        values.orgName = this.orgname[0] || ''
+        values.orgCode = _this.orgid.replace('select', '')
+        values.orgName = _this.orgname[0] || ''
         if (!err) {
-          if (this.editType === '1') {
+          if (_this.editType === '1') {
             return adduser(
               values
             ).then(
               res => {
                 if (res.status === 200) {
-                  // 保存用户角色信息调用新请求
+                  // TODO 需要后台配合一起改，后台改好后，再提交
                   _this.saveUserRole(res.result.id)
+                  // if (res.rel === true) {
+                  //   // 保存用户角色信息调用新请求
+                  //   _this.saveUserRole(res.result.id)
+                  // } else {
+                  //   _this.$notification['error']({
+                  //     message: res.message,
+                  //     duration: 4
+                  //   })
+                  // }
                 } else {
                   _this.$notification['error']({
                     message: res.message,
@@ -407,7 +392,7 @@ export default {
               }
             )
           } else {
-            values.id = this.userinfo.id
+            values.id = _this.userinfo.id
             return updateuser(
               values
             ).then(
@@ -476,6 +461,7 @@ export default {
           })
         }, 0)
         this.orgid = ''
+        this.orgname = ''
         this.rolechecked = []
         this.editvisible = true
         this.cardvisible = false

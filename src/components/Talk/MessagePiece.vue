@@ -45,7 +45,6 @@
                   @click="handlePreview('open')"
                   :src="imgPreviewUrl"
                   :alt="messageInfo.content.title" >
-
                 <a-button
                   v-if="imgLoading === 3"
                   @click="handleImg"

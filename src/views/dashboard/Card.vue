@@ -15,9 +15,9 @@
           <a-menu-item>
             <a href="javascript:;" @click="removeCard(content.id)">移除卡片</a>
           </a-menu-item>
-          <a-menu-item>
+          <!-- <a-menu-item>
             <a href="javascript:;">查看全部</a>
-          </a-menu-item>
+          </a-menu-item> -->
         </a-menu>
       </a-dropdown>
       <div v-if="content.type=='info'">
@@ -39,31 +39,31 @@
         <card-content-intro/>
         <a-row :gutter="8">
           <a-col :span="12">
-            <chart-card title="周工作量" total="84">
+            <chart-card title="周工作量" total="0">
               <a-tooltip title="体现上周工作在云雀上的使用情况" slot="action">
                 <a-icon type="info-circle-o" />
               </a-tooltip>
               <div>
                 <mini-area />
               </div>
-              <template slot="footer">日均<span> {{ '12' }}</span></template>
+              <template slot="footer">日均<span> {{ "0" }}</span></template>
             </chart-card>
           </a-col>
           <a-col :span="12">
-            <chart-card :loading="loading" title="工作目标完成率" total="78%">
+            <chart-card :loading="loading" title="工作目标完成率" total="0">
               <a-tooltip title="体现计划、任务、todo等可量化工作的完成情况" slot="action">
                 <a-icon type="info-circle-o" />
               </a-tooltip>
               <div>
-                <mini-progress color="rgb(19, 194, 194)" :target="80" :percentage="78" height="8px" />
+                <mini-progress color="rgb(19, 194, 194)" :target="zero" :percentage="zero" height="8px" />
               </div>
               <template slot="footer">
                 <!-- term 是组件trend 必填项 添加:term="''"暂屏蔽控制台抛错 by fanjiao -->
-                <trend flag="down" style="margin-right: 16px;" :term="''">
+                <trend flag="down" style="margin-right: 16px;" :term="'0'">
                   <span slot="term">同周比</span>
                   12%
                 </trend>
-                <trend flag="up" :term="''">
+                <trend flag="up" :term="'0'">
                   <span slot="term">日环比</span>
                   80%
                 </trend>
@@ -108,7 +108,8 @@ export default {
       headStyle: { height: '52px', 'border-top': '4px solid #1890ff', 'border-bottom': 'none' },
       bodyStyle: { padding: '0', height: '295px' },
       content: this.cardData,
-      contentData: []
+      contentData: [],
+      zero: 0
     }
   },
   props: {
