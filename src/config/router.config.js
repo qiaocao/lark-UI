@@ -22,7 +22,7 @@ export const asyncRouterMap = [
         children: [
           {
             path: 'workplace',
-            name: 'Analysis',
+            name: 'Workplace',
             component: () => import('@/views/dashboard/Workplace'),
             meta: { title: '工作台', keepAlive: true, icon: 'dashboard', permission: [ 'dashboard' ], hidden: true }
           }
