@@ -372,17 +372,7 @@ export default {
             ).then(
               res => {
                 if (res.status === 200) {
-                  // TODO 需要后台配合一起改，后台改好后，再提交
                   _this.saveUserRole(res.result.id)
-                  // if (res.rel === true) {
-                  //   // 保存用户角色信息调用新请求
-                  //   _this.saveUserRole(res.result.id)
-                  // } else {
-                  //   _this.$notification['error']({
-                  //     message: res.message,
-                  //     duration: 4
-                  //   })
-                  // }
                 } else {
                   _this.$notification['error']({
                     message: res.message,
@@ -390,6 +380,14 @@ export default {
                   })
                 }
               }
+            ).catch((err) => {
+              if (err || err.response || err.response) {
+                _this.$notification['error']({
+                  message: err.response.data.message,
+                  duration: 4
+                })
+              }
+            }
             )
           } else {
             values.id = _this.userinfo.id
