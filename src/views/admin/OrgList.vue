@@ -71,7 +71,7 @@
                   enterButton
                   v-decorator="['people1']"
                 />
-                  <!-- @search="$refs.model.beginChoose(people1id, '1')" -->
+                <!-- @search="$refs.model.beginChoose(people1id, '1')" -->
               </a-form-item>
               <a-form-item
                 :labelCol="labelCol"
@@ -82,7 +82,7 @@
                   enterButton
                   v-decorator="['people2']"
                 />
-                  <!-- @search="$refs.model.beginChoose(people2id, '2')" -->
+                <!-- @search="$refs.model.beginChoose(people2id, '2')" -->
               </a-form-item>
               <a-form-item
                 :labelCol="labelCol"
@@ -93,7 +93,7 @@
                   enterButton
                   v-decorator="['people3']"
                 />
-                  <!-- @search="$refs.model.beginChoose(people3id, '3')" -->
+                <!-- @search="$refs.model.beginChoose(people3id, '3')" -->
               </a-form-item>
               <a-form-item
                 :labelCol="labelCol"
@@ -104,7 +104,7 @@
                   enterButton
                   v-decorator="['people4']"
                 />
-                  <!-- @search="$refs.model.beginChoose(people4id, '4')" -->
+                <!-- @search="$refs.model.beginChoose(people4id, '4')" -->
               </a-form-item>
               <a-form-item
                 :labelCol="labelCol"
@@ -115,7 +115,7 @@
                   enterButton
                   v-decorator="['people5']"
                 />
-                  <!-- @search="$refs.model.beginChoose(people5id, '5')" -->
+                <!-- @search="$refs.model.beginChoose(people5id, '5')" -->
               </a-form-item>
               <a-form-item
                 :labelCol="labelCol"
