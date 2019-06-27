@@ -22,7 +22,7 @@
             <a-icon type="user"/>
             <span>个人信息</span>
           </router-link>
-        </a-menu-item> -->
+        </a-menu-item>
         <a-menu-item key="1">
           <router-link :to="{ name: 'Settings' }">
             <a-icon type="setting"/>

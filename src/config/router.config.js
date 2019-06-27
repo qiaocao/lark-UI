@@ -1,7 +1,6 @@
 // eslint-disable-next-line
 import { UserLayout, BasicLayout, RouteView, PageView, GeneralView, MonitorView } from '@/components/layouts'
 import { RecentContact } from '@/utils/talk'
-import store from '@/store'
 
 export const asyncRouterMap = [
 
