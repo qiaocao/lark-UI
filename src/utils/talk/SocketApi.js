@@ -81,7 +81,8 @@ class SocketApi {
     ws.onmessage = messageEvent => {
       const time = new Date()
       const received = JSON.parse(messageEvent.data)
-
+      console.log('messageEvent')
+      console.log(messageEvent)
       switch (received.code) {
         // 处理消息 更新消息缓存-->最近联系人列表
         case 0:

@@ -47,7 +47,7 @@
                       <a-button type="primary" @click="searchUser">查询</a-button>
                     </a-col>
                     <a-col :span="5">
-                      <a-button  @click="() => queryParam = {}">重置</a-button>
+                      <a-button @click="() => queryParam = {}">重置</a-button>
                     </a-col>
                     <a-col :span="5">
                       <a-button type="primary" @click="openEditModal('','1')">新增用户</a-button>
