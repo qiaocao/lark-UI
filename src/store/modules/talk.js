@@ -103,7 +103,6 @@ function syncUnread2Server (newUnreasNum, online, reviser, sender) {
       sender: sender
     }
   }).toString()
-  console.log(socketMessage)
   Vue.prototype.SocketGlobal.send(socketMessage)
 }
 
@@ -323,6 +322,7 @@ const talk = {
       // TODO: 告知服务器的条件还要再加判断
       if (newItem.unreadNum === 0) {
         syncUnread2Server(
+          newItem.unreadNum,
           rootGetters.onlineState === LandingStatus.ONLINE,
           rootGetters.userId,
           freshItem.id)
