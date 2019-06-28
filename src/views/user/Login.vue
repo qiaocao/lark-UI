@@ -119,7 +119,7 @@ export default {
       })
     },
     requestFailed (err) {
-      console.log("TCL: requestFailed -> err", ((err.response || {}).data || {}).message)
+      console.log('TCL: requestFailed -> err', ((err.response || {}).data || {}).message)
       this.$notification['error']({
         message: '错误',
         description: '登陆出现错误，请稍后再试',
