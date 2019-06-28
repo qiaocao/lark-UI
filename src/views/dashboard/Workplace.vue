@@ -44,15 +44,17 @@
         </div>
       </div>
     </footer-tool-bar>
-    <div class="img_arrow" v-if="cardList.length===0">
-      <img src="/arrow.png"/>
-    </div>
-    <div class="exception" v-if="cardList.length===0">
-      <div class="img">
-        <img src="/images/exceptionImg/500.svg"/>
+    <div v-if="cardList.length===0">
+      <div class="img_arrow">
+        <img src="/arrow.png"/>
       </div>
-      <div class="content">
-        <div class="desc">温馨提示：在账户设置/卡片设置中，可维护常用卡片</div>
+      <div class="exception">
+        <div class="img">
+          <img src="/images/exceptionImg/500.svg"/>
+        </div>
+        <div class="content">
+          <div class="desc">温馨提示：在账户设置/卡片设置中，可维护常用卡片</div>
+        </div>
       </div>
     </div>
   </div>
