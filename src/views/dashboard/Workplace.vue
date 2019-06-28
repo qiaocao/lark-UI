@@ -44,6 +44,17 @@
         </div>
       </div>
     </footer-tool-bar>
+    <div class="img_arrow" v-if="cardList.length===0">
+      <img src="/arrow.png"/>
+    </div>
+    <div class="exception" v-if="cardList.length===0">
+      <div class="img">
+        <img src="/images/exceptionImg/500.svg"/>
+      </div>
+      <div class="content">
+        <div class="desc">温馨提示：在账户设置/卡片设置中，可维护常用卡片</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -80,9 +91,9 @@ export default {
   },
   methods: {
     getSelfWorkplace () {
-      this.cardList = []
       getUserCard()
         .then(res => {
+          this.cardList = []
           const dataTemp = res.result.data
           for (var i = 0; i < dataTemp.length; i++) {
             const temp = {}
@@ -202,6 +213,38 @@ export default {
       margin-top:-26px;
     }
   }
+}
+.exception {
+  min-height: 500px;
+  height: 80%;
+  align-items: center;
+  text-align: center;
+  margin-top: 100px;
+  .img {
+    display: inline-block;
+    padding-right: 52px;
+    zoom: 1;
+    img {
+      height: 360px;
+      max-width: 430px;
+    }
+  }
+  .content {
+    display: inline-block;
+    flex: auto;
+    .desc {
+      color: rgba(0, 0, 0, .45);
+      font-size: 20px;
+      line-height: 28px;
+      margin-bottom: 16px;
+    }
+  }
+}
+.img_arrow {
+  margin-top: 10px;
+  margin-right: 55px;
+  align-items:end;
+  text-align: end;
 }
 
 </style>
