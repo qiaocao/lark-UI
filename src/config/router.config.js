@@ -60,7 +60,7 @@ export const asyncRouterMap = [
         meta: {
           title: '系统管理',
           icon: 'appstore',
-          permission: ['user', 'org', 'role']
+          permission: ['user', 'org', 'role','notice','menu','gatelog']
         },
         children: [
           {
@@ -137,7 +137,7 @@ export const asyncRouterMap = [
               title: '服务管理',
               icon: 'switcher',
               keepAlive: false,
-              permission: ['jj']
+              permission: ['service']
             }
           }
         ]

@@ -57,7 +57,7 @@ import { mapActions } from 'vuex'
 import { timeFix } from '@/utils/util'
 
 export default {
-  data () {
+  data() {
     return {
       loginBtn: false,
       loginType: 0,
@@ -72,7 +72,7 @@ export default {
   methods: {
     ...mapActions(['Login', 'Logout']),
     // handler
-    handleUsernameOrEmail (rule, value, callback) {
+    handleUsernameOrEmail(rule, value, callback) {
       const { state } = this
       const regex = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/
       if (regex.test(value)) {
@@ -82,7 +82,7 @@ export default {
       }
       callback()
     },
-    handleSubmit (e) {
+    handleSubmit(e) {
       e.preventDefault()
       const {
         form: { validateFields },
@@ -109,7 +109,7 @@ export default {
         }
       })
     },
-    loginSuccess (res) {
+    loginSuccess(res) {
       this.$router.push({ path: '/dashboard/workplace' })
       this.$nextTick(() => {
         this.$notification.success({
@@ -118,8 +118,8 @@ export default {
         })
       })
     },
-    requestFailed (err) {
-      console.log("TCL: requestFailed -> err", ((err.response || {}).data || {}).message)
+    requestFailed(err) {
+      console.log('TCL: requestFailed -> err', ((err.response || {}).data || {}).message)
       this.$notification['error']({
         message: '错误',
         description: '登陆出现错误，请稍后再试',
