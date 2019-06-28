@@ -118,7 +118,7 @@ export default {
         })
       })
     },
-    requestFailed(err) {
+    requestFailed (err) {
       console.log('TCL: requestFailed -> err', ((err.response || {}).data || {}).message)
       this.$notification['error']({
         message: '错误',

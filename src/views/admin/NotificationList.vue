@@ -64,6 +64,7 @@
       :destroyOnClose="true"
       :okText="okText"
       @ok="handleOk"
+      :confirmLoading="confirmLoading"
     >
       <a-form :form="detailForm">
         <a-form-item
@@ -198,7 +199,8 @@ export default {
         })
       },
       fileList: [],
-      okText: '确认'
+      okText: '确认',
+      confirmLoading: false
     }
   },
   computed: {
@@ -210,24 +212,11 @@ export default {
     this.user = this.userInfo
   },
   methods: {
-    // 从登陆时获取的人员信息中读取数据
-    // ...mapGetters(['userInfo']),
-    /**
-     * 日期选择框 change事件
-     */
-    onChange (data, dataStr) {
-      console.log('data', data, dataStr)
-    },
     /**
      * 搜索
-     * TODO 时间控件支持时间区间的查询，后台联调注意
      */
     search () {
-      console.log('this.queryParam', this.queryParam)
       this.$refs.stable.loadData({}, this.queryParam, {})
-      // return getNoticePage(Object.assign(parameter, this.queryParam)).then(res => {
-      //   this.loadData = res.result
-      // })
     },
     /**
      * 发布消息弹出框
@@ -300,6 +289,7 @@ export default {
       if (this.type === '1') {
         this.detailForm.validateFields((err, values) => {
           if (!err) {
+            this.confirmLoading = true
             values.orgCode = '0010000103'
             return addNotice(
               values
@@ -317,6 +307,13 @@ export default {
                   duration: 4
                 })
               }
+            }).catch(() =>
+              this.$notification['error']({
+                message: '出现异常，请联系系统管理员',
+                duration: 4
+              })
+            ).finally(() => {
+              this.confirmLoading = false
             })
           }
         })
@@ -325,6 +322,7 @@ export default {
           if (!err) {
             values.orgCode = '0010000103'
             values.id = this.noticeid
+            this.confirmLoading = true
             return updateNotice(values).then(res => {
               if (res.status === 200) {
                 this.$notification['success']({
@@ -339,6 +337,13 @@ export default {
                   duration: 4
                 })
               }
+            }).catch(() =>
+              this.$notification['error']({
+                message: '出现异常，请联系系统管理员',
+                duration: 4
+              })
+            ).finally(() => {
+              this.confirmLoading = false
             })
           }
         })
@@ -396,6 +401,7 @@ export default {
      */
     sendNotice (record) {
       record.orgCode = '0010000103'
+      this.confirmLoading = true
       return sendNotice(record).then(res => {
         if (res.status === 200) {
           this.$notification['success']({
@@ -411,14 +417,13 @@ export default {
         }
       }).catch(() =>
         this.$notification['error']({
-          message: '发生异常，请联系系统管理员',
+          message: '出现异常，请联系系统管理员',
           duration: 4
         })
-      )
+      ).finally(() => {
+        this.confirmLoading = false
+      })
     }
   }
 }
 </script>
-<style>
-
-</style>
