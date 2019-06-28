@@ -94,6 +94,13 @@
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
+          label="组织机构"
+        >
+          <org-tree-select :values="orgCode" @ok="getOrgCode"></org-tree-select>
+        </a-form-item>
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
           label="附件"
         >
           <a-upload
@@ -122,12 +129,14 @@
 </template>
 <script>
 import STable from '@/components/table/'
+import OrgTreeSelect from '@/components/admin/OrgTreeSelect'
 import { getNoticePage, addNotice, updateNotice, delNotice, sendNotice } from '@/api/admin'
 import pick from 'lodash.pick'
 export default {
   name: 'NotificationList',
   components: {
-    STable
+    STable,
+    OrgTreeSelect
   },
   data () {
     return {
@@ -190,17 +199,15 @@ export default {
       },
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        // this.queryParam['userId'] = this.user.id
-        // TODO 提交需要切换
         // this.queryParam['orgCode'] = this.user.orgCode
-        this.queryParam['orgCode'] = '0010000103'
         return getNoticePage(Object.assign(parameter, this.queryParam)).then(res => {
           return res.result
         })
       },
       fileList: [],
       okText: '确认',
-      confirmLoading: false
+      confirmLoading: false,
+      orgCode: ''
     }
   },
   computed: {
@@ -224,6 +231,11 @@ export default {
     openModal (type, record) {
       this.visiable = true
       this.type = type
+      if (record) {
+        this.orgCode = record.orgCode
+      } else {
+        this.orgCode = ''
+      }
       if (type === '1') {
         this.okText = '保存'
         this.$nextTick(() => {
@@ -234,7 +246,7 @@ export default {
         this.noticeid = record.id
         this.$nextTick(() => {
           // 表单中绑定信息项
-          this.detailForm.setFieldsValue(pick(record, 'title', 'content'))
+          this.detailForm.setFieldsValue(pick(record, 'title', 'content', 'type'))
         })
       }
     },
@@ -285,12 +297,11 @@ export default {
      * 保存消息
      */
     handleOk () {
-      // TODO 提交需要切换
       if (this.type === '1') {
         this.detailForm.validateFields((err, values) => {
           if (!err) {
             this.confirmLoading = true
-            values.orgCode = '0010000103'
+            values.orgCode = this.orgCode
             return addNotice(
               values
             ).then(res => {
@@ -320,7 +331,7 @@ export default {
       } else if (this.type === '2') {
         this.detailForm.validateFields((err, values) => {
           if (!err) {
-            values.orgCode = '0010000103'
+            values.orgCode = this.orgCode
             values.id = this.noticeid
             this.confirmLoading = true
             return updateNotice(values).then(res => {
@@ -373,7 +384,7 @@ export default {
                   message: '删除成功',
                   duration: 2
                 })
-                this.search()
+                _this.search()
               } else {
                 _this.$notification['error']({
                   message: res.message,
@@ -383,7 +394,7 @@ export default {
             }
           ).catch(() =>
             _this.$notification['error']({
-              message: '删除异常1111，请联系系统管理员',
+              message: '删除异常，请联系系统管理员',
               duration: 4
             })
           )
@@ -400,7 +411,7 @@ export default {
      * 消息发布
      */
     sendNotice (record) {
-      record.orgCode = '0010000103'
+      record.orgCode = this.orgCode
       this.confirmLoading = true
       return sendNotice(record).then(res => {
         if (res.status === 200) {
@@ -423,6 +434,12 @@ export default {
       ).finally(() => {
         this.confirmLoading = false
       })
+    },
+    /**
+     * 获取组织树下拉框返回值
+     */
+    getOrgCode (value) {
+      this.orgCode = value
     }
   }
 }
