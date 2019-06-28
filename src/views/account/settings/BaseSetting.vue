@@ -1,7 +1,7 @@
 <template>
   <div class="account-settings-info-view">
     <a-row :gutter="8">
-      <a-col :md="16" :lg="20">
+      <a-col :md="8" :lg="12">
         <a-form layout="vertical" :form="form">
           <a-form-item
             label="姓名"
@@ -62,11 +62,10 @@ export default {
       // 头像上传进度条
       loading: false,
       // 没有头像默认使用系统头像
-      imageUrl: '/avatar1_200.jpg',
+      imageUrl: '',
       // 文件名称
       filename: '',
-      user: {},
-      FILESERVERIP: FILE_SERVER_IP
+      user: {}
     }
   },
   computed: {
@@ -87,8 +86,9 @@ export default {
             // 表单中绑定信息项
             this.form.setFieldsValue(pick(res.result, 'name', 'telephone'))
             if (this.user.avatar) {
-              this.imageUrl = this.FILESERVERIP + this.user.avatar
-              console.log(this.imageUrl)
+              this.imageUrl = FILE_SERVER_IP + this.user.avatar
+            } else {
+              this.imageUrl = '/avatar1_200.jpg'
             }
           })
         }
@@ -123,7 +123,7 @@ export default {
         if (res.status === 200) {
           this.imageUrl = res.result
           this.saveInfo({ 'avatar': this.imageUrl })
-          this.imageUrl = this.FILESERVERIP + res.result
+          this.imageUrl = FILE_SERVER_IP + res.result
         }
       })
     },

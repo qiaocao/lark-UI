@@ -7,7 +7,6 @@
     @close="onClose"
     :visible="activeOption=='moreInfo'"
     :wrapStyle="{height: 'calc(100% - 108px)',overflow: 'auto',paddingBottom: '108px', marginTop: '64px' }"
-    :getContainer="mountEle"
     :maskClosable="true"
     :closable="false"
   >
@@ -48,7 +47,7 @@
       </a-row> -->
       <div style="margin-top: 30px">
         <h4 class="float">组名称:</h4>
-        <p class="line_height setting_name">{{ setting.groupName }}</p>
+        <p class="line_height setting_name">{{ setting.name }}</p>
         <div class="secret" style="margin: 6px 0 0 20px,width:30px">
           <a-tag color="orange" v-if="setting.secretLevel === '40'">秘密</a-tag>
           <a-tag color="tomato" v-if="setting.secretLevel === '60'">机密</a-tag>
@@ -61,11 +60,11 @@
       </div>
       <div style="margin-top: 30px">
         <h4 class="float">描述:</h4>
-        <p class="line_height">{{ setting.groupDescribe }}</p>
+        <p class="line_height">{{ setting.description }}</p>
       </div>
       <div style="margin-top: 30px">
         <h4 class="float">主题:</h4>
-        <p class="line_height">{{ setting.scop }}</p>
+        <p class="line_height">{{ setting.subject }}</p>
       </div>
 
       <div style="margin-top: 30px">
@@ -184,6 +183,29 @@ import { getTalksetting } from '@/api/talk.js'
 const data = ['1', '2', '1', '2', '1', '2']
 export default {
   name: 'MoreInfo',
+  props: {
+    // talk: {
+    //   type: String,
+    //   default: ''
+    // },
+    /** 抽屉挂载的元素 */
+    // mountEle: {
+    //   type: String,
+    //   default: '.conv-box',
+    //   required: false
+    // },
+    // :getContainer="mountEle"
+    activeOption: {
+      type: String,
+      default: '',
+      required: true
+    },
+    groupId: {
+      type: String,
+      default: '',
+      required: true
+    }
+  },
   data () {
     return {
       showMask: false,
@@ -200,8 +222,8 @@ export default {
       // const ary = []
       if (newValue === 'moreInfo') {
         console.log('在这里加载数据')
-        getTalksetting().then(res => {
-          const datas = res.result.data
+        getTalksetting(this.groupId).then(res => {
+          const datas = res.result
           this.setting = datas
         })
       }
@@ -228,23 +250,6 @@ export default {
     },
     addMember () {
 
-    }
-  },
-  props: {
-    // talk: {
-    //   type: String,
-    //   default: ''
-    // },
-    /** 抽屉挂载的元素 */
-    mountEle: {
-      type: String,
-      default: '.conv-box',
-      required: false
-    },
-    activeOption: {
-      type: String,
-      default: '',
-      required: true
     }
   }
 }

@@ -6,13 +6,19 @@ const api = {
   groupList: 'chat/zzGroup/queryGroupListByUserId',
   contactsInfo: 'admin/user/',
   contactsTree: 'admin/org/orgUsers',
-  recentContacts: 'chat/zzGroup/queryContactListById',
-  talkMap: 'chat/message/map',
+  // recentContacts: 'chat/zzGroup/queryContactListById',
+  recentContacts: '/talk/recent/list',
+  talkMap: 'chat/zzGroup/queryHistoryMessageById',
   talkHistory: 'chat/history',
-  getHistory: 'chat/getHiMsg',
-  getTalksetting: 'talk/group/info',
+  // getHistory: 'chat/getHiMsg',
+  getHistory: 'chat/zzGroup/queryHistoryMessageForSingle',
+  getTalksetting: 'chat/zzGroup/getGroupInfo',
   getMoreInfo: '/talk/contacts/info',
-  fileGrabble: 'http://10.12.97.49:8765/zzGroupFile/groupfile?id=bgv02TWk&page=1&size=5',
+  fileGrabble: 'chat/zzGroupFile/groupfile',
+  fileDown: '/chat/zzFileManage/downloadFile',
+  talkHistoryAll: 'chat/zzGroup/queryHistoryMessageForSingle',
+  MarkMessageGrabble: 'chat/zzUserGroupMsgTag/getUserGroupMsgTagList',
+  // zzGroup/getGroupInfo    groupID
   // getContent: 'https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/notice',
   // 研讨文件上传地址
   fileUpload: '/api/chat/zzFileManage/singleFileUpload',
@@ -21,7 +27,6 @@ const api = {
   // 文件下载地址
   fileDownload: '/api/chat/zzFileManage/downloadFile'
 }
-
 export default api
 
 /**
@@ -175,7 +180,10 @@ export function getHistory (parameter) {
 export function getTalksetting (parameter) {
   return axios({
     url: api.getTalksetting,
-    method: 'get'
+    method: 'get',
+    params: {
+      groupId: parameter
+    }
   })
 }
 /**
@@ -193,7 +201,12 @@ export function getMoreInfo (parameter) {
 export function fileGrabble (parameter) {
   return axios({
     url: api.fileGrabble,
-    method: 'post'
+    method: 'post',
+    params: {
+      page: parameter,
+      size: 5,
+      id: 'bgv02TWk'
+    }
   })
 }
 /**
@@ -203,5 +216,52 @@ export function getContent (parameter) {
   return axios({
     url: api.getContent,
     method: 'post'
+  })
+}
+
+/**
+ * 全文件下载
+ */
+export function fileDownload (parameter) {
+  return axios({
+    url: api.fileDown,
+    method: 'get',
+    params: {
+      fileId: parameter
+    }
+  })
+}
+
+/**
+ * 联系人判断历史消息
+ */
+export function talkHistoryAll (userId, isGroup, id, page) {
+  return axios({
+    url: api.talkHistoryAll,
+    method: 'get',
+    params: {
+      userId: userId,
+      isGroup: isGroup,
+      contactId: id,
+      page: page,
+      size: 10
+    }
+  })
+}
+/**
+ * 联系人判断历史消息
+ * ?userId?groupId?tagType=0?page?size
+ */
+export function MarkMessageGrabble (userId, page, groupId) {
+  return axios({
+    url: api.MarkMessageGrabble,
+    method: 'get',
+    params: {
+      userId: userId,
+      page: page,
+      groupId: groupId,
+      size: 5,
+      tagType: 0
+    }
   })
 }

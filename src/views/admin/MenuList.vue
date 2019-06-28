@@ -365,6 +365,10 @@ export default {
       this.inAdd = false
       this.inEdit = true
       this.inDetail = false
+      // 以下菜单不能编辑按钮信息
+      if (record.title === '协同研讨' || record.title === '工作舱' || record.title === '登录' || record.title === '个人中心') {
+        this.inDetail = true
+      }
       this.bindFormData(record)
       this.menuid = record.id
     },

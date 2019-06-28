@@ -21,7 +21,7 @@
         </div>
       </li>
       <li v-for="(newItem,index) in NewItems" class="history_cotent" :key="index" :value="newItem.value">
-
+        <!-- {{ NewItems }} -->
         <a-list-item-meta class="file_name">
           <a class="file_a" slot="title">{{ newItem.fileName }}</a> <!-- 文件名 -->
           <a-avatar slot="avatar" :src="newItem.url" style="border-radius:0"/>  <!-- 文件图片 -->
@@ -33,10 +33,12 @@
             <a-tag color="orange" v-if="newItem.levels === '40'">秘密</a-tag>
             <a-tag color="tomato" v-if="newItem.levels === '60'">机密</a-tag>
             <a-tag color v-if="newItem.levels === '30'">非密</a-tag>
+            {{ NewItems.fileId }}
+
           </div>
         </a>
-        <a class="down">下载</a>
-
+        <!-- <a class="down" :href="'/chat/zzFileManage/downloadFile'" onclick="return false">下载</a> -->
+        <a-button class="down" type="primary" icon="download" @click="down(newItem.fileId)" :disabled="flag"></a-button>
       </li>
       <li>
         <div
@@ -54,7 +56,7 @@
 
 </template>
 <script>
-import { fileGrabble } from '@/api/talk.js'
+import { fileGrabble, fileDownload } from '@/api/talk.js'
 export default {
   name: 'Rabble',
   data () {
@@ -65,7 +67,9 @@ export default {
       loading: false,
       loadingMore: false,
       showLoadingMore: true,
-      item: []
+      item: [],
+      pageNumber: 1,
+      flag: false
     }
   },
   created () {
@@ -82,24 +86,39 @@ export default {
     },
 
     getData (callback) {
-      fileGrabble().then(data => {
+      fileGrabble(this.pageNumber).then(data => {
+        if (data.result.data.length < 5) {
+          this.showLoadingMore = false
+        }
         // callback(data.result.data)
-        this.data = data.result.data
+        const datas = data.result.data
+        datas.map(item => {
+          this.data.push(item)
+        })
       })
     },
     onLoadMore () {
       this.loadingMore = true
-      this.getData(res => {
+      this.pageNumber++
+      this.getData((res) => {
         this.data = this.data.concat(res.results)
-        this.loadingMore = false
         this.$nextTick(() => {
           window.dispatchEvent(new Event('resize'))
         })
       })
+      this.loadingMore = false
     },
     /** 抽屉关闭时触发closeDrawer事件 */
     onClose () {
       this.$emit('closeDrawer')
+    },
+    down (id) {
+      fileDownload(id).then(item => {
+        // if (item === 1) {
+        //   this.flag = true
+        // }
+        window.open('/api/chat/zzFileManage/downloadFile' + '?fileId=' + id)
+      })
     }
   },
   computed: {
@@ -145,12 +164,17 @@ export default {
   line-height: 55px;
   h4{
     line-height: 55px;
+    width: 90px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
   }
 }
 .file_name{
   float: left;
   margin-right: 20px;
-  line-height: 55px
+  line-height: 55px;
 }
 .file_sp{
   float: left;
@@ -164,6 +188,7 @@ export default {
   text-align: left;
   line-height: 55px
 }
+
 .file_time{
   float: left;
   margin-right: 20px;
@@ -180,9 +205,10 @@ export default {
 }
 .down{
   float:right;
-  height: 55px;
-  line-height: 55px;
-  display: block
+  // height: 55px;
+  // line-height: 55px;
+  // display: block
+  margin-top: 10px
 }
 .nav_box {
   width: 100%;

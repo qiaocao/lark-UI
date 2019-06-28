@@ -2,13 +2,12 @@
   <a-layout v-if="Object.keys(chatInfo).length" class="conv-box">
 
     <!-- 聊天设置选项的抽屉组件 -->
-    <talk-history :activeOption="activeOption" @closeDrawer="triggerDrawer"/>
+    <talk-history :contactId="contactId" :hisGrop="hisGrop" :activeOption="activeOption" @closeDrawer="triggerDrawer"/>
     <group-notice :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-    <talk-setting :activeOption="activeOption" @closeDrawer="triggerDrawer" />
+    <talk-setting :groupId="groupId" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <talk-file :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-    <mark-message :activeOption="activeOption" @closeDrawer="triggerDrawer" />
+    <mark-message :groupId="groupId" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <more-info :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-
     <a-layout-header class="conv-box-header">
       <div class="conv-title">
         <!-- 需要对名字的字数做限制 -->
@@ -18,7 +17,6 @@
         <!-- 显示密级 -->
         <span :class="'s-' + chatInfo.secretLevel">【{{ chatInfo.secretLevel | fileSecret }}】</span>
       </div>
-
       <div class="conv-option">
         <div v-if="!isPopup">
           <!-- 需要判断是否为群聊，操作选项不同 -->
@@ -27,6 +25,7 @@
             :key="index"
             placement="bottom"
             :overlayStyle="{fontSize: '12px'}"
+            @click="userIds(chatInfo.id, chatInfo.isGroup, chatInfo.id)"
           >
             <template slot="title">
               <span>{{ item.message }}</span>
@@ -222,6 +221,11 @@ export default {
         'done': 'success',
         'error': 'exception'
       },
+      // 聊天记录
+      contactId: '',
+      hisGrop: '',
+      // 标记信息
+      groupId: '',
       messageList: [],
 
       imgFormat: ['jpg', 'jpeg', 'png', 'gif'],
@@ -269,7 +273,10 @@ export default {
       immediate: true
     },
     messageList: function (newValue) {
-      this.$store.commit('SET_TALK_MAP', [[this.chatInfo.id, newValue]])
+      this.$store.commit('SET_TALK_MAP', {
+        fromServer: false,
+        talkMapData: [[this.chatInfo.id, newValue]]
+      })
       // 滚动到最下方
       this.scrollToBottom()
     }
@@ -296,6 +303,11 @@ export default {
     //     }
     //   })
     // },
+    userIds (chatInfoId, isGroup, groupId) {
+      this.contactId = chatInfoId
+      this.hisGrop = isGroup.toString()
+      this.groupId = groupId
+    },
     /**
      * 文件上传状态变化时触发
      * @param {Object} info {file, fileList}
@@ -383,7 +395,10 @@ export default {
     getCacheMessage () {
       const hasCache = this.$store.state.talk.talkMap.has(this.chatInfo.id)
       if (!hasCache) {
-        this.$store.commit('SET_TALK_MAP', [[this.chatInfo.id, []]])
+        this.$store.commit('SET_TALK_MAP', {
+          fromServer: false,
+          talkMapData: [[this.chatInfo.id, []]]
+        })
       }
       this.messageList = this.$store.state.talk.talkMap.get(this.chatInfo.id)
     },

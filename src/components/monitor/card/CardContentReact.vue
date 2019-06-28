@@ -3,15 +3,17 @@
     <div v-if="listData.length!=0" class="card-content">
       <a-list
         :bordered="bordered"
-        :dataSource="listData"
+        :dataSource="listData.slice(0, 8)"
         class="card-list"
       >
         <a-list-item style="padding: 3px 21px 3px 21px" slot="renderItem" slot-scope="item">
-          <a-list-item-meta v-if="item.type=='message'" :description="item.detail">
-            <div slot="title">{{ item.title }}</div>
-            <a-avatar slot="avatar" :src="item.avatar" />
+          <a-list-item-meta v-if="item.msgType==='1'">
+            <div slot="title">{{ item.msgSender+'：'+item.msg }}</div>
+            <a-avatar slot="avatar" :src="fileurl+''+item.avatar">
+              <span>{{ item.msgSender }}</span>
+            </a-avatar>
           </a-list-item-meta>
-          <div>{{ item.date|timeFormat }}</div>
+          <div>{{ item.sendTime|timeFormat }}</div>
         </a-list-item>
       </a-list>
     </div>
@@ -23,13 +25,15 @@
 </template>
 <script>
 import { toWeiXinString } from '@/utils/util'
+import { FILE_SERVER_IP } from '@/utils/constants'
 export default {
   name: 'CardContent',
   data () {
     return {
       bordered: false,
       fontSize: { fontSize: '52px' },
-      list: []
+      list: [],
+      fileurl: FILE_SERVER_IP
     }
   },
   props: {

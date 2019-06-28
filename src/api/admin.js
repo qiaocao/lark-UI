@@ -30,6 +30,7 @@ const api = {
   // 个人卡片设置
   card: '/portal/userCard/cards',
   usercard: '/portal/userCard/myself',
+  gatelog: '/admin/gateLog/page',
   // 临时增加，方便测试
   getUserBySecret: 'admin/user/list',
   deleteId: '/workplace/card'
@@ -399,6 +400,16 @@ export function getCard () {
   return axios({
     url: api.card,
     method: 'get'
+  })
+}
+/**
+ * 获取网关日志
+ */
+export function getGateLog (parameter) {
+  return axios({
+    url: api.gatelog,
+    method: 'get',
+    params: parameter
   })
 }
 /**

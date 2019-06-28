@@ -1,13 +1,5 @@
 <template>
   <div>
-    <!-- <input type="text" class="seek_inp" placeholder="输入要搜索内容" v-model="searchVal" >
-    <a-button type="primary" icon="search" style="border-radius:0"></a-button> -->
-
-    <!--
-      1 文本
-      2 文件
-      3 图片
-     -->
     <a-input-search
       placeholder="输入要搜索内容"
       @search="onSearch"
@@ -79,17 +71,12 @@
 
 </template>
 <script>
-import { talkHistoryAll, fileDownload } from '@/api/talk.js'
+import { fileDownload, MarkMessageGrabble } from '@/api/talk.js'
 export default {
   name: 'Rabble',
   directives: { scroll },
   props: {
-    contactId: {
-      type: String,
-      default: '',
-      required: true
-    },
-    hisGrop: {
+    groupId: {
       type: String,
       default: '',
       required: true
@@ -110,9 +97,10 @@ export default {
   },
 
   created () {
-    this.activeOption = 'talkHistory'
+    this.activeOption = 'markMessage'
     this.userId = this.$store.getters.userId
-    talkHistoryAll(this.userId, this.hisGrop, this.contactId, this.page).then(data => {
+    // this.userId, this.contactId, this.page
+    MarkMessageGrabble(this.userId, this.page, this.groupId).then(data => {
       const datas = data.result.data
       console.log('10100101010101010', datas)
       datas.map((item, index, array) => {
@@ -156,9 +144,9 @@ export default {
         this.timer = setTimeout(() => {
           this.page++
 
-          if (this.activeOption === 'talkHistory') {
+          if (this.activeOption === 'markMessage') {
             // this.getHistory()
-            talkHistoryAll(this.userId, this.hisGrop, this.contactId, this.page).then(data => {
+            MarkMessageGrabble(this.userId, this.page, this.groupId).then(data => {
               const datas = data.result.data
               datas.map((item, index, array) => {
                 this.items.push(item)
