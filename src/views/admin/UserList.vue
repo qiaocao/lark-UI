@@ -413,10 +413,18 @@ export default {
                     message: res.message,
                     duration: 4
                   })
-                  this.spinning = false
                 }
               }
-            )
+            ).catch((err) => {
+              if (err || err.response || err.response) {
+                _this.$notification['error']({
+                  message: err.response.data.message,
+                  duration: 4
+                })
+              }
+            }).finally(() => {
+              _this.spinning = false
+            })
           }
         }
       })
