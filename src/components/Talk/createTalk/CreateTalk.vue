@@ -90,7 +90,6 @@ export default {
           this.$refs.baseInfo.setFormData(this.baseInfo)
         })
       }
-
     },
     finish () {
       this.currentTab = 0
