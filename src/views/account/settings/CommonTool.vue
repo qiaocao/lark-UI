@@ -58,10 +58,17 @@ export default {
       flags: [],
       flag: [],
       data: [],
-      t: ''
+      t: '',
+      user: {}
+    }
+  },
+  computed: {
+    userInfo () {
+      return this.$store.getters.userInfo
     }
   },
   created () {
+    this.user = Object.assign({}, this.userInfo)
     this.getData()
   },
   methods: {
@@ -105,7 +112,7 @@ export default {
      * 获取工具
      */
     getData () {
-      getSelfCommonTools().then(res => {
+      getSelfCommonTools({ 'orgCode': this.user.orgCode }).then(res => {
         const datas = res.result.data
         datas.map(item => {
           this.data.push(item)

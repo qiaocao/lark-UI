@@ -1,5 +1,5 @@
 <template>
-  <!--群文件的抽屉 -->
+  <!--个人文件的抽屉 -->
   <a-drawer
     title="文件"
     placement="right"
@@ -7,20 +7,20 @@
     :width="510"
     :closable="false"
     @close="onClose"
-    :visible="activeOption=='talkFile'"
+    :visible="activeOption=='userFile'"
     :destroyOnClose="true"
   >
-    <file-grabble></file-grabble>
+    <user-file-grabble :contactId="contactId"></user-file-grabble>
 
   </a-drawer>
 </template>
 
 <script>
 import infiniteScroll from 'vue-scroll'
-import fileGrabble from './fileGrabble.vue'
+import userFileGrabble from './UserFileGrabble.vue'
 export default {
   directives: { infiniteScroll },
-  name: 'TalkFile',
+  name: 'UserFile',
   props: {
     /** 抽屉挂载的元素 */
     // mountEle: {
@@ -29,6 +29,11 @@ export default {
     //   required: false
     // },
     activeOption: {
+      type: String,
+      default: '',
+      required: true
+    },
+    contactId: {
       type: String,
       default: '',
       required: true
@@ -42,13 +47,13 @@ export default {
   created () {},
   watch: {
     activeOption (newValue) {
-      if (newValue === 'talkFile') {
+      if (newValue === 'userFile') {
         console.log('在这里加载数据')
       }
     }
   },
   components: {
-    fileGrabble
+    userFileGrabble
   },
   methods: {
     onSearch (value) {
