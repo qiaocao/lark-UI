@@ -119,6 +119,18 @@ export const asyncRouterMap = [
             }
           },
           {
+            path: '/list/word-list',
+            name: 'WordList',
+            component: () => import('@/views/admin/DictWord'),
+            meta: {
+              title: '敏感词汇管理',
+              icon: 'lock',
+              keepAlive: false,
+              // TODO 需要调整与后台权限一致
+              permission: ['gatelog']
+            }
+          },
+          {
             path: '/list/log-list',
             name: 'LogList',
             component: () => import('@/views/admin/LogList'),

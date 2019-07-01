@@ -1,27 +1,33 @@
 /**
  * fanjiao add
- * 主要用于组织管理模块、用户管理模块相关接口请求
+ * 主要用于组织管理模块、用户管理等管理员角色使用模块的相关接口请求
  *
  */
 import { axios } from '@/utils/request'
 
 const api = {
+  // 组织树
   orgTree: '/admin/org/tree',
+  // 用户管理
   getuserpage: '/admin/user/page',
   getuser: '/admin/org/user',
   getuserrole: '/admin/role/userRole',
   user: '/admin/user',
   adduser: '/admin/user/addUser',
+  // 角色管理
   org: '/admin/org',
   getrole: '/admin/role/page',
   role: '/admin/role',
   rolepermission: '/admin/role/permission',
   userrole: '/admin/user/roles',
+  // 公告/消息管理
   getnoticepage: '/admin/notice/page',
   notice: 'admin/notice',
   noticesend: 'admin/notice/send',
+  // 上传头像/缩略图
   // upload: '/fdfs/file/thumbImage',
   upload: '/fdfs/file/upload',
+  // 菜单管理
   getmenu: '/admin/menu/page',
   getmenuall: '/admin/menu/all',
   menu: '/admin/menu',
@@ -30,7 +36,11 @@ const api = {
   // 个人卡片设置
   card: '/portal/userCard/cards',
   usercard: '/portal/userCard/myself',
+  // 网关日志
   gatelog: '/admin/gateLog/page',
+  // 敏感词
+  getwordpage: '',
+  dicword: '',
   // 临时增加，方便测试
   getUserBySecret: 'admin/user/list'
 }
@@ -409,6 +419,46 @@ export function getGateLog (parameter) {
     url: api.gatelog,
     method: 'get',
     params: parameter
+  })
+}
+/**
+ * 获取涉密词汇
+ */
+export function getWordList (parameter) {
+  return axios({
+    url: api.getwordpage,
+    method: 'get',
+    params: parameter
+  })
+}
+/**
+ * 删除涉密词汇
+ */
+export function delWord (parameter) {
+  return axios({
+    url: api.dicword,
+    method: 'delete',
+    params: parameter
+  })
+}
+/**
+ * 修改涉密词汇
+ */
+export function updateWord (parameter) {
+  return axios({
+    url: api.dicword,
+    method: 'put',
+    data: parameter
+  })
+}
+/**
+ * 新增涉密词汇
+ */
+export function addWord (parameter) {
+  return axios({
+    url: api.dicword,
+    method: 'post',
+    data: parameter
   })
 }
 /**
