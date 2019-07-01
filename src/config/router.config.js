@@ -131,6 +131,18 @@ export const asyncRouterMap = [
             }
           },
           {
+            path: '/list/commontools',
+            name: 'CommonTools',
+            component: () => import('@/views/admin/CommonTools'),
+            meta: {
+              title: '常用工具管理',
+              icon: 'tool',
+              keepAlive: false,
+              // TODO 需要调整与后台权限一致
+              permission: ['commontools']
+            }
+          },
+          {
             path: '/list/log-list',
             name: 'LogList',
             component: () => import('@/views/admin/LogList'),

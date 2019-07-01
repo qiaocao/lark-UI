@@ -9,7 +9,12 @@
 20190628 push by fanjiao:filepath--【消息管理添加组织机构】
                             src\components\admin\OrgTreeSelect.vue
                             src\views\admin\NotificationList.vue                     
-20190701 push by fanjiao:filepath--【敏感词管理】（王哥要求提交）
+20190701 push by fanjiao:filepath--【敏感词管理】
                             src\views\admin\DictWord.vue
+                            src\api\admin.js
+                            src\config\router.config.js
+20190701 push by fanjiao:filepath--【常用工具管理】
+                            src\views\admin\CommonTools.vue
+                            src\components\admin\OrgTreeSelect.vue
                             src\api\admin.js
                             src\config\router.config.js
