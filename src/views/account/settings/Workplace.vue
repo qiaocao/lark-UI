@@ -39,8 +39,6 @@
   </a-list>
 </template>
 <script>
-import settingJs from '@/api/setting.js'
-import adimJs from '@/api/admin.js'
 import { getCard, addCard, delCard } from '@/api/admin'
 export default {
   data () {
@@ -95,14 +93,6 @@ export default {
      * 添加卡片
      */
     pushId (cardId) {
-      settingJs.settingCard(cardId)
-      // this.$http.post('/workplace/card', {
-      //   params: {
-      //     cardId: cardId,
-      //     userId: this.$store.state.user.name
-      //   }
-      // }).then(res => {
-      // })
       addCard({ 'cardId': cardId }).then(
         res => {
           if (res.status === 200) {
@@ -128,15 +118,6 @@ export default {
      * 删除卡片
      */
     deleteId (cardId) {
-      adimJs.deleteId(cardId)
-      // this.$http.get('/workplace/card', {
-      //   params: {
-      //     cardId: cardId,
-      //     userId: this.$store.state.user.name
-      //   }
-      // }).then(res => {
-
-      // })
       delCard({ 'cardId': cardId }).then(
         res => {
           if (res.status === 200) {

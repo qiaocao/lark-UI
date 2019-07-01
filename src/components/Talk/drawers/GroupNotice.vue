@@ -15,8 +15,6 @@
 </template>
 
 <script>
-// var time = this.getNowFormatDate()
-// import { getContent } from '@/api/talk.js'
 export default {
   name: 'GroupNotice',
   props: {
