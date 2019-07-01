@@ -92,7 +92,7 @@ export default {
     },
     // 提示
     openNotification () {
-      this.$notification.open({
+      this.$notification.warning({
         message: '无法获取文件，稍后再试',
         description: '',
         onClick: () => {
@@ -113,7 +113,7 @@ export default {
         })
       }).catch(res => {
         this.openNotification()
-        this.showLoadingMore = false
+        // this.showLoadingMore = false
       })
     },
     onLoadMore () {
