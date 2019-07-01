@@ -25,9 +25,9 @@
         <a-list-item-meta class="file_name">
           <a-tooltip slot="title" :title="newItem.fileName">
             <a class="file_a" message="sss">{{ newItem.fileName }}</a> <!-- 文件名 -->
-          </a-tooltip> <!-- 文件图片 -->
-          <!-- <a-avatar slot="avatar" :src="newItem.url" style="border-radius:0" /> -->
-          <a-avatar slot="avatar" :src="newItem.url" style="border-radius:0;  font-size: 25px;" > <a-icon type="file"></a-icon> </a-avatar>
+          </a-tooltip>
+          <!-- <a-avatar slot="avatar" :src="newItem.url" style="border-radius:0" />   -->
+          <a-avatar slot="avatar" :src="newItem.url" style="border-radius:0;  font-size: 25px;" > <a-icon type="file"></a-icon> </a-avatar><!-- 文件图片 -->
           <!-- <a-icon class="content_icon" type="file"/> -->
         </a-list-item-meta>
         <a-tooltip :title="newItem.reviser">
@@ -62,9 +62,16 @@
 
 </template>
 <script>
-import { fileGrabble, fileDownload } from '@/api/talk.js'
+import { userfileGrabble, fileDownload } from '@/api/talk.js'
 export default {
   name: 'Rabble',
+  props: {
+    contactId: {
+      type: String,
+      default: '',
+      required: true
+    }
+  },
   data () {
     return {
       searchVal: '',
@@ -75,7 +82,8 @@ export default {
       showLoadingMore: true,
       item: [],
       pageNumber: 1,
-      flag: false
+      flag: false,
+      userId: ''
     }
   },
   created () {
@@ -92,7 +100,8 @@ export default {
     },
 
     getData (callback) {
-      fileGrabble(this.pageNumber).then(data => {
+      this.userId = this.$store.getters.userId
+      userfileGrabble(this.userId, this.contactId, this.pageNumber).then(data => {
         if (data.result.data.length < 5) {
           this.showLoadingMore = false
         }

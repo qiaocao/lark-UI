@@ -2,13 +2,13 @@
   <a-layout v-if="Object.keys(chatInfo).length" class="conv-box">
 
     <!-- 聊天设置选项的抽屉组件 -->
-    <talk-history :activeOption="activeOption" @closeDrawer="triggerDrawer" />
+    <talk-history :contactId="contactId" :hisGrop="hisGrop" :activeOption="activeOption" @closeDrawer="triggerDrawer"/>
     <group-notice :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-    <talk-setting :activeOption="activeOption" @closeDrawer="triggerDrawer" />
+    <talk-setting :groupId="groupId" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <talk-file :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-    <mark-message :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-    <more-info :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-
+    <user-file :contactId="contactId" :activeOption="activeOption" @closeDrawer="triggerDrawer"/>
+    <mark-message :groupId="groupId" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
+    <more-info :contactId="contactId" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <a-layout-header class="conv-box-header">
       <div class="conv-title">
         <!-- 需要对名字的字数做限制 -->
@@ -18,7 +18,6 @@
         <!-- 显示密级 -->
         <span :class="'s-' + chatInfo.secretLevel">【{{ chatInfo.secretLevel | fileSecret }}】</span>
       </div>
-
       <div class="conv-option">
         <div v-if="!isPopup">
           <!-- 需要判断是否为群聊，操作选项不同 -->
@@ -27,6 +26,7 @@
             :key="index"
             placement="bottom"
             :overlayStyle="{fontSize: '12px'}"
+            @click="userIds(chatInfo.id, chatInfo.isGroup, chatInfo.id)"
           >
             <template slot="title">
               <span>{{ item.message }}</span>
@@ -159,7 +159,7 @@
 </template>
 
 <script>
-import { MessagePiece, TalkHistory, MoreInfo, GroupNotice, TalkSetting, MarkMessage, TalkFile } from '@/components/Talk'
+import { MessagePiece, TalkHistory, MoreInfo, GroupNotice, TalkSetting, MarkMessage, TalkFile, UserFile } from '@/components/Talk'
 import { LandingStatus } from '@/utils/constants'
 import api from '@/api/talk'
 import { SocketMessage, Tweet } from '@/utils/talk'
@@ -178,7 +178,8 @@ export default {
     TalkSetting,
     MarkMessage,
     TalkFile,
-    MoreInfo
+    MoreInfo,
+    UserFile
   },
   props: {
     /** 聊天对话框的基本信息--结构同最近联系人 */
@@ -198,6 +199,8 @@ export default {
     return {
       // 被激活的抽屉
       activeOption: '',
+      // 是否是群聊消息
+      // isGroupMessage,
       // 所有被at用的id
       atId: [],
       // 消息类型
@@ -220,6 +223,11 @@ export default {
         'done': 'success',
         'error': 'exception'
       },
+      // 聊天记录
+      contactId: '',
+      hisGrop: '',
+      // 标记信息
+      groupId: '',
       messageList: [],
 
       imgFormat: ['jpg', 'jpeg', 'png', 'gif'],
@@ -297,6 +305,11 @@ export default {
     //     }
     //   })
     // },
+    userIds (chatInfoId, isGroup, groupId) {
+      this.contactId = chatInfoId
+      this.hisGrop = isGroup.toString()
+      this.groupId = groupId
+    },
     /**
      * 文件上传状态变化时触发
      * @param {Object} info {file, fileList}
@@ -348,10 +361,10 @@ export default {
     optionFilter (isGroup) {
       // 聊天操作选项
       const optionList = [
-        { group: true, name: 'groupNotice', message: '群公告', type: 'notification' },
+        // { group: true, name: 'groupNotice', message: '群公告', type: 'notification' },
         { group: true, name: 'markMessage', message: '标记信息', type: 'tags' },
         { group: false, name: 'talkHistory', message: '聊天内容', type: 'file-text' },
-        { group: false, name: 'talkFile', message: '文件', type: 'folder-open' },
+        { group: false, name: isGroup ? 'talkFile' : 'userFile', message: '文件', type: 'folder-open' },
         { group: false, name: isGroup ? 'moreInfo' : 'personMoreInfo', message: '更多', type: 'ellipsis' }]
 
       return isGroup ? optionList : optionList.filter(item => !item.group)
