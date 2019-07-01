@@ -41,6 +41,7 @@ const api = {
   // 敏感词
   getwordpage: '',
   dicword: '',
+  importWords: '',
   // 常用工具
   gettoolpage: '/portal/commonTools/page',
   commontools: '/portal/commonTools',
@@ -462,6 +463,17 @@ export function addWord (parameter) {
     url: api.dicword,
     method: 'post',
     data: parameter
+  })
+}
+/**
+ * 批量导入涉密词汇
+ */
+export function uploadExcel (parameter) {
+  return axios({
+    url: api.importWords,
+    method: 'post',
+    data: parameter,
+    headers: { 'Content-Type': 'multipart/form-data' }
   })
 }
 /**

@@ -259,12 +259,12 @@ export default {
         })
         return
       }
-      this.confirmLoading = true
       this.editForm.validateFields((err, values) => {
         values.id = this.id
         values.orgCode = this.orgCode
         values.orgName = this.orgName
         if (!err) {
+          this.confirmLoading = true
           if (this.inAdd) {
             addTool(values).then(
               res => {

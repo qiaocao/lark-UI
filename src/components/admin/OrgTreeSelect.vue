@@ -36,7 +36,7 @@ export default {
     }
   },
   watch: {
-    values: function(val) {
+    values: function (val) {
       this.id = val
     }
   },
@@ -49,7 +49,7 @@ export default {
     disabled: {
       type: Boolean,
       default: false
-    },
+    }
   },
   methods: {
     /**

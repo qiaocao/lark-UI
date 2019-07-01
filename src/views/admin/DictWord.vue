@@ -21,7 +21,7 @@
               <a-input placeholder="请输入" v-model="queryParam.replaceName"/>
             </a-form-item>
           </a-col>
-          <a-col :md="4" :sm="24" :offset="1">
+          <a-col :md="4" :sm="24">
             <a-form-item label="状态">
               <a-select placeholder="请选择" v-model="queryParam.isUse">
                 <a-select-option value="1">正常</a-select-option>
@@ -29,11 +29,26 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :md="3" :sm="24" :offset="1">
+          <a-col :md="6" :sm="24" :offset="1">
             <span class="table-page-search-submitButtons">
-              <a-button type="primary" @click="searchRole">查询</a-button>
-              <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
-              <a-button type="primary" style="margin-left: 30px" @click="handleAdd()">新增</a-button>
+              <a-row>
+                <a-col :md="4">
+                  <a-button type="primary" @click="search">查询</a-button>
+                </a-col>
+                <a-col :md="4">
+                  <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
+                </a-col>
+                <a-col :md="7">
+                  <a-button type="primary" style="margin-left: 30px" @click="handleAdd()">新增</a-button>
+                </a-col>
+                <a-col :md="9">
+                  <a-upload name="file" @change="uploadChange" :fileList="fileList" :customRequest="customRequest" :beforeUpload="beforeUpload">
+                    <a-button>
+                      <a-icon type="upload" />批量导入
+                    </a-button>
+                  </a-upload>
+                </a-col>
+              </a-row>
             </span>
           </a-col>
         </a-row>
@@ -72,83 +87,87 @@
       :width="800"
       v-model="editVisible"
       @ok="handleEditOk"
+      :confirmLoading="confirmLoading"
     >
-      <a-spin :spinning="spinning">
-        <a-form :form="editForm">
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
-            label="词汇编码"
-          >
-            <a-input :disabled="true" v-decorator="['wordCode']"/>
-          </a-form-item>
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
-            label="词汇类型"
-            hasFeedback
-          >
-            <a-select v-decorator="['wordType',{rules: [{ required: true, message: '请填写词汇类型' }]}]" :disabled="inDetail" change="typeChange(value)">
-              <a-select-option value="1">涉密</a-select-option>
-              <a-select-option value="2">敏感</a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
-            label="词汇名称"
-            hasFeedback
-          >
-            <a-input v-decorator="['wordName',{rules: [{ required: true, message: '请填写词汇名称' }]}]" :disabled="inDetail"/>
-          </a-form-item>
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
-            label="替换词汇"
-            hasFeedback
-          >
-            <a-input v-if="type==='2'" v-decorator="['replaceWord',{rules: [{ required: true, message: '请填写替换词汇' }]}]" :disabled="inDetail"/>
-          </a-form-item>
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
-            label="创建人"
-            hasFeedback
-          >
-            <a-input v-decorator="['crtUser']" v-if="inDetail"/>
-          </a-form-item>
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
-            label="创建时间"
-            hasFeedback
-          >
-            <a-input v-decorator="['crtTime']" v-if="inDetail"/>
-          </a-form-item>
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
-            label="修改人"
-            hasFeedback
-          >
-            <a-input v-decorator="['updUser']" v-if="inDetail"/>
-          </a-form-item>
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
-            label="修改时间"
-            hasFeedback
-          >
-            <a-input v-decorator="['updTime']" v-if="inDetail"/>
-          </a-form-item>
-        </a-form>
-      </a-spin>
+      <a-form :form="editForm">
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="词汇编码"
+        >
+          <a-input :disabled="true" v-decorator="['wordCode']"/>
+        </a-form-item>
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="词汇类型"
+          hasFeedback
+        >
+          <a-select v-decorator="['wordType',{rules: [{ required: true, message: '请填写词汇类型' }]}]" :disabled="inDetail" @change="typeChange">
+            <a-select-option value="1">涉密</a-select-option>
+            <a-select-option value="2">敏感</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="词汇名称"
+          hasFeedback
+        >
+          <a-input v-decorator="['wordName',{rules: [{ required: true, message: '请填写词汇名称' }]}]" :disabled="inDetail"/>
+        </a-form-item>
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="替换词汇"
+          hasFeedback
+          v-if="type==='2'"
+        >
+          <a-input v-decorator="['replaceWord',{rules: [{ required: true, message: '请填写替换词汇' }]}]" :disabled="inDetail"/>
+        </a-form-item>
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="创建人"
+          hasFeedback
+          v-if="inDetail"
+        >
+          <a-input v-decorator="['crtUser']" :disabled="inDetail"/>
+        </a-form-item>
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="创建时间"
+          hasFeedback
+          v-if="inDetail"
+        >
+          <a-input v-decorator="['crtTime']" :disabled="inDetail"/>
+        </a-form-item>
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="修改人"
+          hasFeedback
+          v-if="inDetail"
+        >
+          <a-input v-decorator="['updUser']" :disabled="inDetail"/>
+        </a-form-item>
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="修改时间"
+          hasFeedback
+          v-if="inDetail"
+        >
+          <a-input v-decorator="['updTime']" :disabled="inDetail"/>
+        </a-form-item>
+      </a-form>
     </a-modal>
   </a-card>
 </template>
 <script>
 import { STable } from '@/components'
-import { getWordList, addWord, updateWord, delWord } from '@/api/admin'
+import { getWordList, addWord, updateWord, delWord, importWords } from '@/api/admin'
 export default {
   name: 'DictWord',
   components: {
@@ -206,7 +225,9 @@ export default {
             return res.result
           })
       },
-      spinning: false
+      confirmLoading: false,
+      id: '',
+      fileList: []
     }
   },
   created () {
@@ -231,7 +252,7 @@ export default {
      * 停用/启用
      */
     handleStatus (record, isUse) {
-      this.spinning = true
+      this.confirmLoading = true
       updateWord(record).then(
         res => {
           this.handleResult(res)
@@ -263,7 +284,7 @@ export default {
      */
     handleDelete (record) {
       const _this = this
-      _this.spinning = true
+      _this.confirmLoading = true
       this.$confirm({
         title: '警告',
         content: `确认要删除 ${record.name} 的信息吗?`,
@@ -291,9 +312,13 @@ export default {
      * 保存
      */
     handleEditOk () {
-      this.spinning = true
+      if (this.inDetail) {
+        this.editVisible = false
+        return
+      }
       this.editForm.validateFields((err, values) => {
         if (!err) {
+          this.confirmLoading = true
           if (this.inAdd) {
             addWord(values).then(
               res => {
@@ -318,6 +343,11 @@ export default {
      * 绑定表单值
      */
     bindForm (record) {
+      if (record) {
+        this.id = record.id
+      } else {
+        this.wordType = ''
+      }
       setTimeout(() => {
         this.editForm.setFieldsValue({
           wordType: '',
@@ -352,7 +382,7 @@ export default {
           duration: 4
         })
       }
-      this.spinning = false
+      this.confirmLoading = false
     },
     /**
      * 请求接口发生异常
@@ -364,8 +394,61 @@ export default {
           duration: 4
         })
       }
-      this.spinning = false
-    }
+      this.confirmLoading = false
+    },
+    uploadChange (info) {
+      // 上传的文件不显示在主页
+      this.fileList = []
+      this.filename = info.file.name
+      if (info.file.status === 'uploading') {
+        this.loading = true
+        return
+      }
+      if (info.file.status === 'done') {
+        this.loading = false
+      }
+    },
+    
+    /**
+     * 重写上传action方法
+     */
+    customRequest (data) {
+      const formData = new FormData()
+      formData.append('file', data.file)
+      data.onProgress()
+      importWords(formData).then(res => {
+        if (res.status === 200) {
+          // const imageUrl = res.result
+          // vue-cropper插件img绑定url时，会有跨域问题，图片类型转base64传递到子组件
+          this.getBase64(data.file, (imageUrl) => {
+            this.$refs.modal.edit(imageUrl)
+          })
+        }
+      })
+    },
+    /**
+     * 上传前文件类型及尺寸的校验
+     */
+    beforeUpload (file) {
+      // 校验上传文件类型
+      console.log('file.type',file.type)
+      const isExcel = file.type === 'excel'
+      if (!isExcel) {
+        this.$notification['error']({
+          message: '请上传Excel文件',
+          duration: 4
+        })
+      }
+      // 校验上传文件尺寸
+      const isLt10M = file.size / 1024 / 1024 < 10
+      if (!isLt10M) {
+        this.$notification['error']({
+          message: '请上传尺寸小于10MB的图片',
+          duration: 4
+        })
+      }
+      return isExcel && isLt10M
+    },
   }
 }
 </script>
