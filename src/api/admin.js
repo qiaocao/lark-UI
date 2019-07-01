@@ -46,7 +46,8 @@ const api = {
   gettoolpage: '/portal/commonTools/page',
   commontools: '/portal/commonTools',
   // 临时增加，方便测试
-  getUserBySecret: 'admin/user/list'
+  getUserBySecret: 'admin/user/list',
+  deleteId: '/workplace/card'
 }
 
 export default api
@@ -524,5 +525,18 @@ export function getUserBySecret (parameter) {
     url: api.getUserBySecret,
     method: 'GET',
     params: parameter
+  })
+}
+/**
+ * 删除card
+ */
+export function deleteId (parameter) {
+  return axios({
+    url: api.getUserBySecret,
+    method: 'GET',
+    params: {
+      cardId: parameter,
+      userId: this.$store.state.user.name
+    }
   })
 }

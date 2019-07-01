@@ -1,13 +1,5 @@
 <template>
   <div>
-    <!-- <input type="text" class="seek_inp" placeholder="输入要搜索内容" v-model="searchVal" >
-    <a-button type="primary" icon="search" style="border-radius:0"></a-button> -->
-
-    <!--
-      1 文本
-      2 文件
-      3 图片
-     -->
     <a-input-search
       placeholder="输入要搜索内容"
       @search="onSearch"
@@ -60,9 +52,7 @@
             <h3 class="user_name">{{ item.username }}</h3>
             <dir class="content_file">
               <a-icon class="content_icon" type="file"/>
-              <a-tooltip :title="item.content.title">
-                <h3 class="content_h3" style=" width: 100px,  padding:0">{{ item.content.title }}</h3>
-              </a-tooltip>
+              <h3 class="content_h3" style=" width: 100px,  padding:0">{{ item.content.title }}</h3>
             </dir>
           </div>
           <div class="history_right">
@@ -77,22 +67,17 @@
         </div>
       </li>
     </ul>
-    <a-button v-if="isShow" @click="getHistory" style="margin: auto; display: block;"> 加载失败，点击重试</a-button>
+    <a-button v-if="isShow" @click="getMark" style="margin: auto; display: block;"> 加载失败，点击重试</a-button>
   </div>
 
 </template>
 <script>
-import { talkHistoryAll, fileDownload } from '@/api/talk.js'
+import { fileDownload, MarkMessageGrabble } from '@/api/talk.js'
 export default {
   name: 'Rabble',
   directives: { scroll },
   props: {
-    contactId: {
-      type: String,
-      default: '',
-      required: true
-    },
-    hisGrop: {
+    groupId: {
       type: String,
       default: '',
       required: true
@@ -112,9 +97,10 @@ export default {
       isShow: false
     }
   },
+
   created () {
-    this.activeOption = 'talkHistory'
-    this.getHistory()
+    this.activeOption = 'markMessage'
+    this.getMark()
   },
   mounted () {
     window.addEventListener('scroll', (this.lazyLoading), true)
@@ -134,9 +120,10 @@ export default {
         this.flag = !this.flag
       }
     },
-    getHistory () {
+    getMark () {
       this.userId = this.$store.getters.userId
-      talkHistoryAll(this.userId, this.hisGrop, this.contactId, this.page).then(data => {
+      // this.userId, this.contactId, this.page
+      MarkMessageGrabble(this.userId, this.page, this.groupId).then(data => {
         const datas = data.result.data
         datas.map((item, index, array) => {
           this.items.push(item)
@@ -163,14 +150,13 @@ export default {
         this.timer = setTimeout(() => {
           this.page++
 
-          if (this.activeOption === 'talkHistory') {
+          if (this.activeOption === 'markMessage') {
             // this.getHistory()
-            talkHistoryAll(this.userId, this.hisGrop, this.contactId, this.page).then(data => {
+            MarkMessageGrabble(this.userId, this.page, this.groupId).then(data => {
               const datas = data.result.data
               datas.map((item, index, array) => {
                 this.items.push(item)
               })
-            }).catch((res) => {
             })
           }
         }, 1000)
@@ -308,14 +294,10 @@ export default {
   .content_h3{
     display: inline-block;
     position: absolute;
-    top: 0;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    width: 100px
+    top: 0
   }
   .dow_height{
-    height: 15px
+    height: 15px;
   }
 
 }
