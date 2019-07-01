@@ -2,13 +2,12 @@
   <a-layout class="talk-layout">
     <a-layout-sider class="talk-layout-sider">
       <div class="search-bar">
-        <SearchInput />
+        <!-- <SearchInput /> -->
         <a-tooltip title="发起研讨" placement="bottom" :overlayStyle="{fontSize: '12px'}">
           <a-button @click="startTalk" icon="plus" size="small" style="marginLeft: 3px"></a-button>
         </a-tooltip>
       </div>
       <a-tabs
-        v-if="showSearchContent"
         :activeKey="activeKey"
         @change="changePane"
         :tabBarGutter="0"
@@ -114,7 +113,6 @@
 
     <!-- 创建新的研讨模态框 -->
     <CreateTalk :showModal="showCreateModal" />
-    <SearchRecordModal :searchRecordModalVisible="searchRecordModalVisible" />
   </a-layout>
 </template>
 
