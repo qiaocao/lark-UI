@@ -7,7 +7,7 @@
     <talk-setting :groupId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <talk-file :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <user-file :contactId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer"/>
-    <mark-message :groupId="groupInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
+    <mark-message :groupId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <more-info :contactId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <a-layout-header class="conv-box-header">
       <div class="conv-title">
