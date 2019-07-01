@@ -18,3 +18,5 @@
                             src\components\admin\OrgTreeSelect.vue
                             src\api\admin.js
                             src\config\router.config.js
+20190701 push by fanjiao:filepath--【个人常用工具设置：查询工作列表按组织机构信息过滤】                           
+                            src\views\account\settings\CommonTool.vue
