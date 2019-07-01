@@ -11,9 +11,11 @@
       :width="448"
       :visible="activeOption=='personMoreInfo'"
       :wrapStyle="{marginTop: '64px'}"
+      :destroyOnClose="true"
     >
       <div class="user_box">
-        <img :src="items.avatar" alt="">
+        <!-- <img :src="items.avatar" alt=""> -->
+        <a-avatar class="content_l" shape="square" :size="60" :src="items.avatar" style="background: #00a2ae">{{ items.name }}</a-avatar>
         <div class="secret" style="margin: 6px 0 0 20px, width:30px">
           <a-tag color="orange" v-if="items.secretLevel === '40'">秘密</a-tag>
           <a-tag color="tomato" v-if="items.secretLevel === '60'">机密</a-tag>
@@ -51,7 +53,7 @@
   </div>
 </template>
 <script>
-import { getMoreInfo } from '@/api/talk.js'
+import { getContactsInfo } from '@/api/talk.js'
 export default {
   name: 'PersonMoreInfo',
   props: {
@@ -62,6 +64,11 @@ export default {
       required: false
     },
     activeOption: {
+      type: String,
+      default: '',
+      required: true
+    },
+    contactId: {
       type: String,
       default: '',
       required: true
@@ -79,8 +86,8 @@ export default {
   watch: {
     activeOption (newValue) {
       if (newValue === 'personMoreInfo') {
-        getMoreInfo().then((item) => {
-          this.items = item.result.data
+        getContactsInfo(this.contactId).then((item) => {
+          this.items = item.result
         })
       }
     }

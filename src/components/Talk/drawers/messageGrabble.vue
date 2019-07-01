@@ -60,7 +60,9 @@
             <h3 class="user_name">{{ item.username }}</h3>
             <dir class="content_file">
               <a-icon class="content_icon" type="file"/>
-              <h3 class="content_h3" style=" width: 100px,  padding:0">{{ item.content.title }}</h3>
+              <a-tooltip :title="item.content.title">
+                <h3 class="content_h3" style=" width: 100px,  padding:0">{{ item.content.title }}</h3>
+              </a-tooltip>
             </dir>
           </div>
           <div class="history_right">
@@ -75,6 +77,7 @@
         </div>
       </li>
     </ul>
+    <a-button v-if="isShow" @click="getHistory" style="margin: auto; display: block;"> 加载失败，点击重试</a-button>
   </div>
 
 </template>
@@ -105,20 +108,13 @@ export default {
       userId: '',
       page: 1,
       Dowflag: false,
-      fileId: ''
+      fileId: '',
+      isShow: false
     }
   },
-
   created () {
     this.activeOption = 'talkHistory'
-    this.userId = this.$store.getters.userId
-    talkHistoryAll(this.userId, this.hisGrop, this.contactId, this.page).then(data => {
-      const datas = data.result.data
-      console.log('10100101010101010', datas)
-      datas.map((item, index, array) => {
-        this.items.push(item)
-      })
-    })
+    this.getHistory()
   },
   mounted () {
     window.addEventListener('scroll', (this.lazyLoading), true)
@@ -138,12 +134,23 @@ export default {
         this.flag = !this.flag
       }
     },
+    getHistory () {
+      this.userId = this.$store.getters.userId
+      talkHistoryAll(this.userId, this.hisGrop, this.contactId, this.page).then(data => {
+        const datas = data.result.data
+        datas.map((item, index, array) => {
+          this.items.push(item)
+        })
+      }).catch(res => {
+        this.isShow = true
+      })
+    },
     down (id) {
       fileDownload(id).then(item => {
         // if (item === 1) {
         //   this.flag = true
         // }
-        window.open('/api/chat/zzFileManage/downloadFile' + '?file' + id)
+        window.open('/api/chat/zzFileManage/downloadFile' + '?file' + id, '_self')
       })
     },
     // 滚动获取数据
@@ -163,6 +170,7 @@ export default {
               datas.map((item, index, array) => {
                 this.items.push(item)
               })
+            }).catch((res) => {
             })
           }
         }, 1000)
@@ -265,7 +273,7 @@ export default {
   // height: 55px;
   // line-height: 55px;
   // display: block
-  margin-top: 10px;
+  margin: 10px 10px 0 0;
   position: absolute;
   bottom: 10px;
   right: 0;
@@ -300,7 +308,11 @@ export default {
   .content_h3{
     display: inline-block;
     position: absolute;
-    top: 0
+    top: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100px
   }
   .dow_height{
     height: 15px

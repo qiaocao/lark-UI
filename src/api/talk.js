@@ -16,9 +16,11 @@ const api = {
   getTalksetting: 'chat/zzGroup/getGroupInfo',
   getMoreInfo: '/talk/contacts/info',
   fileGrabble: 'chat/zzGroupFile/groupfile',
+  userfileGrabble: 'chat/zzPrivateMsg/privateFile',
   fileDown: '/chat/zzFileManage/downloadFile',
   talkHistoryAll: 'chat/zzGroup/queryHistoryMessageForSingle',
   MarkMessageGrabble: 'chat/zzUserGroupMsgTag/getUserGroupMsgTagList',
+  getGroupMembers: 'chat/zzGroup/getGroupUserList',
   // zzGroup/getGroupInfo    groupID
   // getContent: 'https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/notice',
   // 研讨文件上传地址
@@ -190,12 +192,12 @@ export function getTalksetting (parameter) {
 /**
  *  MoreInfo
  */
-export function getMoreInfo (parameter) {
-  return axios({
-    url: api.getMoreInfo,
-    method: 'get'
-  })
-}
+// export function getMoreInfo (parameter) {
+//   return axios({
+//     url: api.getMoreInfo,
+//     method: 'get'
+//   })
+// }
 /**
  * fileGrabble
  */
@@ -263,6 +265,36 @@ export function MarkMessageGrabble (userId, page, groupId) {
       groupId: groupId,
       size: 5,
       tagType: 0
+    }
+  })
+}
+/**
+ * 联系人文件
+ * userd receiver page size
+ */
+export function userfileGrabble (userId, receiver, page) {
+  return axios({
+    url: api.userfileGrabble,
+    method: 'post',
+    params: {
+      userId: userId,
+      receiver,
+      page: page,
+      size: 5
+      // tagType: 0
+    }
+  })
+}
+/**
+ * 联系人文件
+ * ?groupId=
+ */
+export function getGroupMembers (groupId) {
+  return axios({
+    url: api.getGroupMembers,
+    method: 'get',
+    params: {
+      groupId
     }
   })
 }

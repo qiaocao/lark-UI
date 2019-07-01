@@ -7,8 +7,7 @@
     @close="onClose"
     :visible="activeOption=='moreInfo'"
     :wrapStyle="{height: 'calc(100% - 108px)',overflow: 'auto',paddingBottom: '108px', marginTop: '64px' }"
-    :maskClosable="true"
-    :closable="false"
+    :destroyOnClose="true"
   >
     <div class="talk-setting" ref="settingDrawer">
       <!-- <a-row :gutter="8" class="group-setting-row">
@@ -171,15 +170,17 @@
       <a-button type="danger" @click="onClose" block>退出研讨组</a-button>
     </div>
     <ul class="setting_ul">
-      <li v-for="(item) in setting" :key="item.key">
-        <img :src="setting.groupImg" alt="">
-        <span>{{ setting.userName }}</span>
+      <li v-for="(item) in userList" :key="item.key">
+        <a-avatar shape="square" :src="item.avartar" style="height: 50px" >{{ item.name }}</a-avatar>
+        <a-tooltip title="setting.userName">
+          <span class="setting_ul_sp">{{ item.name }}</span>
+        </a-tooltip>
       </li>
     </ul>
   </a-drawer>
 </template>
 <script>
-import { getTalksetting } from '@/api/talk.js'
+import { getTalksetting, getGroupMembers } from '@/api/talk.js'
 const data = ['1', '2', '1', '2', '1', '2']
 export default {
   name: 'MoreInfo',
@@ -214,7 +215,8 @@ export default {
       data,
       // visible: false,
       setting: [],
-      items: []
+      items: [],
+      userList: []
     }
   },
   watch: {
@@ -225,6 +227,10 @@ export default {
         getTalksetting(this.groupId).then(res => {
           const datas = res.result
           this.setting = datas
+        })
+        getGroupMembers(this.groupId).then(res => {
+          const data = res.result.data
+          this.userList = data
         })
       }
     }
@@ -325,13 +331,13 @@ export default {
 }
 .setting_ul{
   width: 360px;
-  margin: 50px 0 70px 0;
+  margin: 50px auto 100px;
   box-sizing: border-box;
   overflow: hidden;
   li{
     list-style: none;
     float: left;
-    padding-right: 20px;
+    padding-right: 10px;
     img{
       width: 60px;
       height: 60px;
@@ -346,5 +352,13 @@ export default {
       text-overflow: ellipsis;
     }
   }
+  .setting_ul_sp{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: inline-block;
+    width: 50px;
+  }
 }
+
 </style>
