@@ -88,7 +88,7 @@ export default {
             if (this.user.avatar) {
               this.imageUrl = FILE_SERVER_IP + this.user.avatar
             } else {
-              this.imageUrl = '/avatar.jpg'
+              this.imageUrl = '/avatar.png'
             }
           })
         }

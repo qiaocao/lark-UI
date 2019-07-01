@@ -64,7 +64,7 @@
 
             <a-popover placement="topLeft" v-model="emojisVisible" trigger="click" overlayClassName="emojis-picker">
               <template slot="content">
-                <VEmojiPicker :pack="emojisNative" labelSearch @select="onSelectEmoji" style="color: black;" />
+                <face/>
               </template>
               <a-icon style="marginRight: 20px" type="smile" />
             </a-popover>
@@ -115,7 +115,7 @@
               <a-tooltip :title="fileUpload.name">
                 <span>{{ fileUpload.name }}</span>
               </a-tooltip>
-              <a-progress :percent="fileUpload.percent" :status="uplaodStatus[fileUpload.status]" size="small" style="display: block;"/>
+              <a-progress :percent="fileUpload.percent" :status="uploadStatus[fileUpload.status]" size="small" style="display: block;"/>
               <a-tooltip placement="top" title="删除">
                 <a-icon type="close" @click="removeFile" style="position: absolute; top: 5px; right: 5px; font-size: 11px; cursor: pointer;" />
               </a-tooltip>
@@ -167,6 +167,7 @@ import packData from 'v-emoji-picker/data/emojis.json'
 import { mapGetters } from 'vuex'
 // 生成随机uuid
 import uuidv4 from 'uuid/v4'
+import Face from './Face'
 export default {
   name: 'ConvBox',
   components: {
@@ -178,7 +179,8 @@ export default {
     MarkMessage,
     TalkFile,
     MoreInfo,
-    UserFile
+    UserFile,
+    Face
   },
   props: {
     /** 聊天对话框的基本信息--结构同最近联系人 */
@@ -211,13 +213,13 @@ export default {
       // 发送键的可选密级选项
       sendMenuList: [],
       // 控制表情选择框不自动关闭
-      emojisVisible: false,
+      faceVisible: false,
       // 文件上传时的请求头部
       headers: {},
       // 上传的文件
       fileUpload: {},
       // 文件上传状态对应表
-      uplaodStatus: {
+      uploadStatus: {
         'uploading': 'active',
         'done': 'success',
         'error': 'exception'
@@ -536,6 +538,13 @@ export default {
         title: title,
         secretLevel: secretLevel
       }
+    },
+    showFaceBox: function () {
+      this.faceVisible = (!this.faceVisible)
+    },
+    insertFace (item) {
+      this.messageContent = this.messageContent + 'face' + item
+      this.faceVisible = false
     }
   },
   directives: {
