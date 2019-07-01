@@ -210,14 +210,6 @@ export default {
       orgCode: ''
     }
   },
-  computed: {
-    userInfo () {
-      return this.$store.getters.userInfo
-    }
-  },
-  created () {
-    this.user = this.userInfo
-  },
   methods: {
     /**
      * 搜索
