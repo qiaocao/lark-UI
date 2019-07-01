@@ -184,6 +184,7 @@ const talk = {
       state.groupList = groupList
     },
     SET_CONTACTS_TREE (state, contactsTree) {
+      /*
       const { id, parentId, title } = contactsTree[0]
       const newTree = [{
         key: id,
@@ -194,6 +195,9 @@ const talk = {
         },
         children: formatTree([], contactsTree[0].children)
       }]
+      */
+      // 直接显示到三级单位(二部、二十三所)
+      const newTree = formatTree([], contactsTree[0].children[0].children)
       state.contactsTree = newTree
     },
     /**
