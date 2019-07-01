@@ -408,7 +408,7 @@ export default {
         this.loading = false
       }
     },
-    
+
     /**
      * 重写上传action方法
      */
@@ -431,7 +431,7 @@ export default {
      */
     beforeUpload (file) {
       // 校验上传文件类型
-      console.log('file.type',file.type)
+      console.log('file.type', file.type)
       const isExcel = file.type === 'excel'
       if (!isExcel) {
         this.$notification['error']({
@@ -448,7 +448,7 @@ export default {
         })
       }
       return isExcel && isLt10M
-    },
+    }
   }
 }
 </script>
