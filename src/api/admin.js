@@ -41,6 +41,10 @@ const api = {
   // 敏感词
   getwordpage: '',
   dicword: '',
+  importWords: '',
+  // 常用工具
+  gettoolpage: '/portal/commonTools/page',
+  commontools: '/portal/commonTools',
   // 临时增加，方便测试
   getUserBySecret: 'admin/user/list'
 }
@@ -457,6 +461,56 @@ export function updateWord (parameter) {
 export function addWord (parameter) {
   return axios({
     url: api.dicword,
+    method: 'post',
+    data: parameter
+  })
+}
+/**
+ * 批量导入涉密词汇
+ */
+export function uploadExcel (parameter) {
+  return axios({
+    url: api.importWords,
+    method: 'post',
+    data: parameter,
+    headers: { 'Content-Type': 'multipart/form-data' }
+  })
+}
+/**
+ * 获取常用工具
+ */
+export function getToolList (parameter) {
+  return axios({
+    url: api.gettoolpage,
+    method: 'get',
+    params: parameter
+  })
+}
+/**
+ * 删除常用工具
+ */
+export function delTool (parameter) {
+  return axios({
+    url: api.commontools + '/' + parameter,
+    method: 'delete'
+  })
+}
+/**
+ * 修改常用工具
+ */
+export function updateTool (parameter) {
+  return axios({
+    url: api.commontools,
+    method: 'put',
+    data: parameter
+  })
+}
+/**
+ * 新增常用工具
+ */
+export function addTool (parameter) {
+  return axios({
+    url: api.commontools,
     method: 'post',
     data: parameter
   })

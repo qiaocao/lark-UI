@@ -4,51 +4,23 @@
       <a-form layout="inline">
         <a-row :gutter="8" type="flex" justify="end">
           <a-col :md="4" :sm="24">
-            <a-form-item label="词汇类型">
-              <a-select placeholder="请选择" v-model="queryParam.wordType">
-                <a-select-option value="1">涉密</a-select-option>
-                <a-select-option value="2">敏感</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-          <a-col :md="4" :sm="24">
-            <a-form-item label="词汇名称">
-              <a-input placeholder="请输入" v-model="queryParam.wordName"/>
-            </a-form-item>
-          </a-col>
-          <a-col :md="4" :sm="24">
-            <a-form-item label="替换词汇">
-              <a-input placeholder="请输入" v-model="queryParam.replaceName"/>
+            <a-form-item label="工具名称">
+              <a-input placeholder="请输入" v-model="queryParam.title"/>
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item label="状态">
-              <a-select placeholder="请选择" v-model="queryParam.isUse">
+              <a-select placeholder="请选择" v-model="queryParam.wordType">
                 <a-select-option value="1">正常</a-select-option>
                 <a-select-option value="0">停用</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :md="6" :sm="24" :offset="1">
+          <a-col :md="3" :sm="24" :offset="1">
             <span class="table-page-search-submitButtons">
-              <a-row>
-                <a-col :md="4">
-                  <a-button type="primary" @click="search">查询</a-button>
-                </a-col>
-                <a-col :md="4">
-                  <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
-                </a-col>
-                <a-col :md="7">
-                  <a-button type="primary" style="margin-left: 30px" @click="handleAdd()">新增</a-button>
-                </a-col>
-                <a-col :md="9">
-                  <a-upload name="file" @change="uploadChange" :fileList="fileList" :customRequest="customRequest" :beforeUpload="beforeUpload">
-                    <a-button>
-                      <a-icon type="upload" />批量导入
-                    </a-button>
-                  </a-upload>
-                </a-col>
-              </a-row>
+              <a-button type="primary" @click="search">查询</a-button>
+              <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
+              <a-button type="primary" style="margin-left: 30px" @click="handleAdd()">新增</a-button>
             </span>
           </a-col>
         </a-row>
@@ -63,8 +35,8 @@
       <span slot="action" slot-scope="text, record">
         <a @click="handleEdit(record)">编辑</a>
         <a-divider type="vertical" />
-        <a v-if="record.isUse==='1'" @click="handleStatus(record,'0')">停用</a>
-        <a v-if="record.isUse==='0'" @click="handleStatus(record,'1')">启用</a>
+        <a v-if="record.status==='0'" @click="handleStatus(record,'1')">启用</a>
+        <a v-if="record.status==='1'" @click="handleStatus(record,'0')">停用</a>
         <a-divider type="vertical" />
         <a-dropdown>
           <a class="ant-dropdown-link">
@@ -93,73 +65,34 @@
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
-          label="词汇编码"
+          label="工具名称"
+          hasFeedback
         >
-          <a-input :disabled="true" v-decorator="['wordCode']"/>
+          <a-input v-decorator="['title',{rules: [{ required: true, message: '请填写工具名称' }]}]" :disabled="inDetail"/>
         </a-form-item>
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
-          label="词汇类型"
+          label="URI"
           hasFeedback
         >
-          <a-select v-decorator="['wordType',{rules: [{ required: true, message: '请填写词汇类型' }]}]" :disabled="inDetail" @change="typeChange">
-            <a-select-option value="1">涉密</a-select-option>
-            <a-select-option value="2">敏感</a-select-option>
-          </a-select>
+          <a-input v-decorator="['uri',{rules: [{ required: true, message: '请填写地址' }]}]" :disabled="inDetail"/>
         </a-form-item>
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
-          label="词汇名称"
+          label="组织机构"
           hasFeedback
         >
-          <a-input v-decorator="['wordName',{rules: [{ required: true, message: '请填写词汇名称' }]}]" :disabled="inDetail"/>
+          <org-tree-select :values="orgCode" @ok="getOrgCode" :disabled="inDetail"></org-tree-select>
         </a-form-item>
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
-          label="替换词汇"
+          label="描述"
           hasFeedback
-          v-if="type==='2'"
         >
-          <a-input v-decorator="['replaceWord',{rules: [{ required: true, message: '请填写替换词汇' }]}]" :disabled="inDetail"/>
-        </a-form-item>
-        <a-form-item
-          :labelCol="labelCol"
-          :wrapperCol="wrapperCol"
-          label="创建人"
-          hasFeedback
-          v-if="inDetail"
-        >
-          <a-input v-decorator="['crtUser']" :disabled="inDetail"/>
-        </a-form-item>
-        <a-form-item
-          :labelCol="labelCol"
-          :wrapperCol="wrapperCol"
-          label="创建时间"
-          hasFeedback
-          v-if="inDetail"
-        >
-          <a-input v-decorator="['crtTime']" :disabled="inDetail"/>
-        </a-form-item>
-        <a-form-item
-          :labelCol="labelCol"
-          :wrapperCol="wrapperCol"
-          label="修改人"
-          hasFeedback
-          v-if="inDetail"
-        >
-          <a-input v-decorator="['updUser']" :disabled="inDetail"/>
-        </a-form-item>
-        <a-form-item
-          :labelCol="labelCol"
-          :wrapperCol="wrapperCol"
-          label="修改时间"
-          hasFeedback
-          v-if="inDetail"
-        >
-          <a-input v-decorator="['updTime']" :disabled="inDetail"/>
+          <a-textarea :rows="5" v-decorator="['description']" :disabled="inDetail"/>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -167,11 +100,14 @@
 </template>
 <script>
 import { STable } from '@/components'
-import { getWordList, addWord, updateWord, delWord, importWords } from '@/api/admin'
+import OrgTreeSelect from '@/components/admin/OrgTreeSelect'
+import { getToolList, addTool, updateTool, delTool } from '@/api/admin'
+import pick from 'lodash.pick'
 export default {
-  name: 'DictWord',
+  name: 'CommonTools',
   components: {
-    STable
+    STable,
+    OrgTreeSelect
   },
   data () {
     return {
@@ -196,20 +132,20 @@ export default {
       // 表头
       columns: [
         {
-          title: '词汇编码',
-          dataIndex: 'wordCode'
+          title: '工具名称',
+          dataIndex: 'title'
         },
         {
-          title: '词汇类型',
-          dataIndex: 'wordType'
+          title: 'URI',
+          dataIndex: 'uri'
         },
         {
-          title: '词汇名称',
-          dataIndex: 'wordName'
+          title: '组织机构',
+          dataIndex: 'orgName'
         },
         {
-          title: '替换词汇',
-          dataIndex: 'replaceWord'
+          title: '描述',
+          dataIndex: 'description'
         },
         {
           title: '操作',
@@ -220,17 +156,16 @@ export default {
       ],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        return getWordList(parameter)
+        return getToolList(parameter)
           .then(res => {
             return res.result
           })
       },
       confirmLoading: false,
-      id: '',
-      fileList: []
+      orgCode: '',
+      orgName: '',
+      id: ''
     }
-  },
-  created () {
   },
   methods: {
     /**
@@ -251,9 +186,10 @@ export default {
     /**
      * 停用/启用
      */
-    handleStatus (record, isUse) {
+    handleStatus (record, status) {
       this.confirmLoading = true
-      updateWord(record).then(
+      record.status = status
+      updateTool(record).then(
         res => {
           this.handleResult(res)
         }
@@ -287,12 +223,12 @@ export default {
       _this.confirmLoading = true
       this.$confirm({
         title: '警告',
-        content: `确认要删除 ${record.name} 的信息吗?`,
+        content: `确认要删除 ${record.title} 的信息吗?`,
         okText: '确认',
         okType: 'danger',
         cancelText: '取消',
         onOk () {
-          delWord(record.id).then(
+          delTool(record.id).then(
             res => {
               _this.handleResult(res)
             }
@@ -316,11 +252,21 @@ export default {
         this.editVisible = false
         return
       }
+      if (this.orgCode === undefined) {
+        this.$notification['error']({
+          message: '请选择组织机构',
+          duration: 4
+        })
+        return
+      }
       this.editForm.validateFields((err, values) => {
+        values.id = this.id
+        values.orgCode = this.orgCode
+        values.orgName = this.orgName
         if (!err) {
           this.confirmLoading = true
           if (this.inAdd) {
-            addWord(values).then(
+            addTool(values).then(
               res => {
                 this.handleResult(res)
               }
@@ -328,7 +274,7 @@ export default {
               this.handleCatch(err)
             )
           } else if (this.inEdit) {
-            updateWord(values).then(
+            updateTool(values).then(
               res => {
                 this.handleResult(res)
               }
@@ -345,23 +291,25 @@ export default {
     bindForm (record) {
       if (record) {
         this.id = record.id
+        this.orgCode = record.orgCode
       } else {
-        this.wordType = ''
+        this.id = ''
+        this.orgCode = ''
       }
-      setTimeout(() => {
-        this.editForm.setFieldsValue({
-          wordType: '',
-          wordName: '',
-          replaceWord: ''
-        })
-      }, 0)
+      if (this.inAdd) {
+        setTimeout(() => {
+          this.editForm.setFieldsValue({
+            title: '',
+            uri: '',
+            description: ''
+          })
+        }, 0)
+      } else {
+        setTimeout(() => {
+          this.editForm.setFieldsValue(pick(record, 'title', 'description', 'uri'))
+        }, 0)
+      }
       this.editVisible = true
-    },
-    /**
-     * 词汇类型变化
-     */
-    typeChange (value) {
-      this.type = value
     },
     /**
      * 请求接口后返回的结果
@@ -396,59 +344,13 @@ export default {
       }
       this.confirmLoading = false
     },
-    uploadChange (info) {
-      // 上传的文件不显示在主页
-      this.fileList = []
-      this.filename = info.file.name
-      if (info.file.status === 'uploading') {
-        this.loading = true
-        return
-      }
-      if (info.file.status === 'done') {
-        this.loading = false
-      }
-    },
-    
     /**
-     * 重写上传action方法
+     * 获取组织树下拉框返回值
      */
-    customRequest (data) {
-      const formData = new FormData()
-      formData.append('file', data.file)
-      data.onProgress()
-      importWords(formData).then(res => {
-        if (res.status === 200) {
-          // const imageUrl = res.result
-          // vue-cropper插件img绑定url时，会有跨域问题，图片类型转base64传递到子组件
-          this.getBase64(data.file, (imageUrl) => {
-            this.$refs.modal.edit(imageUrl)
-          })
-        }
-      })
-    },
-    /**
-     * 上传前文件类型及尺寸的校验
-     */
-    beforeUpload (file) {
-      // 校验上传文件类型
-      console.log('file.type',file.type)
-      const isExcel = file.type === 'excel'
-      if (!isExcel) {
-        this.$notification['error']({
-          message: '请上传Excel文件',
-          duration: 4
-        })
-      }
-      // 校验上传文件尺寸
-      const isLt10M = file.size / 1024 / 1024 < 10
-      if (!isLt10M) {
-        this.$notification['error']({
-          message: '请上传尺寸小于10MB的图片',
-          duration: 4
-        })
-      }
-      return isExcel && isLt10M
-    },
+    getOrgCode (id, label) {
+      this.orgCode = id
+      this.orgName = label[0]
+    }
   }
 }
 </script>
