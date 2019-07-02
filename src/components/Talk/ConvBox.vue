@@ -62,7 +62,7 @@
               <span>表情</span>
             </template>
 
-            <a-popover placement="topLeft" v-model="emojisVisible" trigger="click" overlayClassName="emojis-picker">
+            <a-popover placement="topLeft" v-model="faceVisible" trigger="click" overlayClassName="emojis-picker">
               <template slot="content">
                 <face/>
               </template>
@@ -162,17 +162,16 @@ import { MessagePiece, TalkHistory, MoreInfo, GroupNotice, TalkSetting, MarkMess
 import { LandingStatus } from '@/utils/constants'
 import api from '@/api/talk'
 import { SocketMessage, Tweet } from '@/utils/talk'
-import VEmojiPicker from 'v-emoji-picker'
-import packData from 'v-emoji-picker/data/emojis.json'
 import { mapGetters } from 'vuex'
 // 生成随机uuid
 import uuidv4 from 'uuid/v4'
 import Face from './Face'
+import Watermark from '@/utils/waterMark'
+
 export default {
   name: 'ConvBox',
   components: {
     MessagePiece,
-    VEmojiPicker,
     TalkHistory,
     GroupNotice,
     TalkSetting,
@@ -232,9 +231,6 @@ export default {
   },
   computed: {
     ...mapGetters(['onlineState', 'userSecretLevel', 'userId', 'avatar', 'nickname', 'token']),
-    emojisNative () {
-      return packData
-    },
     // 发送按钮的可用状态
     sendDisabled () {
       if (this.onlineState === LandingStatus.ONLINE) {
@@ -282,6 +278,9 @@ export default {
   mounted () {
     // 页面创建时，消息滚动到最近一条
     this.scrollToBottom()
+    // this.$nextTick(() => {
+    this.printWaterMark(this.nickname)
+    // })
   },
   methods: {
     /**
@@ -301,6 +300,21 @@ export default {
     //     }
     //   })
     // },
+    /** 给研讨界面添加水印 */
+    printWaterMark (username) {
+      const config = {
+        text: username,
+        font: '24px serif',
+        opacity: 0.4,
+        density: 0.8,
+        rotate: -1 / 6 * Math.PI,
+        z_index: 999,
+        color: 'rgba(178, 178, 178, 0.3)',
+        yOffset: 1
+      }
+      const watermark = new Watermark(config)
+      watermark.embed('.conv-box-message', 'qqqqq')
+    },
     /**
      * 文件上传状态变化时触发
      * @param {Object} info {file, fileList}
