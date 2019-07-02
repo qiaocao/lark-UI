@@ -120,6 +120,17 @@ export default {
         this.flag = !this.flag
       }
     },
+
+    // 提示
+    openNotification () {
+      this.$notification.warning({
+        message: '无法获取聊天内容，稍后再试',
+        description: '',
+        onClick: () => {
+          console.log('Notification Clicked!')
+        }
+      })
+    },
     getMark () {
       this.userId = this.$store.getters.userId
       // this.userId, this.contactId, this.page
@@ -130,6 +141,7 @@ export default {
         })
       }).catch(res => {
         this.isShow = true
+        this.openNotification()
       })
     },
     down (id) {
