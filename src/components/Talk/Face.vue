@@ -2,15 +2,15 @@
   <div>
     <ul class="faces">
       <li v-for="item in faceList" :key="item">
-        <img :src="faceMap[item]" @click="insertFace(item)"/>
+        <img :src="faceMap[item]" @click="insertFace(item)" />
       </li>
     </ul>
     <div class="clear"></div>
   </div>
 </template>
 <script>
-import faceUtils from '@/utils/face'
-
+// import faceUtils from '@/utils/face.js'
+const { faceUtils } = require('@/utils/face')
 export default {
   name: 'Faces',
   components: {},
