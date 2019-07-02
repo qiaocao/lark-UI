@@ -262,7 +262,7 @@ export function MarkMessageGrabble (userId, page, groupId) {
       userId: userId,
       page: page,
       groupId: groupId,
-      size: 5,
+      size: 10,
       tagType: 0
     }
   })
