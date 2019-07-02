@@ -2,7 +2,7 @@
   <a-layout class="talk-layout">
     <a-layout-sider class="talk-layout-sider">
       <div class="search-bar">
-        <!-- <SearchInput /> -->
+        <SearchAll />
         <a-tooltip title="发起研讨" placement="bottom" :overlayStyle="{fontSize: '12px'}">
           <a-button @click="startTalk" icon="plus" size="small" style="marginLeft: 3px"></a-button>
         </a-tooltip>
@@ -117,7 +117,7 @@
 </template>
 
 <script>
-import { ContactsTree, ContactsInfo, GroupInfo, RecentContactsItem, GroupItem, CreateTalk } from '@/components/Talk'
+import { ContactsTree, ContactsInfo, GroupInfo, RecentContactsItem, GroupItem, CreateTalk, SearchAll } from '@/components/Talk'
 
 import { mapGetters } from 'vuex'
 export default {
@@ -128,7 +128,8 @@ export default {
     GroupInfo,
     RecentContactsItem,
     GroupItem,
-    CreateTalk
+    CreateTalk,
+    SearchAll
   },
   data () {
     return {

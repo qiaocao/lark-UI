@@ -19,6 +19,8 @@ import ContactsItem from './ContactsItem'
 
 import CreateTalk from './createTalk/CreateTalk'
 
+import SearchAll from './SearchAll'
+
 export {
   // 消息展示组件
   MessagePiece,
@@ -51,6 +53,8 @@ export {
   // 联系人项
   ContactsItem,
   // 创建新的研讨
-  CreateTalk
+  CreateTalk,
+  // 联系人搜索组件
+  SearchAll
 
 }
