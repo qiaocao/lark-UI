@@ -125,21 +125,18 @@
           <!-- 发送键 -->
           <div class="send-toolbar">
             <div style="marginLeft: auto">
-              <!-- 提示信息 -->
-              <a-tooltip placement="left" title="发送前请正确选择消息密级">
-                <a-icon type="question-circle" style="margin-right: 6px; cursor: pointer;"/>
-              </a-tooltip>
               <!-- 发送键 -->
-              <a-dropdown-button @click="sendMessage(sendSecretLevel)" type="primary" :disabled="sendDisabled">
-                发送<span :class="'s-' + sendSecretLevel">【{{ sendSecretLevel | fileSecret }}】</span>
-                <a-menu v-if="sendMenuList.length" slot="overlay">
-                  <template v-for="item in sendMenuList">
-                    <a-menu-item :key="item" @click="handleSendSecretLevel">
-                      发送<span :class="'s-' + item">【{{ item | fileSecret }}】</span>
-                    </a-menu-item>
-                  </template>
-                </a-menu>
-              </a-dropdown-button>
+              <a-radio-group @change="handleSendSecretLevel" v-model="sendSecretLevel">
+                <template v-for="item in sendSecretList">
+                  <a-radio :value="item" :key="item">
+                    <span :class="'s-' + item">【{{ item | fileSecret }}】</span>
+                  </a-radio>
+                </template>
+              </a-radio-group>
+              <a-button type="primary" @click="sendMessage(sendSecretLevel)" :disabled="sendDisabled">
+                发送
+                <span :class="'s-' + sendSecretLevel">【{{ sendSecretLevel | fileSecret }}】</span>
+              </a-button>
             </div>
           </div>
 
@@ -210,7 +207,7 @@ export default {
       // 发送消息的密级，默认为非密
       sendSecretLevel: 30,
       // 发送键的可选密级选项
-      sendMenuList: [],
+      sendSecretList: [],
       // 控制表情选择框不自动关闭
       faceVisible: false,
       // 文件上传时的请求头部
@@ -383,17 +380,12 @@ export default {
     /**
      * 设置发送消息的密级
      */
-    handleSendSecretLevel (item) {
-      item = item ? item.key : 30
-      // 当前用户可发送的全部密级
+    handleSendSecretLevel (even) {
+      const secretLevel = even ? parseInt(event.target.value) : 30
       const allSendMenu = [30, 40, 60].filter(item => item <= this.userSecretLevel)
-      // 当前研讨的密级
-      const talkSecretLevel = this.chatInfo.secretLevel
-      // 设置发送按钮的密级
-      this.sendSecretLevel = item
-      this.sendMenuList = allSendMenu.filter(function (menu) {
-        return menu !== item && menu <= talkSecretLevel
-      })
+      const curTalkSecret = this.chatInfo.secretLevel
+      this.sendSecretLevel = secretLevel
+      this.sendSecretList = allSendMenu.filter(item => item <= curTalkSecret)
     },
     /**
      * 获取缓存消息
