@@ -99,8 +99,8 @@ module.exports = {
         // target: 'http://10.12.97.49:8765',
         // target: ' http://10.12.97.30:8765',
         // target: 'http://10.11.24.6:8089',
-        target: 'http://10.11.24.126:8765',
-        // target: 'http://10.11.24.136:8765',
+        // target: 'http://10.11.24.126:8765',
+        target: 'http://10.11.24.136:8765',
         // target: 'http://192.168.137.1:8765',
         ws: false,
         changeOrigin: true

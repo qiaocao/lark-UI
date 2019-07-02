@@ -469,7 +469,7 @@ export function addWord (parameter) {
 /**
  * 批量导入涉密词汇
  */
-export function uploadExcel (parameter) {
+export function importWords (parameter) {
   return axios({
     url: api.importWords,
     method: 'post',

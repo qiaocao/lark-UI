@@ -90,6 +90,16 @@ export default {
     onSearch (value) {
       console.log(value)
     },
+    // 提示
+    openNotification () {
+      this.$notification.warning({
+        message: '无法获取文件，稍后再试',
+        description: '',
+        onClick: () => {
+          console.log('Notification Clicked!')
+        }
+      })
+    },
 
     getData (callback) {
       fileGrabble(this.pageNumber).then(data => {
@@ -101,6 +111,9 @@ export default {
         datas.map(item => {
           this.data.push(item)
         })
+      }).catch(res => {
+        this.openNotification()
+        // this.showLoadingMore = false
       })
     },
     onLoadMore () {
@@ -120,9 +133,6 @@ export default {
     },
     down (id) {
       fileDownload(id).then(item => {
-        // if (item === 1) {
-        //   this.flag = true
-        // }
         window.open('/api/chat/zzFileManage/downloadFile' + '?fileId=' + id, '_self')
       })
     }
