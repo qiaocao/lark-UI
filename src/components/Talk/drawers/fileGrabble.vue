@@ -133,9 +133,6 @@ export default {
     },
     down (id) {
       fileDownload(id).then(item => {
-        // if (item === 1) {
-        //   this.flag = true
-        // }
         window.open('/api/chat/zzFileManage/downloadFile' + '?fileId=' + id, '_self')
       })
     }
