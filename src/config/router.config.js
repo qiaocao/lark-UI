@@ -33,7 +33,7 @@ export const asyncRouterMap = [
         name: 'Talk',
         component: RouteView,
         redirect: '/talk/chatpanel',
-        meta: { title: '研讨', icon: 'message', hideHeader: true, keepAlive: true, permission: ['talk'] },
+        meta: { title: '研讨', icon: 'message', hideHeader: true, keepAlive: true, permission: [ 'talk' ] },
         hideChildrenInMenu: true,
         children: [
           {
@@ -126,8 +126,7 @@ export const asyncRouterMap = [
               title: '敏感词汇管理',
               icon: 'lock',
               keepAlive: false,
-              // TODO 需要调整与后台权限一致
-              permission: ['gatelog']
+              permission: ['word']
             }
           },
           {
@@ -138,7 +137,6 @@ export const asyncRouterMap = [
               title: '常用工具管理',
               icon: 'tool',
               keepAlive: false,
-              // TODO 需要调整与后台权限一致
               permission: ['commontools']
             }
           },
@@ -271,6 +269,18 @@ export const asyncRouterMap = [
                 name: 'NotificationSettings',
                 component: () => import('@/views/account/settings/Notification'),
                 meta: { title: '新消息通知', hidden: true, keepAlive: true, permission: ['user'] }
+              },
+              {
+                path: 'binding',
+                name: 'BindingSettings',
+                component: () => import('@/views/account/settings/Binding'),
+                meta: { title: '账户绑定', hidden: true, keepAlive: true, permission: [ 'user' ] }
+              },
+              {
+                path: 'notification',
+                name: 'NotificationSettings',
+                component: () => import('@/views/account/settings/Notification'),
+                meta: { title: '新消息通知', hidden: true, keepAlive: true, permission: [ 'user' ] }
               },
               // {
               //   path: '/account/settings/binding',
