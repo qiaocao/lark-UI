@@ -27,3 +27,15 @@
                             src\components\admin\OrgTreeSelect.vue
                             src\views\admin\CommonTools.vue
                             src\views\admin\NotificationList.vue
+20190702 push by fanjiao:filepath--【按钮权限相关】
+                            src\permission.js
+                            src\views\account\settings\CommonTool.vue
+                            src\views\admin\MenuList.vue
+                            src\views\admin\NotificationList.vue
+                            src\views\admin\OrgList.vue
+                            src\views\admin\RoleList.vue
+                            src\views\admin\UserList.vue
+20190703 push by fanjiao:filepath--【敏感词管理:已调试完成】
+                            src\views\admin\DictWord.vue
+                            src\api\admin.js
+                            src\config\router.config.js

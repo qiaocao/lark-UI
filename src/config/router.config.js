@@ -126,8 +126,7 @@ export const asyncRouterMap = [
               title: '敏感词汇管理',
               icon: 'lock',
               keepAlive: false,
-              // TODO 需要调整与后台权限一致
-              permission: ['gatelog']
+              permission: ['word']
             }
           },
           {
@@ -138,7 +137,6 @@ export const asyncRouterMap = [
               title: '常用工具管理',
               icon: 'tool',
               keepAlive: false,
-              // TODO 需要调整与后台权限一致
               permission: ['commontools']
             }
           },
