@@ -2,9 +2,9 @@
   <a-layout class="talk-layout">
     <a-layout-sider class="talk-layout-sider">
       <div class="search-bar">
-        <SearchAll />
+        <SearchAll :inputStyle="{height: '31px', width: '200px'}" />
         <a-tooltip title="发起研讨" placement="bottom" :overlayStyle="{fontSize: '12px'}">
-          <a-button @click="startTalk" icon="plus" size="small" style="marginLeft: 3px"></a-button>
+          <a-button class="add-group-btn" @click="startTalk" icon="plus" size="small" />
         </a-tooltip>
       </div>
       <a-tabs
@@ -276,7 +276,15 @@ export default {
   // 聊天搜索栏样式 该部分高度为48px
   .search-bar {
     display: flex;
-    margin: 16px 27px 8px;
+    margin: 16px 19px 8px;
+    .add-group-btn {
+      margin-left: 10px;
+      width: 31px;
+      height: 31px;
+      background: #d1d2d4;
+      color: #7c7a7a;
+      font-size: 18px;
+    }
   }
 
   // 调整tabs标签样式
@@ -306,7 +314,7 @@ export default {
     overflow: hidden;
 
     // 视窗高度-头部导航栏高度-搜索框高度-tab页高度
-    height: calc(100vh - 64px - 48px - 46px);
+    height: calc(100vh - 64px - 55px - 46px);
 
     &:hover {
       overflow-y: overlay;
