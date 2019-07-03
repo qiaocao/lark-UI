@@ -4,7 +4,9 @@
       <a-icon type="message"/>
     </span> -->
     <span class="action">
-      <a-icon type="question-circle-o"></a-icon>
+      <router-link :to="{ name: 'Feedback' }">
+        <a-icon type="question-circle-o"></a-icon>
+      </router-link>
     </span>
     <header-notice class="action"/>
     <a-dropdown>
@@ -97,6 +99,12 @@ export default {
     messageFun () {
       Utils.$emit('message', 'msg')
       this.$router.push({ name: 'Analysis', params: { messageFlag: true } })
+    },
+    /**
+     * 打开评论面板
+     */
+    openCommentBoard () {
+
     }
   }
 }
