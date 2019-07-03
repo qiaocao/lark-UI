@@ -15,7 +15,6 @@ import ContactsTree from './ContactsTree'
 import ContactsInfo from './ContactsInfo'
 import GroupItem from './GroupItem'
 import GroupInfo from './GroupInfo'
-import ContactsItem from './ContactsItem'
 
 import CreateTalk from './createTalk/CreateTalk'
 
@@ -50,8 +49,6 @@ export {
   GroupItem,
   // 群组信息组件
   GroupInfo,
-  // 联系人项
-  ContactsItem,
   // 创建新的研讨
   CreateTalk,
   // 联系人搜索组件

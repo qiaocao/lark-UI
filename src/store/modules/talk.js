@@ -163,14 +163,7 @@ const talk = {
     /** 当前正在进行的研讨 */
     currentTalk: {},
     /** 草稿Map */
-    draftMap: new Map(),
-
-    // ***********************************
-    // 是否显示搜索结果
-    showSearchContent: null,
-    searchResultList: [],
-    searchGroupResultList: [],
-    searchContactsResultList: []
+    draftMap: new Map()
   },
 
   mutations: {
