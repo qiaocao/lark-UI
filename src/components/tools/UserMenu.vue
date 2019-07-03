@@ -9,7 +9,7 @@
     <header-notice class="action"/>
     <a-dropdown>
       <span class="action ant-dropdown-link user-dropdown-menu">
-        <!-- 添加登陆状态展示 -->
+        <!-- 添加登录状态展示 -->
         <a-badge :status="statusMap.get(onlineState)" :offset="[-10, 23]" :numberStyle="{padding: '4px'}">
           <a-avatar class="avatar" size="small" :src="avatar" style="backgroundColor: #f49d2a">
             <span>{{ nickname.slice(0,1) }}</span>

@@ -419,9 +419,9 @@ export default {
        * "path": "20190619",
        * "readPath": "",
        * "createTime": "2019-06-19 14:52:22",
-       * "creator": "登陆人id_测试",
+       * "creator": "登录人id_测试",
        * "updateTime": "2019-06-19 14:52:22",
-       * "updator": "登陆人id_测试",
+       * "updator": "登录人id_测试",
        * "groupId": "",
        * "levels": ""
        */
