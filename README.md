@@ -35,3 +35,7 @@
                             src\views\admin\OrgList.vue
                             src\views\admin\RoleList.vue
                             src\views\admin\UserList.vue
+20190703 push by fanjiao:filepath--【敏感词管理:已调试完成】
+                            src\views\admin\DictWord.vue
+                            src\api\admin.js
+                            src\config\router.config.js
