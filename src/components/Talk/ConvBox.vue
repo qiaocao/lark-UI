@@ -2,13 +2,13 @@
   <a-layout v-if="Object.keys(chatInfo).length" class="conv-box">
 
     <!-- 聊天设置选项的抽屉组件 -->
-    <talk-history :activeOption="activeOption" @closeDrawer="triggerDrawer" />
+    <talk-history :contactId="chatInfo.id" :hisGrop="JSON.stringify(chatInfo.isGroup)" :activeOption="activeOption" @closeDrawer="triggerDrawer"/>
     <group-notice :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-    <talk-setting :activeOption="activeOption" @closeDrawer="triggerDrawer" />
+    <talk-setting :groupId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <talk-file :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-    <mark-message :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-    <more-info :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-
+    <user-file :contactId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer"/>
+    <mark-message :groupId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
+    <more-info :contactId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <a-layout-header class="conv-box-header">
       <div class="conv-title">
         <!-- 需要对名字的字数做限制 -->
@@ -18,7 +18,6 @@
         <!-- 显示密级 -->
         <span :class="'s-' + chatInfo.secretLevel">【{{ chatInfo.secretLevel | fileSecret }}】</span>
       </div>
-
       <div class="conv-option">
         <div v-if="!isPopup">
           <!-- 需要判断是否为群聊，操作选项不同 -->
@@ -65,7 +64,7 @@
 
             <a-popover placement="topLeft" v-model="emojisVisible" trigger="click" overlayClassName="emojis-picker">
               <template slot="content">
-                <VEmojiPicker :pack="emojisNative" labelSearch @select="onSelectEmoji" style="color: black;" />
+                <face/>
               </template>
               <a-icon style="marginRight: 20px" type="smile" />
             </a-popover>
@@ -116,7 +115,7 @@
               <a-tooltip :title="fileUpload.name">
                 <span>{{ fileUpload.name }}</span>
               </a-tooltip>
-              <a-progress :percent="fileUpload.percent" :status="uplaodStatus[fileUpload.status]" size="small" style="display: block;"/>
+              <a-progress :percent="fileUpload.percent" :status="uploadStatus[fileUpload.status]" size="small" style="display: block;"/>
               <a-tooltip placement="top" title="删除">
                 <a-icon type="close" @click="removeFile" style="position: absolute; top: 5px; right: 5px; font-size: 11px; cursor: pointer;" />
               </a-tooltip>
@@ -159,7 +158,7 @@
 </template>
 
 <script>
-import { MessagePiece, TalkHistory, MoreInfo, GroupNotice, TalkSetting, MarkMessage, TalkFile } from '@/components/Talk'
+import { MessagePiece, TalkHistory, MoreInfo, GroupNotice, TalkSetting, MarkMessage, TalkFile, UserFile } from '@/components/Talk'
 import { LandingStatus } from '@/utils/constants'
 import api from '@/api/talk'
 import { SocketMessage, Tweet } from '@/utils/talk'
@@ -168,6 +167,7 @@ import packData from 'v-emoji-picker/data/emojis.json'
 import { mapGetters } from 'vuex'
 // 生成随机uuid
 import uuidv4 from 'uuid/v4'
+import Face from './Face'
 export default {
   name: 'ConvBox',
   components: {
@@ -178,7 +178,9 @@ export default {
     TalkSetting,
     MarkMessage,
     TalkFile,
-    MoreInfo
+    MoreInfo,
+    UserFile,
+    Face
   },
   props: {
     /** 聊天对话框的基本信息--结构同最近联系人 */
@@ -198,6 +200,8 @@ export default {
     return {
       // 被激活的抽屉
       activeOption: '',
+      // 是否是群聊消息
+      // isGroupMessage,
       // 所有被at用的id
       atId: [],
       // 消息类型
@@ -209,13 +213,13 @@ export default {
       // 发送键的可选密级选项
       sendMenuList: [],
       // 控制表情选择框不自动关闭
-      emojisVisible: false,
+      faceVisible: false,
       // 文件上传时的请求头部
       headers: {},
       // 上传的文件
       fileUpload: {},
       // 文件上传状态对应表
-      uplaodStatus: {
+      uploadStatus: {
         'uploading': 'active',
         'done': 'success',
         'error': 'exception'
@@ -348,10 +352,10 @@ export default {
     optionFilter (isGroup) {
       // 聊天操作选项
       const optionList = [
-        { group: true, name: 'groupNotice', message: '群公告', type: 'notification' },
+        // { group: true, name: 'groupNotice', message: '群公告', type: 'notification' },
         { group: true, name: 'markMessage', message: '标记信息', type: 'tags' },
         { group: false, name: 'talkHistory', message: '聊天内容', type: 'file-text' },
-        { group: false, name: 'talkFile', message: '文件', type: 'folder-open' },
+        { group: false, name: isGroup ? 'talkFile' : 'userFile', message: '文件', type: 'folder-open' },
         { group: false, name: isGroup ? 'moreInfo' : 'personMoreInfo', message: '更多', type: 'ellipsis' }]
 
       return isGroup ? optionList : optionList.filter(item => !item.group)
@@ -534,6 +538,13 @@ export default {
         title: title,
         secretLevel: secretLevel
       }
+    },
+    showFaceBox: function () {
+      this.faceVisible = (!this.faceVisible)
+    },
+    insertFace (item) {
+      this.messageContent = this.messageContent + 'face' + item
+      this.faceVisible = false
     }
   },
   directives: {

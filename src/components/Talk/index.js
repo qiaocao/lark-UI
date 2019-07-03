@@ -7,6 +7,7 @@ import GroupNotice from './drawers/GroupNotice'
 import MarkMessage from './drawers/MarkMessage'
 import MoreInfo from './drawers/MoreInfo'
 import TalkFile from './drawers/TalkFile'
+import UserFile from './drawers/UserFile'
 
 import ConvBox from './ConvBox'
 import RecentContactsItem from './RecentContactsItem'
@@ -33,7 +34,8 @@ export {
   MoreInfo,
   // 研讨文件
   TalkFile,
-
+  // 个人文件
+  UserFile,
   // 研讨对话框组件
   ConvBox,
   // 联系人组件
@@ -50,4 +52,5 @@ export {
   ContactsItem,
   // 创建新的研讨
   CreateTalk
+
 }
