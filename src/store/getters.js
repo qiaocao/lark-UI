@@ -17,7 +17,7 @@ const getters = {
   /** 用户名 */
   nickname: state => state.user.name,
   /** 用户密级 */
-  userSecretLevel: state => state.user.info.secretLevel,
+  userSecretLevel: state => parseInt(state.user.info.secretLevel),
 
   addRouters: state => state.permission.addRouters,
 
