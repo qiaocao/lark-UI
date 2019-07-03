@@ -23,10 +23,8 @@ const getters = {
 
   /** websocket连接状态 */
   onlineState: state => state.talk.onlineState,
-  showSearchContent: state => state.talk.showSearchContent,
-  searchResultList: state => state.talk.searchResultList,
-  searchGroupResultList: state => state.talk.searchGroupResultList,
-  searchContactsResultList: state => state.talk.searchContactsResultList
+  groupList: state => state.talk.groupList,
+  contactsTree: state => state.talk.contactsTree
 }
 
 export default getters
