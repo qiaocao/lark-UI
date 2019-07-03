@@ -5,10 +5,10 @@
       placeholder="联系人/群组"
       v-model="searchText"
       @focus="showDrawer"
-      @blur="exitSearch"
       :style="inputStyle"
       size="small"
     >
+      <!-- @blur="exitSearch" -->
       <a-icon slot="prefix" type="search" />
       <a-icon v-if="searchText" slot="suffix" type="close-circle" @click="exitSearch" />
     </a-input>
@@ -25,15 +25,31 @@
       :visible="visible"
       :zIndex="10"
     >
-      <div style="height: 100vh; backgroundColor: #e6e8eb; margin: -24px">
-        <div v-if="resultList.length">
-          <GroupItem
-            v-for="(item, index) in resultList"
-            :groupInfo="item"
-            :key="index"
-            @click="toTalk(item)"
-          />
+      <div class="result-container">
+        <div v-if="groupResultList.length || contResultList.length">
+          <!-- 群组匹配结果 -->
+          <div class="group-result" v-if="groupResultList.length">
+            <p class="category-label">群组</p>
+            <GroupItem
+              v-for="(item, index) in groupResultList"
+              :groupInfo="item"
+              :key="index"
+              @select="toTalk(item)"
+            />
+          </div>
+
+          <!-- 联系人匹配结果 -->
+          <div class="contact-result" v-if="contResultList.length">
+            <p class="category-label">联系人</p>
+            <ContactItem
+              v-for="(item, index) in contResultList"
+              :contactsInfo="item"
+              :key="index"
+              @select="toTalk(item)"
+            />
+          </div>
         </div>
+
         <div v-else class="no-result-tip">
           <p>无匹配结果</p>
         </div>
@@ -44,7 +60,7 @@
 </template>
 
 <script>
-import { GroupItem } from '@/components/Talk'
+import { GroupItem, ContactItem } from '@/components/Talk'
 import { mapGetters } from 'vuex'
 import { getGroupInfo, getContactsInfo } from '@/api/talk'
 
@@ -57,12 +73,16 @@ export default {
       required: false
     }
   },
-  components: { GroupItem },
+  components: { GroupItem, ContactItem },
   data () {
     return {
       visible: false,
+      // 搜索文本
       searchText: '',
-      resultList: []
+      // 群组的匹配结果
+      groupResultList: [],
+      // 联系人的匹配结果
+      contResultList: []
     }
   },
   computed: {
@@ -80,9 +100,8 @@ export default {
   },
   methods: {
     exitSearch () {
-      this.visible = false
-      this.searchText = ''
-      this.resultList = []
+      [this.visible, this.searchText, this.groupResultList, this.contResultList] =
+      [false, '', [], []]
     },
     showDrawer () {
       this.visible = true
@@ -103,23 +122,48 @@ export default {
     /**
      * 对输入的信息进行过滤，筛选出相关信息
      */
-    inputFilter (newValue) {
-      console.log(newValue)
-      this.groupFilter()
-      this.contactsFilter()
+    inputFilter (searchText) {
+      this.groupFilter(searchText)
+      this.contactsFilter(searchText)
     },
     /** 筛选群组列表 */
-    groupFilter () {
-      console.log('123')
-      console.log(this.groupList)
+    groupFilter (searchText) {
+      this.groupResultList = []
+      this.groupList.forEach(item => {
+        if (item.groupName.includes(searchText)) {
+          this.groupResultList.push(item)
+        }
+      })
     },
     /** 筛选联系人树 */
-    contactsFilter () {
-      console.log('123')
-      console.log(this.contactsTree)
+    contactsFilter (searchText) {
+      this.contResultList = []
+      this.traverseTree(this.contactsTree, searchText)
+    },
+    /** 遍历树的工具函数 */
+    traverseTree (tree, text) {
+      const self = this
+      tree.forEach(function (item) {
+        if (item.scopedSlots.title === 'orgNode') {
+          self.traverseTree(item.children, text)
+        } else {
+          if (item.title.includes(text)) {
+            self.contResultList.push(item)
+          }
+        }
+      })
     },
     /** 跳转到研讨界面 */
-    toTalk () {}
+    toTalk (item) {
+      if (item.groupId) {
+        // 发送群组请求
+        console.log(item.groupId)
+      } else {
+        // 发送联系人请求
+        console.log(item.key)
+      }
+      // 关闭抽屉
+    }
   }
 }
 </script>
@@ -137,9 +181,25 @@ export default {
       pointer-events: none;
       border: 1px solid #d1d2d4;
     }
+  }
 
-    .no-result-tip {
-      margin: 24px auto;
+  .result-container {
+    height: 100vh;
+    background-color: #e6e8eb;
+    margin: -24px;
+    border-top: 1px #d5d8de solid;
+
+    .category-label {
+      margin: 0;
+      padding-left: 17px;
+      color: #a0a1a5;
+      border-bottom: 1px #d5d8de solid;
+    }
+  }
+  .no-result-tip {
+    p {
+      text-align: center;
+      padding: 24px;
     }
   }
 </style>
