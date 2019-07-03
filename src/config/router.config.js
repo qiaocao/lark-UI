@@ -161,6 +161,12 @@ export const asyncRouterMap = [
               keepAlive: false,
               permission: ['service']
             }
+          },
+          {
+            path: '/dashboard/feedback',
+            name: 'Feedback',
+            component: () => import('@/views/dashboard/Feedback'),
+            meta: { title: '问题反馈', hidden: true, keepAlive: false, permission: [ 'user' ] }
           }
         ]
       },
