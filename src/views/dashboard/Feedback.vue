@@ -243,7 +243,9 @@ export default {
       this.bindForm(type, record)
       this.editVisible = true
       this.type = type
-      this.id = record.id
+      if (record) {
+        this.id = record.id
+      }
     },
     /**
      * 绑定表单值
@@ -376,7 +378,7 @@ export default {
      * 根据id获取评论列表
      */
     getCommentsById () {
-      getComment({ feedbackId: this.feedBackId }).then(res => {
+      getComment({ 'feedbackId': this.feedBackId }).then(res => {
         if (res.status === 200) {
           this.commentList = res.result.data
         }

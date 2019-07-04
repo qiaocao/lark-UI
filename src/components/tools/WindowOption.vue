@@ -36,7 +36,6 @@ export default {
   },
   methods: {
     isLarkClient () {
-      console.log('jihainan')
       return isLarkClient()
     },
     handleOption (option) {

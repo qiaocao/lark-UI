@@ -114,10 +114,10 @@
               v-show="!Object.keys(fileUpload).length"
               class="textarea-input"
               @keydown.enter.stop.prevent.exact
-              @keyup.enter.native="sendMessage(sendSecretLevel)"
               @keyup.alt.enter.exact="messageContent += '\n'"
               @keyup.ctrl.enter.exact="messageContent += '\n'"
             />
+            <!-- @keyup.enter.native="sendMessage(sendSecretLevel)" -->
             <!-- <inp-div
               id="input_div"
               v-model="messageContent"
