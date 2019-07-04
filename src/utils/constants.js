@@ -22,9 +22,9 @@ const ErrorType = {
   SERVER_ERROR: 500 // 刷新token错误
 }
 
-// 登陆状态常量 同websocket的readyState
+// 登录状态常量 同websocket的readyState
 const LandingStatus = {
-  /** 正在登陆 */
+  /** 正在登录 */
   LANDING: 0,
   /** 在线 */
   ONLINE: 1,
