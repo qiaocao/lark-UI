@@ -25,6 +25,12 @@ export const asyncRouterMap = [
             name: 'Workplace',
             component: () => import('@/views/dashboard/Workplace'),
             meta: { title: '工作台', keepAlive: true, icon: 'dashboard', permission: ['dashboard'], hidden: true }
+          },
+          {
+            path: '/dashboard/feedback',
+            name: 'Feedback',
+            component: () => import('@/views/dashboard/Feedback'),
+            meta: { title: '问题反馈', hidden: true, keepAlive: false, permission: [ 'dashboard' ] }
           }
         ]
       },
@@ -275,12 +281,6 @@ export const asyncRouterMap = [
                 name: 'BindingSettings',
                 component: () => import('@/views/account/settings/Binding'),
                 meta: { title: '账户绑定', hidden: true, keepAlive: true, permission: [ 'user' ] }
-              },
-              {
-                path: 'notification',
-                name: 'NotificationSettings',
-                component: () => import('@/views/account/settings/Notification'),
-                meta: { title: '新消息通知', hidden: true, keepAlive: true, permission: [ 'user' ] }
               },
               // {
               //   path: '/account/settings/binding',

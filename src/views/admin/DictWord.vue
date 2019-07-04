@@ -42,7 +42,13 @@
               <a-button type="primary" @click="search">查询</a-button>
               <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
               <a-button style="margin-left: 8px" type="primary" @click="handleAdd()">新增</a-button>
-              <a-upload style="margin-left: 8px" name="file" @change="uploadChange" :fileList="fileList" :customRequest="customRequest" :beforeUpload="beforeUpload">
+              <a-upload
+                style="margin-left: 8px"
+                name="file"
+                @change="uploadChange"
+                :fileList="fileList"
+                :customRequest="customRequest"
+                :beforeUpload="beforeUpload">
                 <a-button :loading="importLoading">
                   <a-icon type="upload"/>批量导入
                 </a-button>
