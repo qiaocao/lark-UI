@@ -764,6 +764,8 @@ export default {
       border-top: 1px solid #dcdee0;
       padding: 4px 20px;
       font-size: 20px;
+      z-index: 3;
+      background-color: #fff;
     }
     // 文字编辑区域
     .editor-area {
@@ -780,13 +782,15 @@ export default {
         cursor: text;
         // 输入框
         .textarea-input {
-          height: 100px;
+          height: 120px;
           width: 100%;
           line-height: 20px;
           color: black;
           resize: none;
           outline: none;
           border: none;
+          z-index: 2;
+          margin-top: -40px;
         }
         // 文件上传展示
         .upload-display {
