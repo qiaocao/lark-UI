@@ -191,6 +191,9 @@ export default {
     background-color: #e6e8eb;
     margin: -24px;
     border-top: 1px #d5d8de solid;
+    &:hover {
+      overflow: overlay;
+    }
 
     .category-label {
       margin: 0;
