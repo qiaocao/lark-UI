@@ -25,6 +25,7 @@ export default {
   methods: {
     insertFace: function (item) {
       this.$emit('insertFace', item)
+      this.$emit('getfocus')
     }
   }
 }

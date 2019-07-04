@@ -64,9 +64,10 @@
 
             <a-popover placement="topLeft" v-model="faceVisible" trigger="click" overlayClassName="emojis-picker">
               <template slot="content">
-                <face @insertFace="insertFace"/>
+                <face @insertFace="insertFace" @getfocus="getfocus"/>
               </template>
-              <a-icon style="marginRight: 20px" type="smile" /><!-- @click="getfocus(); insertHtmlAtCaret();" -->
+              <a-icon style="marginRight: 20px" type="smile" />
+              <!-- @click="getfocus(); insertHtmlAtCaret();" -->
             </a-popover>
 
           </a-tooltip>
@@ -223,6 +224,7 @@ export default {
       messageType: 1,
       // 输入框内容
       messageContent: '',
+      // 表情路径
       faceMessage: [],
       // 发送消息的密级，默认为非密
       sendSecretLevel: 30,
@@ -348,7 +350,7 @@ export default {
      * 添加表情
      */
     onSelectEmoji (dataEmoji) {
-      this.messageContent += dataEmoji.emoji
+      this.messageContent += this.faceMessage
     },
     /**
      * 聊天消息滚到到最新一条
@@ -472,7 +474,8 @@ export default {
           data: tweet
         }).toString()
         this.SocketGlobal.send(baseMessage)
-        console.log('wwwwwwwwwwwwww', baseMessage)
+        console.log('wwwwwwwwwwwwww', document.getElementById('input_div').innerText)
+        // debugger
         // 将消息放进当前的消息列表
         this.messageList.push(tweet)
         this.$store.dispatch('UpdateRecentContacts', {
@@ -569,9 +572,12 @@ export default {
       this.faceMessage.push(item)
       this.faceVisible = false
     },
-    // getfocus () {
-    //   document.getElementById('content-div').focus()
-    // },
+    getfocus () {
+      const inpDiv = document.getElementById('input_div')
+      inpDiv.focus()
+      // inpDiv.innerHTML += ' <i>s</i>  '
+      return false
+    },
     insertHtmlAtCaret (html) {
       // var sel, range
       // if (window.getSelection) {
