@@ -52,3 +52,5 @@
                             src\views\admin\DictWord.vue
                             src\views\admin\OrgList.vue
                             src\views\admin\UserList.vue
+20190704 push by fanjiao:filepath--【修改bug：26.普通用户进入消息列表白屏 】                            
+                            src\config\router.config.js

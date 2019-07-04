@@ -25,6 +25,18 @@ export const asyncRouterMap = [
             name: 'Analysis',
             component: () => import('@/views/dashboard/Workplace'),
             meta: { title: '工作台', keepAlive: true, icon: 'dashboard', permission: [ 'dashboard' ], hidden: true }
+          },
+          {
+            path: '/list/msg-list',
+            name: 'MsgList',
+            component: () => import('@/views/admin/NotificationList'),
+            meta: { title: '消息列表', icon: 'bell', keepAlive: false, permission: ['notice'], hidden: true }
+          },
+          {
+            path: '/dashboard/feedback',
+            name: 'Feedback',
+            component: () => import('@/views/dashboard/Feedback'),
+            meta: { title: '问题反馈', hidden: true, keepAlive: false, permission: [ 'dashboard' ] }
           }
         ]
       },
@@ -97,17 +109,6 @@ export const asyncRouterMap = [
             }
           },
           {
-            path: '/list/msg-list',
-            name: 'MsgList',
-            component: () => import('@/views/admin/NotificationList'),
-            meta: {
-              title: '消息列表',
-              icon: 'bell',
-              keepAlive: false,
-              permission: ['notice']
-            }
-          },
-          {
             path: '/list/menu-list',
             name: 'MenuList',
             component: () => import('@/views/admin/MenuList'),
@@ -161,12 +162,6 @@ export const asyncRouterMap = [
               keepAlive: false,
               permission: ['jj']
             }
-          },
-          {
-            path: '/dashboard/feedback',
-            name: 'Feedback',
-            component: () => import('@/views/dashboard/Feedback'),
-            meta: { title: '问题反馈', hidden: true, keepAlive: false, permission: [ 'user' ] }
           }
         ]
       },
