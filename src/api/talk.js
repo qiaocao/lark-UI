@@ -7,7 +7,8 @@ const api = {
   contactsInfo: 'admin/user/',
   // contactsTree: 'chat/Initialization/getOrgTree',
   contactsTree: 'admin/org/orgUsers',
-  recentContacts: 'chat/zzGroup/queryContactListById',
+  // recentContacts: 'chat/zzGroup/queryContactListById',
+  recentContacts: 'talk/recent/list',
   talkMap: 'chat/zzGroup/queryHistoryMessageById',
   talkHistory: 'chat/history',
   // getHistory: 'chat/getHiMsg',
@@ -285,7 +286,7 @@ export function userfileGrabble (userId, receiver, page) {
   })
 }
 /**
- * 联系人文件
+ * 群成员列表
  * ?groupId=
  */
 export function getGroupMembers (groupId) {

@@ -62,11 +62,11 @@
               <span>表情</span>
             </template>
 
-            <a-popover placement="topLeft" v-model="emojisVisible" trigger="click" overlayClassName="emojis-picker">
+            <a-popover placement="topLeft" v-model="faceVisible" trigger="click" overlayClassName="emojis-picker">
               <template slot="content">
-                <face/>
+                <face @insertFace="insertFace"/>
               </template>
-              <a-icon style="marginRight: 20px" type="smile" />
+              <a-icon style="marginRight: 20px" type="smile" /><!-- @click="getfocus(); insertHtmlAtCaret();" -->
             </a-popover>
 
           </a-tooltip>
@@ -97,17 +97,29 @@
       <div class="editor-area">
         <div class="draft-input">
           <!-- 输入框 -->
-          <textarea
-            v-show="!Object.keys(fileUpload).length"
+          <div>
+            <inp-div
+              id="input_div"
+              v-model="messageContent"
+              :faceMessage="faceMessage"
+              @keyup.enter.native="sendMessage(sendSecretLevel)"
+              @keyup.alt.enter.exact="messageContent += '\n'"
+              @keyup.ctrl.enter.exact="messageContent += '\n'"
+              @keydown.enter.native="clear()"
+            >
+            </inp-div>
+            <!-- <textarea
+              v-show="!Object.keys(fileUpload).length"
 
-            size="large"
-            class="textarea-input"
-            v-model="messageContent"
-            @keydown.enter.stop.prevent.exact
-            @keyup.enter.stop.prevent.exact="sendMessage(sendSecretLevel)"
-            @keyup.alt.enter.exact="messageContent += '\n'"
-            @keyup.ctrl.enter.exact="messageContent += '\n'"
-          />
+              size="large"
+              class="textarea-input"
+              v-model="messageContent"
+              @keydown.enter.stop.prevent.exact
+              @keyup.enter.stop.prevent.exact="sendMessage(sendSecretLevel)"
+              @keyup.alt.enter.exact="messageContent += '\n'"
+              @keyup.ctrl.enter.exact="messageContent += '\n'"
+            /> -->
+          </div>
           <!-- 文件上传进度 -->
           <div v-show="Object.keys(fileUpload).length" class="upload-display">
             <a-card class="file-card" :bodyStyle="{lineHeight: '40px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}">
@@ -162,17 +174,19 @@ import { MessagePiece, TalkHistory, MoreInfo, GroupNotice, TalkSetting, MarkMess
 import { LandingStatus } from '@/utils/constants'
 import api from '@/api/talk'
 import { SocketMessage, Tweet } from '@/utils/talk'
-import VEmojiPicker from 'v-emoji-picker'
-import packData from 'v-emoji-picker/data/emojis.json'
+// import VEmojiPicker from 'v-emoji-picker'
+// import packData from 'v-emoji-picker/data/emojis.json'
 import { mapGetters } from 'vuex'
 // 生成随机uuid
 import uuidv4 from 'uuid/v4'
 import Face from './Face'
+
+import inpDiv from './InputDiv'
 export default {
   name: 'ConvBox',
   components: {
     MessagePiece,
-    VEmojiPicker,
+    // VEmojiPicker,
     TalkHistory,
     GroupNotice,
     TalkSetting,
@@ -180,7 +194,8 @@ export default {
     TalkFile,
     MoreInfo,
     UserFile,
-    Face
+    Face,
+    inpDiv
   },
   props: {
     /** 聊天对话框的基本信息--结构同最近联系人 */
@@ -208,6 +223,7 @@ export default {
       messageType: 1,
       // 输入框内容
       messageContent: '',
+      faceMessage: [],
       // 发送消息的密级，默认为非密
       sendSecretLevel: 30,
       // 发送键的可选密级选项
@@ -232,9 +248,9 @@ export default {
   },
   computed: {
     ...mapGetters(['onlineState', 'userSecretLevel', 'userId', 'avatar', 'nickname', 'token']),
-    emojisNative () {
-      return packData
-    },
+    // emojisNative () {
+    //   return packData
+    // },
     // 发送按钮的可用状态
     sendDisabled () {
       if (this.onlineState === LandingStatus.ONLINE) {
@@ -284,6 +300,9 @@ export default {
     this.scrollToBottom()
   },
   methods: {
+    clear () {
+      document.getElementById('input_div').innerHTML = ''
+    },
     /**
      * 重写上传action方法
      */
@@ -419,6 +438,7 @@ export default {
        * "groupId": "",
        * "levels": ""
        */
+      // const contents = this.messageContent + this.faceMessage
       const { status } = this.fileUpload
       const content = this.messageContent
       // 如果有文件消息，发送文件消息，忽略文字消息
@@ -452,6 +472,7 @@ export default {
           data: tweet
         }).toString()
         this.SocketGlobal.send(baseMessage)
+        console.log('wwwwwwwwwwwwww', baseMessage)
         // 将消息放进当前的消息列表
         this.messageList.push(tweet)
         this.$store.dispatch('UpdateRecentContacts', {
@@ -464,6 +485,7 @@ export default {
         tweet.content.type === 1
           ? this.messageContent = ''
           : this.fileUpload = {}
+        document.getElementById('input_div').innerHTML = ''
       }
     },
     /** 添加发信人信息或者群组信息 */
@@ -543,9 +565,45 @@ export default {
       this.faceVisible = (!this.faceVisible)
     },
     insertFace (item) {
-      this.messageContent = this.messageContent + 'face' + item
+      // this.messageContent = this.messageContent + item
+      this.faceMessage.push(item)
       this.faceVisible = false
+    },
+    // getfocus () {
+    //   document.getElementById('content-div').focus()
+    // },
+    insertHtmlAtCaret (html) {
+      // var sel, range
+      // if (window.getSelection) {
+      //   // IE9 and non-IE
+      //   sel = window.getSelection()
+      //   if (sel.getRangeAt && sel.rangeCount) {
+      //     range = sel.getRangeAt(0)
+      //     range.deleteContents()
+      //     // Range.createContextualFragment() would be useful here but is
+      //     // non-standard and not supported in all browsers (IE9, for one)
+      //     var el = document.createElement('div')
+      //     el.innerHTML = html
+      //     var frag = document.createDocumentFragment(); var node; var lastNode
+      //     while ((node = el.firstChild)) {
+      //       lastNode = frag.appendChild(node)
+      //     }
+      //     range.insertNode(frag)
+      //     // Preserve the selection
+      //     if (lastNode) {
+      //       range = range.cloneRange()
+      //       range.setStartAfter(lastNode)
+      //       range.collapse(true)
+      //       sel.removeAllRanges()
+      //       sel.addRange(range)
+      //     }
+      //   }
+      // } else if (document.selection && document.selection.type !== 'Control') {
+      //   // IE < 9
+      //   document.selection.createRange().pasteHTML(html)
+      // }
     }
+
   },
   directives: {
     // 使元素获得焦点
