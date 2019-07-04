@@ -23,6 +23,7 @@ Vue.use(VueAxios, router)
 Vue.use(wysiwyg, {
   hideModules: {
     'bold': true,
+    'italic': true,
     'underline': true,
     'justifyLeft': true,
     'justifyCenter': true,
@@ -35,8 +36,7 @@ Vue.use(wysiwyg, {
     'image': true,
     'table': true,
     'removeFormat': true,
-    'separator': true,
-    'italic': true
+    'separator': true
   }
 })
 Vue.prototype.publicPath = process.env.BASE_URL
