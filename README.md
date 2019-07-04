@@ -46,3 +46,9 @@
                             src\config\router.config.js
 20190704 push by fanjiao:filepath--【修改bug：23.联系方式/描述保存不生效】
                             src\views\account\settings\BaseSetting.vue
+20190704 push by fanjiao:filepath--【修改bug：21.用户管理界面按钮重叠 】
+                            src\views\admin\CommonTools.vue
+                            src\views\admin\NotificationList.vue
+                            src\views\admin\DictWord.vue
+                            src\views\admin\OrgList.vue
+                            src\views\admin\UserList.vue
