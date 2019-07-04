@@ -140,8 +140,12 @@ export default {
   },
   computed: {
     ...mapGetters(['avatar', 'userId']),
-    imgPreviewUrl () {
-      return api.imgPrevie + '?fileId=' + this.messageInfo.content.id
+    imgPreviewUrl: {
+      get: function () {
+        return api.imgPrevie + '?fileId=' + this.messageInfo.content.id
+      },
+      set: function () {
+      }
     },
     downloadUrl () {
       return api.fileDownload + '?fileId=' + this.messageInfo.content.id
@@ -185,6 +189,7 @@ export default {
         this.imgLoading = 3
       }
       if (event.type === 'click') {
+        console.log('123')
         this.imgPreviewUrl += '&t=' + Math.random()
       }
     },
