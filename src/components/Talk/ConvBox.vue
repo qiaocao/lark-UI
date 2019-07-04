@@ -443,7 +443,7 @@ export default {
       const content = this.messageContent
       // 如果有文件消息，发送文件消息，忽略文字消息
       if (status === 'done') {
-        const { fileId, fileName, readPath, fileExt } = this.fileUpload.response
+        const { fileId, fileName, readPath, fileExt } = this.fileUpload.response.result
         this.generateFileMsg(
           tweet,
           fileId,
