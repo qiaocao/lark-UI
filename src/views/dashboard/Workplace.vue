@@ -38,7 +38,7 @@
       <div class="tool-list">
         <div class="tool-item" v-for="item in toolList" :key="item.id">
           <a :href="item.uri+'?userId='+userPId">
-            <img :src="'/tools/Icon-'+item.description+'.png'" width="40" height="40" :alt="item.description" :title="item.title"/>
+            <img :src="'/images/tools/Icon-'+item.description+'.png'" width="40" height="40" :alt="item.description" :title="item.title"/>
           </a>
           <div class="tool-name">{{ item.title }}</div>
         </div>
