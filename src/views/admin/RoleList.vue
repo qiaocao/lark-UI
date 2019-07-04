@@ -21,7 +21,7 @@
             <span class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchRole">查询</a-button>
               <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
-              <a-button type="primary" style="margin-left: 30px" @click="handleAdd()">新增角色</a-button>
+              <a-button type="primary" style="margin-left: 30px" @click="handleAdd()" v-action:add>新增角色</a-button>
             </span>
           </a-col>
         </a-row>
@@ -55,9 +55,9 @@
       </div>
       -->
       <span slot="action" slot-scope="text, record">
-        <a @click="handleEdit(record)">编辑</a>
+        <a @click="handleEdit(record)" v-action:update>编辑</a>
         <a-divider type="vertical" />
-        <a @click="handlePermission(record)">权限</a>
+        <a @click="handlePermission(record)" v-action:update>权限</a>
         <a-divider type="vertical" />
         <a-dropdown>
           <a class="ant-dropdown-link">
@@ -66,13 +66,13 @@
           <a-menu slot="overlay">
             <a-menu-item>
               <!-- <a @click="rolesdisabled(record)">禁用</a> -->
-              <a @click="appointUsers(record)">指定用户</a>
+              <a @click="appointUsers(record)" v-action:update>指定用户</a>
             </a-menu-item>
             <a-menu-item>
               <a @click="rolesDetail(record)">详情</a>
             </a-menu-item>
             <a-menu-item>
-              <a @click="rolesDelete(record)">删除</a>
+              <a @click="rolesDelete(record)" v-action:delete>删除</a>
             </a-menu-item>
           </a-menu>
         </a-dropdown>
@@ -84,6 +84,7 @@
       :width="800"
       v-model="editVisible"
       @ok="handleEditOk"
+      :confirmLoading="confirmLoading"
     >
       <a-form :form="editForm">
         <a-form-item
@@ -148,7 +149,9 @@
       style="top: 100px;"
       :width="800"
       v-model="perVisible"
-      @ok="handlePerOk">
+      @ok="handlePerOk"
+      :confirmLoading="confirmLoading"
+    >
       <a-form>
         <a-form-item
           :labelCol="labelCol"
@@ -242,10 +245,9 @@ export default {
       // 角色id
       roleid: '',
       // 多选框禁用
-      checkboxdisabled: []
+      checkboxdisabled: [],
+      confirmLoading: false
     }
-  },
-  created () {
   },
   methods: {
     /**
@@ -351,8 +353,13 @@ export default {
      * 编辑保存
      */
     handleEditOk () {
+      if (this.inDetail) {
+        this.editVisible = false
+        return
+      }
       this.editForm.validateFields((err, values) => {
         if (!err) {
+          this.confirmLoading = true
           if (this.inAdd) {
             // 新增
             return addRole(
@@ -380,7 +387,9 @@ export default {
                 message: '出现异常，请联系系统管理员',
                 duration: 4
               })
-            )
+            ).finally(() => {
+              this.confirmLoading = false
+            })
           } else {
             // 编辑
             values.id = this.mdl.id
@@ -409,7 +418,9 @@ export default {
                 message: '出现异常，请联系系统管理员',
                 duration: 4
               })
-            )
+            ).finally(() => {
+              this.confirmLoading = false
+            })
           }
         }
       })
@@ -419,6 +430,7 @@ export default {
      */
     handlePerOk () {
       const _this = this
+      _this.confirmLoading = true
       return updateRolePermission(
         { 'id': this.mdl.id, 'permissionList': this.mdl.permissions }
       ).then(
@@ -442,7 +454,9 @@ export default {
           message: '出现异常，请联系系统管理员',
           duration: 4
         })
-      )
+      ).finally(() => {
+        _this.confirmLoading = false
+      })
     },
     /**
      * 详情
@@ -472,6 +486,7 @@ export default {
         okType: 'danger',
         cancelText: '取消',
         onOk () {
+          this.confirmLoading = true
           // 在这里调用接口
           return disabledRole(
             record.id
@@ -494,7 +509,9 @@ export default {
               message: '出现异常，请联系系统管理员',
               duration: 4
             })
-          )
+          ).finally(() => {
+            this.confirmLoading = false
+          })
         },
         onCancel: () => {
           this.$notification['info']({
@@ -516,6 +533,7 @@ export default {
         okType: 'danger',
         cancelText: '取消',
         onOk () {
+          _this.confirmLoading = true
           // 在这里调用删除接口
           return delRole(
             record.id
@@ -535,11 +553,13 @@ export default {
               }
             }
           ).catch(() =>
-            this.$notification['error']({
+            _this.$notification['error']({
               message: '出现异常，请联系系统管理员',
               duration: 4
             })
-          )
+          ).finally(() => {
+            _this.confirmLoading = false
+          })
         },
         onCancel: () => {
           this.$notification['info']({
@@ -564,6 +584,7 @@ export default {
             message: '获取人员失败',
             duration: 4
           })
+          this.confirmLoading = false
         }
       })
     },
@@ -586,7 +607,14 @@ export default {
             })
           }
         }
-      )
+      ).catch(() =>
+        this.$notification['error']({
+          message: '出现异常，请联系系统管理员',
+          duration: 4
+        })
+      ).finally(() => {
+        this.confirmLoading = false
+      })
     }
   }
 }

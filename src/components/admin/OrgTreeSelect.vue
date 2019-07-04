@@ -5,9 +5,11 @@
       :treeData="orgTree"
       treeDefaultExpandAll
       allowClear
-      :value="orgid"
+      :key="id"
+      :value="id"
       @change="onChange"
       style="width:100%"
+      :disabled="disabled"
     ></a-tree-select>
   </div>
 </template>
@@ -21,17 +23,21 @@ export default {
   data () {
     return {
       orgTree: [],
-      orgid: ''
+      id: ''
     }
   },
   created () {
-    if (this.dataSource.length === 0) {
-      // 获取树形组织信息
-      getOrgTree().then(res => {
-        this.orgTree = res.result
-      })
-    } else {
-      this.orgTree = this.dataSource
+    // 获取树形组织信息
+    getOrgTree({ 'parentTreeId': 'root' }).then(res => {
+      this.orgTree = this.genernateTree(res.result.data)
+    })
+    if (this.values) {
+      this.id = this.values
+    }
+  },
+  watch: {
+    values: function (val) {
+      this.id = val
     }
   },
   props: {
@@ -40,26 +46,30 @@ export default {
       type: String,
       default: ''
     },
-    // 树选择器下拉框内容 非必填可传递
-    dataSource: {
-      type: Array,
-      default: function () {
-        return []
-      }
-    }
-  },
-  watch: {
-    values (val) {
-      this.orgid = val
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
     /**
+     * 处理后台返回值
+     */
+    genernateTree (value) {
+      value.forEach(item => {
+        item.value = item.id
+        if (item.children && item.children.length) {
+          this.genernateTree(item.children)
+        }
+      })
+      return value
+    },
+    /**
      * change事件
      */
-    onChange (value) {
-      this.$emit('changOrg', value)
-      this.orgid = value
+    onChange (value, label) {
+      this.id = value
+      this.$emit('ok', value, label)
     }
   }
 }

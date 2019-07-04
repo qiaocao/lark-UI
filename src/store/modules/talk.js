@@ -93,9 +93,9 @@ function setMessageInfo (id, talkMap, recentContact) {
  * @param {String} reviser 接收者
  * @param {String} sender 发送者
  */
-function syncUnread2Server (online, reviser, sender) {
+function syncUnread2Server (newUnreasNum, online, reviser, sender) {
   // TODO: 连接断开，添加提醒
-  if (!online) return
+  if (!online || newUnreasNum !== 0) return
   const socketMessage = new SocketMessage({
     code: 9,
     data: {
@@ -103,8 +103,47 @@ function syncUnread2Server (online, reviser, sender) {
       sender: sender
     }
   }).toString()
-  console.log(socketMessage)
   Vue.prototype.SocketGlobal.send(socketMessage)
+}
+
+/**
+ * 格式化联系人数据
+ * @param {Array} target 目标数组
+ * @param {Array} target 待处理数组
+ */
+function formatTree (target, todoList) {
+  todoList.forEach(function (element) {
+    let newItem = {}
+    if (element.scopedSlotsTitle === 'orgNode') {
+      // 处理组织节点
+      newItem = {
+        key: element.id,
+        title: element.title,
+        parentId: element.parentId,
+        icon: 'folder',
+        online: false,
+        scopedSlots: {
+          title: 'orgNode'
+        },
+        children: formatTree([], element.children)
+      }
+    } else if (element.scopedSlotsTitle === 'userNode') {
+      // 处理用户节点
+      newItem = {
+        key: element.key,
+        title: element.title,
+        parentId: '',
+        icon: element.icon,
+        online: element.online,
+        scopedSlots: {
+          title: 'userNode'
+        },
+        children: []
+      }
+    }
+    target.push(newItem)
+  })
+  return target
 }
 
 const talk = {
@@ -145,18 +184,43 @@ const talk = {
       state.groupList = groupList
     },
     SET_CONTACTS_TREE (state, contactsTree) {
-      state.contactsTree = contactsTree
+      /*
+      const { id, parentId, title } = contactsTree[0]
+      const newTree = [{
+        key: id,
+        parentId: parentId,
+        title: title,
+        scopedSlots: {
+          title: 'orgNode'
+        },
+        children: formatTree([], contactsTree[0].children)
+      }]
+      */
+      // 直接显示到三级单位(二部、二十三所)
+      const newTree = formatTree([], contactsTree[0].children[0].children)
+      state.contactsTree = newTree
     },
     /**
      * 更新talkMap
-     * @param {Array} talkMapList 赋值数组
+     * @param {Object} talkMapObject 赋值数组
+     * {
+     *    fromServer: true,
+     *    talkMapData: [['123', {}, {}], ['123', {}, {}]] 或者
+     *                 [['123', [{}, {}]], ['123', [{}, {}]]]
+     * }
      */
-    SET_TALK_MAP (state, talkMapList) {
-      talkMapList.forEach(function (item) {
-        if (item[1] instanceof Array) {
-          state.talkMap.set(item[0], item[1])
-        }
-      })
+    SET_TALK_MAP (state, talkMapObject) {
+      if (talkMapObject.fromServer) {
+        talkMapObject.talkMapData.forEach(function (item) {
+          state.talkMap.set(item[0], item.slice(1))
+        })
+      } else {
+        talkMapObject.talkMapData.forEach(function (item) {
+          if (item[1] instanceof Array) {
+            state.talkMap.set(item[0], item[1])
+          }
+        })
+      }
     },
     SET_CURRENT_TALK (state, currentTalk) {
       state.currentTalk = currentTalk
@@ -262,6 +326,7 @@ const talk = {
       // TODO: 告知服务器的条件还要再加判断
       if (newItem.unreadNum === 0) {
         syncUnread2Server(
+          newItem.unreadNum,
           rootGetters.onlineState === LandingStatus.ONLINE,
           rootGetters.userId,
           freshItem.id)
@@ -293,7 +358,10 @@ const talk = {
       return new Promise((resolve, reject) => {
         getTalkMap(rootGetters.userId).then(response => {
           if (response.status === 200) {
-            commit('SET_TALK_MAP', [ ...response.result.data ])
+            commit('SET_TALK_MAP', {
+              fromServer: true,
+              talkMapData: response.result.data
+            })
           } else {
             reject(new Error('getTalkMap: 服务器发生错误'))
           }
@@ -311,7 +379,10 @@ const talk = {
       if (newMessage.fromId === rootGetters.userId) return
       const tempMessageList = state.talkMap.get(newMessage.contactInfo.id) || []
       tempMessageList.push(new Tweet(newMessage))
-      commit('SET_TALK_MAP', [[newMessage.contactInfo.id, tempMessageList]])
+      commit('SET_TALK_MAP', {
+        fromServer: false,
+        talkMapData: [[newMessage.contactInfo.id, tempMessageList]]
+      })
     },
     /**
      * 更新缓存中的草稿信息

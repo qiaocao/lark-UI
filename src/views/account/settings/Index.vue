@@ -30,11 +30,11 @@
                 账户绑定
               </router-link>
             </a-menu-item> -->
-            <a-menu-item key="/account/settings/notification">
+            <!-- <a-menu-item key="/account/settings/notification">
               <router-link :to="{ name: 'NotificationSettings' }">
                 新消息通知
               </router-link>
-            </a-menu-item>
+            </a-menu-item> -->
             <a-menu-item key="/account/settings/workplace">
               <router-link :to="{ name: 'WorkPlaceSettings' }">
                 卡片设置
@@ -80,10 +80,10 @@ export default {
       // cropper
       preview: {},
       option: {
-        img: '/avatar2.jpg',
+        img: '/avatar.png',
         info: true,
         size: 1,
-        outputType: 'jpeg',
+        outputType: 'png',
         canScale: false,
         autoCrop: true,
         // 只有自动截图开启 宽度高度才生效

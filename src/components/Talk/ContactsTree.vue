@@ -1,5 +1,5 @@
 <template>
-  <a-tree class="contacts-tree" :treeData="contactsTree" @select="handleSelect" defaultExpandAll>
+  <a-tree class="contacts-tree" :treeData="contactsTree" @select="handleSelect" :defaultExpandAll="false">
 
     <!-- 组织节点 -->
     <template slot="orgNode" slot-scope="{title}">
@@ -57,11 +57,9 @@ export default {
   methods: {
     handleSelect (selectedKeys, { selectedNodes }) {
       if (selectedNodes.length) {
-        if (selectedNodes[0].data.props.dataRef.hasOwnProperty('online')) {
+        if (selectedNodes[0].data.props.dataRef.scopedSlots.title === 'userNode') {
           this.$emit('SelectContacts', selectedKeys[0])
         }
-      } else {
-        this.$emit('SelectContacts', selectedKeys[0])
       }
     }
   }
