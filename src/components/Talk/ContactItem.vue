@@ -1,40 +1,26 @@
 <template>
-  <!-- groups item -->
-  <div :class="groupItemClasses" @click="handleClick">
-
+  <div :class="contactsItemClasses" @click="handleClick">
     <div class="avatar">
-      <a-avatar class="avatar-img" shape="square" :src="groupInfo.groupImg" :size="30">
-        <span>{{ groupInfo.groupName }}</span>
+      <a-avatar class="avatar-img" shape="square" :src="contactsInfo.icon" :size="30">
+        <span>{{ contactsInfo.title }}</span>
       </a-avatar>
     </div>
-
     <div class="extra">
       <p class="attr on-line">
         <!-- <a-icon type="check-circle" theme="filled" /> -->
       </p>
     </div>
-
     <div class="info">
-      <p class="nickname">{{ groupInfo.groupName }}</p>
+      <p class="nickname">{{ contactsInfo.title }}</p>
     </div>
-
   </div>
 </template>
 
 <script>
 export default {
-  name: 'GroupItem',
+  name: 'ContactsItem',
   props: {
-    /**
-     * 群组信息数据结构
-     * groupInfo = {
-     *  id: 唯一标识符 String
-     *  name: 群组名称 String
-     *  avatar: 头像 String
-     *  其他需要的信息
-     * }
-     */
-    groupInfo: {
+    contactsInfo: {
       type: Object,
       default: () => ({}),
       required: true
@@ -49,16 +35,16 @@ export default {
     return {}
   },
   computed: {
-    groupItemClasses () {
+    contactsItemClasses () {
       return {
-        'group-item': true,
+        'contacts-item': true,
         'activated': this.activated
       }
     }
   },
   methods: {
     handleClick () {
-      this.$emit('select', this.groupInfo)
+      this.$emit('select', this.contactsInfo)
     }
   }
 }
@@ -71,7 +57,7 @@ export default {
   .on-line {
     color: rgba(43, 162, 69, 1);
   }
-  .group-item {
+  .contacts-item {
     width: 100%;
     height: 50px;
     min-height: 50px;

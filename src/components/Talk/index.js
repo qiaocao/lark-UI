@@ -13,11 +13,13 @@ import ConvBox from './ConvBox'
 import RecentContactsItem from './RecentContactsItem'
 import ContactsTree from './ContactsTree'
 import ContactsInfo from './ContactsInfo'
+import ContactItem from './ContactItem'
 import GroupItem from './GroupItem'
 import GroupInfo from './GroupInfo'
-import ContactsItem from './ContactsItem'
 
 import CreateTalk from './createTalk/CreateTalk'
+
+import SearchAll from './SearchAll'
 
 export {
   // 消息展示组件
@@ -46,11 +48,12 @@ export {
   RecentContactsItem,
   // 群组(项)组件
   GroupItem,
+  ContactItem,
   // 群组信息组件
   GroupInfo,
-  // 联系人项
-  ContactsItem,
   // 创建新的研讨
-  CreateTalk
+  CreateTalk,
+  // 联系人搜索组件
+  SearchAll
 
 }
