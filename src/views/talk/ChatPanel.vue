@@ -2,9 +2,11 @@
   <a-layout class="talk-layout">
     <a-layout-sider class="talk-layout-sider">
       <div class="search-bar">
-        <!-- <SearchInput /> -->
+
+        <SearchAll :inputStyle="{height: '31px', width: '200px'}" @showDetail="showSearchDetail" />
+
         <a-tooltip title="发起研讨" placement="bottom" :overlayStyle="{fontSize: '12px'}">
-          <a-button @click="startTalk" icon="plus" size="small" style="marginLeft: 3px"></a-button>
+          <a-button class="add-group-btn" @click="startTalk" icon="plus" size="small" />
         </a-tooltip>
       </div>
       <a-tabs
@@ -117,9 +119,8 @@
 </template>
 
 <script>
-import { ContactsTree, ContactsInfo, GroupInfo, RecentContactsItem, GroupItem, CreateTalk } from '@/components/Talk'
+import { ContactsTree, ContactsInfo, GroupInfo, RecentContactsItem, GroupItem, CreateTalk, SearchAll } from '@/components/Talk'
 
-import { mapGetters } from 'vuex'
 export default {
   name: 'ChatPanel',
   components: {
@@ -128,7 +129,8 @@ export default {
     GroupInfo,
     RecentContactsItem,
     GroupItem,
-    CreateTalk
+    CreateTalk,
+    SearchAll
   },
   data () {
     return {
@@ -155,7 +157,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['searchResultList', 'searchGroupResultList', 'searchContactsResultList']),
     currentTalk () {
       return this.$store.state.talk.currentTalk
     },
@@ -252,6 +253,15 @@ export default {
     },
     handleCloseSearchRecordModal () {
       this.searchRecordModalVisible = false
+    },
+    showSearchDetail (item, isGroup) {
+      if (isGroup) {
+        this.activeKey = '2'
+        this.activeGroup = item.groupId
+      } else {
+        this.activeKey = '3'
+        this.activeContacts = item.key
+      }
     }
   },
   activated: function () {}
@@ -275,7 +285,15 @@ export default {
   // 聊天搜索栏样式 该部分高度为48px
   .search-bar {
     display: flex;
-    margin: 16px 27px 8px;
+    margin: 16px 19px 8px;
+    .add-group-btn {
+      margin-left: 10px;
+      width: 31px;
+      height: 31px;
+      background: #d1d2d4;
+      color: #7c7a7a;
+      font-size: 18px;
+    }
   }
 
   // 调整tabs标签样式
@@ -305,7 +323,7 @@ export default {
     overflow: hidden;
 
     // 视窗高度-头部导航栏高度-搜索框高度-tab页高度
-    height: calc(100vh - 64px - 48px - 46px);
+    height: calc(100vh - 64px - 55px - 46px);
 
     &:hover {
       overflow-y: overlay;

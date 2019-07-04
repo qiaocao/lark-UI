@@ -20,7 +20,7 @@
             <span class="table-page-search-submitButtons">
               <a-button type="primary" @click="search">查询</a-button>
               <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
-              <a-button type="primary" style="margin-left: 30px" @click="handleAdd()">新增</a-button>
+              <a-button type="primary" style="margin-left: 30px" @click="handleAdd()" v-action:add>新增工具</a-button>
             </span>
           </a-col>
         </a-row>
@@ -33,10 +33,10 @@
       :data="loadData"
     >
       <span slot="action" slot-scope="text, record">
-        <a @click="handleEdit(record)">编辑</a>
+        <a @click="handleEdit(record)" v-action:update>编辑</a>
         <a-divider type="vertical" />
-        <a v-if="record.status==='0'" @click="handleStatus(record,'1')">启用</a>
-        <a v-if="record.status==='1'" @click="handleStatus(record,'0')">停用</a>
+        <a v-if="record.status==='0'" @click="handleStatus(record,'1')" v-action:update>启用</a>
+        <a v-if="record.status==='1'" @click="handleStatus(record,'0')" v-action:update>停用</a>
         <a-divider type="vertical" />
         <a-dropdown>
           <a class="ant-dropdown-link">
@@ -47,7 +47,7 @@
               <a @click="handleDetail(record)">详情</a>
             </a-menu-item>
             <a-menu-item>
-              <a @click="handleDelete(record)">删除</a>
+              <a @click="handleDelete(record)" v-action:delete>删除</a>
             </a-menu-item>
           </a-menu>
         </a-dropdown>
