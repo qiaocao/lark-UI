@@ -137,21 +137,18 @@
           <!-- 发送键 -->
           <div class="send-toolbar">
             <div style="marginLeft: auto">
-              <!-- 提示信息 -->
-              <a-tooltip placement="left" title="发送前请正确选择消息密级">
-                <a-icon type="question-circle" style="margin-right: 6px; cursor: pointer;"/>
-              </a-tooltip>
               <!-- 发送键 -->
-              <a-dropdown-button @click="sendMessage(sendSecretLevel)" type="primary" :disabled="sendDisabled">
-                发送<span :class="'s-' + sendSecretLevel">【{{ sendSecretLevel | fileSecret }}】</span>
-                <a-menu v-if="sendMenuList.length" slot="overlay">
-                  <template v-for="item in sendMenuList">
-                    <a-menu-item :key="item" @click="handleSendSecretLevel">
-                      发送<span :class="'s-' + item">【{{ item | fileSecret }}】</span>
-                    </a-menu-item>
-                  </template>
-                </a-menu>
-              </a-dropdown-button>
+              <a-radio-group @change="handleSendSecretLevel" v-model="sendSecretLevel">
+                <template v-for="item in sendSecretList">
+                  <a-radio :value="item" :key="item">
+                    <span :class="'s-' + item">【{{ item | fileSecret }}】</span>
+                  </a-radio>
+                </template>
+              </a-radio-group>
+              <a-button type="primary" @click="sendMessage(sendSecretLevel)" :disabled="sendDisabled">
+                发送
+                <span :class="'s-' + sendSecretLevel">【{{ sendSecretLevel | fileSecret }}】</span>
+              </a-button>
             </div>
           </div>
 
@@ -174,19 +171,17 @@ import { MessagePiece, TalkHistory, MoreInfo, GroupNotice, TalkSetting, MarkMess
 import { LandingStatus } from '@/utils/constants'
 import api from '@/api/talk'
 import { SocketMessage, Tweet } from '@/utils/talk'
-// import VEmojiPicker from 'v-emoji-picker'
-// import packData from 'v-emoji-picker/data/emojis.json'
 import { mapGetters } from 'vuex'
 // 生成随机uuid
 import uuidv4 from 'uuid/v4'
 import Face from './Face'
-
+import Watermark from '@/utils/waterMark'
 import inpDiv from './InputDiv'
+
 export default {
   name: 'ConvBox',
   components: {
     MessagePiece,
-    // VEmojiPicker,
     TalkHistory,
     GroupNotice,
     TalkSetting,
@@ -227,7 +222,7 @@ export default {
       // 发送消息的密级，默认为非密
       sendSecretLevel: 30,
       // 发送键的可选密级选项
-      sendMenuList: [],
+      sendSecretList: [],
       // 控制表情选择框不自动关闭
       faceVisible: false,
       // 文件上传时的请求头部
@@ -248,9 +243,6 @@ export default {
   },
   computed: {
     ...mapGetters(['onlineState', 'userSecretLevel', 'userId', 'avatar', 'nickname', 'token']),
-    // emojisNative () {
-    //   return packData
-    // },
     // 发送按钮的可用状态
     sendDisabled () {
       if (this.onlineState === LandingStatus.ONLINE) {
@@ -298,6 +290,9 @@ export default {
   mounted () {
     // 页面创建时，消息滚动到最近一条
     this.scrollToBottom()
+    // this.$nextTick(() => {
+    this.printWaterMark(this.nickname)
+    // })
   },
   methods: {
     clear () {
@@ -320,6 +315,21 @@ export default {
     //     }
     //   })
     // },
+    /** 给研讨界面添加水印 */
+    printWaterMark (username) {
+      const config = {
+        text: username,
+        font: '24px serif',
+        opacity: 0.4,
+        density: 0.8,
+        rotate: -1 / 6 * Math.PI,
+        z_index: 999,
+        color: 'rgba(178, 178, 178, 0.3)',
+        yOffset: 1
+      }
+      const watermark = new Watermark(config)
+      watermark.embed('.conv-box-message', 'qqqqq')
+    },
     /**
      * 文件上传状态变化时触发
      * @param {Object} info {file, fileList}
@@ -388,17 +398,12 @@ export default {
     /**
      * 设置发送消息的密级
      */
-    handleSendSecretLevel (item) {
-      item = item ? item.key : 30
-      // 当前用户可发送的全部密级
+    handleSendSecretLevel (even) {
+      const secretLevel = even ? parseInt(event.target.value) : 30
       const allSendMenu = [30, 40, 60].filter(item => item <= this.userSecretLevel)
-      // 当前研讨的密级
-      const talkSecretLevel = this.chatInfo.secretLevel
-      // 设置发送按钮的密级
-      this.sendSecretLevel = item
-      this.sendMenuList = allSendMenu.filter(function (menu) {
-        return menu !== item && menu <= talkSecretLevel
-      })
+      const curTalkSecret = this.chatInfo.secretLevel
+      this.sendSecretLevel = secretLevel
+      this.sendSecretList = allSendMenu.filter(item => item <= curTalkSecret)
     },
     /**
      * 获取缓存消息
@@ -432,9 +437,9 @@ export default {
        * "path": "20190619",
        * "readPath": "",
        * "createTime": "2019-06-19 14:52:22",
-       * "creator": "登陆人id_测试",
+       * "creator": "登录人id_测试",
        * "updateTime": "2019-06-19 14:52:22",
-       * "updator": "登陆人id_测试",
+       * "updator": "登录人id_测试",
        * "groupId": "",
        * "levels": ""
        */

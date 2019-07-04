@@ -46,7 +46,7 @@
           class="login-button"
           :loading="state.loginBtn"
           :disabled="state.loginBtn"
-        >登陆</a-button>
+        >进入</a-button>
       </a-form-item>
     </a-form>
   </div>
