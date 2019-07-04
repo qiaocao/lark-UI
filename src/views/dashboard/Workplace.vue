@@ -37,7 +37,7 @@
     <footer-tool-bar :style="{height:'72px', width: isSideMenu() && isDesktop() ? `calc(100% - ${sidebarOpened ? 256 : 80}px)` : '100%'}">
       <div class="tool-list">
         <div class="tool-item" v-for="item in toolList" :key="item.id">
-          <a :href="item.uri">
+          <a :href="item.uri" target="_blank">
             <img :src="'/tools/Icon-'+item.description+'.png'" width="40" height="40" :alt="item.description" :title="item.title"/>
           </a>
           <div class="tool-name">{{ item.title }}</div>
@@ -117,7 +117,13 @@ export default {
      */
     getSelfTools () {
       getCommonTools().then(res => {
-        this.toolList = res.result.data
+        if (res.result.data) {
+          const tools = res.result.data
+          tools.forEach(item => {
+            item.uri = 'http://' + item.uri
+          })
+          this.toolList = Object.assign({}, tools)
+        }
       })
     },
     /**
