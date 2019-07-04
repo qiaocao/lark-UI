@@ -10,7 +10,7 @@
             />
           </a-form-item>
           <a-form-item label="联系方式">
-            <a-form-item
+            <!-- <a-form-item
               :labelCol="labelCol"
               :wrapperCol="wrapperCol"
               label="状态"
@@ -20,15 +20,15 @@
               <a-select
                 v-decorator="['status', {rules: [{ required: true, message: '请选择状态' }], initialValue: '1'}]"
               >
-                <a-select-option :value="1">Option 1</a-select-option>
-                <a-select-option :value="2">Option 2</a-select-option>
-                <a-select-option :value="3">Option 3</a-select-option>
+                <a-select-option :value="1">忙于工作</a-select-option>
+                <a-select-option :value="2">出差啦</a-select-option>
+                <a-select-option :value="3">休假中</a-select-option>
               </a-select>
-            </a-form-item>
+            </a-form-item> -->
             <a-input v-decorator="['oTel']" />
           </a-form-item>
           <a-form-item label="描述">
-            <a-textarea rows="4" v-decorator="['discribe']" />
+            <a-textarea rows="4" v-decorator="['description']" />
           </a-form-item>
           <a-form-item>
             <a-button type="primary" @click="submitInfo">提交</a-button>
