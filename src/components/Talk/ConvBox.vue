@@ -1,12 +1,16 @@
 <template>
   <a-layout v-if="Object.keys(chatInfo).length" class="conv-box">
-
     <!-- 聊天设置选项的抽屉组件 -->
-    <talk-history :contactId="chatInfo.id" :hisGrop="JSON.stringify(chatInfo.isGroup)" :activeOption="activeOption" @closeDrawer="triggerDrawer"/>
+    <talk-history
+      :contactId="chatInfo.id"
+      :hisGrop="JSON.stringify(chatInfo.isGroup)"
+      :activeOption="activeOption"
+      @closeDrawer="triggerDrawer"
+    />
     <group-notice :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <talk-setting :groupId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <talk-file :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-    <user-file :contactId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer"/>
+    <user-file :contactId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <mark-message :groupId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <more-info :contactId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <a-layout-header class="conv-box-header">
@@ -37,7 +41,6 @@
     </a-layout-header>
 
     <a-layout-content class="conv-box-message">
-
       <div class="talk-main-box">
         <div v-if="messageList.length" class="talk-main">
           <div v-for="(item, index) in messageList" :key="index" class="talk-item">
@@ -49,11 +52,9 @@
           <p class="empty-tip">暂时没有消息</p>
         </div>
       </div>
-
     </a-layout-content>
 
     <a-layout-footer class="conv-box-editor">
-
       <div class="editor-option">
         <!-- 文字编辑选项 -->
         <div>
@@ -62,14 +63,22 @@
               <span>表情</span>
             </template>
 
-            <a-popover placement="topLeft" v-model="faceVisible" trigger="click" overlayClassName="emojis-picker">
+            <a-popover
+              placement="topLeft"
+              v-model="faceVisible"
+              trigger="click"
+              overlayClassName="emojis-picker"
+            >
               <template slot="content">
+<<<<<<< HEAD
                 <face @insertFace="insertFace" @getfocus="getfocus"/>
+=======
+                <face @insertFace="insertFace" />
+>>>>>>> master
               </template>
               <a-icon style="marginRight: 20px" type="smile" />
               <!-- @click="getfocus(); insertHtmlAtCaret();" -->
             </a-popover>
-
           </a-tooltip>
         </div>
 
@@ -84,13 +93,18 @@
             :headers="headers"
             @change="handleUpload"
             :beforeUpload="beforeUpload"
-            :openFileDialogOnClick="!Object.keys(fileUpload).length">
+            :openFileDialogOnClick="!Object.keys(fileUpload).length"
+          >
             <!-- :customRequest="customRequest" -->
             <a-tooltip
               placement="top"
               :title="Object.keys(fileUpload).length ? '有未发送文件' : '选择文件'"
-              :overlayStyle="{fontSize: '12px'}">
-              <a-icon :style="{fontSize: '20px', color: Object.keys(fileUpload).length ? '#00000033' : ''}" type="folder" />
+              :overlayStyle="{fontSize: '12px'}"
+            >
+              <a-icon
+                :style="{fontSize: '20px', color: Object.keys(fileUpload).length ? '#00000033' : ''}"
+                type="folder"
+              />
             </a-tooltip>
           </a-upload>
         </div>
@@ -99,7 +113,17 @@
         <div class="draft-input">
           <!-- 输入框 -->
           <div>
-            <inp-div
+            <wysiwyg
+              v-model="messageContent"
+              v-show="!Object.keys(fileUpload).length"
+              class="textarea-input"
+              @keydown.enter.stop.prevent.exact
+              @keyup.enter.native="sendMessage(sendSecretLevel)"
+              @keyup.alt.enter.exact="messageContent += '\n'"
+              @keyup.ctrl.enter.exact="messageContent += '\n'"
+              
+            />
+            <!-- <inp-div
               id="input_div"
               v-model="messageContent"
               :faceMessage="faceMessage"
@@ -108,10 +132,9 @@
               @keyup.ctrl.enter.exact="messageContent += '\n'"
               @keydown.enter.native="clear()"
             >
-            </inp-div>
+            </inp-div>-->
             <!-- <textarea
               v-show="!Object.keys(fileUpload).length"
-
               size="large"
               class="textarea-input"
               v-model="messageContent"
@@ -119,18 +142,30 @@
               @keyup.enter.stop.prevent.exact="sendMessage(sendSecretLevel)"
               @keyup.alt.enter.exact="messageContent += '\n'"
               @keyup.ctrl.enter.exact="messageContent += '\n'"
-            /> -->
+            />-->
           </div>
           <!-- 文件上传进度 -->
           <div v-show="Object.keys(fileUpload).length" class="upload-display">
-            <a-card class="file-card" :bodyStyle="{lineHeight: '40px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}">
+            <a-card
+              class="file-card"
+              :bodyStyle="{lineHeight: '40px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}"
+            >
               <a-icon type="paper-clip" style="fontSize: 20px; marginRight: 10px;" />
               <a-tooltip :title="fileUpload.name">
                 <span>{{ fileUpload.name }}</span>
               </a-tooltip>
-              <a-progress :percent="fileUpload.percent" :status="uploadStatus[fileUpload.status]" size="small" style="display: block;"/>
+              <a-progress
+                :percent="fileUpload.percent"
+                :status="uploadStatus[fileUpload.status]"
+                size="small"
+                style="display: block;"
+              />
               <a-tooltip placement="top" title="删除">
-                <a-icon type="close" @click="removeFile" style="position: absolute; top: 5px; right: 5px; font-size: 11px; cursor: pointer;" />
+                <a-icon
+                  type="close"
+                  @click="removeFile"
+                  style="position: absolute; top: 5px; right: 5px; font-size: 11px; cursor: pointer;"
+                />
               </a-tooltip>
             </a-card>
           </div>
@@ -138,28 +173,23 @@
           <!-- 发送键 -->
           <div class="send-toolbar">
             <div style="marginLeft: auto">
-              <!-- 提示信息 -->
-              <a-tooltip placement="left" title="发送前请正确选择消息密级">
-                <a-icon type="question-circle" style="margin-right: 6px; cursor: pointer;"/>
-              </a-tooltip>
               <!-- 发送键 -->
-              <a-dropdown-button @click="sendMessage(sendSecretLevel)" type="primary" :disabled="sendDisabled">
-                发送<span :class="'s-' + sendSecretLevel">【{{ sendSecretLevel | fileSecret }}】</span>
-                <a-menu v-if="sendMenuList.length" slot="overlay">
-                  <template v-for="item in sendMenuList">
-                    <a-menu-item :key="item" @click="handleSendSecretLevel">
-                      发送<span :class="'s-' + item">【{{ item | fileSecret }}】</span>
-                    </a-menu-item>
-                  </template>
-                </a-menu>
-              </a-dropdown-button>
+              <a-radio-group @change="handleSendSecretLevel" v-model="sendSecretLevel">
+                <template v-for="item in sendSecretList">
+                  <a-radio :value="item" :key="item">
+                    <span :class="'s-' + item">【{{ item | fileSecret }}】</span>
+                  </a-radio>
+                </template>
+              </a-radio-group>
+              <a-button type="primary" @click="sendMessage(sendSecretLevel)" :disabled="sendDisabled">
+                发送
+                <span :class="'s-' + sendSecretLevel">【{{ sendSecretLevel | fileSecret }}】</span>
+              </a-button>
             </div>
           </div>
-
         </div>
       </div>
     </a-layout-footer>
-
   </a-layout>
 
   <a-layout v-else style="height: 100%; textAlign: center;">
@@ -171,23 +201,30 @@
 </template>
 
 <script>
-import { MessagePiece, TalkHistory, MoreInfo, GroupNotice, TalkSetting, MarkMessage, TalkFile, UserFile } from '@/components/Talk'
+import {
+  MessagePiece,
+  TalkHistory,
+  MoreInfo,
+  GroupNotice,
+  TalkSetting,
+  MarkMessage,
+  TalkFile,
+  UserFile
+} from '@/components/Talk'
 import { LandingStatus } from '@/utils/constants'
 import api from '@/api/talk'
 import { SocketMessage, Tweet } from '@/utils/talk'
-// import VEmojiPicker from 'v-emoji-picker'
-// import packData from 'v-emoji-picker/data/emojis.json'
 import { mapGetters } from 'vuex'
 // 生成随机uuid
 import uuidv4 from 'uuid/v4'
 import Face from './Face'
-
+import Watermark from '@/utils/waterMark'
 import inpDiv from './InputDiv'
+
 export default {
   name: 'ConvBox',
   components: {
     MessagePiece,
-    // VEmojiPicker,
     TalkHistory,
     GroupNotice,
     TalkSetting,
@@ -229,7 +266,7 @@ export default {
       // 发送消息的密级，默认为非密
       sendSecretLevel: 30,
       // 发送键的可选密级选项
-      sendMenuList: [],
+      sendSecretList: [],
       // 控制表情选择框不自动关闭
       faceVisible: false,
       // 文件上传时的请求头部
@@ -238,21 +275,35 @@ export default {
       fileUpload: {},
       // 文件上传状态对应表
       uploadStatus: {
-        'uploading': 'active',
-        'done': 'success',
-        'error': 'exception'
+        uploading: 'active',
+        done: 'success',
+        error: 'exception'
       },
       messageList: [],
 
       imgFormat: ['jpg', 'jpeg', 'png', 'gif'],
-      fileFormat: ['doc', 'docx', 'jpg', 'jpeg', 'png', 'gif', 'xls', 'xlsx', 'pdf', 'gif', 'exe', 'msi', 'swf', 'sql', 'apk', 'psd']
+      fileFormat: [
+        'doc',
+        'docx',
+        'jpg',
+        'jpeg',
+        'png',
+        'gif',
+        'xls',
+        'xlsx',
+        'pdf',
+        'gif',
+        'exe',
+        'msi',
+        'swf',
+        'sql',
+        'apk',
+        'psd'
+      ]
     }
   },
   computed: {
     ...mapGetters(['onlineState', 'userSecretLevel', 'userId', 'avatar', 'nickname', 'token']),
-    // emojisNative () {
-    //   return packData
-    // },
     // 发送按钮的可用状态
     sendDisabled () {
       if (this.onlineState === LandingStatus.ONLINE) {
@@ -275,15 +326,15 @@ export default {
         this.handleSendSecretLevel()
 
         // 设置输入框信息
-        this.$store.dispatch('UpdateDraftMap', [oldId + 'file', this.fileUpload])
+        this.$store
+          .dispatch('UpdateDraftMap', [oldId + 'file', this.fileUpload])
           .then(() => {
             this.fileUpload = this.$store.state.talk.draftMap.get(newId + 'file') || {}
           })
           .then(() => {
-            this.$store.dispatch('UpdateDraftMap', [oldId, this.messageContent])
-              .then(() => {
-                this.messageContent = this.$store.state.talk.draftMap.get(newId) || ''
-              })
+            this.$store.dispatch('UpdateDraftMap', [oldId, this.messageContent]).then(() => {
+              this.messageContent = this.$store.state.talk.draftMap.get(newId) || ''
+            })
           })
       },
       immediate: true
@@ -300,11 +351,11 @@ export default {
   mounted () {
     // 页面创建时，消息滚动到最近一条
     this.scrollToBottom()
+    // this.$nextTick(() => {
+    this.printWaterMark(this.nickname)
+    // })
   },
   methods: {
-    clear () {
-      document.getElementById('input_div').innerHTML = ''
-    },
     /**
      * 重写上传action方法
      */
@@ -322,6 +373,21 @@ export default {
     //     }
     //   })
     // },
+    /** 给研讨界面添加水印 */
+    printWaterMark (username) {
+      const config = {
+        text: username,
+        font: '24px serif',
+        opacity: 0.4,
+        density: 0.8,
+        rotate: -1 / 6 * Math.PI,
+        z_index: 999,
+        color: 'rgba(178, 178, 178, 0.3)',
+        yOffset: 1
+      }
+      const watermark = new Watermark(config)
+      watermark.embed('.conv-box-message', 'qqqqq')
+    },
     /**
      * 文件上传状态变化时触发
      * @param {Object} info {file, fileList}
@@ -361,9 +427,7 @@ export default {
       this.$nextTick(() => {
         const msgContr = this.$el.querySelector('.talk-main-box')
         if (msgContr) {
-          msgContr.scrollTop = height
-            ? (msgContr.scrollTop + Number.parseInt(height))
-            : msgContr.scrollHeight
+          msgContr.scrollTop = height ? msgContr.scrollTop + Number.parseInt(height) : msgContr.scrollHeight
         }
       })
     },
@@ -377,7 +441,8 @@ export default {
         { group: true, name: 'markMessage', message: '标记信息', type: 'tags' },
         { group: false, name: 'talkHistory', message: '聊天内容', type: 'file-text' },
         { group: false, name: isGroup ? 'talkFile' : 'userFile', message: '文件', type: 'folder-open' },
-        { group: false, name: isGroup ? 'moreInfo' : 'personMoreInfo', message: '更多', type: 'ellipsis' }]
+        { group: false, name: isGroup ? 'moreInfo' : 'personMoreInfo', message: '更多', type: 'ellipsis' }
+      ]
 
       return isGroup ? optionList : optionList.filter(item => !item.group)
     },
@@ -390,17 +455,12 @@ export default {
     /**
      * 设置发送消息的密级
      */
-    handleSendSecretLevel (item) {
-      item = item ? item.key : 30
-      // 当前用户可发送的全部密级
+    handleSendSecretLevel (even) {
+      const secretLevel = even ? parseInt(event.target.value) : 30
       const allSendMenu = [30, 40, 60].filter(item => item <= this.userSecretLevel)
-      // 当前研讨的密级
-      const talkSecretLevel = this.chatInfo.secretLevel
-      // 设置发送按钮的密级
-      this.sendSecretLevel = item
-      this.sendMenuList = allSendMenu.filter(function (menu) {
-        return menu !== item && menu <= talkSecretLevel
-      })
+      const curTalkSecret = this.chatInfo.secretLevel
+      this.sendSecretLevel = secretLevel
+      this.sendSecretList = allSendMenu.filter(item => item <= curTalkSecret)
     },
     /**
      * 获取缓存消息
@@ -434,9 +494,9 @@ export default {
        * "path": "20190619",
        * "readPath": "",
        * "createTime": "2019-06-19 14:52:22",
-       * "creator": "登陆人id_测试",
+       * "creator": "登录人id_测试",
        * "updateTime": "2019-06-19 14:52:22",
-       * "updator": "登陆人id_测试",
+       * "updator": "登录人id_测试",
        * "groupId": "",
        * "levels": ""
        */
@@ -445,15 +505,8 @@ export default {
       const content = this.messageContent
       // 如果有文件消息，发送文件消息，忽略文字消息
       if (status === 'done') {
-        const { fileId, fileName, readPath, fileExt } = this.fileUpload.response
-        this.generateFileMsg(
-          tweet,
-          fileId,
-          readPath,
-          fileExt,
-          fileName,
-          secretLevel
-        )
+        const { fileId, fileName, readPath, fileExt } = this.fileUpload.response.result
+        this.generateFileMsg(tweet, fileId, readPath, fileExt, fileName, secretLevel)
       } else {
         // 没有文件消息，验证文字消息的合法性
         if (content.replace(/\n/g, '').trim() === '') {
@@ -474,8 +527,11 @@ export default {
           data: tweet
         }).toString()
         this.SocketGlobal.send(baseMessage)
+<<<<<<< HEAD
         console.log('wwwwwwwwwwwwww', document.getElementById('input_div').innerText)
         // debugger
+=======
+>>>>>>> master
         // 将消息放进当前的消息列表
         this.messageList.push(tweet)
         this.$store.dispatch('UpdateRecentContacts', {
@@ -485,20 +541,12 @@ export default {
         })
 
         this.scrollToBottom()
-        tweet.content.type === 1
-          ? this.messageContent = ''
-          : this.fileUpload = {}
-        document.getElementById('input_div').innerHTML = ''
+        tweet.content.type === 1 ? (this.messageContent = '') : (this.fileUpload = {})
       }
     },
     /** 添加发信人信息或者群组信息 */
     addSenderInfo (tweet) {
-      const {
-        chatInfo,
-        userId,
-        nickname,
-        avatar,
-        userSecretLevel } = this
+      const { chatInfo, userId, nickname, avatar, userSecretLevel } = this
       tweet.contactInfo = {}
       if (tweet.isGroup) {
         tweet.contactInfo.id = chatInfo.id
@@ -565,12 +613,13 @@ export default {
       }
     },
     showFaceBox: function () {
-      this.faceVisible = (!this.faceVisible)
+      this.faceVisible = !this.faceVisible
     },
     insertFace (item) {
-      // this.messageContent = this.messageContent + item
-      this.faceMessage.push(item)
+      this.messageContent = this.messageContent + '<img src=' + item + '/>'
+      // this.faceMessage.push(item)
       this.faceVisible = false
+<<<<<<< HEAD
     },
     getfocus () {
       const inpDiv = document.getElementById('input_div')
@@ -608,168 +657,173 @@ export default {
       //   // IE < 9
       //   document.selection.createRange().pasteHTML(html)
       // }
+=======
+>>>>>>> master
     }
-
   },
   directives: {
     // 使元素获得焦点
-    'focus': (el) => {
+    focus: el => {
       el.focus()
     }
   }
 }
 </script>
 <style lang="less" scoped>
+.unselected-tip {
+  padding-top: 20%;
+  color: #a5a7a9;
+  font-size: 16px;
+}
+// 让表情看着更清楚
+#EmojiPicker {
+  color: black;
+}
 
-  .unselected-tip {
-    padding-top: 20%;
-    color: #a5a7a9;
-    font-size: 16px;
-  }
-  // 让表情看着更清楚
-  #EmojiPicker {
-    color: black;
-  }
+.conv-box {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 64px);
+  overflow: hidden;
 
-  .conv-box {
+  // 头部区域
+  &-header {
+    height: 55px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    line-height: 55px;
+    padding: 0 20px;
+    background-color: #f2f3f5;
+    border-bottom: 1px solid #dcdee0;
+
+    .conv-title {
+      color: black;
+      font-size: 16px;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      :nth-child(2) {
+        letter-spacing: -2px;
+      }
+    }
+
+    .conv-option {
+      // 右对齐
+      overflow: hidden;
+      font-size: 18px;
+
+      .anticon:hover {
+        color: #1890ff;
+      }
+    }
+  }
+  // 消息展示区域
+  &-message {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 64px);
-    overflow: hidden;
+    flex: 1;
 
-    // 头部区域
-    &-header {
-      height: 55px;
-      width: 100%;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
+    .talk-main-box {
+      position: relative;
+      flex-grow: 1;
+      overflow: hidden;
+      &:hover {
+        overflow: overlay;
+      }
 
-      line-height: 55px;
-      padding: 0 20px;
-      background-color: #f2f3f5;
-      border-bottom: 1px solid #dcdee0;
-
-      .conv-title {
-        color: black;
-        font-size: 16px;
-        font-weight: 600;
+      .talk-main {
+        // position: absolute;
+        box-sizing: border-box;
+        min-height: 100%;
+        min-width: 360px;
+        width: 100%;
+        padding: 4px 16px 16px;
+        background: rgba(255, 255, 255, 0);
         overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-
-        :nth-child(2) {
-          letter-spacing: -2px;
-        }
-      }
-
-      .conv-option {
-        // 右对齐
-        overflow: hidden;
-        font-size: 18px;
-
-        .anticon:hover {
-          color: #1890ff;
-        }
-      }
-    }
-    // 消息展示区域
-    &-message {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-
-      .talk-main-box {
-        position: relative;
-        flex-grow: 1;
-        overflow: hidden;
-        &:hover {
-          overflow: overlay;
-        }
-
-        .talk-main {
-          // position: absolute;
-          box-sizing: border-box;
-          min-height: 100%;
-          min-width: 360px;
-          width: 100%;
-          padding: 4px 16px 16px;
-          background: rgba(255, 255, 255, 0);
-          overflow: hidden;
-          .talk-item {
-            display: flex;
-            flex-direction: row-reverse;
-            flex-shrink: 0;
-          }
-
-          .empty-tip {
-            text-align: center;
-            margin-top: 130px;
-            color: #ccc;
-            font-size: 13px;
-          }
-        }
-      }
-    }
-    // 文字编辑区域
-    &-editor {
-      height: 185px;
-      flex-shrink: 0;
-      background-color: #fff;
-      display: flex;
-      padding: 0;
-      flex-direction: column;
-      // 编辑器选项
-      .editor-option {
-        display: flex;
-        height: 40px;
-        line-height: 32px;
-        border-top: 1px solid #dcdee0;
-        padding: 4px 20px;
-        font-size: 20px;
-      }
-      // 文字编辑区域
-      .editor-area {
-        padding: 0 20px 5px;
-        display: flex;
-        flex-direction: column;
-
-        .draft-input {
-          flex: 1 0 auto;
-          width: 100%;
+        .talk-item {
           display: flex;
-          height: 140px;
-          flex-direction: column;
-          cursor: text;
-          // 输入框
-          .textarea-input {
-            height: 100px;
-            width: 100%;
-            line-height: 20px;
-            color: black;
-            resize: none;
-            outline: none;
-            border: none;
-          }
-          // 文件上传展示
-          .upload-display {
-            height: 100%;
-            width: 100%;
-            max-height: 100px;
-            .file-card {
-              width: 300px;
-              height: 80px;
-            }
-          }
-          // 发送键
-          .send-toolbar {
-            margin: 4px 0;
-            display: flex;
-            align-items: flex-end;
-          }
+          flex-direction: row-reverse;
+          flex-shrink: 0;
+        }
+
+        .empty-tip {
+          text-align: center;
+          margin-top: 130px;
+          color: #ccc;
+          font-size: 13px;
         }
       }
     }
   }
+  // 文字编辑区域
+  &-editor {
+    height: 185px;
+    flex-shrink: 0;
+    background-color: #fff;
+    display: flex;
+    padding: 0;
+    flex-direction: column;
+    // 编辑器选项
+    .editor-option {
+      display: flex;
+      height: 40px;
+      line-height: 32px;
+      border-top: 1px solid #dcdee0;
+      padding: 4px 20px;
+      font-size: 20px;
+    }
+    // 文字编辑区域
+    .editor-area {
+      padding: 0 20px 5px;
+      display: flex;
+      flex-direction: column;
 
+      .draft-input {
+        flex: 1 0 auto;
+        width: 100%;
+        display: flex;
+        height: 140px;
+        flex-direction: column;
+        cursor: text;
+        // 输入框
+        .textarea-input {
+          height: 100px;
+          width: 100%;
+          line-height: 20px;
+          color: black;
+          resize: none;
+          outline: none;
+          border: none;
+          .editr--toolbar{
+            display: none !important
+          }
+        }
+        // 文件上传展示
+        .upload-display {
+          height: 100%;
+          width: 100%;
+          max-height: 100px;
+          .file-card {
+            width: 300px;
+            height: 80px;
+          }
+        }
+        // 发送键
+        .send-toolbar {
+          margin: 4px 0;
+          display: flex;
+          align-items: flex-end;
+        }
+      }
+    }
+  }
+}
+.editr--toolbar{
+  display: none !important
+}
 </style>
