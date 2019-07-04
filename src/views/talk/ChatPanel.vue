@@ -156,7 +156,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['searchResultList', 'searchGroupResultList', 'searchContactsResultList']),
     currentTalk () {
       return this.$store.state.talk.currentTalk
     },

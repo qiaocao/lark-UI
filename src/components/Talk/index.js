@@ -13,6 +13,7 @@ import ConvBox from './ConvBox'
 import RecentContactsItem from './RecentContactsItem'
 import ContactsTree from './ContactsTree'
 import ContactsInfo from './ContactsInfo'
+import ContactItem from './ContactItem'
 import GroupItem from './GroupItem'
 import GroupInfo from './GroupInfo'
 
@@ -47,6 +48,7 @@ export {
   RecentContactsItem,
   // 群组(项)组件
   GroupItem,
+  ContactItem,
   // 群组信息组件
   GroupInfo,
   // 创建新的研讨
