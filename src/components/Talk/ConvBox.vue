@@ -176,7 +176,11 @@
                   </a-radio>
                 </template>
               </a-radio-group>
-              <a-button type="primary" @click="sendMessage(sendSecretLevel)" :disabled="sendDisabled">
+              <a-button
+                type="primary"
+                @click="sendMessage(sendSecretLevel)"
+                :disabled="sendDisabled"
+              >
                 发送
                 <span :class="'s-' + sendSecretLevel">【{{ sendSecretLevel | fileSecret }}】</span>
               </a-button>
@@ -375,7 +379,7 @@ export default {
         font: '24px serif',
         opacity: 0.4,
         density: 0.8,
-        rotate: -1 / 6 * Math.PI,
+        rotate: (-1 / 6) * Math.PI,
         z_index: 999,
         color: 'rgba(178, 178, 178, 0.3)',
         yOffset: 1
@@ -726,6 +730,8 @@ export default {
       border-top: 1px solid #dcdee0;
       padding: 4px 20px;
       font-size: 20px;
+      z-index: 3;
+      background-color: #fff;
     }
     // 文字编辑区域
     .editor-area {
@@ -742,16 +748,15 @@ export default {
         cursor: text;
         // 输入框
         .textarea-input {
-          height: 100px;
+          height: 120px;
           width: 100%;
           line-height: 20px;
           color: black;
           resize: none;
           outline: none;
           border: none;
-          .editr--toolbar{
-            display: none !important
-          }
+          z-index: 2;
+          margin-top: -40px;
         }
         // 文件上传展示
         .upload-display {
@@ -773,7 +778,7 @@ export default {
     }
   }
 }
-.editr--toolbar{
-  display: none !important
+.editr--toolbar {
+  display: none !important;
 }
 </style>

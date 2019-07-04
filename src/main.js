@@ -21,7 +21,7 @@ import {
 Vue.config.productionTip = false
 Vue.use(VueAxios, router)
 Vue.use(wysiwyg, {
-  hideModules: { 
+  hideModules: {
     'bold': true,
     'italic': true,
     'underline': true,
@@ -36,9 +36,7 @@ Vue.use(wysiwyg, {
     'image': true,
     'table': true,
     'removeFormat': true,
-    'separator': true,
-    // display: none
-    'forcePlainTextOnPaste': true
+    'separator': true
   }
 })
 Vue.prototype.publicPath = process.env.BASE_URL
