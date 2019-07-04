@@ -2,6 +2,7 @@
   <div class="main">
     <a-form
       id="formLogin"
+      name="formLogin"
       class="user-layout-login"
       ref="formLogin"
       :form="form"
@@ -11,13 +12,13 @@
         <a-input
           size="large"
           type="text"
-          placeholder="admin"
+          placeholder="用户名"
           v-decorator="[
             'username',
-            {rules: [{ required: true, message: '请输入帐户名' }, { validator: handleUsernameOrEmail }], validateTrigger: 'change'}
+            {rules: [{ required: true, message: '请输入用户名' }, { validator: handleUsernameOrEmail }], validateTrigger: 'change'}
           ]"
         >
-          <a-icon slot="prefix" type="user" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+          <a-icon slot="prefix" type="user" :style="{ color: 'rgba(0,0,0,.25)' }" />
         </a-input>
       </a-form-item>
 
@@ -26,34 +27,26 @@
           size="large"
           type="password"
           autocomplete="false"
-          placeholder="密码 / admin"
+          placeholder="密码"
           v-decorator="[
             'password',
             {rules: [{ required: true, message: '请输入密码' }], validateTrigger: 'blur'}
           ]"
         >
-          <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+          <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }" />
         </a-input>
       </a-form-item>
-
-      <a-form-item>
-        <a-checkbox v-decorator="['rememberMe']">自动登陆</a-checkbox>
-        <!-- <router-link
-          :to="{ name: 'recover', params: { user: 'aaa'} }"
-          class="forge-password"
-          style="float: right;"
-        >忘记密码</router-link> -->
-      </a-form-item>
-
-      <a-form-item style="margin-top:24px">
+      <a-form-item style="margin-top:32px">
         <a-button
           size="large"
           type="primary"
           htmlType="submit"
+          name="submit"
+          id="submit"
           class="login-button"
           :loading="state.loginBtn"
           :disabled="state.loginBtn"
-        >确定</a-button>
+        >登陆</a-button>
       </a-form-item>
     </a-form>
   </div>
@@ -64,31 +57,17 @@ import { mapActions } from 'vuex'
 import { timeFix } from '@/utils/util'
 
 export default {
-  components: {
-  },
   data () {
     return {
-      // host: '127.0.0.1',
       loginBtn: false,
-      // login type: 0 email, 1 username, 2 telephone
       loginType: 0,
       form: this.$form.createForm(this),
       state: {
         time: 60,
         loginBtn: false,
-        // login type: 0 email, 1 username, 2 telephone
         loginType: 0
       }
     }
-  },
-  created: function () {
-    // const self = this
-    // const host = localStorage.getItem('host')
-    // if (host !== 'undefined') {
-    //   self.host = host
-    // } else {
-    //   localStorage.setItem('host', self.host)
-    // }
   },
   methods: {
     ...mapActions(['Login', 'Logout']),
@@ -120,32 +99,30 @@ export default {
           loginParams[!state.loginType ? 'email' : 'username'] = values.username
           loginParams.password = values.password
           Login(loginParams)
-            .then((res) => this.loginSuccess(res))
+            .then(res => this.loginSuccess(res))
             .catch(err => this.requestFailed(err))
             .finally(() => {
               state.loginBtn = false
             })
         } else {
-          setTimeout(() => {
-            state.loginBtn = false
-          }, 600)
+          state.loginBtn = false
         }
       })
     },
     loginSuccess (res) {
-      this.$router.push('/')
-      // 延迟 1 秒显示欢迎信息
-      setTimeout(() => {
+      this.$router.push({ path: '/dashboard/workplace' })
+      this.$nextTick(() => {
         this.$notification.success({
           message: '欢迎',
           description: `${timeFix()}，欢迎回来`
         })
-      }, 1000)
+      })
     },
     requestFailed (err) {
+      console.log('TCL: requestFailed -> err', ((err.response || {}).data || {}).message)
       this.$notification['error']({
         message: '错误',
-        description: ((err.response || {}).data || {}).message || '请求出现错误，请稍后再试',
+        description: '登陆出现错误，请稍后再试',
         duration: 4
       })
     }

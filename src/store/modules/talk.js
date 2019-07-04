@@ -103,7 +103,6 @@ function syncUnread2Server (newUnreasNum, online, reviser, sender) {
       sender: sender
     }
   }).toString()
-  console.log(socketMessage)
   Vue.prototype.SocketGlobal.send(socketMessage)
 }
 
@@ -185,6 +184,7 @@ const talk = {
       state.groupList = groupList
     },
     SET_CONTACTS_TREE (state, contactsTree) {
+      /*
       const { id, parentId, title } = contactsTree[0]
       const newTree = [{
         key: id,
@@ -195,6 +195,9 @@ const talk = {
         },
         children: formatTree([], contactsTree[0].children)
       }]
+      */
+      // 直接显示到三级单位(二部、二十三所)
+      const newTree = formatTree([], contactsTree[0].children[0].children)
       state.contactsTree = newTree
     },
     /**
@@ -323,6 +326,7 @@ const talk = {
       // TODO: 告知服务器的条件还要再加判断
       if (newItem.unreadNum === 0) {
         syncUnread2Server(
+          newItem.unreadNum,
           rootGetters.onlineState === LandingStatus.ONLINE,
           rootGetters.userId,
           freshItem.id)

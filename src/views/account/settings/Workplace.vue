@@ -1,5 +1,5 @@
 <template>
-  <div style="overflow:scroll;height:350px">
+  <div class="card-setting">
     <a-list
       :grid="{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 3, xl: 3, xxl: 4 }"
       :dataSource="cardList"
@@ -151,5 +151,8 @@ export default {
   padding: 0;
   margin-right: 8px;
   margin-bottom: 8px
+  }
+  .card-setting{
+    overflow: auto;
   }
 </style>
