@@ -57,3 +57,5 @@
 20190704 push by fanjiao:filepath--【修改bug：24.卡片设置界面无滚动条 】  
                             src\views\account\settings\Workplace.vue
                             src\views\admin\OrgList.vue
+20190704 push by fanjiao:filepath--【修改bug：常用链接没有用 】                              
+                            src\views\dashboard\Workplace.vue
