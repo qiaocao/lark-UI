@@ -70,11 +70,7 @@
               overlayClassName="emojis-picker"
             >
               <template slot="content">
-<<<<<<< HEAD
-                <face @insertFace="insertFace" @getfocus="getfocus"/>
-=======
                 <face @insertFace="insertFace" />
->>>>>>> master
               </template>
               <a-icon style="marginRight: 20px" type="smile" />
               <!-- @click="getfocus(); insertHtmlAtCaret();" -->
@@ -121,7 +117,6 @@
               @keyup.enter.native="sendMessage(sendSecretLevel)"
               @keyup.alt.enter.exact="messageContent += '\n'"
               @keyup.ctrl.enter.exact="messageContent += '\n'"
-              
             />
             <!-- <inp-div
               id="input_div"
@@ -527,11 +522,6 @@ export default {
           data: tweet
         }).toString()
         this.SocketGlobal.send(baseMessage)
-<<<<<<< HEAD
-        console.log('wwwwwwwwwwwwww', document.getElementById('input_div').innerText)
-        // debugger
-=======
->>>>>>> master
         // 将消息放进当前的消息列表
         this.messageList.push(tweet)
         this.$store.dispatch('UpdateRecentContacts', {
@@ -619,46 +609,6 @@ export default {
       this.messageContent = this.messageContent + '<img src=' + item + '/>'
       // this.faceMessage.push(item)
       this.faceVisible = false
-<<<<<<< HEAD
-    },
-    getfocus () {
-      const inpDiv = document.getElementById('input_div')
-      inpDiv.focus()
-      // inpDiv.innerHTML += ' <i>s</i>  '
-      return false
-    },
-    insertHtmlAtCaret (html) {
-      // var sel, range
-      // if (window.getSelection) {
-      //   // IE9 and non-IE
-      //   sel = window.getSelection()
-      //   if (sel.getRangeAt && sel.rangeCount) {
-      //     range = sel.getRangeAt(0)
-      //     range.deleteContents()
-      //     // Range.createContextualFragment() would be useful here but is
-      //     // non-standard and not supported in all browsers (IE9, for one)
-      //     var el = document.createElement('div')
-      //     el.innerHTML = html
-      //     var frag = document.createDocumentFragment(); var node; var lastNode
-      //     while ((node = el.firstChild)) {
-      //       lastNode = frag.appendChild(node)
-      //     }
-      //     range.insertNode(frag)
-      //     // Preserve the selection
-      //     if (lastNode) {
-      //       range = range.cloneRange()
-      //       range.setStartAfter(lastNode)
-      //       range.collapse(true)
-      //       sel.removeAllRanges()
-      //       sel.addRange(range)
-      //     }
-      //   }
-      // } else if (document.selection && document.selection.type !== 'Control') {
-      //   // IE < 9
-      //   document.selection.createRange().pasteHTML(html)
-      // }
-=======
->>>>>>> master
     }
   },
   directives: {
