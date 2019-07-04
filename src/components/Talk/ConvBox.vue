@@ -114,9 +114,10 @@
               v-show="!Object.keys(fileUpload).length"
               class="textarea-input"
               @keydown.enter.stop.prevent.exact
-              @keyup.enter.stop.prevent.exact="sendMessage(sendSecretLevel)"
+              @keyup.enter.native="sendMessage(sendSecretLevel)"
               @keyup.alt.enter.exact="messageContent += '\n'"
               @keyup.ctrl.enter.exact="messageContent += '\n'"
+              
             />
             <!-- <inp-div
               id="input_div"
@@ -350,9 +351,6 @@ export default {
     // })
   },
   methods: {
-    clear () {
-      document.getElementById('input_div').innerHTML = ''
-    },
     /**
      * 重写上传action方法
      */
@@ -534,7 +532,6 @@ export default {
 
         this.scrollToBottom()
         tweet.content.type === 1 ? (this.messageContent = '') : (this.fileUpload = {})
-        document.getElementById('input_div').innerHTML = ''
       }
     },
     /** 添加发信人信息或者群组信息 */
@@ -612,40 +609,6 @@ export default {
       this.messageContent = this.messageContent + '<img src=' + item + '/>'
       // this.faceMessage.push(item)
       this.faceVisible = false
-    },
-    // getfocus () {
-    //   document.getElementById('content-div').focus()
-    // },
-    insertHtmlAtCaret (html) {
-      // var sel, range
-      // if (window.getSelection) {
-      //   // IE9 and non-IE
-      //   sel = window.getSelection()
-      //   if (sel.getRangeAt && sel.rangeCount) {
-      //     range = sel.getRangeAt(0)
-      //     range.deleteContents()
-      //     // Range.createContextualFragment() would be useful here but is
-      //     // non-standard and not supported in all browsers (IE9, for one)
-      //     var el = document.createElement('div')
-      //     el.innerHTML = html
-      //     var frag = document.createDocumentFragment(); var node; var lastNode
-      //     while ((node = el.firstChild)) {
-      //       lastNode = frag.appendChild(node)
-      //     }
-      //     range.insertNode(frag)
-      //     // Preserve the selection
-      //     if (lastNode) {
-      //       range = range.cloneRange()
-      //       range.setStartAfter(lastNode)
-      //       range.collapse(true)
-      //       sel.removeAllRanges()
-      //       sel.addRange(range)
-      //     }
-      //   }
-      // } else if (document.selection && document.selection.type !== 'Control') {
-      //   // IE < 9
-      //   document.selection.createRange().pasteHTML(html)
-      // }
     }
   },
   directives: {
@@ -786,6 +749,9 @@ export default {
           resize: none;
           outline: none;
           border: none;
+          .editr--toolbar{
+            display: none !important
+          }
         }
         // 文件上传展示
         .upload-display {
@@ -806,5 +772,8 @@ export default {
       }
     }
   }
+}
+.editr--toolbar{
+  display: none !important
 }
 </style>
