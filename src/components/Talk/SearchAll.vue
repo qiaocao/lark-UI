@@ -158,9 +158,14 @@ export default {
     },
     /** 跳转到研讨界面 */
     toTalk (item) {
-      this.activated = item.groupId || item.key
-      this.$emit('showDetail', item)
-      // 关闭抽屉
+      let isGroup = false
+      if (item.groupId) {
+        isGroup = true
+        this.activated = item.groupId
+      } else {
+        this.activated = item.key
+      }
+      this.$emit('showDetail', item, isGroup)
     }
   }
 }
