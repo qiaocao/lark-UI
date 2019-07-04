@@ -1,42 +1,44 @@
 <template>
-  <a-list
-    :grid="{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 3, xl: 3, xxl: 4 }"
-    :dataSource="cardList"
-  >
-    <a-list-item slot="renderItem" slot-scope="item, index" :key="item.id">
-      <a-card
-        hoverable
-        style="width: 240px"
-      >
-        <img
-          alt="example"
-          :src="cardImg[index]"
-          slot="cover"
-        />
-        <template class="ant-card-actions" slot="actions">
-          <a-tooltip placement="left" v-if="isPlus[index]" >
-            <template slot="title">
-              <span>添加卡片</span>
-            </template>
-            <a-icon @click="click($event, index), pushId(item.id)" type="plus"/>
-          </a-tooltip>
-          <a-icon type="ellipsis" v-if="isPlus[index]"/>
-          <a-icon type="check" v-if="isDelete[index]"/>
-          <a-tooltip placement="left" v-if="isDelete[index]" >
-            <template slot="title">
-              <span>删除卡片</span>
-            </template>
-            <a-icon @click="clickDelete($event, index), deleteId(item.id)" type="delete"/>
-          </a-tooltip>
-        </template>
-        <a-card-meta
-          :title="item.title"
-          :description="item.description">
-        </a-card-meta>
-      </a-card>
-    </a-list-item>
-    <div v-text="t" style="display:none"></div>
-  </a-list>
+  <div style="overflow:scroll;height:350px">
+    <a-list
+      :grid="{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 3, xl: 3, xxl: 4 }"
+      :dataSource="cardList"
+    >
+      <a-list-item slot="renderItem" slot-scope="item, index" :key="item.id">
+        <a-card
+          hoverable
+          style="width: 240px"
+        >
+          <img
+            alt="example"
+            :src="cardImg[index]"
+            slot="cover"
+          />
+          <template class="ant-card-actions" slot="actions">
+            <a-tooltip placement="left" v-if="isPlus[index]" >
+              <template slot="title">
+                <span>添加卡片</span>
+              </template>
+              <a-icon @click="click($event, index), pushId(item.id)" type="plus"/>
+            </a-tooltip>
+            <a-icon type="ellipsis" v-if="isPlus[index]"/>
+            <a-icon type="check" v-if="isDelete[index]"/>
+            <a-tooltip placement="left" v-if="isDelete[index]" >
+              <template slot="title">
+                <span>删除卡片</span>
+              </template>
+              <a-icon @click="clickDelete($event, index), deleteId(item.id)" type="delete"/>
+            </a-tooltip>
+          </template>
+          <a-card-meta
+            :title="item.title"
+            :description="item.description">
+          </a-card-meta>
+        </a-card>
+      </a-list-item>
+      <div v-text="t" style="display:none"></div>
+    </a-list>
+  </div>
 </template>
 <script>
 import { getCard, addCard, delCard } from '@/api/admin'

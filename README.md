@@ -54,3 +54,6 @@
                             src\views\admin\UserList.vue
 20190704 push by fanjiao:filepath--【修改bug：26.普通用户进入消息列表白屏 】                            
                             src\config\router.config.js
+20190704 push by fanjiao:filepath--【修改bug：24.卡片设置界面无滚动条 】  
+                            src\views\account\settings\Workplace.vue
+                            src\views\admin\OrgList.vue
