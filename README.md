@@ -44,3 +44,5 @@
                             src\api\workplace.js
                             src\components\tools\UserMenu.vue
                             src\config\router.config.js
+20190704 push by fanjiao:filepath--【修改bug：23.联系方式/描述保存不生效】
+                            src\views\account\settings\BaseSetting.vue

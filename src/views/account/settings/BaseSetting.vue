@@ -11,12 +11,12 @@
           <a-form-item
             label="联系方式"
           >
-            <a-input v-decorator="['oTel']"/>
+            <a-input v-decorator="['otel']"/>
           </a-form-item>
           <a-form-item
             label="描述"
           >
-            <a-textarea rows="4" v-decorator="['discribe']"/>
+            <a-textarea rows="4" v-decorator="['description']"/>
           </a-form-item>
           <a-form-item>
             <a-button type="primary" @click="submitInfo">提交</a-button>
@@ -84,7 +84,7 @@ export default {
           this.user = Object.assign({}, res.result)
           this.$nextTick(() => {
             // 表单中绑定信息项
-            this.form.setFieldsValue(pick(res.result, 'name', 'telephone'))
+            this.form.setFieldsValue(pick(res.result, 'name', 'otel','description'))
             if (this.user.avatar) {
               this.imageUrl = FILE_SERVER_IP + this.user.avatar
             } else {
