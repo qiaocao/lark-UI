@@ -247,7 +247,7 @@ export function talkHistoryAll (userId, isGroup, id, page) {
       isGroup: isGroup,
       contactId: id,
       page: page,
-      size: 10
+      size: 30
     }
   })
 }
@@ -263,7 +263,7 @@ export function MarkMessageGrabble (userId, page, groupId) {
       userId: userId,
       page: page,
       groupId: groupId,
-      size: 10,
+      size: 30,
       tagType: 0
     }
   })

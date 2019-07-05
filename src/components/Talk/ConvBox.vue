@@ -118,16 +118,6 @@
               @keyup.ctrl.enter.exact="messageContent += '\n'"
             />
             <!-- @keyup.enter.native="sendMessage(sendSecretLevel)" -->
-            <!-- <inp-div
-              id="input_div"
-              v-model="messageContent"
-              :faceMessage="faceMessage"
-              @keyup.enter.native="sendMessage(sendSecretLevel)"
-              @keyup.alt.enter.exact="messageContent += '\n'"
-              @keyup.ctrl.enter.exact="messageContent += '\n'"
-              @keydown.enter.native="clear()"
-            >
-            </inp-div>-->
             <!-- <textarea
               v-show="!Object.keys(fileUpload).length"
               size="large"
@@ -137,7 +127,7 @@
               @keyup.enter.stop.prevent.exact="sendMessage(sendSecretLevel)"
               @keyup.alt.enter.exact="messageContent += '\n'"
               @keyup.ctrl.enter.exact="messageContent += '\n'"
-            />-->
+            /> -->
           </div>
           <!-- 文件上传进度 -->
           <div v-show="Object.keys(fileUpload).length" class="upload-display">
@@ -218,7 +208,6 @@ import { mapGetters } from 'vuex'
 import uuidv4 from 'uuid/v4'
 import Face from './Face'
 import Watermark from '@/utils/waterMark'
-import inpDiv from './InputDiv'
 
 export default {
   name: 'ConvBox',
@@ -231,8 +220,7 @@ export default {
     TalkFile,
     MoreInfo,
     UserFile,
-    Face,
-    inpDiv
+    Face
   },
   props: {
     /** 聊天对话框的基本信息--结构同最近联系人 */
@@ -260,8 +248,6 @@ export default {
       messageType: 1,
       // 输入框内容
       messageContent: '',
-      // 表情路径
-      faceMessage: [],
       // 发送消息的密级，默认为非密
       sendSecretLevel: 30,
       // 发送键的可选密级选项
@@ -412,12 +398,6 @@ export default {
       // ···
     },
     /**
-     * 添加表情
-     */
-    onSelectEmoji (dataEmoji) {
-      this.messageContent += this.faceMessage
-    },
-    /**
      * 聊天消息滚到到最新一条
      * 1. 发送消息 2. 页面创建 3.页面更新
      * @param {Number} height 滚动的高度
@@ -499,7 +479,6 @@ export default {
        * "groupId": "",
        * "levels": ""
        */
-      // const contents = this.messageContent + this.faceMessage
       const { status } = this.fileUpload
       const content = this.messageContent
       // 如果有文件消息，发送文件消息，忽略文字消息
@@ -609,10 +588,9 @@ export default {
     showFaceBox: function () {
       this.faceVisible = !this.faceVisible
     },
+    /** 插入表情 */
     insertFace (item) {
-      this.messageContent = this.messageContent + '<img src=' + item + '/>'
-      // this.faceMessage.push(item)
-      this.faceVisible = false
+      this.messageContent = this.messageContent + `<img src="${item}" style="height: 1.5em">`
     }
   },
   directives: {
@@ -628,10 +606,6 @@ export default {
   padding-top: 20%;
   color: #a5a7a9;
   font-size: 16px;
-}
-// 让表情看着更清楚
-#EmojiPicker {
-  color: black;
 }
 
 .conv-box {
@@ -777,8 +751,5 @@ export default {
       }
     }
   }
-}
-.editr--toolbar {
-  display: none !important;
 }
 </style>
