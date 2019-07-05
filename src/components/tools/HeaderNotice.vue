@@ -9,11 +9,9 @@
     :overlayStyle="{ width: '300px', top: '50px' }">
     <template slot="content">
       <a-spin :spinning="loadding">
-        <a-list>
+        <!-- <a-list>
           <a-list-item v-for="msg in msglist.slice(0,6)" :key="msg.id">
             <router-link :to="{ name: 'MsgList' }">
-              <!-- TODO 接口暂未提供发布时间 -->
-              <!-- <a-list-item-meta :description="msg.date|timeFormat" :title="msg.title"> -->
               <a-list-item-meta :title="msg.title">
                 <a-avatar style="background-color: white" slot="avatar" :src="getImgPath(msg.type)"/>
               </a-list-item-meta>
@@ -25,7 +23,7 @@
               </a-list-item-meta>
             </router-link>
           </a-list-item>
-        </a-list>
+        </a-list> -->
       </a-spin>
     </template>
     <span @click="fetchNotice" class="header-notice">
