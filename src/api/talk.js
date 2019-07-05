@@ -7,8 +7,7 @@ const api = {
   contactsInfo: 'admin/user/',
   // contactsTree: 'chat/Initialization/getOrgTree',
   contactsTree: 'admin/org/orgUsers',
-  // recentContacts: 'chat/zzGroup/queryContactListById',
-  recentContacts: 'talk/recent/list',
+  recentContacts: 'chat/zzGroup/queryContactListById',
   talkMap: 'chat/zzGroup/queryHistoryMessageById',
   talkHistory: 'chat/history',
   // getHistory: 'chat/getHiMsg',
@@ -23,8 +22,9 @@ const api = {
   getGroupMembers: 'chat/zzGroup/getGroupUserList',
   // zzGroup/getGroupInfo    groupID
   // getContent: 'https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/notice',
+  // 下面的地址前面必须加/
   // 研讨文件上传地址
-  fileUpload: '/api/chat/zzFileManage/singleFileUpload',
+  fileUpload: '/zuul/api/chat/zzFileManage/singleFileUpload',
   // 图片预览地址
   imgPrevie: '/api/chat/zzFileManage/GetFile',
   // 文件下载地址
@@ -35,7 +35,7 @@ export default api
 /**
  * 获取当前研讨中的成员
  * @param {String} contactId
- */
+*/
 export function getTalkMembers (contactId) {
   return axios({
     url: api.talkMembers,
