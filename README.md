@@ -59,3 +59,5 @@
                             src\views\admin\OrgList.vue
 20190704 push by fanjiao:filepath--【修改bug：常用链接没有用 】                              
                             src\views\dashboard\Workplace.vue
+20190704 push by fanjiao:filepath--【上传头像成功后修改用户信息添加用户姓名，接口统一需要】                              
+                            src\views\account\settings\BaseSetting.vue
