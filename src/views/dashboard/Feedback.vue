@@ -3,22 +3,22 @@
     <a-card :bordered="false" v-show="feedbackCard">
       <div class="table-page-search-wrapper">
         <a-form layout="inline">
-          <a-row :gutter="8" type="flex" justify="end">
-            <a-col :md="4" :sm="24">
+          <a-row :gutter="6" type="flex" justify="end">
+            <a-col :md="6" :sm="24">
               <a-form-item label="标题">
                 <a-input v-model="queryParam.title" />
               </a-form-item>
             </a-col>
-            <a-col :md="8" :sm="24">
+            <a-col :md="12" :sm="24">
               <span>
                 <a-row type="flex" justify="start">
-                  <a-col :md="3" :offset="2">
+                  <a-col :md="4" :offset="6">
                     <a-button type="primary" @click="search">查询</a-button>
                   </a-col>
-                  <a-col :md="3">
+                  <a-col :md="4">
                     <a-button @click="() => queryParam = {}">重置</a-button>
                   </a-col>
-                  <a-col :md="3">
+                  <a-col :md="4">
                     <a-button type="primary" @click="openFbModal('add')">意见反馈</a-button>
                   </a-col>
                 </a-row>
