@@ -5,7 +5,7 @@
     @input="changeText"
     @keydown.enter.stop.prevent
   >
-    <img :escape="false" v-for="(item, index) in faceMessage" :key="index" :src="item" style="width: 2rem; height: 2rem;">
+    <img id="img_face" :escape="false" v-for="(item, index) in faceMessage" :key="index" :src="item">
   </div>
 </template>
 <script>
@@ -24,6 +24,7 @@ export default {
   data () {
     return {
       innerText: this.value
+      // imgFaceS: []
     }
   },
   created () {
@@ -32,11 +33,18 @@ export default {
     changeText () {
       this.innerText = this.$el.innerHTML
       this.$emit('input', this.innerText)
+      // let imgFace = document.getElementById('img_face')
+      // this.imgFaceS.push(imgFace)
+      console.log('input', document.getElementById('input_div').innerText)
     }
   }
 }
 </script>
 <style>
+#img_face{
+  width: 2rem;
+  height: 2rem;
+}
   .textarea-input {
     height: 100px;
     width: 100%;
