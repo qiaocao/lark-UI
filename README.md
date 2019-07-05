@@ -59,3 +59,10 @@
                             src\views\admin\OrgList.vue
 20190704 push by fanjiao:filepath--【修改bug：常用链接没有用 】                              
                             src\views\dashboard\Workplace.vue
+20190705 push by fanjiao:filepath--【上传头像成功后修改用户信息添加用户姓名，接口统一需要】                              
+                            src\views\account\settings\BaseSetting.vue
+20190705 push by fanjiao:filepath--【普通用户查看消息与管理员管理消息功能拆开】
+                            src\components\tools\HeaderNotice.vue
+                            src\views\dashboard\NotificationList.vue
+                            src\api\workplace.js
+                            src\config\router.config.js

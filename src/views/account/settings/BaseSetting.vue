@@ -217,6 +217,7 @@ export default {
     saveInfo (values) {
       values.id = this.user.id
       values.pid = this.user.pid
+      values.name = this.user.name
       updateuser(values)
         .then(res => {
           if (res.status === 200) {
