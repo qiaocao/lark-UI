@@ -327,7 +327,7 @@ export default {
 
             .img-message {
               img {
-                max-width: 400px;
+                max-width: 250px;
                 min-width: 100px;
               }
               &-option {

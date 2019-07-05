@@ -223,7 +223,6 @@ export default {
     activeOption (newValue) {
       // const ary = []
       if (newValue === 'moreInfo') {
-        console.log('在这里加载数据')
         getTalksetting(this.groupId).then(res => {
           const datas = res.result
           this.setting = datas
