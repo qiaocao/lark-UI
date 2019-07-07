@@ -31,6 +31,12 @@ export const asyncRouterMap = [
             name: 'Feedback',
             component: () => import('@/views/dashboard/Feedback'),
             meta: { title: '问题反馈', hidden: true, keepAlive: false, permission: [ 'dashboard' ] }
+          },
+          {
+            path: 'msg-list',
+            name: 'myNotice',
+            component: () => import('@/views/dashboard/NotificationList'),
+            meta: { title: '消息列表', icon: 'bell', keepAlive: false, hidden: true, permission: ['dashboard'] }
           }
         ]
       },
