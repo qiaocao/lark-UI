@@ -575,7 +575,7 @@ export default {
     },
     /** 生成图片和文件类消息 */
     generateFileMsg (tweet, id, url, extension, title, secretLevel) {
-      const index = this.imgFormat.indexOf(extension)
+      const index = this.imgFormat.indexOf(extension.toLowerCase())
       tweet.content = {
         id: id,
         url: '/api/chat/zzFileManage/GetFile?fileId=eVN8UWex&t=1561193135178',
