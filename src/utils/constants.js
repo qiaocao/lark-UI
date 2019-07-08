@@ -10,7 +10,9 @@ const SECRETLEVEL_ENUM = new Map([
   [40, { people: '一般', file: '秘密' }],
   [50, { people: '一般', file: '秘密' }],
   [60, { people: '重要', file: '机密' }],
-  [70, { people: '重要', file: '机密' }]
+  [70, { people: '重要', file: '机密' }],
+  [80, { people: '重要', file: '机密' }],
+  [90, { people: '重要', file: '机密' }]
 ])
 
 // 错误类型
