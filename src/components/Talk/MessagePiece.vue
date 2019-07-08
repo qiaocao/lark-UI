@@ -65,7 +65,6 @@
                     </span>
                   </div>
                   <a :href="downloadUrl" class="download" :download="fileDownloadTitle">下载</a>
-                  <!-- <span class="download">下载</span> -->
                 </div>
               </a-spin>
 
@@ -93,7 +92,6 @@
                       【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】
                     </span>
                   </div>
-                  <!-- <span class="download">下载</span> -->
                   <a :href="downloadUrl" class="download" :download="fileDownloadTitle">下载</a>
                 </div>
               </div>
@@ -132,41 +130,17 @@ export default {
     return {
       // 图片加载状态 0:无状态 1:加载中 2:加载成功 3:加载失败
       imgLoading: 0,
-      previewVisible: false
-      // imgB: [],
-      // leftB: '',
-      // rightB: ''
-    }
-  },
-  computed: {
-    ...mapGetters(['avatar', 'userId']),
-    imgPreviewUrl: {
-      get: function () {
-        return api.imgPrevie + '?fileId=' + this.messageInfo.content.id
-      },
-      set: function () {
-      }
-    },
-    downloadUrl () {
-      return api.fileDownload + '?fileId=' + this.messageInfo.content.id
-    },
-    fileDownloadTitle () {
-      return '[' +
+      previewVisible: false,
+      imgPreviewUrl: api.imgPrevie + '?fileId=' + this.messageInfo.content.id + '&t=' + new Date().getTime(),
+      downloadUrl: api.fileDownload + '?fileId=' + this.messageInfo.content.id,
+      fileDownloadTitle: '[' +
         this.$options.filters.fileSecret(this.messageInfo.content.secretLevel) +
         ']' +
         this.messageInfo.content.title
     }
   },
-  watch: {
-    messageInfo: {
-      handler: function () {
-        // 处理图片的加载状态
-        if (this.messageInfo.content.type === 2) this.imgLoading = 1
-        else this.imgLoading = 0
-      },
-      immediate: true,
-      deep: true
-    }
+  computed: {
+    ...mapGetters(['avatar', 'userId'])
   },
   filters: { timeFormat: toWeiXinString },
   methods: {
@@ -189,8 +163,9 @@ export default {
         this.imgLoading = 3
       }
       if (event.type === 'click') {
-        console.log('123')
-        this.imgPreviewUrl += '&t=' + Math.random()
+        if (this.messageInfo.content.type === 2) this.imgLoading = 1
+        else this.imgLoading = 0
+        this.imgPreviewUrl = api.imgPrevie + '?fileId=' + this.messageInfo.content.id + '&t=' + new Date().getTime()
       }
     },
     /**
