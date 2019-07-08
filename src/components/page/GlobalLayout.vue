@@ -184,7 +184,9 @@ export default {
   color: #ffb500;
 }
 .s-60,
-.s-70 {
+.s-70,
+.s-80,
+.s-90 {
   font-size: 14px;
   color: #ff0000;
 }
