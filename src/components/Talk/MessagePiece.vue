@@ -72,7 +72,7 @@
                 <img
                   :alt="messageInfo.content.title"
                   style="width: 100%"
-                  :src="messageInfo.content.url" />
+                  :src="downloadUrl" />
               </a-modal>
             </div>
 
