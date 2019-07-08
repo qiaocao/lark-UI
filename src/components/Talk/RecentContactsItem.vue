@@ -4,8 +4,8 @@
 
     <div class="avatar">
       <a-badge
-        :dot="contactsInfo.isMute"
-        :count="contactsInfo.unreadNum"
+        :dot="JSON.parse(contactsInfo.isMute)"
+        :count="JSON.parse(contactsInfo.unreadNum)"
         :overflowCount="99"
         :offset="badgeoffset"
         :numberStyle="badgeNumStyle">
@@ -20,21 +20,22 @@
     <div class="extra">
       <p class="attr">{{ contactsInfo.time }}</p>
       <p class="attr">
-        <a-icon v-show="contactsInfo.isMute && contactsInfo.isGroup" type="eye-invisible" theme="filled" />
+        <a-icon v-if="contactsInfo.isMute && contactsInfo.isGroup" type="eye-invisible" theme="filled" />
       </p>
     </div>
 
     <div class="info">
       <p class="nickname">{{ contactsInfo.name }}</p>
-      <p class="msg">
-        <span v-show="contactsInfo.atMe && contactsInfo.isGroup" class="at-me">[有人@我]</span>
+      <div class="msg">
+        <span v-if="contactsInfo.atMe && contactsInfo.isGroup" class="at-me">[有人@我]</span>
         <!-- 群组被静音后提示未读消息条数 -->
-        <span v-show="contactsInfo.isGroup && contactsInfo.isMute && contactsInfo.unreadNum">[{{ contactsInfo.unreadNum }}条]</span>
+        <span v-if="contactsInfo.isGroup && contactsInfo.isMute && contactsInfo.unreadNum">[{{ contactsInfo.unreadNum }}条]</span>
         <!-- 群组提示消息发送者姓名 -->
-        <span v-show="contactsInfo.sender && contactsInfo.isGroup">{{ contactsInfo.sender }}:</span>
+        <span v-if="contactsInfo.sender && contactsInfo.isGroup">{{ contactsInfo.sender }}:</span>
 
-        {{ contactsInfo.lastMessage }}
-      </p>
+        <!-- 分类显示消息内容 -->
+        <div v-html="lastMessage" class="msg-content"></div>
+      </div>
     </div>
 
   </div>
@@ -47,12 +48,15 @@ export default {
     /* contacts information object
       contactsInfo = {
         id: 唯一标识符 String
-        lastMessage: 最后一条消息 String
+        lastMessage: 最后一条消息 Object 同消息体中的content
         name: 联系人/群组名称 String
         sender: 发送者姓名 String
         avatar: 头像 String
         time: 时间 String
         atMe: 是否有人@我 Boolean
+        secretLevel: 联系人密级
+        unreadNum 未读消息数
+        memberNum 成员数量
         isTop: 是否置顶 Boolean
         isMute: 是否免打扰 Boolean
         isGroup: 是否群组 Boolean
@@ -76,8 +80,8 @@ export default {
     recentContactsClasses () {
       return {
         'recent-contacts': true,
-        'activated': this.activated,
-        'top': this.contactsInfo.isTop
+        'top': this.contactsInfo.isTop && !this.activated,
+        'activated': this.activated
       }
     },
     badgeoffset () {
@@ -86,10 +90,23 @@ export default {
     badgeNumStyle () {
       return this.contactsInfo.isMute
         ? {}
-        : { padding: '0', boxShadow: 'none', height: '16px', minWidth: '16px', lineHeight: '16px' }
+        : {
+          padding: '0',
+          boxShadow: 'none',
+          height: '16px',
+          minWidth: '16px',
+          lineHeight: '16px' }
+    },
+    lastMessage () {
+      const { type, title } = this.contactsInfo.lastMessage
+      const messageCases = new Map([
+        [1, ''],
+        [2, '[图片]'],
+        [3, '[文件]']
+      ])
+      return messageCases.get(type || 1) + (title || '')
     }
-  },
-  methods: {}
+  }
 }
 </script>
 
@@ -151,10 +168,16 @@ export default {
 
     .msg {
       margin: 0;
-      font-size: 14px;
+      font-size: 13px;
       color: rgb(140, 141, 143);
       overflow: hidden;
       text-overflow: ellipsis;
+      // TODO: 临时添加，需要修改
+      display: flex;
+      &-content {
+        display: flex;
+      }
+
       .at-me {
         color: red;
       }

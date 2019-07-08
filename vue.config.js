@@ -77,7 +77,16 @@ module.exports = {
           'padding-lg': '12px',
           'padding-md': '8px',
           'padding-sm': '6px',
-          'padding-xs': '4px'
+          'padding-xs': '4px',
+          'card-head-padding': '8px',
+          'card-inner-head-padding': '6px',
+          'card-padding-base': '12px',
+          'card-padding-wider': '16px',
+          'layout-sider-background': '#0052CC',
+          'menu-dark-submenu-bg': '#0544a3',
+          'menu-dark-bg': '#0052CC',
+          'menu-item-height': '48px',
+          'menu-inline-toplevel-item-height': '48px'
         },
         javascriptEnabled: true
       }
@@ -86,13 +95,17 @@ module.exports = {
 
   devServer: {
     proxy: {
+
       '/api': {
-        target: 'https://www.easy-mock.com/mock/5cd3d62bd0717344110ebfb4/lark',
+        // target: 'https://www.easy-mock.com/mock/5cd3d62bd0717344110ebfb4/lark',
+        // target: 'http://10.11.24.126:8765',
+        target: 'http://localhost:8765',
+        // target: 'http://localhost:8765',
         ws: false,
         changeOrigin: true
       },
       '/gateway': {
-        target: 'https://www.easy-mock.com/mock/5cd3d62bd0717344110ebfb4/lark',
+        target: ' http://10.12.97.30:8765',
         ws: false,
         changeOrigin: true,
         pathRewrite: {

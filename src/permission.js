@@ -9,7 +9,7 @@ import { ACCESS_TOKEN } from '@/store/mutation-types'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['login', 'register', 'registerResult'] // no redirect whitelist
+const whiteList = ['Login'] // no redirect whitelist
 
 // 全局守卫 登录后通过这里第一次路由跳转 初始化用户数据全在这里
 router.beforeEach((to, from, next) => {
@@ -25,12 +25,14 @@ router.beforeEach((to, from, next) => {
         store
           .dispatch('GetInfo')
           .then(res => {
-            const roles = res.result && res.result.role
+            const roles = res.result && res.result.userRole
             store.dispatch('GenerateRoutes', { roles }).then(() => {
               // 根据roles权限生成可访问的路由表
               // 动态添加可访问路由表
               router.addRoutes(store.getters.addRouters)
               const redirect = decodeURIComponent(from.query.redirect || to.path)
+              // 重新登录时，不跳转到上一次访问的地址
+              // const redirect = decodeURIComponent(to.path)
               if (to.path === redirect) {
                 // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
                 next({ ...to, replace: true })
@@ -39,6 +41,10 @@ router.beforeEach((to, from, next) => {
                 next({ path: redirect })
               }
             })
+          })
+          .then(() => {
+            // 进行websocket连接
+            Vue.prototype.SocketGlobal.connect()
           })
           .catch(() => {
             notification.error({
@@ -77,23 +83,29 @@ router.afterEach(() => {
  *    <a v-action:edit @click="edit(record)">修改</a>
  *
  *  - 当前用户没有权限时，组件上使用了该指令则会被隐藏
- *  - 当后台权限跟 pro 提供的模式不同时，只需要针对这里的权限过滤进行修改即可
- *
- *  @see https://github.com/sendya/ant-design-pro-vue/pull/53
  */
 const action = Vue.directive('action', {
   bind: function (el, binding, vnode) {
     const actionName = binding.arg
     const roles = store.getters.roles
-    const permissionId = vnode.context.$route.meta.permission
+    let permissionId = vnode.context.$route.meta.permission
+    if (permissionId && permissionId.length > 0) {
+      permissionId = permissionId[0]
+    }
     let actions = []
-    roles.permissions.forEach(p => {
+    roles.frontPermissionList.some(p => {
       if (p.permissionId !== permissionId) {
-        return
+        return false
       }
-      actions = p.actionList
+      actions = p.actionEntitySetList
+      return true
     })
-    if (actions.indexOf(actionName) < 0) {
+    const per = actions.some(item => {
+      if (item.code === actionName && item.defaultCheck === true) {
+        return true
+      }
+    })
+    if (!per) {
       el.parentNode && el.parentNode.removeChild(el) || (el.style.display = 'none')
     }
   }

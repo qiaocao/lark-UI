@@ -2,21 +2,29 @@ const getters = {
   device: state => state.app.device,
   theme: state => state.app.theme,
   color: state => state.app.color,
+  multiTab: state => state.app.multiTab,
+
   token: state => state.user.token,
-  avatar: state => state.user.avatar,
-  nickname: state => state.user.name,
   welcome: state => state.user.welcome,
   roles: state => state.user.roles,
   userInfo: state => state.user.info,
+  /** 用户id(非身份证号) */
+  userId: state => state.user.info.id,
+  /** 用户身份证号 */
+  userPId: state => state.user.info.pid,
+  /** 用户头像 */
+  avatar: state => state.user.avatar,
+  /** 用户名 */
+  nickname: state => state.user.name,
+  /** 用户密级 */
+  userSecretLevel: state => parseInt(state.user.info.secretLevel),
+
   addRouters: state => state.permission.addRouters,
-  multiTab: state => state.app.multiTab,
-  messageListMap: state => state.chat.messageListMap,
-  chatMap: state => state.chat.chatMap,
-  messageList: state => state.chat.messageList,
-  currentChat: state => state.chat.currentChat,
-  chatList: state => state.chat.chatList,
-  userFriendList: state => state.chat.userFriendList,
-  flushTokenTimerId: state => state.chat.flushTokenTimerId
+
+  /** websocket连接状态 */
+  onlineState: state => state.talk.onlineState,
+  groupList: state => state.talk.groupList,
+  contactsTree: state => state.talk.contactsTree
 }
 
 export default getters

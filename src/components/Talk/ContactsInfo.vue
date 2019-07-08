@@ -6,20 +6,20 @@
     <a-spin :spinning="loadingState" :delay="200" tip="加载中···" class="loading-tip">
     </a-spin>
 
-    <div v-if="!selected.length" class="unselected-tip">
+    <div v-if="!selected" class="unselected-tip">
       <a-icon type="user" style="fontSize: 160px; color: #d7d9db" />
       <p>未选择联系人</p>
     </div>
 
     <!-- 重新加载 -->
-    <div v-show="!Object.keys(contactsInfo).length && !loadingState && selected.length" class="reload-tip">
+    <div v-if="!Object.keys(contactsInfo).length && !loadingState && selected.length" class="reload-tip">
       <a-icon type="frown" style="fontSize: 140px; color: #d7d9db" />
       <p>加载失败，
         <a-button type="danger" ghost size="small" @click="getData(selected)">重新加载</a-button>
       </p>
     </div>
 
-    <div v-if="Object.keys(contactsInfo).length && !loadingState" class="selected-info">
+    <div v-if="Object.keys(contactsInfo).length && !loadingState && selected.length" class="selected-info">
       <div class="info-wrapper">
         <div class="name-and-org">
           <p>{{ contactsInfo.name }}</p>
@@ -36,7 +36,7 @@
         <div class="info-list">
           <div>
             <p class="attr">密级:</p>
-            <p class="val">{{ contactsInfo.securityClass }}</p>
+            <p class="val">{{ contactsInfo.secretLevel | peopleSecret }}</p>
           </div>
           <div>
             <p class="attr">单位:</p>
@@ -60,8 +60,8 @@
 </template>
 
 <script>
-import { getContactsInfo } from '@/api/chat'
-
+import { getContactsInfo } from '@/api/talk'
+import { RecentContact } from '@/utils/talk'
 export default {
   name: 'ContactsInfo',
   props: {
@@ -74,12 +74,6 @@ export default {
   },
   data () {
     return {
-      data: [
-        { key: '1', attribute: '主题', value: '测试的测试的测试的测试的测试的测试的测试的测试的测试的测试的测试的测试的测试的测试的测试的测试的测试的测试的测试的测试的' },
-        { key: '2', attribute: '创建时间', value: '2018-12-20' },
-        { key: '3', attribute: '创建人', value: '谁家的小谁' },
-        { key: '4', attribute: '其他', value: '其他的内容' }
-      ],
       /** 群组信息 */
       contactsInfo: {},
       /** 加载状态 */
@@ -88,7 +82,9 @@ export default {
   },
   watch: {
     selected: function (newValue) {
-      this.getData(newValue)
+      if (newValue) {
+        this.getData(newValue)
+      }
     }
   },
   methods: {
@@ -98,7 +94,7 @@ export default {
 
       getContactsInfo(contactsId).then(res => {
         if (res.status === 200) {
-          this.contactsInfo = res.result.data
+          this.contactsInfo = res.result
         }
 
         this.loadingState = false
@@ -106,8 +102,17 @@ export default {
         this.loadingState = false
       })
     },
-    sendMessage (event) {
-      console.log('这里应该跳转到聊天页')
+    sendMessage () {
+      this.$emit('clickSend')
+      const contactItem = this.contactsInfo
+      console.log('asdf')
+      this.$router.push({
+        path: '/talk/ChatPanel/ChatBox',
+        query: new RecentContact(contactItem)
+      })
+      contactItem.reOrder = true
+      contactItem.addUnread = false
+      this.$store.dispatch('UpdateRecentContacts', contactItem)
     }
   }
 }

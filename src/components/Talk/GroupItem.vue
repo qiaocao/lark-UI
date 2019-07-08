@@ -1,10 +1,10 @@
 <template>
   <!-- groups item -->
-  <div :class="groupItemClasses">
+  <div :class="groupItemClasses" @click="handleClick">
 
     <div class="avatar">
-      <a-avatar class="avatar-img" shape="square" :src="groupInfo.avatar" :size="30">
-        <span>{{ groupInfo.name }}</span>
+      <a-avatar class="avatar-img" shape="square" :src="groupInfo.groupImg" :size="30">
+        <span>{{ groupInfo.groupName }}</span>
       </a-avatar>
     </div>
 
@@ -15,7 +15,7 @@
     </div>
 
     <div class="info">
-      <p class="nickname">{{ groupInfo.name }}</p>
+      <p class="nickname">{{ groupInfo.groupName }}</p>
     </div>
 
   </div>
@@ -56,7 +56,11 @@ export default {
       }
     }
   },
-  methods: {}
+  methods: {
+    handleClick () {
+      this.$emit('select', this.groupInfo)
+    }
+  }
 }
 </script>
 

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import { login, getInfo, logout } from '@/api/login'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 import { welcome } from '@/utils/util'
-import { ChatListUtils } from '@/utils/talk/chatUtils'
+import { FILE_SERVER_IP } from '@/utils/constants'
 
 const user = {
   state: {
@@ -11,26 +11,12 @@ const user = {
     welcome: '',
     avatar: '',
     roles: [],
-    info: {}
+    info: {} // 当前用户的所有信息
   },
 
   mutations: {
-    SET_FLUSH_TOKEN_TIME_ID: function (state, flushTokenTimerId) {
-      state.flushTokenTimerId = flushTokenTimerId
-    },
-    CLEAR_FLUSH_TOKEN_TIME_ID: function (state) {
-      clearTimeout(state.flushTokenTimerId)
-    },
-    // token 是否有效
-    SET_TOKEN_STATUS: function (state, tokenStatus) {
-      state.tokenStatus = tokenStatus
-    },
     SET_TOKEN: (state, token) => {
       state.token = token
-      // Vue.ls.set('Access-Token', token.access_token, 7 * 24 * 60 * 60 * 1000)
-      // Vue.ls.set('Refresh-Token', token.refresh_token, 7 * 24 * 60 * 60 * 1000)
-      // localStorage.setItem('Access-Token', token.access_token)
-      // localStorage.setItem('Refresh-Token', token.refresh_token)
     },
     SET_NAME: (state, { name, welcome }) => {
       state.name = name
@@ -48,7 +34,10 @@ const user = {
   },
 
   actions: {
-    // 登录
+    /**
+     * 登录
+     * @param {Object} userInfo 用户信息
+     */
     Login ({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo).then(response => {
@@ -61,16 +50,17 @@ const user = {
         })
       })
     },
-
-    // 获取用户信息
+    /**
+     * 获取登录用户的详细信息
+     */
     GetInfo ({ commit }) {
       return new Promise((resolve, reject) => {
         getInfo().then(response => {
           const result = response.result
-
-          if (result.role && result.role.permissions.length > 0) {
-            const role = result.role
-            role.permissions = result.role.permissions
+          // 判断用户角色
+          if (result.userRole && result.userRole.frontPermissionList.length > 0) {
+            const role = result.userRole
+            role.permissions = result.userRole.frontPermissionList
             role.permissions.map(per => {
               if (per.actionEntitySet != null && per.actionEntitySet.length > 0) {
                 const action = per.actionEntitySet.map(action => { return action.action })
@@ -78,16 +68,14 @@ const user = {
               }
             })
             role.permissionList = role.permissions.map(permission => { return permission.permissionId })
-            commit('SET_ROLES', result.role)
+            commit('SET_ROLES', result.userRole)
             commit('SET_INFO', result)
           } else {
-            reject(new Error('getInfo: roles必须是非空数组!'))
+            reject(new Error('getInfo: 用户权限(userRole)必须是非空数组!'))
           }
 
           commit('SET_NAME', { name: result.name, welcome: welcome() })
-          commit('SET_AVATAR', result.avatar)
-          commit('SET_CHAT_LIST', result.chat.chatList)
-          ChatListUtils.setChatList(user.state.info.id, result.chat.chatList)
+          commit('SET_AVATAR', FILE_SERVER_IP + result.avatar)
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -95,12 +83,17 @@ const user = {
       })
     },
 
-    // 登出
+    /**
+     * 退出登录
+     */
     Logout ({ commit, state }) {
       return new Promise((resolve) => {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
         Vue.ls.remove(ACCESS_TOKEN)
+
+        // 断开websocket连接
+        Vue.prototype.SocketGlobal.close(3400, '退出登录')
 
         logout(state.token).then(() => {
           resolve()

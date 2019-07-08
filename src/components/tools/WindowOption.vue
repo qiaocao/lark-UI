@@ -1,25 +1,31 @@
 <template>
-  <div v-if="device=='tablet'" class="option-wrapper">
-    <a-tooltip title="最小化" :mouseLeaveDelay="0">
+  <div v-if="isLarkClient()" class="option-wrapper">
+    <a-tooltip title="收起" :mouseLeaveDelay="0">
       <span class="action" @click="handleOption('mini')">
-        <a-icon type="minus" />
+        <a-icon class="window-option-btn" type="minus" />
       </span>
     </a-tooltip>
-    <a-tooltip :title="isFullScreen ? '向下还原' : '最大化'" :mouseLeaveDelay="0">
-      <span class="action" @click="handleOption('switch')">
-        <a-icon type="switcher" />
+    <a-tooltip title="切换" :mouseLeaveDelay="0">
+      <span class="action" @click="handleOption('resize')">
+        <a-icon class="window-option-btn" type="swap" />
       </span>
     </a-tooltip>
-    <a-tooltip title="关闭" :mouseLeaveDelay="0">
+    <!-- <a-tooltip title="关闭" :mouseLeaveDelay="0">
       <span class="action" @click="handleOption('close')">
-        <a-icon type="close" />
+        <a-icon class="window-option-btn" type="close" />
       </span>
-    </a-tooltip>
+    </a-tooltip> -->
   </div>
 </template>
 
 <script>
-import { minimizeWindow, switchWindow, closeWindow, isFullScreen } from '@/utils/client.js'
+import {
+  isLarkClient,
+  minimizeWindow,
+  closeWindow,
+  maximizeWindow,
+  resizeWindow,
+  isFullScreen } from '@/utils/client'
 import { mixinDevice } from '@/utils/mixin.js'
 
 export default {
@@ -28,19 +34,21 @@ export default {
   data () {
     return {}
   },
-  computed: {
-    isFullScreen () {
-      return isFullScreen()
-    }
-  },
   methods: {
+    isLarkClient () {
+      return isLarkClient()
+    },
     handleOption (option) {
       switch (option) {
         case 'mini':
           minimizeWindow()
           break
-        case 'switch':
-          switchWindow()
+        case 'resize':
+          if (isFullScreen()) {
+            resizeWindow()
+          } else {
+            maximizeWindow()
+          }
           break
         case 'close':
           closeWindow()
@@ -52,4 +60,14 @@ export default {
 </script>
 
 <style lang="less" scoped>
+  .action {
+    &:hover {
+      color: #000000;
+      transform: rotate(180deg);
+      -webkit-transform: rotate(180deg);
+      -moz-transform: rotate(180deg);
+      -o-transform: rotate(180deg);
+      -ms-transform: rotate(180deg);
+    }
+  }
 </style>
