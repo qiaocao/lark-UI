@@ -43,7 +43,7 @@
             </div>
 
           </div>
-          <a :href="genDownLoadPath(newItem.fileId)" class="down dow_height">下载</a>
+          <a :href="genDownLoadPath(newItem.fileId)" class="down dow_height" download>下载</a>
         </div>
         <div class="borderDiv" v-if="item.content.type == 2">
           <!-- <img :src="item.avatar" class="content_l" alt> -->
@@ -63,7 +63,7 @@
               <a-tag color="" v-if="item.content.secretLevel == '60'">非密</a-tag>
             </div>
           </div>
-          <a :href="genDownLoadPath(newItem.fileId)" class="down dow_height">下载</a>
+          <a :href="genDownLoadPath(newItem.fileId)" class="down dow_height" download>下载</a>
         </div>
       </li>
     </ul>

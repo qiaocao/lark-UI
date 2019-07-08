@@ -49,7 +49,7 @@
                   @error="handleImg"
                   @click="handlePreview('open')"
                   :src="imgPreviewUrl"
-                  :alt="messageInfo.content.title" >
+                  :alt="fileTitle" >
                 <a-button
                   v-if="imgLoading === 3"
                   @click="handleImg"
@@ -64,7 +64,7 @@
                       【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】
                     </span>
                   </div>
-                  <a :href="downloadUrl" class="download" :download="fileDownloadTitle">下载</a>
+                  <a :href="downloadUrl" class="download" download>下载</a>
                 </div>
               </a-spin>
 
@@ -83,7 +83,7 @@
               </div>
               <div class="file-message-info">
                 <a-tooltip placement="topLeft" :title="messageInfo.content.title">
-                  <span>{{ messageInfo.content.title }}</span>
+                  <span>{{ fileTitle }}</span>
                 </a-tooltip>
 
                 <div class="file-option">
@@ -92,7 +92,7 @@
                       【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】
                     </span>
                   </div>
-                  <a :href="downloadUrl" class="download" :download="fileDownloadTitle">下载</a>
+                  <a :href="downloadUrl" class="download" download>下载</a>
                 </div>
               </div>
             </div>
@@ -133,10 +133,7 @@ export default {
       previewVisible: false,
       imgPreviewUrl: api.imgPrevie + '?fileId=' + this.messageInfo.content.id + '&t=' + new Date().getTime(),
       downloadUrl: api.fileDownload + '?fileId=' + this.messageInfo.content.id,
-      fileDownloadTitle: '[' +
-        this.$options.filters.fileSecret(this.messageInfo.content.secretLevel) +
-        ']' +
-        this.messageInfo.content.title
+      fileTitle: this.genFileTitle()
     }
   },
   computed: {
@@ -144,6 +141,12 @@ export default {
   },
   filters: { timeFormat: toWeiXinString },
   methods: {
+    genFileTitle () {
+      const { secretLevel, extension, title } = this.messageInfo.content
+      const ext = extension === '0' || extension === '' ? '' : '.' + extension
+      const sec = this.$options.filters.fileSecret(secretLevel)
+      return '[' + sec + ']' + title + ext
+    },
     /**
      * 判断是否当前用户发送的消息
      * @param {String} fromId 消息发送者的id
