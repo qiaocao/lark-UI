@@ -1,5 +1,5 @@
 <template>
-  <div :class="contactsItemClasses">
+  <div :class="contactsItemClasses" @click="handleClick">
     <div class="avatar">
       <a-avatar class="avatar-img" shape="square" :src="contactsInfo.icon" :size="30">
         <span>{{ contactsInfo.title }}</span>
@@ -42,7 +42,11 @@ export default {
       }
     }
   },
-  methods: {}
+  methods: {
+    handleClick () {
+      this.$emit('select', this.contactsInfo)
+    }
+  }
 }
 </script>
 
