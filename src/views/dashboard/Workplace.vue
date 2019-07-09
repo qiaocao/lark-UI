@@ -1,5 +1,9 @@
 <template>
   <div style="margin-bottom: 64px;">
+    <a-spin tip="加载中,请稍候..." v-if="loading" style="z-index:200;">
+      <div class="spin-content">
+      </div>
+    </a-spin>
     <div class="antd-pro-pages-dashboard-analysis-twoColLayout" :class="isDesktop() ? 'desktop' : ''">
       <grid-layout
         :layout.sync="cardList"
@@ -28,7 +32,7 @@
           :vertical-compact="true"
           @moved="moved"
         >
-          <l-card :cardData="grid" @refreshCard="refreshCard">
+          <l-card :cardData="grid" :unRequstType="config" @refreshCard="refreshCard" @loadingDone="loadingDone">
           </l-card>
         </grid-item>
       </grid-layout>
@@ -44,7 +48,7 @@
         </div>
       </div>
     </footer-tool-bar>
-    <div v-if="cardList.length===0">
+    <div v-if="cardList.length===0&&!loading">
       <div class="img_arrow">
         <img src="/arrow.png"/>
       </div>
@@ -80,7 +84,11 @@ export default {
       ids: [],
       index: '',
       toolList: [],
-      cardmap: new Map()
+      cardmap: new Map(),
+      loading: true,
+      cardLoad: [],
+      // 不需要请求数据的卡片类型
+      config: ['intro', 'local', 'activity']
     }
   },
   components: {
@@ -115,6 +123,9 @@ export default {
             temp.url = dataTemp[i].url
             this.cardList.push(temp)
           }
+          if (dataTemp.length === 0) {
+            this.loading = false
+          }
         })
     },
     /**
@@ -130,6 +141,23 @@ export default {
      */
     refreshCard () {
       this.getSelfWorkplace()
+    },
+    /**
+     * 子组件反馈数据加载完成
+     * by fanjiao
+     */
+    loadingDone () {
+      this.cardLoad.push(true)
+      let length = 0
+      this.cardList.forEach(item => {
+        if (this.config.indexOf(item.type) === -1) {
+          length++
+        }
+      })
+      // 卡片数据全部加载完成后，'加载中'的样式关闭
+      if (this.cardLoad.length === length) {
+        this.loading = false
+      }
     },
     /**
      * 移动完成后保存位置变化
@@ -253,5 +281,9 @@ export default {
   align-items:end;
   text-align: end;
 }
-
+.spin-content{
+  border: 1px solid #91d5ff;
+  background-color: #e6f7ff;
+  padding: 100%;
+}
 </style>
