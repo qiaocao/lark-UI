@@ -578,7 +578,7 @@ export default {
       const index = this.imgFormat.indexOf(extension.toLowerCase())
       tweet.content = {
         id: id,
-        url: '/api/chat/zzFileManage/GetFile?fileId=eVN8UWex&t=1561193135178',
+        url: url,
         type: index < 0 ? 3 : 2,
         extension: extension,
         title: title,
