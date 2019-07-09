@@ -179,6 +179,20 @@
         </div>
       </div>
     </a-layout-footer>
+
+    <!-- 文件上传进度条 -->
+    <a-modal
+      v-model="progressVisible"
+      :closable="false"
+      :footer="null"
+      :keyboard="false"
+      :maskClosable="false"
+    >
+      <a-progress
+        :percent="fileUpload.percent"
+        :status="uploadStatus[fileUpload.status]"
+      />
+    </a-modal>
   </a-layout>
 
   <a-layout v-else style="height: 100%; textAlign: center;">
@@ -264,6 +278,8 @@ export default {
         done: 'success',
         error: 'exception'
       },
+      // 显示文件上传进度条
+      progressVisible: false,
       messageList: [],
 
       imgFormat: ['jpg', 'jpeg', 'png', 'gif'],
@@ -378,10 +394,13 @@ export default {
      * @param {Object} info {file, fileList}
      */
     handleUpload ({ file }) {
+      this.progressVisible = true
       this.fileUpload = file
       if (file.status === 'done') {
+        this.progressVisible = false
         this.$message.success(`${file.name} 上传成功`)
       } else if (file.status === 'error') {
+        this.progressVisible = false
         this.$message.error(`${file.name} 上传失败.`)
         this.fileUpload = {}
       }
