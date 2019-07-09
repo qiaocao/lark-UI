@@ -137,7 +137,6 @@ export default {
     ...mapGetters(['avatar', 'userId']),
     imgPreviewUrl: {
       get: function () {
-
         return api.imgPrevie + '?fileId=' + this.messageInfo.content.id
       },
       set: function () {
