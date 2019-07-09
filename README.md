@@ -74,3 +74,5 @@
 - 20190709 push by fanjiao:filepath--【公告及消息的标题和内容添加最大长度】
                             src\views\admin\NotificationList.vue
                             src\views\dashboard\Feedback.vue         
+- 20190709 push by fanjiao:filepath--【用户管理添加性别】
+                            src\views\admin\UserList.vue
