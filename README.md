@@ -71,3 +71,6 @@
                             src\views\dashboard\Workplace.vue
 - 20190709 push by fanjiao:filepath--【工作舱常用工具点击链接新窗口】
                             src\views\dashboard\Workplace.vue
+- 20190709 push by fanjiao:filepath--【公告及消息的标题和内容添加最大长度】
+                            src\views\admin\NotificationList.vue
+                            src\views\dashboard\Feedback.vue         
