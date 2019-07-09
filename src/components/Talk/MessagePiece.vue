@@ -73,6 +73,7 @@
                   :alt="messageInfo.content.title"
                   style="width: 100%"
                   :src="messageInfo.content.url" />
+                {{ messageInfo.content.url }}
               </a-modal>
             </div>
 

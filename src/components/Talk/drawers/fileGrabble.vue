@@ -53,6 +53,9 @@
         >
           <a-spin v-if="loadingMore"/>
           <a-button v-else @click="onLoadMore">loading more</a-button>
+          <div class="login_img">
+            没有更多信息...
+          </div>
         </div>
       </li>
     </ul>
@@ -66,6 +69,12 @@ import api from '@/api/talk'
 
 export default {
   name: 'Rabble',
+  props: {
+    groupId: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       searchVal: '',
@@ -107,7 +116,8 @@ export default {
     },
 
     getData (callback) {
-      fileGrabble(this.pageNumber).then(data => {
+      fileGrabble(this.pageNumber, this.groupId).then(data => {
+        console.log('tag', this.groupId)
         if (data.result.data.length < 5) {
           this.showLoadingMore = false
         }
@@ -249,5 +259,8 @@ export default {
     }
   }
 }
-
+.login_img{
+  text-align: center;
+  color: #cccccc;
+}
 </style>
