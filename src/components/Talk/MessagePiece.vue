@@ -82,7 +82,7 @@
                 <a-icon type="file" theme="twoTone" style="fontSize: 26px" />
               </div>
               <div class="file-message-info">
-                <a-tooltip placement="topLeft" :title="messageInfo.content.title">
+                <a-tooltip placement="topLeft" :title="fileTitle">
                   <span>{{ fileTitle }}</span>
                 </a-tooltip>
 
