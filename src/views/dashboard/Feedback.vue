@@ -3,26 +3,20 @@
     <a-card :bordered="false" v-show="feedbackCard">
       <div class="table-page-search-wrapper">
         <a-form layout="inline">
-          <a-row :gutter="8" type="flex" justify="end">
-            <a-col :md="4" :sm="24">
-              <a-form-item label="标题">
-                <a-input v-model="queryParam.title" />
+          <a-row type="flex" justify="end" :gutter="8">
+            <a-col :span="12">
+              <a-form-item label="问题标题">
+                <a-input v-model="queryParam.title" placeholder="在此输入..." />
               </a-form-item>
             </a-col>
-            <a-col :md="8" :sm="24">
-              <span>
-                <a-row type="flex" justify="start">
-                  <a-col :md="3" :offset="2">
-                    <a-button type="primary" @click="search">查询</a-button>
-                  </a-col>
-                  <a-col :md="3">
-                    <a-button @click="() => queryParam = {}">重置</a-button>
-                  </a-col>
-                  <a-col :md="3">
-                    <a-button type="primary" @click="openFbModal('add')">意见反馈</a-button>
-                  </a-col>
-                </a-row>
-              </span>
+            <a-col :span="4">
+              <a-button-group>
+                <a-button @click="search">查询</a-button>
+                <a-button @click="() => queryParam = {}">重置</a-button>
+              </a-button-group>
+            </a-col>
+            <a-col :span="4">
+              <a-button type="primary" @click="openFbModal('add')">意见反馈</a-button>
             </a-col>
           </a-row>
         </a-form>
@@ -32,7 +26,7 @@
         size="default"
         :columns="columns"
         :data="loadData"
-        :rowKey="(record) => record.feedBackId"
+        :rowKey="(record) => record.id"
       >
         <a slot="name" slot-scope="text, record" @click="openComment(record)">{{ record.title }}</a>
         <span slot="action" slot-scope="text, record">
@@ -63,40 +57,38 @@
       </a-modal>
     </a-card>
     <a-card :bordered="false" v-show="commentCarcd" style="background-color: rgb(239, 239, 239);">
-      <a-card style="padding: 20px;">
-        <a-row>
-          <a-col :md="20">
-            <a-icon type="exclamation-circle" />
-            <span style="font-size: 20px;font-weight:bold;">{{ fdRecord.title }}</span>
-          </a-col>
-          <a-col :md="4">
-            <a-button @click="returnFbPage">
-              <a-icon type="rollback" />返回
-            </a-button>
-          </a-col>
-        </a-row>
-        <a-row>
-          <div style="height:15px"></div>
-        </a-row>
-        <a-row>
-          <span style="margin-left:20px">{{ fdRecord.content }}</span>
-        </a-row>
-      </a-card>
-      <a-card style="padding: 20px;">
-        <span v-if="commentList.length === 0">暂时没有评论</span>
-        <a-comment v-for="comment in commentList" :key="comment.commentId">
-          <a-avatar
-            style="color: #f56a00; backgroundColor: #fde3cf"
-            slot="avatar"
-          >{{ fdRecord.crtName }}</a-avatar>
-          <span slot="content">{{ comment.content }}</span>
-          <div v-if="fdRecord.crtUser===user.id">
-            <span slot="actions">
-              <a @click="deleteComment(comment)">删除</a>
-            </span>
-          </div>
-        </a-comment>
-        <!-- <a-comment>
+      <a-row>
+        <a-card>
+          <a href="#" slot="extra" @click="returnFbPage">返回</a>
+          <p style="font-size: 32px;font-weight:bold;">
+            <a-icon
+              type="question-circle"
+              theme="twoTone"
+              twoToneColor="#eb2f96"
+              :style="{ fontSize: '32px' }"
+            />
+            {{ fdRecord.title }}
+          </p>
+          <p style="margin-left:20px">{{ fdRecord.content }}</p>
+        </a-card>
+      </a-row>
+      <a-row>
+        <a-card style="padding: 20px;">
+          <span v-if="commentList.length === 0">暂时没有评论</span>
+          <a-comment v-for="comment in commentList" :key="comment.commentId">
+            <a-avatar
+              style="color: #f56a00; backgroundColor: #fde3cf"
+              slot="avatar"
+            >{{ fdRecord.crtName }}</a-avatar>
+            <span slot="content">{{ comment.content }}</span>
+            <div v-if="fdRecord.crtUser===user.id">
+              <span slot="actions">
+                <a @click="deleteComment(comment)">删除</a>
+              </span>
+            </div>
+            <a-divider />
+          </a-comment>
+          <!-- <a-comment>
           <a-avatar
             style="color: #f56a00; backgroundColor: #fde3cf"
             slot="avatar"
@@ -116,27 +108,30 @@
               </span>
             </div>
           </a-comment>
-        </a-comment>-->
-      </a-card>
-      <a-card style="padding: 20px;">
-        <!-- 提交 -->
-        <a-comment>
-          <a-avatar style="color: #f56a00; backgroundColor: #fde3cf" slot="avatar">{{ user.name }}</a-avatar>
-          <div slot="content">
-            <a-form-item :wrapperCol="wrapperCol">
-              <a-textarea :rows="4" v-model="commentValue" placeholder="评论"></a-textarea>
-            </a-form-item>
-            <a-form-item>
-              <a-button
-                htmlType="submit"
-                :loading="commentloading"
-                @click="submitComment"
-                type="primary"
-              >提交</a-button>
-            </a-form-item>
-          </div>
-        </a-comment>
-      </a-card>
+          </a-comment>-->
+        </a-card>
+      </a-row>
+      <a-row>
+        <a-card style="padding: 20px;">
+          <!-- 提交 -->
+          <a-comment>
+            <a-avatar style="color: #f56a00; backgroundColor: #fde3cf" slot="avatar">{{ user.name }}</a-avatar>
+            <div slot="content">
+              <a-form-item :wrapperCol="wrapperCol">
+                <a-textarea :rows="4" v-model="commentValue" placeholder="评论"></a-textarea>
+              </a-form-item>
+              <a-form-item>
+                <a-button
+                  htmlType="submit"
+                  :loading="commentloading"
+                  @click="submitComment"
+                  type="primary"
+                >提交</a-button>
+              </a-form-item>
+            </div>
+          </a-comment>
+        </a-card>
+      </a-row>
     </a-card>
   </div>
 </template>
@@ -378,7 +373,7 @@ export default {
      * 根据id获取评论列表
      */
     getCommentsById () {
-      getComment({ 'feedbackId': this.feedBackId }).then(res => {
+      getComment({ feedbackId: this.feedBackId }).then(res => {
         if (res.status === 200) {
           this.commentList = res.result.data
         }
