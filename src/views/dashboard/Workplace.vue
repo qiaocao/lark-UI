@@ -41,7 +41,7 @@
     <footer-tool-bar :style="{height:'72px', width: isSideMenu() && isDesktop() ? `calc(100% - ${sidebarOpened ? 256 : 80}px)` : '100%'}">
       <div class="tool-list">
         <div class="tool-item" v-for="item in toolList" :key="item.id">
-          <a :href="item.uri+'?userId='+userPId">
+          <a @click="openExlink(item.uri)">
             <img :src="'/images/tools/Icon-'+item.description+'.png'" width="40" height="40" :alt="item.description" :title="item.title"/>
           </a>
           <div class="tool-name">{{ item.title }}</div>
@@ -175,6 +175,14 @@ export default {
         temp += ',' + item.id + ':' + (parseInt(item.y) / 5 * 2 + parseInt(item.x) + 1)
       })
       return temp.substring(1)
+    },
+    /**
+     * 工具栏打开外部链接
+     * by fanjiao
+     */
+    openExlink (uri) {
+      // 如果需要拼接用户信息，在这里添加 ?userId=userPId
+      window.open('http://' + uri, '_blank')
     }
   }
 }
