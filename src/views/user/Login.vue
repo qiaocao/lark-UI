@@ -143,7 +143,10 @@ export default {
     handleLogin () {
       const { Login, state } = this
       state.loginBtn = true
-      Login()
+      Login({
+        username: 'username',
+        password: 'password'
+      })
         .then(res => this.loginSuccess(res))
         .catch(err => this.requestFailed(err))
         .finally(() => {
