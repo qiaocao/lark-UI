@@ -1,6 +1,6 @@
 <template>
   <!-- 聊天消息框 -->
-  <div :class="['message-piece', {send: isMe(), receive: !isMe()}]" >
+  <div :class="['message-piece', {send: isMe(), receive: !isMe()}]" :key="messageInfo.id">
 
     <!-- 消息时间 需要判断显示时间的条件 -->
     <div class="time-stamp">
