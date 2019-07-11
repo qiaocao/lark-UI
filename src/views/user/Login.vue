@@ -1,6 +1,7 @@
 <template>
   <div class="main">
-    <!-- <a-form
+    <a-form
+      v-show="systemAdmin"
       id="formLogin"
       name="formLogin"
       class="user-layout-login"
@@ -39,16 +40,16 @@
       <a-form-item style="margin-top:32px">
         <a-button
           size="large"
-          type="primary"
+          type="danger"
           htmlType="submit"
           name="submit"
           id="submit"
           class="login-button"
           :loading="state.loginBtn"
           :disabled="state.loginBtn"
-        >进入</a-button>
+        >管理员进入</a-button>
       </a-form-item>
-    </a-form> -->
+    </a-form>
 
     <!-- 上面是原来的用户名密码登陆的代码 -->
 
@@ -61,7 +62,7 @@
       :loading="state.loginBtn"
       :disabled="state.loginBtn"
     >进入</a-button>
-
+    <a-icon type="yuque" :style="{'fontSize':'1px'}" @click="systemAdmin=!systemAdmin"/>
   </div>
 </template>
 
@@ -72,6 +73,7 @@ import { timeFix } from '@/utils/util'
 export default {
   data () {
     return {
+      systemAdmin: false,
       loginBtn: false,
       loginType: 0,
       form: this.$form.createForm(this),
