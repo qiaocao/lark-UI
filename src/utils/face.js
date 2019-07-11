@@ -92,6 +92,7 @@ export function transform (content) {
   const fa = faceUtils.faces()
   if (content) {
     content = content
+      // eslint-disable-next-line
       .replace(/face\[([^\s\[\]]+?)]/g, function (face) {
         // 转义表情
         const alt = face.replace(/^face/g, '')
