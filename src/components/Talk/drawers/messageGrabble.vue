@@ -139,10 +139,10 @@ export default {
     openNotification () {
       this.$notification.warning({
         message: '无法获取聊天内容，稍后再试',
-        description: '',
-        onClick: () => {
-          console.log('Notification Clicked!')
-        }
+        description: ''
+        // onClick: () => {
+        //   console.log('Notification Clicked!')
+        // }
       })
     },
     getHistory () {
@@ -151,6 +151,10 @@ export default {
       talkHistoryAll(this.userId, this.hisGrop, this.contactId, this.page).then(data => {
         this.isShow = false
         const datas = data.result.data
+        if (datas.length < 30) {
+          this.loading = false
+          this.noMessage = true
+        }
         datas.map((item) => {
           this.items.push(item)
         })
@@ -247,7 +251,6 @@ export default {
       width: 150px;
     }
     p {
-      // width: 250px;
       border-radius: 5px;
       cursor: pointer;
     }
@@ -273,7 +276,6 @@ export default {
   height: 30px;
   outline: none;
   border: 1px solid #cccccc;
-  // border-radius: 5px;
   margin-bottom: 20px;
 }
 .history_box{
@@ -337,8 +339,7 @@ export default {
   width: 105%;
   margin-right: 24px;
   height: 100%;
-  // height: 700px;
-  height: calc(86vh - 55px);
+  height: calc(88vh - 55px);
 }
 .ant-drawer .ant-drawer-content {
     width: 100%;
@@ -348,7 +349,5 @@ export default {
     text-align: center;
     border-radius: 4px;
     margin: 10px 0 20px 0;
-    // padding: 30px 50px;
-    // margin: 20px 0;
   }
 </style>
