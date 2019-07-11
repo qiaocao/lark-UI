@@ -296,16 +296,3 @@ export function getGroupMembers (groupId) {
     }
   })
 }
-/**
- * 图片预览
- * fileId
- */
-export function imgPrevie (fileId) {
-  return axios({
-    url: api.imgPrevie,
-    method: 'get',
-    params: {
-      fileId
-    }
-  })
-}

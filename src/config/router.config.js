@@ -220,6 +220,17 @@ export const asyncRouterMap = [
             keepAlive: false,
             permission: ['service']
           }
+        },
+        {
+          path: 'service-list',
+          name: 'FileManeger',
+          component: () => import('@/views/admin/FileTable'),
+          meta: {
+            title: '文件管理',
+            icon: 'file',
+            keepAlive: false,
+            permission: ['filemanager']
+          }
         }
         ]
       },

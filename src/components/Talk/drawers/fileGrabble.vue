@@ -19,6 +19,7 @@
             <li>上传时间</li>
           </ul>
         </div>
+        <p></p>
       </li>
       <li v-for="(newItem,index) in NewItems" class="history_cotent" :key="index" :value="newItem.value">
         <!-- {{ NewItems }} -->
@@ -247,9 +248,9 @@ export default {
     width: 100%;
     li {
       list-style: none;
-      width: 50px;
+      // width: 50px;
       float: left;
-      font-size: 11px;
+      font-size: 15px;
       &:nth-child(1) {
         margin-right: 55px;
       }
