@@ -76,3 +76,7 @@
                             src\views\dashboard\Feedback.vue         
 - 20190709 push by fanjiao:filepath--【用户管理添加性别】
                             src\views\admin\UserList.vue
+- 20190710 push by fanjiao:filepath--【调整窗口宽度】
+                            src\components\admin\UserTransferModel.vue
+- 20190710 push by fanjiao:filepath--【个人常用工具设置页样式调整list调整为table】
+                            src\views\account\settings\CommonTool.vue
