@@ -23,19 +23,19 @@
         </div>
         <p>{{ items.name }}</p>
       </div>
-      <div style="margin-top: 30px">
+      <div class="more_list">
         <h4 class="float">备注:</h4>
         <p class="line_height">{{ items.remark }}</p>
       </div>
-      <div style="margin-top: 30px">
+      <div class="more_list">
         <h4 class="float">电话:</h4>
         <p class="line_height">{{ items.phone }}</p>
       </div>
-      <div style="margin-top: 30px">
+      <div class="more_list">
         <h4 class="float">职称:</h4>
         <p class="line_height">{{ items.proTitle }}</p>
       </div>
-      <div style="margin-top: 30px">
+      <div class="more_list">
         <h4 class="float">人员所在组织:</h4>
         <p class="line_height">{{ items.orgName }}</p>
       </div>
@@ -109,9 +109,10 @@ export default {
       float: left;
       margin-right: 20px;
       margin-bottom: 0;
+      width: 100px
     }
     .line_height{
-      line-height: 25px;
+      // line-height: 25px;
       display: inline-block;
       text-align:left;
       text-indent:2em;
@@ -156,5 +157,9 @@ export default {
       .switch_top{
         margin: 30px 0 10px 0
       }
+    }
+    .more_list{
+      margin-top: 15px;
+      height: 40px;
     }
 </style>
