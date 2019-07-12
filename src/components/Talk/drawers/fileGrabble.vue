@@ -19,6 +19,7 @@
             <li>上传时间</li>
           </ul>
         </div>
+        <p></p>
       </li>
       <li v-for="(newItem,index) in NewItems" class="history_cotent" :key="index" :value="newItem.value">
         <!-- {{ NewItems }} -->
@@ -43,8 +44,7 @@
             <a-tag color v-if="newItem.levels === '30'">非密</a-tag>
           </div>
         </a>
-        <!-- <a class="down" :href="'/chat/zzFileManage/downloadFile'" onclick="return false">下载</a> -->
-        <a-button class="down" type="primary" icon="download" @click="down(newItem.fileId)" :disabled="flag"></a-button>
+        <a :href="genDownLoadPath(newItem.fileId)" class="down">下载</a>
       </li>
       <li>
         <div
@@ -54,6 +54,9 @@
         >
           <a-spin v-if="loadingMore"/>
           <a-button v-else @click="onLoadMore">loading more</a-button>
+          <div class="login_img">
+            没有更多信息...
+          </div>
         </div>
       </li>
     </ul>
@@ -63,8 +66,16 @@
 </template>
 <script>
 import { fileGrabble, fileDownload } from '@/api/talk.js'
+import api from '@/api/talk'
+
 export default {
   name: 'Rabble',
+  props: {
+    groupId: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       searchVal: '',
@@ -87,6 +98,10 @@ export default {
     })
   },
   methods: {
+    /** 生成下载路径 */
+    genDownLoadPath (fileId) {
+      return api.fileDownload + '?fileId=' + fileId
+    },
     onSearch (value) {
       console.log(value)
     },
@@ -102,7 +117,8 @@ export default {
     },
 
     getData (callback) {
-      fileGrabble(this.pageNumber).then(data => {
+      fileGrabble(this.pageNumber, this.groupId).then(data => {
+        console.log('tag', this.groupId)
         if (data.result.data.length < 5) {
           this.showLoadingMore = false
         }
@@ -223,10 +239,7 @@ export default {
 }
 .down{
   float:right;
-  // height: 55px;
-  // line-height: 55px;
-  // display: block
-  margin-top: 10px
+  line-height: 50px;
 }
 .nav_box {
   width: 100%;
@@ -235,9 +248,9 @@ export default {
     width: 100%;
     li {
       list-style: none;
-      width: 50px;
+      // width: 50px;
       float: left;
-      font-size: 5px;
+      font-size: 15px;
       &:nth-child(1) {
         margin-right: 55px;
       }
@@ -247,5 +260,8 @@ export default {
     }
   }
 }
-
+.login_img{
+  text-align: center;
+  color: #cccccc;
+}
 </style>

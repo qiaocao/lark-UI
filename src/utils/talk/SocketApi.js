@@ -4,6 +4,115 @@
 import store from '@/store'
 import notification from 'ant-design-vue/es/notification'
 import { LandingStatus } from '@/utils/constants'
+import { messagePopup } from '@/utils/client'
+
+/** ws连通 */
+function handleWsOpen () {
+  // 请求研讨相关的数据
+  store.dispatch('GetTalkMap')
+  store.dispatch('GetRecentContacts')
+  store.dispatch('GetGroupList')
+  store.dispatch('GetContactsTree')
+
+  // 设置在线状态为已连接
+  store.commit('SET_ONLINE_STATE', LandingStatus.ONLINE)
+}
+
+/** 处理私聊和群组消息 */
+function handleMessage (data) {
+  store
+    .dispatch('UpdateTalkMap', data)
+    .then(() => {
+      store.dispatch('UpdateRecentContacts', {
+        ...data.contactInfo,
+        reOrder: true,
+        addUnread: true
+      })
+    })
+    .catch(error => {
+      console.log(error)
+      const key = `talk${Date.now()}`
+      notification.warning({
+        message: '消息同步出错',
+        description: '研讨消息同步出错，点击同步按钮重新同步',
+        duration: null,
+        btn: (h) => {
+          return h('a-button', {
+            props: {
+              type: 'primary',
+              size: 'small',
+              icon: 'reload'
+            },
+            on: {
+              click: () => {
+                store.dispatch('GetTalkMap')
+                  .then(() => {
+                    store.dispatch('GetRecentContacts')
+                  })
+                  .then(() => notification.close(key))
+              }
+            }
+          }, '同步')
+        },
+        key
+      })
+    })
+  // 向客户端发送提醒
+  messagePopup(data)
+}
+
+function handleCreateGroup (data) {
+  // 接收到创建群组的消息-->更新最近联系人-->更新群组列表
+  const {
+    groupId,
+    groupName,
+    groupImg,
+    levels
+  } = data.zzGroup
+  store
+    .dispatch('UpdateRecentContacts', {
+      id: groupId,
+      name: groupName,
+      avatar: groupImg,
+      secretLevel: levels,
+      memberNum: data.userList.length,
+      isGroup: true,
+      reOrder: true,
+      addUnread: false
+    })
+    .then(() => {
+      store.dispatch('GetGroupList')
+    })
+    .catch(error => {
+      console.log(error)
+      const key = `talk${Date.now()}`
+      notification.warning({
+        message: '有新的群组',
+        description: '新增群组同步出错，点击手动同步',
+        duration: null,
+        btn: (h) => {
+          return h('a-button', {
+            props: {
+              type: 'primary',
+              size: 'small',
+              icon: 'reload'
+            },
+            on: {
+              click: () => {
+                store.dispatch('GetRecentContacts')
+                  .then(() => {
+                    store.dispatch('GetGroupList')
+                  })
+                  .then(() => notification.close(key))
+              }
+            }
+          }, '同步')
+        },
+        key
+      })
+    })
+}
+
 class SocketApi {
   /**
    * 构造函数
@@ -61,16 +170,7 @@ class SocketApi {
     // 已经建立websocket连接
     ws.onopen = openEvent => {
       self.lastInteractionTime(new Date().getTime())
-
-      // 请求研讨相关的数据
-      store.dispatch('GetTalkMap')
-      store.dispatch('GetRecentContacts')
-      store.dispatch('GetGroupList')
-      store.dispatch('GetContactsTree')
-
-      // 设置在线状态为已连接
-      store.commit('SET_ONLINE_STATE', LandingStatus.ONLINE)
-
+      handleWsOpen()
       // 定时发送心跳
       self.pingIntervalId = setInterval(() => {
         self.ping(self)
@@ -81,100 +181,14 @@ class SocketApi {
     ws.onmessage = messageEvent => {
       const time = new Date()
       const received = JSON.parse(messageEvent.data)
-      console.log('messageEvent')
-      console.log(messageEvent)
       switch (received.code) {
         // 处理消息 更新消息缓存-->最近联系人列表
         case 0:
         case 1:
-          store
-            .dispatch('UpdateTalkMap', received.data)
-            .then(() => {
-              store.dispatch('UpdateRecentContacts', {
-                ...received.data.contactInfo,
-                reOrder: true,
-                addUnread: true
-              })
-            })
-            .catch(error => {
-              console.log(error)
-              const key = `talk${Date.now()}`
-              notification.warning({
-                message: '消息同步出错',
-                description: '研讨消息同步出错，点击同步按钮重新同步',
-                duration: null,
-                btn: (h) => {
-                  return h('a-button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small',
-                      icon: 'reload'
-                    },
-                    on: {
-                      click: () => {
-                        store.dispatch('GetTalkMap')
-                          .then(() => {
-                            store.dispatch('GetRecentContacts')
-                          })
-                          .then(() => notification.close(key))
-                      }
-                    }
-                  }, '同步')
-                },
-                key
-              })
-            })
+          handleMessage(received.data)
           break
         case 10:
-          // 接收到创建群组的消息-->更新最近联系人-->更新群组列表
-          const {
-            groupId,
-            groupName,
-            groupImg,
-            levels
-          } = received.data.zzGroup
-          store
-            .dispatch('UpdateRecentContacts', {
-              id: groupId,
-              name: groupName,
-              avatar: groupImg,
-              secretLevel: levels,
-              memberNum: received.data.userList.length,
-              isGroup: true,
-              reOrder: true,
-              addUnread: false
-            })
-            .then(() => {
-              store.dispatch('GetGroupList')
-            })
-            .catch(error => {
-              console.log(error)
-              const key = `talk${Date.now()}`
-              notification.warning({
-                message: '有新的群组',
-                description: '新增群组同步出错，点击手动同步',
-                duration: null,
-                btn: (h) => {
-                  return h('a-button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small',
-                      icon: 'reload'
-                    },
-                    on: {
-                      click: () => {
-                        store.dispatch('GetRecentContacts')
-                          .then(() => {
-                            store.dispatch('GetGroupList')
-                          })
-                          .then(() => notification.close(key))
-                      }
-                    }
-                  }, '同步')
-                },
-                key
-              })
-            })
+          handleCreateGroup(received.data)
           break
         case 4:
           // 创建群组时给服务端返回code为4的数据
@@ -190,10 +204,8 @@ class SocketApi {
     // websocket连接关闭
     ws.onclose = closeEvent => {
       clearInterval(self.pingIntervalId)
-
       // 设置在线状态为已断开
       store.commit('SET_ONLINE_STATE', LandingStatus.OFFLINE)
-
       // 重连的处理逻辑
       self.reconn()
     }

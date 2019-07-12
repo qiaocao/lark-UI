@@ -1,6 +1,6 @@
 <template>
   <!-- 聊天消息框 -->
-  <div :class="['message-piece', {send: isMe(), receive: !isMe()}]" >
+  <div :class="['message-piece', {send: isMe(), receive: !isMe()}]" :key="messageInfo.id">
 
     <!-- 消息时间 需要判断显示时间的条件 -->
     <div class="time-stamp">
@@ -13,7 +13,7 @@
       shape="square"
       :src="isMe() ? avatar : messageInfo.avatar"
       :size="40">
-      <span>{{ messageInfo.username }}</span>
+      <span>{{ messageInfo.username.substr(0, 4) }}</span>
     </a-avatar>
 
     <div class="message-content">
@@ -49,7 +49,7 @@
                   @error="handleImg"
                   @click="handlePreview('open')"
                   :src="imgPreviewUrl"
-                  :alt="messageInfo.content.title" >
+                  :alt="fileTitle" >
                 <a-button
                   v-if="imgLoading === 3"
                   @click="handleImg"
@@ -64,8 +64,7 @@
                       【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】
                     </span>
                   </div>
-                  <a :href="downloadUrl" class="download" :download="fileDownloadTitle">下载</a>
-                  <!-- <span class="download">下载</span> -->
+                  <a :href="downloadUrl" class="download" download>下载</a>
                 </div>
               </a-spin>
 
@@ -73,7 +72,7 @@
                 <img
                   :alt="messageInfo.content.title"
                   style="width: 100%"
-                  :src="messageInfo.content.url" />
+                  :src="downloadUrl" />
               </a-modal>
             </div>
 
@@ -83,8 +82,8 @@
                 <a-icon type="file" theme="twoTone" style="fontSize: 26px" />
               </div>
               <div class="file-message-info">
-                <a-tooltip placement="topLeft" :title="messageInfo.content.title">
-                  <span>{{ messageInfo.content.title }}</span>
+                <a-tooltip placement="topLeft" :title="fileTitle">
+                  <span>{{ fileTitle }}</span>
                 </a-tooltip>
 
                 <div class="file-option">
@@ -93,8 +92,7 @@
                       【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】
                     </span>
                   </div>
-                  <!-- <span class="download">下载</span> -->
-                  <a :href="downloadUrl" class="download" :download="fileDownloadTitle">下载</a>
+                  <a :href="downloadUrl" class="download" download>下载</a>
                 </div>
               </div>
             </div>
@@ -133,9 +131,6 @@ export default {
       // 图片加载状态 0:无状态 1:加载中 2:加载成功 3:加载失败
       imgLoading: 0,
       previewVisible: false
-      // imgB: [],
-      // leftB: '',
-      // rightB: ''
     }
   },
   computed: {
@@ -150,11 +145,11 @@ export default {
     downloadUrl () {
       return api.fileDownload + '?fileId=' + this.messageInfo.content.id
     },
-    fileDownloadTitle () {
-      return '[' +
-        this.$options.filters.fileSecret(this.messageInfo.content.secretLevel) +
-        ']' +
-        this.messageInfo.content.title
+    fileTitle () {
+      const { secretLevel, extension, title } = this.messageInfo.content
+      const ext = extension === '0' || extension === '' ? '' : '.' + extension
+      const sec = this.$options.filters.fileSecret(secretLevel)
+      return '[' + sec + ']' + title + ext
     }
   },
   watch: {
@@ -189,8 +184,7 @@ export default {
         this.imgLoading = 3
       }
       if (event.type === 'click') {
-        console.log('123')
-        this.imgPreviewUrl += '&t=' + Math.random()
+        this.messageInfo.content.id += '&t=' + Math.random()
       }
     },
     /**
@@ -266,6 +260,7 @@ export default {
     }
 
     .message-avatar {
+      background-color: #4da6fa;
       border-radius: 2px;
       cursor: pointer;
     }
