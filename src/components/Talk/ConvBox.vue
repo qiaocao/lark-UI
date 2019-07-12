@@ -222,7 +222,6 @@ import { mapGetters } from 'vuex'
 import uuidv4 from 'uuid/v4'
 import Face from './Face'
 import Watermark from '@/utils/waterMark'
-import { transform } from '@/utils/face'
 
 export default {
   name: 'ConvBox',
@@ -500,7 +499,7 @@ export default {
        * "levels": ""
        */
       const { status } = this.fileUpload
-      const content = transform(this.messageContent)
+      const content = this.messageContent
       // 如果有文件消息，发送文件消息，忽略文字消息
       if (status === 'done') {
         const { fileId, fileName, readPath, fileExt } = this.fileUpload.response.result
