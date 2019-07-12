@@ -176,7 +176,7 @@
     </div>
     <ul class="setting_ul">
       <li v-for="(item) in userList" :key="item.key">
-        <a-avatar shape="square" :src="item.avartar" style="height: 50px" >{{ item.name }}</a-avatar>
+        <a-avatar shape="square" :src="item.avartar" style="height: 50px; line-height: 50px" >{{ item.name }}</a-avatar>
         <a-tooltip :title="item.name">
           <span class="setting_ul_sp">{{ item.name }}</span>
         </a-tooltip>
