@@ -13,7 +13,7 @@
       shape="square"
       :src="isMe() ? avatar : messageInfo.avatar"
       :size="40">
-      <span>{{ messageInfo.username }}</span>
+      <span>{{ messageInfo.username.substr(0, 4) }}</span>
     </a-avatar>
 
     <div class="message-content">
@@ -260,6 +260,7 @@ export default {
     }
 
     .message-avatar {
+      background-color: #4da6fa;
       border-radius: 2px;
       cursor: pointer;
     }
