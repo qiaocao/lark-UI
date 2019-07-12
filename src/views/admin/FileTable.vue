@@ -32,8 +32,8 @@
         <a-button type="primary" @click="onChangeAll">查询</a-button>
       </span>
     </div>
-    <a-table :columns="columns" :dataSource="data" :pagination="false">
-      <a slot="name" slot-scope="text" href="javascript:;">{{ text }}</a>
+    <a-table :columns="columns" :loading="spinning" :dataSource="data" :pagination="false">
+      <a class="file_name_all" style="" slot="name" slot-scope="text">{{ text }}</a>
       <span slot="customTitle"> 文件名</span>
       <span slot="tags" slot-scope="tags, record">
         <a-tag :color="record.color">{{ tags }}</a-tag>
@@ -48,7 +48,7 @@
 <script>
 
 import { debounce } from '@/utils/util.js'
-import { fileAll } from '@/api/admin.js'
+import { fileAll } from '@/api/talk.js'
 import api from '@/api/talk'
 
 const columns = [{
@@ -99,7 +99,8 @@ export default {
       dateBegin: '',
       dateEnd: '',
       pageSize: 5,
-      total: 5
+      total: 5,
+      spinning: false
     }
   },
   created () {
@@ -128,8 +129,7 @@ export default {
     },
     onChanges (current) {
       this.current = current
-      this.current = current
-      this.getTable(this.userName, this.fileName, this.value, this.values, this.dateBegin, this.dateEnd, this.current)
+      this.getTable()
     },
     onChangeAll () {
       if (this.userName === undefined) {
@@ -153,28 +153,31 @@ export default {
       if (this.current === undefined) {
         this.current = 1
       }
-      this.getTable(this.userName, this.fileName, this.value, this.values, this.dateBegin, this.dateEnd, this.current)
+      this.current = 1
+      this.getTable()
     },
     genDownLoadPath (fileId) {
       return api.fileDownload + '?fileId=' + fileId.fileId
     },
     getTable (userName, fileName, value, values, dateBegin, dateEnd, current) {
+      this.spinning = true
       const options = {
         userName: this.userName,
         fileName: this.fileName,
-        value: this.value,
-        values: this.values,
+        isGroup: this.value,
+        level: this.values,
         dateBegin: this.dateBegin,
         dateEnd: this.dateEnd,
         page: this.current,
-        size: 9
+        size: 10
       }
       fileAll(options).then(res => {
+        this.spinning = false
         res.result.data.map(res => {
-          if (res.isGroup === 1) {
-            res.isGroup = '群文件'
-          } else {
+          if (res.isGroup === '0') {
             res.isGroup = '个人文件'
+          } else {
+            res.isGroup = '群文件'
           }
           res.fileSize = res.fileSize + 'M'
           if (res.levels === '30') {
@@ -215,5 +218,20 @@ export default {
        margin-left: 20px;
        width: 100%;
        display: flex
+    }
+    .example {
+      text-align: center;
+      background: rgba(0,0,0,0.05);
+      border-radius: 4px;
+      margin-bottom: 20px;
+      padding: 30px 50px;
+      margin: 20px 0;
+    }
+    .file_name_all{
+      max-width: 230px;
+      display: inline-block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
 </style>
