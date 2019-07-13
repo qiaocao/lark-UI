@@ -33,9 +33,9 @@
                   【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】
                 </span>
               </div>
-              <!-- <pre>{{ messageInfo.content.title }}</pre> -->
+              <!-- <pre>{{ faceTransform(messageInfo.content.title) }}</pre> -->
               <div
-                v-html="messageInfo.content.title"
+                v-html="faceTransform(messageInfo.content.title)"
                 style="display:inline"
               >
               </div>
@@ -101,14 +101,13 @@
       </div>
 
     </div>
-
-  </div>
-</template>
+  </div></template>
 
 <script>
 import { toWeiXinString } from '@/utils/util'
 import api from '@/api/talk'
 import { mapGetters } from 'vuex'
+import { transform } from '@/utils/face'
 
 export default {
   name: 'MessagePiece',
@@ -163,7 +162,8 @@ export default {
       deep: true
     }
   },
-  filters: { timeFormat: toWeiXinString },
+  filters: { timeFormat: toWeiXinString,
+    transform: transform },
   methods: {
     /**
      * 判断是否当前用户发送的消息
@@ -196,6 +196,9 @@ export default {
       } else {
         this.previewVisible = false
       }
+    },
+    faceTransform (content) {
+      return transform(content)
     }
   }
 }
