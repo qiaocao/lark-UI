@@ -2,7 +2,7 @@
   <div :class="contactsItemClasses" @click="handleClick" :key="contactsInfo.key">
     <div class="avatar">
       <a-avatar class="avatar-img" shape="square" :src="contactsInfo.icon" :size="30">
-        <span>{{ contactsInfo.title.substr(0, 2) }}</span>
+        {{ contactsInfo.title.substr(0, 2) }}
       </a-avatar>
     </div>
     <div class="extra">
