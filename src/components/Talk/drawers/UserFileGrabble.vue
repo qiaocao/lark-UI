@@ -43,7 +43,7 @@
             <a-tag color v-if="newItem.levels === '30'">非密</a-tag>
           </div>
         </a>
-        <a :href="genDownLoadPath(newItem.fileId)" class="down">下载</a>
+        <a :href="genDownLoadPath(newItem.fileId)" class="down" download>下载</a>
       </li>
       <li>
         <div
