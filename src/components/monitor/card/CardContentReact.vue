@@ -4,7 +4,7 @@
       <a-list
         itemLayout="horizontal"
         :bordered="bordered"
-        :dataSource="listData.slice(0, 6)"
+        :dataSource="listData.slice(0, 5)"
         class="card-list"
       >
         <a-list-item style="padding: 3px 21px 3px 21px" slot="renderItem" slot-scope="item">
