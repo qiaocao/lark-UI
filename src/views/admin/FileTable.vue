@@ -48,9 +48,8 @@
 <script>
 
 import { debounce } from '@/utils/util.js'
-import { fileAll } from '@/api/talk.js'
-import api from '@/api/talk'
-
+import api from '@/api/talk.js'
+import { fileAll } from '@api/admin.js'
 const columns = [{
   dataIndex: 'fileName',
   key: 'name',
@@ -63,7 +62,7 @@ const columns = [{
 }, {
   title: '上传者',
   dataIndex: 'uploadUserName',
-  key: 'address'
+  key: 'uploadUserName'
 }, {
   title: '上传时间',
   key: 'uploadTime',
@@ -76,12 +75,12 @@ const columns = [{
 },
 {
   title: '密集',
-  key: 'tags',
+  key: 'levels',
   dataIndex: 'levels',
   scopedSlots: { customRender: 'tags' }
 }, {
   title: '',
-  key: 'fileId',
+  key: 'action',
   scopedSlots: { customRender: 'action' }
 }]
 export default {
@@ -159,7 +158,7 @@ export default {
     genDownLoadPath (fileId) {
       return api.fileDownload + '?fileId=' + fileId.fileId
     },
-    getTable (userName, fileName, value, values, dateBegin, dateEnd, current) {
+    getTable () {
       this.spinning = true
       const options = {
         userName: this.userName,
@@ -172,6 +171,7 @@ export default {
         size: 10
       }
       fileAll(options).then(res => {
+        console.log('1111111111111111111111111', res)
         this.spinning = false
         res.result.data.map(res => {
           if (res.isGroup === '0') {

@@ -281,7 +281,7 @@ export default {
   display: inline-block;
   text-align:left;
   text-indent:2em;
-  width: 330px;
+  width: 320px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

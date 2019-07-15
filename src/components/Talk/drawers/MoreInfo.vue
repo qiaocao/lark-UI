@@ -21,7 +21,9 @@
           <a-tag color="tomato" v-if="items.secretLevel === '60'">机密</a-tag>
           <a-tag color="" v-if="items.secretLevel === '30'">非密</a-tag>
         </div>
-        <p>{{ items.name }}</p>
+        <a-tooltip placement="bottom" :title="items.name">
+          <p class="more_name">{{ items.name }}</p>
+        </a-tooltip>
       </div>
       <div class="more_list">
         <h4 class="float">备注:</h4>
@@ -161,5 +163,11 @@ export default {
     .more_list{
       margin-top: 15px;
       height: 40px;
+    }
+    .more_name{
+      width: 60px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
 </style>

@@ -53,10 +53,15 @@
           :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }"
         >
           <a-spin v-if="loadingMore"/>
-          <a-button v-else @click="onLoadMore">loading more</a-button>
-          <div class="login_img">
-            没有更多信息...
-          </div>
+          <a-button v-else @click="onLoadMore">加载更多文件</a-button>
+        </div>
+      </li>
+      <li>
+        <div v-if="loading" class="example">
+          <a-spin />
+        </div>
+        <div v-if="noFile" class="login_img">
+          没有更多文件...
         </div>
       </li>
     </ul>
@@ -86,7 +91,8 @@ export default {
       showLoadingMore: true,
       item: [],
       pageNumber: 1,
-      flag: false
+      flag: false,
+      noFile: false
     }
   },
   created () {
@@ -117,10 +123,16 @@ export default {
     },
 
     getData (callback) {
+      this.loading = true
+      this.showLoadingMore = false
       fileGrabble(this.pageNumber, this.groupId).then(data => {
+        this.loading = false
+        this.showLoadingMore = true
         console.log('tag', this.groupId)
         if (data.result.data.length < 5) {
           this.showLoadingMore = false
+          this.noFile = true
+          this.loading = false
         }
         // callback(data.result.data)
         const datas = data.result.data
@@ -129,11 +141,13 @@ export default {
         })
       }).catch(res => {
         this.openNotification()
+        this.loading = false
         // this.showLoadingMore = false
       })
     },
     onLoadMore () {
       this.loadingMore = true
+      this.loading = true
       this.pageNumber++
       this.getData((res) => {
         this.data = this.data.concat(res.results)
@@ -263,5 +277,11 @@ export default {
 .login_img{
   text-align: center;
   color: #cccccc;
+  margin-top: 20px;
 }
+.example {
+    text-align: center;
+    border-radius: 4px;
+    margin: 10px 0 20px 0;
+  }
 </style>

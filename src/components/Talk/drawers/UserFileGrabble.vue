@@ -52,7 +52,15 @@
           :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }"
         >
           <a-spin v-if="loadingMore"/>
-          <a-button v-else @click="onLoadMore">loading more</a-button>
+          <a-button v-else @click="onLoadMore">加载更多文件</a-button>
+        </div>
+      </li>
+      <li>
+        <div v-if="loading" class="example">
+          <a-spin />
+        </div>
+        <div v-if="noFile" class="login_img">
+          没有更多文件...
         </div>
       </li>
     </ul>
@@ -84,7 +92,8 @@ export default {
       item: [],
       pageNumber: 1,
       flag: false,
-      userId: ''
+      userId: '',
+      noFile: false
     }
   },
   created () {
@@ -105,15 +114,22 @@ export default {
     },
 
     getData (callback) {
+      this.loading = true
+      this.showLoadingMore = false
       this.userId = this.$store.getters.userId
       userfileGrabble(this.userId, this.contactId, this.pageNumber).then(data => {
+        this.loading = false
+        this.showLoadingMore = true
         if (data.result.data.length < 5) {
           this.showLoadingMore = false
+          this.noFile = true
+          this.loading = false
         }
         // callback(data.result.data)
         const datas = data.result.data
         datas.map(item => {
           this.data.push(item)
+          this.loading = false
         })
       })
     },
@@ -248,5 +264,13 @@ export default {
     }
   }
 }
-
+.login_img{
+  text-align: center;
+  color: #cccccc;
+}
+.example {
+    text-align: center;
+    border-radius: 4px;
+    margin: 10px 0 20px 0;
+  }
 </style>
