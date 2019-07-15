@@ -99,10 +99,7 @@ export default {
   created () {
   },
   mounted () {
-    this.getData(res => {
-      this.loading = false
-      this.data = res.results
-    })
+    this.getData()
   },
   methods: {
     /** 生成下载路径 */

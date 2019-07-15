@@ -9,11 +9,7 @@
     />
     <group-notice :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <talk-setting :groupId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-<<<<<<< HEAD
-    <talk-file :groupId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-=======
     <talk-file :activeOption="activeOption" :groupId="chatInfo.id" @closeDrawer="triggerDrawer" />
->>>>>>> 299ed789782302091a0c72861c0aa939e9ea576f
     <user-file :contactId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <mark-message :groupId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <more-info :contactId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
