@@ -15,6 +15,13 @@ const SECRETLEVEL_ENUM = new Map([
   [90, { people: '重要', file: '机密' }]
 ])
 
+// 消息类型
+const MESSAGE_TYPE = new Map([
+  [1, ''],
+  [2, '[图片]'],
+  [3, '[文件]']
+])
+
 // 错误类型
 const ErrorType = {
   TIMEOUT_ERROR: 9, // 超时
@@ -36,13 +43,18 @@ const LandingStatus = {
   OFFLINE: 3
 }
 
-// 文件服务器地址
+// 头像文件服务器地址，与nginx所在地址保持一致
 // const FILE_SERVER_IP = 'http://10.12.97.34:80/'
-const FILE_SERVER_IP = 'http://10.11.24.5:80/'
+const FILE_SERVER_IP = 'http://129.0.0.1:8080/'
+
+// websocket服务端地址
+const WS_SERVER_IP = 'localhost'
 
 export {
   SECRETLEVEL_ENUM,
+  MESSAGE_TYPE,
   ErrorType,
   LandingStatus,
-  FILE_SERVER_IP
+  FILE_SERVER_IP,
+  WS_SERVER_IP
 }
