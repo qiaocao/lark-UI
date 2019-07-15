@@ -17,7 +17,7 @@ import wysiwyg from 'vue-wysiwyg'
 import {
   SocketApi
 } from '@/utils/talk' // global filter
-// import { WS_SERVER_IP } from '@/utils/constants'
+import { WS_SERVER_IP } from '@/utils/constants'
 
 Vue.config.productionTip = false
 Vue.use(VueAxios, router)
@@ -42,8 +42,7 @@ Vue.use(wysiwyg, {
 })
 Vue.prototype.publicPath = process.env.BASE_URL
 Vue.prototype.SocketGlobal = new SocketApi({
-  ip: '10.11.24.136',
-  // ip: WS_SERVER_IP,
+  ip: WS_SERVER_IP,
   port: '9326'
 })
 
