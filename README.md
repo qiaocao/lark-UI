@@ -80,3 +80,7 @@
                             src\components\admin\UserTransferModel.vue
 - 20190710 push by fanjiao:filepath--【个人常用工具设置页样式调整list调整为table】
                             src\views\account\settings\CommonTool.vue
+- 20190715 push by fanjiao:filepath--【工作舱/热力图】
+                            package.json
+                            src\views\dashboard\Workplace.vue
+                            src\components\chart\Heatmap.vue                 
