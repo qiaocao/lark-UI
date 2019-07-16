@@ -101,33 +101,7 @@
         @ok="() => modal1Visible = false"
       >
         <div>
-          <!-- <div>
-            <p class="p">密级</p>
-            {{ levels }}
-          </div>
-          <div>
-            <p class="p">创建人</p>
-            {{ creatorName }}
-          </div>
-          <div>
-            <p class="p">创建时间</p>
-            {{ createTime }}
-          </div>
-          <a-tooltip :title="groupDescribe">
-            <div class="group_describe">
-              <p class="p">描述</p>
-              {{ groupDescribe }}
-            </div>
-          </a-tooltip> -->
           <p>占无操作选项</p>
-          <!-- <ul class="user_ul">
-            <li class="o_li" v-for="item in listData" :key="item.groupId">
-              <a-avatar class="group_list_img" shape="square" size="large" :src="item.avartar" >{{ item.name }}</a-avatar>
-              <a-tooltip title="sss">
-                <span class="group_list_sp"> {{ item.name }}</span>
-              </a-tooltip>
-            </li>
-          </ul> -->
         </div>
       </a-modal>
     </div>

@@ -16,7 +16,7 @@
         </a-select>
       </span>
       <span class="flex">
-        密集:
+        密级:
         <a-select defaultValue="请选择" style="width: 90px" @change="handleChanges">
           <a-select-option value="">不限制</a-select-option>
           <a-select-option value="30">非密</a-select-option>
@@ -49,7 +49,7 @@
 
 import { debounce } from '@/utils/util.js'
 import api from '@/api/talk.js'
-import { fileAll } from '@api/admin.js'
+import { fileAll } from '@/api/admin.js'
 const columns = [{
   dataIndex: 'fileName',
   key: 'name',
@@ -74,7 +74,7 @@ const columns = [{
   dataIndex: 'isGroup'
 },
 {
-  title: '密集',
+  title: '密级',
   key: 'levels',
   dataIndex: 'levels',
   scopedSlots: { customRender: 'tags' }
@@ -171,7 +171,6 @@ export default {
         size: 10
       }
       fileAll(options).then(res => {
-        console.log('1111111111111111111111111', res)
         this.spinning = false
         res.result.data.map(res => {
           if (res.isGroup === '0') {
