@@ -222,7 +222,7 @@ export const asyncRouterMap = [
           }
         },
         {
-          path: 'service-list',
+          path: 'file-list',
           name: 'FileManeger',
           component: () => import('@/views/admin/FileTable'),
           meta: {
@@ -230,6 +230,17 @@ export const asyncRouterMap = [
             icon: 'file',
             keepAlive: false,
             permission: ['filemanager']
+          }
+        },
+        {
+          path: 'group-list',
+          name: 'GroupManeger',
+          component: () => import('@/views/admin/GroupTable'),
+          meta: {
+            title: '研讨组管理',
+            icon: 'message',
+            keepAlive: false,
+            permission: ['groupmaneger']
           }
         }
         ]
