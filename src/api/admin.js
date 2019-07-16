@@ -38,6 +38,7 @@ const api = {
   usercard: '/portal/userCard/myself',
   // 网关日志
   gatelog: '/admin/gateLog/page',
+  exportgatelog: '/admin/gateLog/export',
   // 敏感词
   getwordpage: '/chat/zzDictionaryWords/query',
   dicword_add: '/chat/zzDictionaryWords/create',
@@ -426,6 +427,17 @@ export function getGateLog (parameter) {
     url: api.gatelog,
     method: 'get',
     params: parameter
+  })
+}
+/**
+ * 导出网关日志
+ */
+export function exportGateLog (parameter) {
+  return axios({
+    url: api.exportgatelog,
+    method: 'get',
+    params: parameter,
+    responseType: 'blob'
   })
 }
 /**
