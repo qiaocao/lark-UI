@@ -6,13 +6,34 @@
 const SECRETLEVEL_ENUM = new Map([
   ['default', '非密'],
   // 服务端传递的密级参数
-  [30, { people: '非密', file: '非密' }],
-  [40, { people: '一般', file: '秘密' }],
-  [50, { people: '一般', file: '秘密' }],
-  [60, { people: '重要', file: '机密' }],
-  [70, { people: '重要', file: '机密' }],
-  [80, { people: '重要', file: '机密' }],
-  [90, { people: '重要', file: '机密' }]
+  [30, {
+    people: '非密',
+    file: '非密'
+  }],
+  [40, {
+    people: '一般',
+    file: '秘密'
+  }],
+  [50, {
+    people: '一般',
+    file: '秘密'
+  }],
+  [60, {
+    people: '重要',
+    file: '机密'
+  }],
+  [70, {
+    people: '重要',
+    file: '机密'
+  }],
+  [80, {
+    people: '重要',
+    file: '机密'
+  }],
+  [90, {
+    people: '重要',
+    file: '机密'
+  }]
 ])
 
 // 消息类型
@@ -48,7 +69,7 @@ const LandingStatus = {
 const FILE_SERVER_IP = 'http://127.0.0.1:8080/'
 
 // websocket服务端地址
-const WS_SERVER_IP = '10.11.24.129'
+const WS_SERVER_IP = '127.0.0.1'
 
 export {
   SECRETLEVEL_ENUM,
