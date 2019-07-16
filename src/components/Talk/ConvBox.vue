@@ -157,6 +157,7 @@
 
           <!-- 发送键 -->
           <div class="send-toolbar">
+            <a-tag color="red">试运行阶段，请不要发送涉密信息。</a-tag>
             <div style="marginLeft: auto">
               <!-- 发送键 -->
               <a-radio-group @change="handleSendSecretLevel" v-model="sendSecretLevel">
