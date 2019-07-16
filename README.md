@@ -66,6 +66,7 @@
                             src\views\dashboard\NotificationList.vue
                             src\api\workplace.js
                             src\config\router.config.js
+
 - 20190709 push by fanjiao:filepath--【工作舱卡片及卡片内数据完全获取到后显示，加载中添加等待样式】
                             src\views\dashboard\Card.vue
                             src\views\dashboard\Workplace.vue
@@ -84,3 +85,4 @@
                             package.json
                             src\views\dashboard\Workplace.vue
                             src\components\chart\Heatmap.vue                 
+

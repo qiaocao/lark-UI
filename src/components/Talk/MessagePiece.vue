@@ -72,7 +72,12 @@
                 <img
                   :alt="messageInfo.content.title"
                   style="width: 100%"
+<<<<<<< HEAD
+                  :src="messageInfo.content.url" />
+                {{ messageInfo.content.url }}
+=======
                   :src="downloadUrl" />
+>>>>>>> 299ed789782302091a0c72861c0aa939e9ea576f
               </a-modal>
             </div>
 

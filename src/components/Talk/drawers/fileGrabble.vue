@@ -1,7 +1,5 @@
 <template>
   <div>
-    <!-- <input type="text" class="seek_inp" placeholder="输入要搜索内容" v-model="searchVal" >
-    <a-button type="primary" icon="search" style="border-radius:0 5px 5px 0"></a-button> -->
     <a-input-search
       placeholder="输入要搜索内容"
       @search="onSearch"
@@ -53,10 +51,15 @@
           :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }"
         >
           <a-spin v-if="loadingMore"/>
-          <a-button v-else @click="onLoadMore">loading more</a-button>
-          <div class="login_img">
-            没有更多信息...
-          </div>
+          <a-button v-else @click="onLoadMore">加载更多文件</a-button>
+        </div>
+      </li>
+      <li>
+        <div v-if="loading" class="example">
+          <a-spin />
+        </div>
+        <div v-if="noFile" class="login_img">
+          没有更多文件...
         </div>
       </li>
     </ul>
@@ -86,16 +89,14 @@ export default {
       showLoadingMore: true,
       item: [],
       pageNumber: 1,
-      flag: false
+      flag: false,
+      noFile: false
     }
   },
   created () {
   },
   mounted () {
-    this.getData(res => {
-      this.loading = false
-      this.data = res.results
-    })
+    this.getData()
   },
   methods: {
     /** 生成下载路径 */
@@ -117,15 +118,21 @@ export default {
     },
 
     getData (callback) {
+      this.loading = true
+      this.showLoadingMore = false
       fileGrabble(this.pageNumber, this.groupId).then(data => {
-        console.log('tag', this.groupId)
+        this.loading = false
+        this.showLoadingMore = true
         if (data.result.data.length < 5) {
           this.showLoadingMore = false
+          this.loading = false
+          this.noFile = true
         }
         // callback(data.result.data)
         const datas = data.result.data
         datas.map(item => {
           this.data.push(item)
+          this.loading = false
         })
       }).catch(res => {
         this.openNotification()
@@ -264,4 +271,10 @@ export default {
   text-align: center;
   color: #cccccc;
 }
+
+.example {
+    text-align: center;
+    border-radius: 4px;
+    margin: 10px 0 20px 0;
+  }
 </style>

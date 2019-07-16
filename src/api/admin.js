@@ -49,7 +49,11 @@ const api = {
   commontools: '/portal/commonTools',
   // 临时增加，方便测试
   getUserBySecret: 'admin/user/list',
-  deleteId: '/workplace/card'
+  deleteId: '/workplace/card',
+  // 文件管理
+  fileAll: 'chat/zzGroupFile/fileMonitoring',
+  // 群组管理
+  groupAll: 'chat/zzGroup/groupListMonitoring'
 }
 
 export default api
@@ -540,5 +544,25 @@ export function deleteId (parameter) {
       cardId: parameter,
       userId: this.$store.state.user.name
     }
+  })
+}
+/**
+ * 文件管理
+ */
+export function fileAll (parameter) {
+  return axios({
+    url: api.fileAll,
+    method: 'post',
+    params: parameter
+  })
+}
+/**
+ * 群组管理
+ */
+export function groupAll (parameter) {
+  return axios({
+    url: api.groupAll,
+    method: 'get',
+    params: parameter
   })
 }

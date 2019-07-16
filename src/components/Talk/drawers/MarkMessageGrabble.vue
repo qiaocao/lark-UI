@@ -139,8 +139,8 @@ export default {
     },
     getMark () {
       this.userId = this.$store.getters.userId
-      // this.userId, this.contactId, this.page
       MarkMessageGrabble(this.userId, this.page, this.groupId).then(data => {
+        this.isShow = false
         const datas = data.result.data
         datas.map((item, index, array) => {
           this.items.push(item)
@@ -152,9 +152,6 @@ export default {
     },
     down (id) {
       fileDownload(id).then(item => {
-        // if (item === 1) {
-        //   this.flag = true
-        // }
         window.open('/api/chat/zzFileManage/downloadFile' + '?file' + id, '_self')
       })
     },
