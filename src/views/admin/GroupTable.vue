@@ -16,6 +16,14 @@
         </a-select>
       </span>
       <span class="flex">
+        是否跨越场所:
+        <a-select defaultValue="请选择" style="width: 90px" @change="iscrossChange">
+          <a-select-option value="">不限制</a-select-option>
+          <a-select-option value="1">是</a-select-option>
+          <a-select-option value="0">否</a-select-option>
+        </a-select>
+      </span>
+      <span class="flex">
         密级:
         <a-select defaultValue="请选择" style="width: 90px" @change="handleChanges">
           <a-select-option value="">不限制</a-select-option>
@@ -162,11 +170,17 @@ const columns = [{
   dataIndex: 'isclose'
 },
 {
+  title: '是否跨越场所',
+  key: 'iscross',
+  dataIndex: 'iscross'
+},
+{
   title: '密级',
   key: 'tags',
   dataIndex: 'levels',
   scopedSlots: { customRender: 'tags' }
-}, {
+},
+{
   title: '',
   key: 'fileId',
   scopedSlots: { customRender: 'action' }
@@ -181,6 +195,7 @@ export default {
       groupName: '',
       values: '',
       value: '',
+      iscross: '',
       current: 1,
       dateBegin: '',
       dateEnd: '',
@@ -216,6 +231,9 @@ export default {
     },
     handleChanges (value) {
       this.values = value
+    },
+    iscrossChange (value) {
+      this.iscross = value
     },
     onChange (date, dateString) {
       this.dateBegin = dateString[0]
@@ -259,6 +277,7 @@ export default {
         level: this.values,
         dateBegin: this.dateBegin,
         dateEnd: this.dateEnd,
+        iscross: this.iscross,
         page: this.current,
         size: 10
       }
@@ -270,6 +289,11 @@ export default {
             res.isclose = '未关闭'
           } else {
             res.isclose = '已关闭'
+          }
+          if (res.iscross === '1') {
+            res.iscross = '已跨越'
+          } else {
+            res.iscross = '未跨越'
           }
           if (res.levels === '30') {
             res.levels = '非密'
@@ -363,7 +387,8 @@ export default {
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
-          display: block
+          display: block;
+          text-align: center
         }
       }
     }
