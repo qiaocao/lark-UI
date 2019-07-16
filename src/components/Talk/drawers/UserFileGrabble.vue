@@ -18,12 +18,15 @@
     <ul class="history_box">
       <li>
         <div class="nav_box">
-          <ul>
-            <li>文件名</li>
-            <li>上传者</li>
-            <li>上传时间</li>
+          <ul style="display: flex ">
+            <li class="flex" style="flex:1.2">文件名</li>
+            <li class="flex">上传者</li>
+            <li class="flex">上传时间</li>
+            <li class="flex">密级</li>
+            <li class="flex" style="flex:0.8">操作</li>
           </ul>
         </div>
+        <p></p>
       </li>
       <li v-for="(newItem,index) in NewItems" class="history_cotent" :key="index" :value="newItem.value">
         <!-- {{ NewItems }} -->
@@ -275,15 +278,22 @@ export default {
     width: 100%;
     li {
       list-style: none;
-      width: 50px;
-      float: left;
-      font-size: 11px;
+      text-align: right;
+      // width: 50px;
+      // float: left;
+      // font-size: 15px;
       &:nth-child(1) {
-        margin-right: 55px;
-      }
+        text-align: left
+      };
       &:nth-child(2) {
-        margin-right: 50px;
+        text-align: left
       }
+      // &:nth-child(3) {
+      //   text-align: right
+      // }
+      // &:nth-child(4) {
+      //  text-align: right
+      // }
     }
   }
 }
