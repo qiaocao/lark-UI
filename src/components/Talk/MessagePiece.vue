@@ -1,7 +1,6 @@
 <template>
   <!-- 聊天消息框 -->
   <div :class="['message-piece', {send: isMe(), receive: !isMe()}]" :key="messageInfo.id">
-
     <!-- 消息时间 需要判断显示时间的条件 -->
     <div class="time-stamp">
       <div>{{ messageInfo.time | timeFormat }}</div>
@@ -12,33 +11,29 @@
       :class="['message-avatar', {send: isMe(), receive: !isMe()}]"
       shape="square"
       :src="isMe() ? avatar : messageInfo.avatar"
-      :size="40">
+      :size="40"
+    >
       <span>{{ messageInfo.username.substr(0, 4) }}</span>
     </a-avatar>
 
     <div class="message-content">
-
       <!-- 显示发送人 -->
       <div v-if="!isMe() && messageInfo.isGroup" class="message-nickname">
         <span>{{ messageInfo.username }}</span>
       </div>
 
-      <div class="message-bubble left right ">
+      <div class="message-bubble left right">
         <div class="bubble-content">
           <div class="plain">
             <!-- 纯文本信息 -->
             <div v-if="messageInfo.content.type === 1">
               <div class="secret-tip">
-                <span :class="'s-' + messageInfo.content.secretLevel">
-                  【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】
-                </span>
+                <span
+                  :class="'s-' + messageInfo.content.secretLevel"
+                >【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】</span>
               </div>
-              <!-- <pre>{{ messageInfo.content.title }}</pre> -->
-              <div
-                v-html="messageInfo.content.title"
-                style="display:inline"
-              >
-              </div>
+              <!-- <pre>{{ faceTransform(messageInfo.content.title) }}</pre> -->
+              <div v-html="faceTransform(messageInfo.content.title)" style="display:inline"></div>
             </div>
 
             <!-- 图片消息 -->
@@ -49,30 +44,34 @@
                   @error="handleImg"
                   @click="handlePreview('open')"
                   :src="imgPreviewUrl"
-                  :alt="fileTitle" >
+                  :alt="fileTitle"
+                />
                 <a-button
                   v-if="imgLoading === 3"
                   @click="handleImg"
                   style="float: right; margin: 0 10px"
                   type="primary"
                   size="small"
-                  icon="redo" />
+                  icon="redo"
+                />
 
                 <div class="img-message-option">
                   <div class="secret-tip">
-                    <span :class="'s-' + messageInfo.content.secretLevel">
-                      【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】
-                    </span>
+                    <span
+                      :class="'s-' + messageInfo.content.secretLevel"
+                    >【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】</span>
                   </div>
                   <a :href="downloadUrl" class="download" download>下载</a>
                 </div>
               </a-spin>
 
-              <a-modal :visible="previewVisible" :closable="false" :footer="null" @cancel="handlePreview('close')">
-                <img
-                  :alt="messageInfo.content.title"
-                  style="width: 100%"
-                  :src="downloadUrl" />
+              <a-modal
+                :visible="previewVisible"
+                :closable="false"
+                :footer="null"
+                @cancel="handlePreview('close')"
+              >
+                <img :alt="messageInfo.content.title" style="width: 100%" :src="downloadUrl" />
               </a-modal>
             </div>
 
@@ -88,9 +87,9 @@
 
                 <div class="file-option">
                   <div class="secret-tip">
-                    <span :class="'s-' + messageInfo.content.secretLevel">
-                      【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】
-                    </span>
+                    <span
+                      :class="'s-' + messageInfo.content.secretLevel"
+                    >【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】</span>
                   </div>
                   <a :href="downloadUrl" class="download" download>下载</a>
                 </div>
@@ -99,9 +98,7 @@
           </div>
         </div>
       </div>
-
     </div>
-
   </div>
 </template>
 
@@ -109,6 +106,7 @@
 import { toWeiXinString } from '@/utils/util'
 import api from '@/api/talk'
 import { mapGetters } from 'vuex'
+import { transform } from '@/utils/face'
 
 export default {
   name: 'MessagePiece',
@@ -139,8 +137,7 @@ export default {
       get: function () {
         return api.imgPrevie + '?fileId=' + this.messageInfo.content.id
       },
-      set: function () {
-      }
+      set: function () {}
     },
     downloadUrl () {
       return api.fileDownload + '?fileId=' + this.messageInfo.content.id
@@ -163,7 +160,7 @@ export default {
       deep: true
     }
   },
-  filters: { timeFormat: toWeiXinString },
+  filters: { timeFormat: toWeiXinString, transform: transform },
   methods: {
     /**
      * 判断是否当前用户发送的消息
@@ -196,171 +193,175 @@ export default {
       } else {
         this.previewVisible = false
       }
+    },
+    faceTransform (content) {
+      return transform(content)
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-  // 接收到的消息样式
-  .receive {
-    float: left;
+// 接收到的消息样式
+.receive {
+  float: left;
 
-    .left {
-      &::after, &::before {
-        right: 100%;
-        border-right-color: #fff !important;
-        border-right-width: 4px;
-      }
+  .left {
+    &::after,
+    &::before {
+      right: 100%;
+      border-right-color: #fff !important;
+      border-right-width: 4px;
+    }
+  }
+}
+
+// 发送的消息样式
+.send {
+  float: right;
+  text-align: right;
+
+  .right {
+    background-color: #cce4fc !important;
+    &::before,
+    &::after {
+      left: 100%;
+      border-left-color: #cce4fc !important;
+      border-left-width: 4px;
+    }
+  }
+}
+// 下载键样式
+.download {
+  cursor: pointer;
+  &:hover {
+    color: #295786;
+  }
+}
+// 密级标识样式
+.secret-tip {
+  display: inline;
+}
+
+.message-piece {
+  width: 100%;
+  margin-bottom: 15px;
+  display: block;
+
+  .time-stamp {
+    text-align: center;
+    margin: 10px auto;
+    max-width: 50%;
+
+    div {
+      display: inline-block;
+      font-size: 12px;
+      color: #b2b2b2;
+      padding: 1px 18px;
     }
   }
 
-  // 发送的消息样式
-  .send {
-    float: right;
-    text-align: right;
-
-    .right {
-      background-color: #cce4fc !important;
-      &::before, &::after {
-        left: 100%;
-        border-left-color: #cce4fc !important;
-        border-left-width: 4px;
-      }
-    }
-  }
-  // 下载键样式
-  .download {
+  .message-avatar {
+    background-color: #4da6fa;
+    border-radius: 2px;
     cursor: pointer;
-    &:hover {
-      color: #295786;
-    }
-  }
-  // 密级标识样式
-  .secret-tip {
-    display: inline;
   }
 
-  .message-piece {
-    width: 100%;
-    margin-bottom: 15px;
-    display: block;
+  .message-content {
+    overflow: hidden;
 
-    .time-stamp {
-      text-align: center;
-      margin: 10px auto;
-      max-width: 50%;
-
-      div {
-        display: inline-block;
-        font-size: 12px;
-        color: #b2b2b2;
-        padding: 1px 18px;
-      }
-    }
-
-    .message-avatar {
-      background-color: #4da6fa;
-      border-radius: 2px;
-      cursor: pointer;
-    }
-
-    .message-content {
+    .message-nickname {
+      height: 20px;
+      line-height: 22px;
+      font-size: 12px;
+      font-weight: 400;
+      padding-left: 10px;
+      color: #4f4f4f;
+      width: 350px;
       overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      word-wrap: normal;
+    }
 
-      .message-nickname {
-        height: 20px;
-        line-height: 22px;
-        font-size: 12px;
-        font-weight: 400;
-        padding-left: 10px;
-        color: #4f4f4f;
-        width: 350px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        word-wrap: normal;
+    .message-bubble {
+      background-color: #ffffff;
+      margin: 0 10px;
+      max-width: 500px;
+      min-height: 1em;
+      display: inline-block;
+      vertical-align: top;
+      position: relative;
+      text-align: left;
+      font-size: 14px;
+      border-radius: 3px;
+
+      &::before,
+      &::after {
+        position: absolute;
+        right: 100%;
+        top: 14px;
+        border: 6px solid transparent;
+        content: ' ';
       }
 
-      .message-bubble {
-        background-color: #ffffff;
-        margin: 0 10px;
-        max-width: 500px;
-        min-height: 1em;
-        display: inline-block;
-        vertical-align: top;
-        position: relative;
-        text-align: left;
-        font-size: 14px;
-        border-radius: 3px;
+      .bubble-content {
+        word-wrap: break-word;
+        word-break: break-all;
+        min-height: 25px;
+        color: #4e4a4a;
 
-        &::before, &::after {
-          position: absolute;
-          right: 100%;
-          top: 14px;
-          border: 6px solid transparent;
-          content: " ";
-        }
+        .plain {
+          padding: 9px 13px;
 
-        .bubble-content {
-          word-wrap: break-word;
-          word-break: break-all;
-          min-height: 25px;
-          color: #4e4a4a;
+          pre {
+            margin: 0;
+            display: inline;
+            font-family: inherit;
+            font-size: inherit;
+            white-space: pre-wrap;
+            word-break: normal;
+          }
 
-          .plain {
-            padding: 9px 13px;
-
-            pre {
-              margin: 0;
-              display: inline;
-              font-family: inherit;
-              font-size: inherit;
-              white-space: pre-wrap;
-              word-break: normal;
+          .img-message {
+            img {
+              max-width: 250px;
+              min-width: 100px;
             }
+            &-option {
+              text-align: right;
+              font-size: 13px;
+            }
+          }
 
-            .img-message {
-              img {
-                max-width: 250px;
-                min-width: 100px;
-              }
-              &-option {
-                text-align: right;
+          .file-message {
+            display: flex;
+            &-icon {
+              width: 48px;
+              padding: 10px 0;
+              border-radius: 2px;
+              text-align: center;
+              opacity: 0.8;
+              background-color: seashell;
+              margin-right: 5px;
+            }
+            &-info {
+              width: 185px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+
+              .file-option {
                 font-size: 13px;
-              }
-            }
-
-            .file-message {
-              display: flex;
-              &-icon {
-                width: 48px;
-                padding: 10px 0;
-                border-radius: 2px;
-                text-align: center;
-                opacity: 0.8;
-                background-color: seashell;
-                margin-right: 5px;
-              }
-              &-info {
-                width: 185px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-
-                .file-option {
-                  font-size: 13px;
-                  position: absolute;
-                  right: 20px;
-                  bottom: 9px;
-                }
+                position: absolute;
+                right: 20px;
+                bottom: 9px;
               }
             }
           }
         }
-
       }
     }
-
   }
+}
 </style>
