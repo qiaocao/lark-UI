@@ -266,17 +266,11 @@ export function MarkMessageGrabble (userId, page, groupId) {
  * 联系人文件
  * userd receiver page size
  */
-export function userfileGrabble (userId, receiver, page) {
+export function userfileGrabble (parameter) {
   return axios({
     url: api.userfileGrabble,
     method: 'post',
-    params: {
-      userId: userId,
-      receiver,
-      page: page,
-      size: 5
-      // tagType: 0
-    }
+    params: parameter
   })
 }
 /**
