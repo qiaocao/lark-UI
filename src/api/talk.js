@@ -199,15 +199,11 @@ export function getTalksetting (parameter) {
 /**
  * fileGrabble
  */
-export function fileGrabble (parameter, groupId) {
+export function fileGrabble (parameter) {
   return axios({
     url: api.fileGrabble,
     method: 'post',
-    params: {
-      page: parameter,
-      size: 5,
-      id: groupId
-    }
+    params: parameter
   })
 }
 /**
