@@ -1,20 +1,29 @@
 <template>
   <div>
-    <a-input-search
-      placeholder="输入要搜索内容"
-      @search="onSearch"
-      enterButton
-      type="text"
-      v-model="searchVal"
-      style="margin-bottom: 20px"
-    />
+    <div style="width: 100%">
+      <a-input-search
+        placeholder="输入要搜索内容"
+        @search="onSearch"
+        enterButton
+        type="text"
+        v-model="searchVal"
+        style="margin-bottom: 20px; width: 49%"
+      />
+      <span style="width: 49%;margin-left:20px">
+        <a-button class="button_ma" @click="fileAll">全部</a-button>
+        <a-button class="button_ma" @click="finish">已上传</a-button>
+        <a-button class="button_ma" @click="padding">待审核</a-button>
+      </span>
+    </div>
     <ul class="history_box">
       <li>
         <div class="nav_box">
-          <ul>
-            <li>文件名</li>
-            <li>上传者</li>
-            <li>上传时间</li>
+          <ul style="display: flex ">
+            <li class="flex" style="flex:1.2">文件名</li>
+            <li class="flex">上传者</li>
+            <li class="flex">上传时间</li>
+            <li class="flex">密级</li>
+            <li class="flex" style="flex:0.8">操作</li>
           </ul>
         </div>
         <p></p>
@@ -90,7 +99,8 @@ export default {
       item: [],
       pageNumber: 1,
       flag: false,
-      noFile: false
+      noFile: false,
+      state: ''
     }
   },
   created () {
@@ -120,7 +130,13 @@ export default {
     getData (callback) {
       this.loading = true
       this.showLoadingMore = false
-      fileGrabble(this.pageNumber, this.groupId).then(data => {
+      const options = {
+        id: this.groupId,
+        state: this.state,
+        page: this.pageNumber,
+        size: 5
+      }
+      fileGrabble(options).then(data => {
         this.loading = false
         this.showLoadingMore = true
         if (data.result.data.length < 5) {
@@ -140,6 +156,7 @@ export default {
       })
     },
     onLoadMore () {
+      this.state = ''
       this.loadingMore = true
       this.pageNumber++
       this.getData((res) => {
@@ -158,6 +175,18 @@ export default {
       fileDownload(id).then(item => {
         window.open('/api/chat/zzFileManage/downloadFile' + '?fileId=' + id, '_self')
       })
+    },
+    fileAll () {
+      this.state = ''
+      this.getData()
+    },
+    finish () {
+      this.state = '1'
+      this.getData()
+    },
+    padding () {
+      this.state = '0'
+      this.getData()
     }
   },
   computed: {
@@ -255,15 +284,22 @@ export default {
     width: 100%;
     li {
       list-style: none;
+      text-align: right;
       // width: 50px;
-      float: left;
-      font-size: 15px;
+      // float: left;
+      // font-size: 15px;
       &:nth-child(1) {
-        margin-right: 55px;
-      }
+        text-align: left
+      };
       &:nth-child(2) {
-        margin-right: 50px;
+        text-align: left
       }
+      // &:nth-child(3) {
+      //   text-align: right
+      // }
+      // &:nth-child(4) {
+      //  text-align: right
+      // }
     }
   }
 }
@@ -277,4 +313,15 @@ export default {
     border-radius: 4px;
     margin: 10px 0 20px 0;
   }
+.button_ma{
+  flex: 1;
+  margin: 0 10px 0 0;
+  &:nth-child(3){
+    margin: 0
+  }
+
+}
+.flex{
+  flex: 1
+}
 </style>

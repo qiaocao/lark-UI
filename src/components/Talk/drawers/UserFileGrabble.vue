@@ -1,24 +1,32 @@
 <template>
   <div>
-    <!-- <input type="text" class="seek_inp" placeholder="输入要搜索内容" v-model="searchVal" >
-    <a-button type="primary" icon="search" style="border-radius:0 5px 5px 0"></a-button> -->
-    <a-input-search
-      placeholder="输入要搜索内容"
-      @search="onSearch"
-      enterButton
-      type="text"
-      v-model="searchVal"
-      style="margin-bottom: 20px"
-    />
+    <div style="width: 100%">
+      <a-input-search
+        placeholder="输入要搜索内容"
+        @search="onSearch"
+        enterButton
+        type="text"
+        v-model="searchVal"
+        style="margin-bottom: 20px; width: 49%"
+      />
+      <span style="width: 49%;margin-left:20px">
+        <a-button class="button_ma" @click="fileAll">全部</a-button>
+        <a-button class="button_ma" @click="finish">已上传</a-button>
+        <a-button class="button_ma" @click="padding">待审核</a-button>
+      </span>
+    </div>
     <ul class="history_box">
       <li>
         <div class="nav_box">
-          <ul>
-            <li>文件名</li>
-            <li>上传者</li>
-            <li>上传时间</li>
+          <ul style="display: flex ">
+            <li class="flex" style="flex:1.2">文件名</li>
+            <li class="flex">上传者</li>
+            <li class="flex">上传时间</li>
+            <li class="flex">密级</li>
+            <li class="flex" style="flex:0.8">操作</li>
           </ul>
         </div>
+        <p></p>
       </li>
       <li v-for="(newItem,index) in NewItems" class="history_cotent" :key="index" :value="newItem.value">
         <!-- {{ NewItems }} -->
@@ -93,7 +101,8 @@ export default {
       pageNumber: 1,
       flag: false,
       userId: '',
-      noFile: false
+      noFile: false,
+      state: ''
     }
   },
   created () {
@@ -114,7 +123,15 @@ export default {
       this.loading = true
       this.showLoadingMore = false
       this.userId = this.$store.getters.userId
-      userfileGrabble(this.userId, this.contactId, this.pageNumber).then(data => {
+      const options = {
+        userId: this.userId,
+        receiver: this.contactId,
+        page: this.pageNumber,
+        state: this.state,
+        size: 5
+      }
+      // userfileGrabble(this.userId, this.contactId, this.pageNumber).then(data => {
+      userfileGrabble(options).then(data => {
         this.loading = false
         this.showLoadingMore = true
         if (data.result.data.length < 5) {
@@ -152,6 +169,18 @@ export default {
         // }
         window.open('/api/chat/zzFileManage/downloadFile' + '?fileId=' + id, '_self')
       })
+    },
+    fileAll () {
+      this.state = ''
+      this.getData()
+    },
+    finish () {
+      this.state = '1'
+      this.getData()
+    },
+    padding () {
+      this.state = '0'
+      this.getData()
     }
   },
   computed: {
@@ -249,15 +278,22 @@ export default {
     width: 100%;
     li {
       list-style: none;
-      width: 50px;
-      float: left;
-      font-size: 11px;
+      text-align: right;
+      // width: 50px;
+      // float: left;
+      // font-size: 15px;
       &:nth-child(1) {
-        margin-right: 55px;
-      }
+        text-align: left
+      };
       &:nth-child(2) {
-        margin-right: 50px;
+        text-align: left
       }
+      // &:nth-child(3) {
+      //   text-align: right
+      // }
+      // &:nth-child(4) {
+      //  text-align: right
+      // }
     }
   }
 }
@@ -269,5 +305,16 @@ export default {
     text-align: center;
     border-radius: 4px;
     margin: 10px 0 20px 0;
+}
+.button_ma{
+  flex: 1;
+  margin: 0 10px 0 0;
+  &:nth-child(3){
+    margin: 0
   }
+
+}
+.flex{
+  flex: 1
+}
 </style>
