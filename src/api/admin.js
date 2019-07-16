@@ -51,7 +51,9 @@ const api = {
   getUserBySecret: 'admin/user/list',
   deleteId: '/workplace/card',
   // 文件管理
-  fileAll: 'chat/zzGroupFile/fileMonitoring'
+  fileAll: 'chat/zzGroupFile/fileMonitoring',
+  // 群组管理
+  groupAll: 'chat/zzGroup/groupListMonitoring'
 }
 
 export default api
@@ -551,6 +553,16 @@ export function fileAll (parameter) {
   return axios({
     url: api.fileAll,
     method: 'post',
+    params: parameter
+  })
+}
+/**
+ * 群组管理
+ */
+export function groupAll (parameter) {
+  return axios({
+    url: api.groupAll,
+    method: 'get',
     params: parameter
   })
 }
