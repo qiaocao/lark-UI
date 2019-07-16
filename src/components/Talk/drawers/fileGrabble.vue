@@ -11,8 +11,8 @@
       />
       <span style="width: 49%;margin-left:20px">
         <a-button class="button_ma" @click="fileAll">全部</a-button>
-        <a-button class="button_ma" @click="finish(1)">已上传</a-button>
-        <a-button class="button_ma" @click="padding(0)">待审核</a-button>
+        <a-button class="button_ma" @click="finish">已上传</a-button>
+        <a-button class="button_ma" @click="padding">待审核</a-button>
       </span>
     </div>
     <ul class="history_box">
