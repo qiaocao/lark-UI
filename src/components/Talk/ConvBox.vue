@@ -70,7 +70,7 @@
               overlayClassName="emojis-picker"
             >
               <template slot="content">
-                <face @insertFace="insertFace" />
+                <Face @insertFace="insertFace" />
               </template>
               <a-icon style="marginRight: 20px" type="smile" />
               <!-- @click="getfocus(); insertHtmlAtCaret();" -->
@@ -207,6 +207,7 @@
 <script>
 import {
   MessagePiece,
+  Face,
   TalkHistory,
   MoreInfo,
   GroupNotice,
@@ -221,21 +222,20 @@ import { SocketMessage, Tweet } from '@/utils/talk'
 import { mapGetters } from 'vuex'
 // 生成随机uuid
 import uuidv4 from 'uuid/v4'
-import Face from './Face'
 import Watermark from '@/utils/waterMark'
 
 export default {
   name: 'ConvBox',
   components: {
     MessagePiece,
+    Face,
     TalkHistory,
     GroupNotice,
     TalkSetting,
     MarkMessage,
     TalkFile,
     MoreInfo,
-    UserFile,
-    Face
+    UserFile
   },
   props: {
     /** 聊天对话框的基本信息--结构同最近联系人 */
@@ -438,7 +438,7 @@ export default {
       const optionList = [
         // { group: true, name: 'groupNotice', message: '群公告', type: 'notification' },
         // { group: true, name: 'markMessage', message: '标记信息', type: 'tags' },
-        { group: false, name: 'talkHistory', message: '聊天内容', type: 'file-text' },
+        { group: false, name: 'talkHistory', message: '聊天历史', type: 'file-text' },
         { group: false, name: isGroup ? 'talkFile' : 'userFile', message: '文件', type: 'folder-open' },
         { group: false, name: isGroup ? 'moreInfo' : 'personMoreInfo', message: '更多', type: 'ellipsis' }
       ]

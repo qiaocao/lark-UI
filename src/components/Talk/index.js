@@ -1,5 +1,6 @@
 // 这个组件必须最先引入，否则会报错
 import MessagePiece from './MessagePiece'
+import Face from './Face'
 // 抽屉组件
 import TalkSetting from './drawers/TalkSetting'
 import TalkHistory from './drawers/TalkHistory'
@@ -54,6 +55,9 @@ export {
   // 创建新的研讨
   CreateTalk,
   // 联系人搜索组件
-  SearchAll
+  SearchAll,
+
+  // 表情插件
+  Face
 
 }

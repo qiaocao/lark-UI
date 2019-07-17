@@ -59,10 +59,11 @@
       type="primary"
       @click="handleLogin"
       class="no-login-button"
+      v-show="!systemAdmin"
       :loading="state.loginBtn"
       :disabled="state.loginBtn"
     >进入</a-button>
-    <a-icon type="yuque" :style="{'fontSize':'1px'}" @click="systemAdmin=!systemAdmin"/>
+    <a-icon type="yuque" :style="{'fontSize':'1px', 'color':'#ced9e3'}" @click="systemAdmin=!systemAdmin"/>
   </div>
 </template>
 
@@ -134,10 +135,9 @@ export default {
       })
     },
     requestFailed (err) {
-      console.log('TCL: requestFailed -> err', ((err.response || {}).data || {}).message)
       this.$notification['error']({
         message: '错误',
-        description: '登陆出现错误，请稍后再试',
+        description: ((err.response || {}).data || {}).message,
         duration: 4
       })
     },

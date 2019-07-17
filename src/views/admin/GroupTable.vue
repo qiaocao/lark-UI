@@ -1,110 +1,112 @@
 <template>
   <div>
-    <div class="serch_for">
-      <!-- <span class="flex">
+    <a-card>
+      <div class="serch_for">
+        <!-- <span class="flex">
         创建人:<a-input v-model="userName" placeholder="输入上传者名字" style="width:115px"/>
       </span> -->
-      <span class="flex">
-        群组名称: <a-input v-model="groupName" placeholder="输入文件名" style="width:85px"/>
-      </span>
-      <span class="flex">
-        是否关闭:
-        <a-select defaultValue="请选择" style="width: 90px" @change="handleChange">
-          <a-select-option value="">不限制</a-select-option>
-          <a-select-option value="1">已关闭</a-select-option>
-          <a-select-option value="0">未关闭</a-select-option>
-        </a-select>
-      </span>
-      <span class="flex">
-        是否跨越场所:
-        <a-select defaultValue="请选择" style="width: 90px" @change="iscrossChange">
-          <a-select-option value="">不限制</a-select-option>
-          <a-select-option value="1">是</a-select-option>
-          <a-select-option value="0">否</a-select-option>
-        </a-select>
-      </span>
-      <span class="flex">
-        密级:
-        <a-select defaultValue="请选择" style="width: 90px" @change="handleChanges">
-          <a-select-option value="">不限制</a-select-option>
-          <a-select-option value="30">非密</a-select-option>
-          <a-select-option value="40">秘密</a-select-option>
-          <a-select-option value="60">机密</a-select-option>
-        </a-select>
-      </span>
-      <span class="flex" style="width: 25%">
-        时间: <a-range-picker @change="onChange" style="width: 170px;" />
+        <span class="flex">
+          群组名称: <a-input v-model="groupName" placeholder="输入文件名" style="width:85px"/>
+        </span>
+        <span class="flex">
+          是否关闭:
+          <a-select defaultValue="请选择" style="width: 90px" @change="handleChange">
+            <a-select-option value="">不限制</a-select-option>
+            <a-select-option value="1">已关闭</a-select-option>
+            <a-select-option value="0">未关闭</a-select-option>
+          </a-select>
+        </span>
+        <span class="flex">
+          是否跨越场所:
+          <a-select defaultValue="请选择" style="width: 90px" @change="iscrossChange">
+            <a-select-option value="">不限制</a-select-option>
+            <a-select-option value="1">是</a-select-option>
+            <a-select-option value="0">否</a-select-option>
+          </a-select>
+        </span>
+        <span class="flex">
+          密级:
+          <a-select defaultValue="请选择" style="width: 90px" @change="handleChanges">
+            <a-select-option value="">不限制</a-select-option>
+            <a-select-option value="30">非密</a-select-option>
+            <a-select-option value="40">秘密</a-select-option>
+            <a-select-option value="60">机密</a-select-option>
+          </a-select>
+        </span>
+        <span class="flex" style="width: 25%">
+          时间: <a-range-picker @change="onChange" style="width: 170px;" />
 
-      </span>
-      <span class="flex" style="width: 10%">
-        <a-button type="primary" @click="onChangeAll">查询</a-button>
-      </span>
-    </div>
-    <a-table :columns="columns" :loading="spinning" :dataSource="data" :pagination="false">
-      <a class="file_name_all" style="" slot="name" slot-scope="text">{{ text }}</a>
-      <span slot="customTitle">群组名</span>
-      <span slot="tags" slot-scope="tags, record">
-        <a-tag :color="record.color">{{ tags }}</a-tag>
-      </span>
-      <span slot="action" slot-scope="record">
-        <a @click="click(record)">详情</a>
-        <a-divider type="vertical" />
-        <a @click="operation(record)">操作</a>
-      </span>
-    </a-table>
-    <a-pagination style="float: right" @change="onChanges" :total="total" />
-    <!-- 详情弹框 -->
-    <div id="components-modal-demo-position" >
-      <a-modal
-        :title="modelName"
-        centered
-        v-model="modal2Visible"
-        @ok="() => modal2Visible = false"
-      >
-        <div>
+        </span>
+        <span class="flex" style="width: 10%">
+          <a-button type="primary" @click="onChangeAll">查询</a-button>
+        </span>
+      </div>
+      <a-table :columns="columns" :loading="spinning" :dataSource="data" :pagination="false">
+        <a class="file_name_all" style="" slot="name" slot-scope="text">{{ text }}</a>
+        <span slot="customTitle">群组名</span>
+        <span slot="tags" slot-scope="tags, record">
+          <a-tag :color="record.color">{{ tags }}</a-tag>
+        </span>
+        <span slot="action" slot-scope="record">
+          <a @click="click(record)">详情</a>
+          <a-divider type="vertical" />
+          <a @click="operation(record)">操作</a>
+        </span>
+      </a-table>
+      <a-pagination style="float: right" @change="onChanges" :total="total" />
+      <!-- 详情弹框 -->
+      <div id="components-modal-demo-position" >
+        <a-modal
+          :title="modelName"
+          centered
+          v-model="modal2Visible"
+          @ok="() => modal2Visible = false"
+        >
           <div>
-            <p class="p">密级</p>
-            {{ levels }}
-          </div>
-
-          <div>
-            <p class="p">创建人</p>
-            {{ creatorName }}
-          </div>
-          <div>
-            <p class="p">创建时间</p>
-            {{ createTime }}
-          </div>
-          <a-tooltip :title="groupDescribe">
-            <div class="group_describe">
-              <p class="p">描述</p>
-              {{ groupDescribe }}
+            <div>
+              <p class="p">密级</p>
+              {{ levels }}
             </div>
-          </a-tooltip>
-          <ul class="user_ul">
-            <li class="o_li" v-for="item in listData" :key="item.groupId">
-              <a-avatar class="group_list_img" shape="square" size="large" :src="item.avartar" >{{ item.name }}</a-avatar>
-              <a-tooltip :title="item.name">
-                <span class="group_list_sp"> {{ item.name }}</span>
-              </a-tooltip>
-            </li>
-          </ul>
-        </div>
-      </a-modal>
-    </div>
-    <!-- 操作弹框 -->
-    <div id="components-modal-demo-position" >
-      <a-modal
-        title="群组操作"
-        centered
-        v-model="modal1Visible"
-        @ok="() => modal1Visible = false"
-      >
-        <div>
-          <p>占无操作选项</p>
-        </div>
-      </a-modal>
-    </div>
+
+            <div>
+              <p class="p">创建人</p>
+              {{ creatorName }}
+            </div>
+            <div>
+              <p class="p">创建时间</p>
+              {{ createTime }}
+            </div>
+            <a-tooltip :title="groupDescribe">
+              <div class="group_describe">
+                <p class="p">描述</p>
+                {{ groupDescribe }}
+              </div>
+            </a-tooltip>
+            <ul class="user_ul">
+              <li class="o_li" v-for="item in listData" :key="item.groupId">
+                <a-avatar class="group_list_img" shape="square" size="large" :src="item.avartar" >{{ item.name }}</a-avatar>
+                <a-tooltip :title="item.name">
+                  <span class="group_list_sp"> {{ item.name }}</span>
+                </a-tooltip>
+              </li>
+            </ul>
+          </div>
+        </a-modal>
+      </div>
+      <!-- 操作弹框 -->
+      <div id="components-modal-demo-position" >
+        <a-modal
+          title="群组操作"
+          centered
+          v-model="modal1Visible"
+          @ok="() => modal1Visible = false"
+        >
+          <div>
+            <p>占无操作选项</p>
+          </div>
+        </a-modal>
+      </div>
+    </a-card>
   </div>
 
 </template>

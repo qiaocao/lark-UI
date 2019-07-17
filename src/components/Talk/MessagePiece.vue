@@ -11,9 +11,8 @@
       :class="['message-avatar', {send: isMe(), receive: !isMe()}]"
       shape="square"
       :src="isMe() ? avatar : messageInfo.avatar"
-      :size="40"
-    >
-      <span>{{ messageInfo.username.substr(0, 4) }}</span>
+      :size="40">
+      {{ messageInfo.username.substr(0, 4) }}
     </a-avatar>
 
     <div class="message-content">

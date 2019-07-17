@@ -2,18 +2,52 @@
   <div>
     <a-card>
       <div class="table-page-search-wrapper">
-        <a-form layout="inline">
-          <a-row :gutter="32" type="flex" justify="end">
-            <a-col :span="4">
+        <a-form layout="inline" ref="form">
+          <a-row :gutter="32" type="flex">
+            <a-col :span="6">
               <a-form-item label="菜单">
-                <a-input v-model="queryParam.opt"/>
+                <a-input v-model="queryParam.menu"/>
+              </a-form-item>
+            </a-col>
+            <a-col :span="6">
+              <a-form-item label="操作类型">
+                <a-select placeholder="请选择" v-model="queryParam.opt">
+                  <a-select-option value="GET">查询</a-select-option>
+                  <a-select-option value="POST">添加</a-select-option>
+                  <a-select-option value="PUT">修改</a-select-option>
+                  <a-select-option value="DELETE">删除</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col :span="6">
+              <a-form-item label="操作人">
+                <a-input v-model="queryParam.crtName"/>
               </a-form-item>
             </a-col>
             <a-col :span="6">
               <span class="table-page-search-submitButtons">
                 <a-button type="primary" @click="search">查询</a-button>
                 <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
+                <a-button type="primary" style="margin-left: 15px" @click="exportData" :loading="loading" v-action:export>导出</a-button>
               </span>
+            </a-col>
+          </a-row>
+          <a-row :gutter="32" type="flex">
+            <a-col :span="6">
+              <a-form-item label="主机ip">
+                <a-input v-model="queryParam.crtHost"/>
+              </a-form-item>
+            </a-col>
+            <a-col :span="6">
+              <a-form-item label="操作时间">
+                <a-range-picker @change="onChange" />
+              </a-form-item>
+            </a-col>
+            <a-col :span="6">
+              <span></span>
+            </a-col>
+            <a-col :span="6">
+              <span style="margin-top:20px">日志容量：{{ totalCount }}/10000</span>
             </a-col>
           </a-row>
         </a-form>
@@ -31,7 +65,7 @@
 </template>
 <script>
 import { STable } from '@/components'
-import { getGateLog } from '@/api/admin'
+import { getGateLog, exportGateLog } from '@/api/admin'
 export default {
   name: 'GateLogList',
   components: {
@@ -47,7 +81,7 @@ export default {
           dataIndex: 'menu'
         },
         {
-          title: '请求',
+          title: '操作类型',
           dataIndex: 'opt'
         },
         {
@@ -59,15 +93,19 @@ export default {
         //   dataIndex: 'crtUser'
         // },
         {
-          title: '创建人',
+          title: '操作人',
           dataIndex: 'crtName'
         },
         {
-          title: '创建时间',
+          title: '操作人身份证号',
+          dataIndex: 'pid'
+        },
+        {
+          title: '操作时间',
           dataIndex: 'crtTime'
         },
         {
-          title: '主机',
+          title: '主机ip',
           dataIndex: 'crtHost'
         }
       ],
@@ -82,9 +120,13 @@ export default {
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         return getGateLog(Object.assign(parameter, this.queryParam)).then(res => {
+          this.totalCount = res.result.totalCount
           return res.result
         })
-      }
+      },
+      loading: false,
+      dataStr: '',
+      totalCount: 0
     }
   },
   methods: {
@@ -92,7 +134,43 @@ export default {
      * 搜索
      */
     search () {
+      this.queryParam.crtTime = this.dataStr
       this.$refs.stable.loadData({}, this.queryParam, {})
+    },
+    onChange (date, datestr) {
+      this.dataStr = datestr
+    },
+    /**
+     * 导出数据
+     */
+    exportData () {
+      this.loading = true
+      exportGateLog().then(res => {
+        this.download(res)
+        this.loading = false
+      }).catch(() =>
+        this.$notification['error']({
+          message: '出现异常，请联系系统管理员',
+          duration: 4
+        })
+      )
+    },
+    /**
+     * 下载
+     */
+    download (data) {
+      if (!data) {
+        return
+      }
+      const url = window.URL.createObjectURL(new Blob([data], { type: 'application/vnd.ms-excel' }))
+      const link = document.createElement('a')
+      link.style.display = 'none'
+      link.href = url
+      // 获取文件名
+      // download 属性定义了下载链接的地址而不是跳转路径
+      link.setAttribute('download', '日志列表.xls')
+      document.body.appendChild(link)
+      link.click()
     }
   }
 }

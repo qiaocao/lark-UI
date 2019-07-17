@@ -2,7 +2,7 @@
   <div :class="contactsItemClasses" @click="handleClick" :key="contactsInfo.key">
     <div class="avatar">
       <a-avatar class="avatar-img" shape="square" :src="contactsInfo.icon" :size="30">
-        <span>{{ contactsInfo.title.substr(0, 2) }}</span>
+        {{ contactsInfo.title.substr(0, 2) }}
       </a-avatar>
     </div>
     <div class="extra">
@@ -52,7 +52,7 @@ export default {
 
 <style lang="less" scoped>
   .activated {
-    background-color: rgb(195, 197, 199)!important;
+    background-color: #d3d6dc!important;
   }
   .on-line {
     color: rgba(43, 162, 69, 1);
@@ -65,11 +65,11 @@ export default {
     cursor: pointer;
     overflow: hidden;
     padding: 10px 18px 9px;
-    background-color: rgb(230, 232, 235);
+    background-color: #ebeff5;
     border-bottom: 1px solid rgb(218, 220, 223);
 
     &:hover {
-      background-color: rgb(215, 217, 219);
+      background-color: #d3d6dc99;
     }
 
   }
