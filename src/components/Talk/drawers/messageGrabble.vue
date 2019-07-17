@@ -32,7 +32,7 @@
           <div class="content_r">
             <h3 class="user_name">{{ item.username }}</h3>
             <p></p>
-            <img :src="item.content.url" alt="图片加载失败" class="content_img">
+            <img :src="imgPrevie(item.content.id)" alt="图片加载失败" class="content_img">
           </div>
           <div class="history_right">
             <span>{{ item.sendTimeShort }}</span>
@@ -46,7 +46,6 @@
           <a :href="genDownLoadPath(item.content.id)" class="down dow_height">下载</a>
         </div>
         <div class="borderDiv" v-if="item.content.type == 3">
-          <!-- <img :src="item.avatar" class="content_l" alt> -->
           <a-avatar class="content_l" shape="square" size="large" :src="item.avatar" >{{ item.username }}</a-avatar>
           <div class="content_r">
             <h3 class="user_name">{{ item.username }}</h3>
@@ -127,6 +126,10 @@ export default {
     /** 生成下载路径 */
     genDownLoadPath (fileId) {
       return api.fileDownload + '?fileId=' + fileId
+    },
+    // 图片预览地址
+    imgPrevie (id) {
+      return api.imgPrevie + '?fileId=' + id
     },
     onSearch (value) {
     },

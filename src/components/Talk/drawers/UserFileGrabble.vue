@@ -77,7 +77,7 @@
 
 </template>
 <script>
-import { userfileGrabble, fileDownload } from '@/api/talk.js'
+import { userfileGrabble } from '@/api/talk.js'
 import api from '@/api/talk'
 
 export default {
@@ -118,6 +118,15 @@ export default {
     onSearch (value) {
       console.log(value)
     },
+    openNotification () {
+      this.$notification.warning({
+        message: '无法获取文件，稍后再试',
+        description: '',
+        onClick: () => {
+          console.log('Notification Clicked!')
+        }
+      })
+    },
 
     getData (callback) {
       this.loading = true
@@ -143,8 +152,11 @@ export default {
         const datas = data.result.data
         datas.map(item => {
           this.data.push(item)
-          this.loading = false
         })
+      }).catch(res => {
+        this.openNotification()
+        this.showLoadingMore = true
+        this.loading = false
       })
     },
     onLoadMore () {
@@ -161,14 +173,6 @@ export default {
     /** 抽屉关闭时触发closeDrawer事件 */
     onClose () {
       this.$emit('closeDrawer')
-    },
-    down (id) {
-      fileDownload(id).then(item => {
-        // if (item === 1) {
-        //   this.flag = true
-        // }
-        window.open('/api/chat/zzFileManage/downloadFile' + '?fileId=' + id, '_self')
-      })
     },
     fileAll () {
       this.state = ''

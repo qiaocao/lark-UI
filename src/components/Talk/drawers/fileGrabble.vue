@@ -12,7 +12,7 @@
       <span style="width: 49%;margin-left:20px">
         <a-button class="button_ma" @click="fileAll">全部</a-button>
         <a-button class="button_ma" @click="finish">已上传</a-button>
-        <a-button class="button_ma" @click="padding">待审核</a-button>
+        <a-button class="button_ma" @click="pending">待审核</a-button>
       </span>
     </div>
     <ul class="history_box">
@@ -29,14 +29,11 @@
         <p></p>
       </li>
       <li v-for="(newItem,index) in NewItems" class="history_cotent" :key="index" :value="newItem.value">
-        <!-- {{ NewItems }} -->
         <a-list-item-meta class="file_name">
           <a-tooltip slot="title" :title="newItem.fileName">
             <a class="file_a" message="sss">{{ newItem.fileName }}</a> <!-- 文件名 -->
           </a-tooltip> <!-- 文件图片 -->
-          <!-- <a-avatar slot="avatar" :src="newItem.url" style="border-radius:0" /> -->
           <a-avatar slot="avatar" :src="newItem.url" style="border-radius:0;  font-size: 25px;" > <a-icon type="file"></a-icon> </a-avatar>
-          <!-- <a-icon class="content_icon" type="file"/> -->
         </a-list-item-meta>
         <a-tooltip :title="newItem.reviser">
           <span class="file_sp">{{ newItem.reviser }}</span><!-- 人名  -->
@@ -77,7 +74,7 @@
 
 </template>
 <script>
-import { fileGrabble, fileDownload } from '@/api/talk.js'
+import { fileGrabble } from '@/api/talk.js'
 import api from '@/api/talk'
 
 export default {
@@ -95,7 +92,7 @@ export default {
       data: [],
       loading: false,
       loadingMore: false,
-      showLoadingMore: true,
+      showLoadingMore: false,
       item: [],
       pageNumber: 1,
       flag: false,
@@ -109,7 +106,7 @@ export default {
     this.getData()
   },
   methods: {
-    /** 生成下载路径 */
+    // 生成下载路径
     genDownLoadPath (fileId) {
       return api.fileDownload + '?fileId=' + fileId
     },
@@ -144,7 +141,6 @@ export default {
           this.loading = false
           this.noFile = true
         }
-        // callback(data.result.data)
         const datas = data.result.data
         datas.map(item => {
           this.data.push(item)
@@ -152,7 +148,8 @@ export default {
         })
       }).catch(res => {
         this.openNotification()
-        // this.showLoadingMore = false
+        this.loading = false
+        this.showLoadingMore = true
       })
     },
     onLoadMore () {
@@ -171,11 +168,6 @@ export default {
     onClose () {
       this.$emit('closeDrawer')
     },
-    down (id) {
-      fileDownload(id).then(item => {
-        window.open('/api/chat/zzFileManage/downloadFile' + '?fileId=' + id, '_self')
-      })
-    },
     fileAll () {
       this.state = ''
       this.getData()
@@ -184,7 +176,7 @@ export default {
       this.state = '1'
       this.getData()
     },
-    padding () {
+    pending () {
       this.state = '0'
       this.getData()
     }
