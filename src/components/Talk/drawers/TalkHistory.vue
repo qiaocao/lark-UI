@@ -1,23 +1,17 @@
 <template>
   <!-- 聊天记录的抽屉 -->
   <a-drawer
-    id="ss"
     title="聊天记录"
     placement="right"
-    :wrapStyle="{marginTop: '64px'}"
+    :wrapStyle="{marginTop: '64px',overflow: 'auto', paddingBottom: '108px'}"
     :width="448"
     :closable="false"
     @close="onClose"
     :visible="activeOption=='talkHistory'"
-    ref="ss"
-    v-if="hackReset"
     destroyOnClose
     key="2"
   >
     <sou :contactId="contactId" :hisGrop="hisGrop"></sou>
-    <div class="login_img">
-      没有更多信息...
-    </div>
   </a-drawer>
 </template>
 
@@ -27,11 +21,11 @@ export default {
   name: 'TalkHistory',
   props: {
     /** 抽屉挂载的元素 */
-    mountEle: {
-      type: String,
-      default: '.conv-box',
-      required: false
-    },
+    // mountEle: {
+    //   type: String,
+    //   default: '.conv-box',
+    //   required: false
+    // },
     activeOption: {
       type: String,
       default: ''
@@ -86,9 +80,14 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.login_img{
-  text-align: center;
-  color: #cccccc;
+body{
+  .ant-drawer .ant-drawer-content {
+    width: 100%;
+    height: 92%;
+  }
 }
-
+  .ant-drawer .ant-drawer-content {
+    width: 100%!important;
+    height: 92%!important;
+}
 </style>
