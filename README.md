@@ -90,3 +90,8 @@
                             src\views\admin\LogList.vue
  20190716 push by fanjiao:filepath--【隐藏评论区】                                         
                             src\views\dashboard\Feedback.vue
+ 20190717 push by fanjiao:filepath--【日志添加容量】                                         
+                            src\views\admin\LogList.vue
+ 20190717 push by fanjiao:filepath--【公告添加密级】                                         
+                            src\views\admin\NotificationList.vue
+
