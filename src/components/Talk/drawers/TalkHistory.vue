@@ -1,7 +1,7 @@
 <template>
   <!-- 聊天记录的抽屉 -->
   <a-drawer
-    title="聊天记录"
+    title="聊天内容"
     placement="right"
     :wrapStyle="{marginTop: '64px',overflow: 'auto', paddingBottom: '108px'}"
     :width="448"
