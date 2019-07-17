@@ -21,6 +21,8 @@ import CreateTalk from './createTalk/CreateTalk'
 
 import SearchAll from './SearchAll'
 
+import Face from './Face'
+
 export {
   // 消息展示组件
   MessagePiece,
@@ -54,6 +56,9 @@ export {
   // 创建新的研讨
   CreateTalk,
   // 联系人搜索组件
-  SearchAll
+  SearchAll,
+
+  // 表情插件
+  Face
 
 }

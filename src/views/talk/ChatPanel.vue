@@ -14,7 +14,7 @@
         @change="changePane"
         :tabBarGutter="0"
         :tabBarStyle="{ margin: '0 20px' }"
-        :animated="false"
+        animated
       >
         <a-tab-pane key="1" forceRender>
           <span slot="tab">
@@ -42,7 +42,7 @@
           </div>
         </a-tab-pane>
 
-        <a-tab-pane key="2">
+        <a-tab-pane key="2" forceRender>
           <span slot="tab">
             <a-icon type="team" style="{fontSize: 16px}" />群组
           </span>
@@ -68,7 +68,7 @@
           </div>
         </a-tab-pane>
 
-        <a-tab-pane key="3">
+        <a-tab-pane key="3" forceRender>
           <span slot="tab">
             <a-icon type="user" style="{fontSize: 18px, margin: 0}" />联系人
           </span>
