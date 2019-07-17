@@ -10,7 +10,6 @@ const api = {
   recentContacts: 'chat/zzGroup/queryContactListById',
   talkMap: 'chat/zzGroup/queryHistoryMessageById',
   talkHistory: 'chat/history',
-  // getHistory: 'chat/getHiMsg',
   getHistory: 'chat/zzGroup/queryHistoryMessageForSingle',
   getTalksetting: 'chat/zzGroup/getGroupInfo',
   getMoreInfo: '/talk/contacts/info',
@@ -20,13 +19,12 @@ const api = {
   talkHistoryAll: 'chat/zzGroup/queryHistoryMessageForSingle',
   MarkMessageGrabble: 'chat/zzUserGroupMsgTag/getUserGroupMsgTagList',
   getGroupMembers: 'chat/zzGroup/getGroupUserList',
-  // zzGroup/getGroupInfo    groupID
   // getContent: 'https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/notice',
   // 下面的地址前面必须加/
   // 研讨文件上传地址
   fileUpload: '/zuul/api/chat/zzFileManage/singleFileUpload',
   // 图片预览地址
-  imgPrevie: '/api/chat/zzFileManage/GetFile',
+  imgPrevie: '/chat/zzFileManage/GetFile',
   // 文件下载地址
   fileDownload: '/api/chat/zzFileManage/downloadFile'
 }
@@ -205,11 +203,7 @@ export function fileGrabble (parameter) {
   return axios({
     url: api.fileGrabble,
     method: 'post',
-    params: {
-      page: parameter,
-      size: 5,
-      id: 'bgv02TWk'
-    }
+    params: parameter
   })
 }
 /**
@@ -272,17 +266,11 @@ export function MarkMessageGrabble (userId, page, groupId) {
  * 联系人文件
  * userd receiver page size
  */
-export function userfileGrabble (userId, receiver, page) {
+export function userfileGrabble (parameter) {
   return axios({
     url: api.userfileGrabble,
     method: 'post',
-    params: {
-      userId: userId,
-      receiver,
-      page: page,
-      size: 5
-      // tagType: 0
-    }
+    params: parameter
   })
 }
 /**

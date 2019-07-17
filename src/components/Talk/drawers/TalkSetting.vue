@@ -54,20 +54,23 @@
           <a-tag color="" v-if="setting.secretLevel === '30'">非密</a-tag>
         </div>
       </div>
-      <div style="margin-top: 30px">
-        <h4 class="float">创建人:</h4>
+      <div class="setting_list">
+        <h4 class="float" >创建人:</h4>
         <p class="line_height">{{ setting.creatorName }}</p>
       </div>
-      <div style="margin-top: 30px">
-        <h4 class="float">描述:</h4>
-        <p class="line_height">{{ setting.description }}</p>
-      </div>
-      <div style="margin-top: 30px">
-        <h4 class="float">主题:</h4>
-        <p class="line_height">{{ setting.subject }}</p>
-      </div>
-
-      <div style="margin-top: 30px">
+      <a-tooltip :title="setting.description">
+        <div class="setting_list">
+          <h4 class="float">描述:</h4>
+          <p class="line_height">{{ setting.description }}</p>
+        </div>
+      </a-tooltip>
+      <a-tooltip :title="setting.subject">
+        <div class="setting_list">
+          <h4 class="float">主题:</h4>
+          <p class="line_height">{{ setting.subject }}</p>
+        </div>
+      </a-tooltip>
+      <div class="setting_list">
         <h4 class="float">创建时间:</h4>
         <p class="line_height">{{ setting.createTime }}</p>
       </div>
@@ -133,12 +136,13 @@
           <a-switch checkedChildren="开" unCheckedChildren="关" defaultChecked/>
         </a-col>
       </a-row> -->
-        <a-row :gutter="8" class="group-setting-row">
+        <a-row :gutter="8" class="group-setting-row" style="margin-left: 0">
           <a-col :span="10">
-            <span class="group-setting-title">组成员:{{ setting.memberNum }}人</span><!-- 人数 -->
+            <span class="group-setting-title">组成员:</span><!-- 人数 -->
+            <p class="number_of">{{ setting.memberNum }}人</p>
           </a-col>
           <a-col :span="10">
-            <!-- <a @click="() => addMember()">+添加新成员</a> -->
+            <a style="float:right" @click="() => addMember()">+添加新成员</a>
           </a-col>
           <a-col :span="4">
 
@@ -172,7 +176,7 @@
     </div>
     <ul class="setting_ul">
       <li v-for="(item) in userList" :key="item.key">
-        <a-avatar shape="square" :src="item.avartar" style="height: 50px" >{{ item.name }}</a-avatar>
+        <a-avatar shape="square" :src="item.avartar" style="height: 50px; line-height: 50px" >{{ item.name }}</a-avatar>
         <a-tooltip :title="item.name">
           <span class="setting_ul_sp">{{ item.name }}</span>
         </a-tooltip>
@@ -268,15 +272,19 @@ export default {
   text-overflow: ellipsis;
 }
 .float{
+  width: 65px;
   float: left;
-  margin-right: 20px;
+  // margin-right: 20px;
   margin-bottom: 0;
 }
 .line_height{
-  line-height: 25px;
   display: inline-block;
   text-align:left;
   text-indent:2em;
+  width: 320px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .setting_name{
   display: inline-block;
@@ -295,6 +303,8 @@ export default {
   display: inline;
 }
 .group-setting-title{
+  display: inline-block;
+  width: 65px;
   font-size: 14px;
   color: rgba(0, 0, 0, 0.85);
 }
@@ -360,5 +370,15 @@ export default {
     width: 50px;
   }
 }
+.number_of{
+  display: inline-block;
+  display: inline-block;
+  text-align:left;
+  text-indent:2em;
+}
+.setting_list{
+  margin-top: 10px;
+  height: 40px;
 
+}
 </style>
