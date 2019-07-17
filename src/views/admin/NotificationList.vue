@@ -4,12 +4,12 @@
       <div class="table-page-search-wrapper">
         <a-form layout="inline">
           <a-row :gutter="32" type="flex" justify="end">
-            <a-col :md="6" :sm="24">
+            <a-col :md="4" :sm="24">
               <a-form-item label="标题">
                 <a-input v-model="queryParam.title"/>
               </a-form-item>
             </a-col>
-            <a-col :md="6" :sm="24">
+            <a-col :md="4" :sm="24">
               <a-form-item label="消息类型">
                 <a-select placeholder="请选择" v-model="queryParam.type">
                   <a-select-option value="admin">管理员公告</a-select-option>
@@ -17,7 +17,16 @@
                 </a-select>
               </a-form-item>
             </a-col>
-            <a-col :md="6" :sm="24">
+            <a-col :md="4" :sm="24">
+              <a-form-item label="密级">
+                <a-select placeholder="请选择" v-model="queryParam.secretLevel">
+                  <a-select-option value="30">非密</a-select-option>
+                  <a-select-option value="40">秘密</a-select-option>
+                  <a-select-option value="60">机密</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col :md="4" :sm="24">
               <a-form-item label="发布状态">
                 <a-select placeholder="请选择" v-model="queryParam.isSend">
                   <a-select-option value="0">未发布</a-select-option>
@@ -94,6 +103,17 @@
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
+          label="密级"
+        >
+          <a-select placeholder="请选择" v-decorator="['secretLevel',{rules: [{ required: true, message: '请填写消息密级' }]}]" >
+            <a-select-option value="30">非密</a-select-option>
+            <a-select-option value="40">秘密</a-select-option>
+            <a-select-option value="60">机密</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
           label="组织机构"
         >
           <org-tree-select :values="orgCode" @ok="getOrgCode"></org-tree-select>
@@ -158,6 +178,19 @@ export default {
         {
           title: '内容',
           dataIndex: 'content'
+        },
+        {
+          title: '密级',
+          dataIndex: 'secretLevel',
+          key: 'secretLevel',
+          customRender: function (secretLevel) {
+            const config = {
+              '30': '非密',
+              '40': '秘密',
+              '60': '机密'
+            }
+            return config[secretLevel]
+          }
         },
         {
           title: '消息类型',
@@ -238,7 +271,7 @@ export default {
         this.noticeid = record.id
         this.$nextTick(() => {
           // 表单中绑定信息项
-          this.detailForm.setFieldsValue(pick(record, 'title', 'content', 'type'))
+          this.detailForm.setFieldsValue(pick(record, 'title', 'content', 'type', 'secretLevel'))
         })
       }
     },

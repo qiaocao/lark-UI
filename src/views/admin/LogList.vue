@@ -3,18 +3,13 @@
     <a-card>
       <div class="table-page-search-wrapper">
         <a-form layout="inline" ref="form">
-          <a-row :gutter="32" type="flex" justify="end">
-            <a-col :span="4">
-              <a-form-item label="操作人">
-                <a-input v-model="queryParam.crtName"/>
+          <a-row :gutter="32" type="flex">
+            <a-col :span="6">
+              <a-form-item label="菜单">
+                <a-input v-model="queryParam.menu"/>
               </a-form-item>
             </a-col>
-            <a-col :span="4">
-              <a-form-item label="主机ip">
-                <a-input v-model="queryParam.crtHost"/>
-              </a-form-item>
-            </a-col>
-            <a-col :span="4">
+            <a-col :span="6">
               <a-form-item label="操作类型">
                 <a-select placeholder="请选择" v-model="queryParam.opt">
                   <a-select-option value="GET">查询</a-select-option>
@@ -24,22 +19,35 @@
                 </a-select>
               </a-form-item>
             </a-col>
-            <a-col :span="4">
-              <a-form-item label="操作时间">
-                <a-date-picker @change="onChange"/>
+            <a-col :span="6">
+              <a-form-item label="操作人">
+                <a-input v-model="queryParam.crtName"/>
               </a-form-item>
             </a-col>
-            <a-col :span="4">
-              <a-form-item label="菜单">
-                <a-input v-model="queryParam.menu"/>
-              </a-form-item>
-            </a-col>
-            <a-col :span="4">
+            <a-col :span="6">
               <span class="table-page-search-submitButtons">
                 <a-button type="primary" @click="search">查询</a-button>
                 <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
                 <a-button type="primary" style="margin-left: 15px" @click="exportData" :loading="loading" v-action:export>导出</a-button>
               </span>
+            </a-col>
+          </a-row>
+          <a-row :gutter="32" type="flex">
+            <a-col :span="6">
+              <a-form-item label="主机ip">
+                <a-input v-model="queryParam.crtHost"/>
+              </a-form-item>
+            </a-col>
+            <a-col :span="6">
+              <a-form-item label="操作时间">
+                <a-range-picker @change="onChange" />
+              </a-form-item>
+            </a-col>
+            <a-col :span="6">
+              <span></span>
+            </a-col>
+            <a-col :span="6">
+              <span style="margin-top:20px">日志容量：{{ totalCount }}/10000</span>
             </a-col>
           </a-row>
         </a-form>
@@ -56,7 +64,6 @@
   </div>
 </template>
 <script>
-// var fileDownload = require("js-file-download")
 import { STable } from '@/components'
 import { getGateLog, exportGateLog } from '@/api/admin'
 export default {
@@ -74,7 +81,7 @@ export default {
           dataIndex: 'menu'
         },
         {
-          title: '请求',
+          title: '操作类型',
           dataIndex: 'opt'
         },
         {
@@ -90,7 +97,7 @@ export default {
           dataIndex: 'crtName'
         },
         {
-          title: '操作人id',
+          title: '操作人身份证号',
           dataIndex: 'pid'
         },
         {
@@ -113,11 +120,13 @@ export default {
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         return getGateLog(Object.assign(parameter, this.queryParam)).then(res => {
+          this.totalCount = res.result.totalCount
           return res.result
         })
       },
       loading: false,
-      dataStr: ''
+      dataStr: '',
+      totalCount: 0
     }
   },
   methods: {
