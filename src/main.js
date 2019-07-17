@@ -11,7 +11,6 @@ import './core/use'
 import bootstrap from './core/bootstrap'
 import '@/permission' // permission control
 import '@/utils/filter'
-import wysiwyg from 'vue-wysiwyg'
 
 // 定义全局变量 SocketGlobal
 import {
@@ -21,25 +20,7 @@ import {
 
 Vue.config.productionTip = false
 Vue.use(VueAxios, router)
-Vue.use(wysiwyg, {
-  hideModules: {
-    'bold': true,
-    'italic': true,
-    'underline': true,
-    'justifyLeft': true,
-    'justifyCenter': true,
-    'justifyRight': true,
-    'headings': true,
-    'link': true,
-    'code': true,
-    'orderedList': true,
-    'unorderedList': true,
-    'image': true,
-    'table': true,
-    'removeFormat': true,
-    'separator': true
-  }
-})
+
 Vue.prototype.publicPath = process.env.BASE_URL
 Vue.prototype.SocketGlobal = new SocketApi({
   ip: '10.11.24.136',
