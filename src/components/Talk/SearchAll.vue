@@ -179,7 +179,7 @@ export default {
       height: 31px;
       border-radius: 4px;
       z-index: 10;
-      background-color: #a7a8ac;
+      background-color: #a9adb8;
       opacity: 0.5;
       pointer-events: none;
       border: 1px solid #d1d2d4;
@@ -188,7 +188,7 @@ export default {
 
   .result-container {
     height: calc(100vh - 119px);
-    background-color: #e6e8eb;
+    background-color: #ebeff5;
     margin: -24px;
     border-top: 1px #d5d8de solid;
     overflow: auto;
@@ -197,7 +197,7 @@ export default {
       margin: 0;
       padding-left: 17px;
       color: #a0a1a5;
-      background-color: #dcdcdc;
+      background-color: #e6e9ed;
       border-bottom: 1px #d5d8de solid;
     }
   }

@@ -111,11 +111,11 @@ export default {
 <style lang="less" scoped>
 
   .activated {
-    background-color: rgb(195, 197, 199)!important;
+    background-color: #d3d6dc!important;
   }
 
   .top {
-    background-color: rgb(220, 222, 224)!important;
+    background-color: #e6e9ed!important;
   }
 
   .recent-contacts {
@@ -126,11 +126,11 @@ export default {
     cursor: pointer;
     overflow: hidden;
     padding: 12px 18px 11px;
-    background-color: rgb(230, 232, 235);
+    background-color: #ebeff5;
     border-bottom: 1px solid rgb(218, 220, 223);
 
     &:hover {
-      background-color: rgb(215, 217, 219);
+      background-color: #d4d7dc99;
     }
   }
 
