@@ -3,7 +3,7 @@
     <a-form style="max-width: 650px; margin: 40px auto 0;">
       <a-alert
         :closable="true"
-        message="下列用户已根据群组密级进行了筛选"
+        :message="alertMessage"
         style="margin-bottom: 24px;"
       />
 
@@ -59,12 +59,30 @@ export default {
     })
   },
   methods: {
+    alertMessage () {
+      switch (this.groupInfo.levels) {
+        case 60:
+          return '机密级群组成员数量不能超过50'
+        case 40:
+          return '秘密级群组成员数量不能超过100'
+        case 30:
+        default:
+          return '下列用户已根据群组密级进行了筛选'
+      }
+    },
     nextStep () {
-      if (this.userList.length < 1) {
+      const memberNum = this.userList.length
+      if (memberNum < 1) {
         this.$notification.warning({ message: '请选择群组成员' })
         return
-      } else if (this.userList.length < 2) {
+      } else if (memberNum < 2) {
         this.$notification.warning({ message: '成员数量不满足要求' })
+        return
+      } else if (this.groupInfo.levels === 40 && memberNum >= 100) {
+        this.$notification.warning({ message: '秘密级群组成员数量不能超过100' })
+        return
+      } else if (this.groupInfo.levels === 60 && memberNum >= 50) {
+        this.$notification.warning({ message: '机密级群组成员数量不能超过50' })
         return
       }
       const members = this.userList.map(item => {

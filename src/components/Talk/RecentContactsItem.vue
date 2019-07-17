@@ -11,7 +11,7 @@
         :numberStyle="badgeNumStyle">
 
         <a-avatar class="avatar-img" shape="square" :src="contactsInfo.avatar" :size="40">
-          <span>{{ contactsInfo.name.substr(0, 4) }}</span>
+          {{ contactsInfo.name.substr(0, 4) }}
         </a-avatar>
 
       </a-badge>
@@ -143,9 +143,6 @@ export default {
     &-img {
       border-radius: 2px;
       background-color: #4da6fa;
-      span {
-        color: #fff;
-      }
     }
   }
 

@@ -207,6 +207,7 @@
 <script>
 import {
   MessagePiece,
+  Face,
   TalkHistory,
   MoreInfo,
   GroupNotice,
@@ -221,7 +222,6 @@ import { SocketMessage, Tweet } from '@/utils/talk'
 import { mapGetters } from 'vuex'
 // 生成随机uuid
 import uuidv4 from 'uuid/v4'
-import Face from './Face'
 import Watermark from '@/utils/waterMark'
 
 export default {

@@ -29,7 +29,7 @@
         </div>
 
         <a-avatar class="avatar-img" shape="square" :src="groupInfo.avatar" :size="75">
-          <span>{{ groupInfo.name.substr(0, 6) }}</span>
+          {{ groupInfo.name.substr(0, 6) }}
         </a-avatar>
       </div>
 

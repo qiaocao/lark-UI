@@ -4,7 +4,7 @@
 
     <div class="avatar">
       <a-avatar class="avatar-img" shape="square" :src="groupInfo.groupImg" :size="30">
-        <span>{{ groupInfo.groupName.substr(0, 2) }}</span>
+        {{ groupInfo.groupName.substr(0, 2) }}
       </a-avatar>
     </div>
 

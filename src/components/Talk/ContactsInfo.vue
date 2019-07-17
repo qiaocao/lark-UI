@@ -27,7 +27,7 @@
         </div>
 
         <a-avatar class="avatar-img" shape="square" :src="contactsInfo.avatar" :size="75">
-          <span>{{ contactsInfo.name }}</span>
+          {{ contactsInfo.name }}
         </a-avatar>
 
       </div>

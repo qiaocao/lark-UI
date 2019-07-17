@@ -20,7 +20,7 @@
           :numberStyle="{padding: '4px'}"
         >
           <a-avatar class="avatar" size="small" :src="avatar" style="backgroundColor: #f49d2a">
-            <span>{{ nickname.slice(0,1) }}</span>
+            {{ nickname.slice(0,1) }}
           </a-avatar>
         </a-badge>
         <span>{{ nickname }}</span>
