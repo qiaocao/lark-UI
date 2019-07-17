@@ -279,7 +279,7 @@ export default {
   max-width: 280px !important;
   flex: 0 0 280px !important;
 
-  background: rgb(230, 232, 235);
+  background-color: #ebeff5;
   border-right: 1px solid #dcdee0;
 
   // 聊天搜索栏样式 该部分高度为48px
@@ -290,7 +290,7 @@ export default {
       margin-left: 10px;
       width: 31px;
       height: 31px;
-      background: #d1d2d4;
+      background-color: #d3d6dc;
       color: #7c7a7a;
       font-size: 18px;
     }
