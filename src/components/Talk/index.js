@@ -1,5 +1,6 @@
 // 这个组件必须最先引入，否则会报错
 import MessagePiece from './MessagePiece'
+import Face from './Face'
 // 抽屉组件
 import TalkSetting from './drawers/TalkSetting'
 import TalkHistory from './drawers/TalkHistory'
@@ -20,8 +21,6 @@ import GroupInfo from './GroupInfo'
 import CreateTalk from './createTalk/CreateTalk'
 
 import SearchAll from './SearchAll'
-
-import Face from './Face'
 
 export {
   // 消息展示组件
