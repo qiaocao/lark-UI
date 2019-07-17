@@ -11,7 +11,7 @@
 <script>
 import { faceUtils } from '@/utils/face'
 export default {
-  name: 'Faces',
+  name: 'Face',
   components: {},
   data () {
     return {

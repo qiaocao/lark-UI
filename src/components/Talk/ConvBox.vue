@@ -70,7 +70,7 @@
               overlayClassName="emojis-picker"
             >
               <template slot="content">
-                <face @insertFace="insertFace" />
+                <Face @insertFace="insertFace" />
               </template>
               <a-icon style="marginRight: 20px" type="smile" />
               <!-- @click="getfocus(); insertHtmlAtCaret();" -->
@@ -228,14 +228,14 @@ export default {
   name: 'ConvBox',
   components: {
     MessagePiece,
+    Face,
     TalkHistory,
     GroupNotice,
     TalkSetting,
     MarkMessage,
     TalkFile,
     MoreInfo,
-    UserFile,
-    Face
+    UserFile
   },
   props: {
     /** 聊天对话框的基本信息--结构同最近联系人 */
