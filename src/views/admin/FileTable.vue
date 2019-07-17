@@ -1,48 +1,50 @@
 <template>
   <div>
-    <div class="serch_for">
-      <span class="flex">
-        上传者:<a-input v-model="userName" placeholder="输入上传者名字" style="width:115px"/>
-      </span>
-      <span class="flex">
-        文件名:<a-input v-model="fileName" placeholder="输入文件名" style="width:85px"/>
-      </span>
-      <span class="flex">
-        文件类型:
-        <a-select defaultValue="请选择" style="width: 90px" @change="handleChange">
-          <a-select-option value="">不限制</a-select-option>
-          <a-select-option value="1">群文件</a-select-option>
-          <a-select-option value="0">个人文件</a-select-option>
-        </a-select>
-      </span>
-      <span class="flex">
-        密级:
-        <a-select defaultValue="请选择" style="width: 90px" @change="handleChanges">
-          <a-select-option value="">不限制</a-select-option>
-          <a-select-option value="30">非密</a-select-option>
-          <a-select-option value="40">秘密</a-select-option>
-          <a-select-option value="60">机密</a-select-option>
-        </a-select>
-      </span>
-      <span class="flex" style="width: 23%">
-        时间:<a-range-picker @change="onChange" style="width: 170px;" />
+    <a-card>
+      <div class="serch_for">
+        <span class="flex">
+          上传者: <a-input v-model="userName" placeholder="输入上传者名字" style="width:115px"/>
+        </span>
+        <span class="flex">
+          文件名: <a-input v-model="fileName" placeholder="输入文件名" style="width:85px"/>
+        </span>
+        <span class="flex">
+          文件类型:
+          <a-select defaultValue="请选择" style="width: 90px" @change="handleChange">
+            <a-select-option value="">不限制</a-select-option>
+            <a-select-option value="1">群文件</a-select-option>
+            <a-select-option value="0">个人文件</a-select-option>
+          </a-select>
+        </span>
+        <span class="flex">
+          密级:
+          <a-select defaultValue="请选择" style="width: 90px" @change="handleChanges">
+            <a-select-option value="">不限制</a-select-option>
+            <a-select-option value="30">非密</a-select-option>
+            <a-select-option value="40">秘密</a-select-option>
+            <a-select-option value="60">机密</a-select-option>
+          </a-select>
+        </span>
+        <span class="flex" style="width: 23%">
+          时间: <a-range-picker @change="onChange" style="width: 170px;" />
 
-      </span>
-      <span class="flex" style="width: 10%">
-        <a-button type="primary" @click="onChangeAll">查询</a-button>
-      </span>
-    </div>
-    <a-table :columns="columns" :loading="spinning" :dataSource="data" :pagination="false">
-      <a class="file_name_all" style="" slot="name" slot-scope="text">{{ text }}</a>
-      <span slot="customTitle"> 文件名</span>
-      <span slot="tags" slot-scope="tags, record">
-        <a-tag :color="record.color">{{ tags }}</a-tag>
-      </span>
-      <span slot="action" slot-scope="text, record">
-        <a :href="genDownLoadPath(record)" v-if="record.levels === '非密'">下载</a>
-      </span>
-    </a-table>
-    <a-pagination style="float: right" @change="onChanges" :total="total" />
+        </span>
+        <span class="flex" style="width: 10%">
+          <a-button type="primary" @click="onChangeAll">查询</a-button>
+        </span>
+      </div>
+      <a-table :columns="columns" :loading="spinning" :dataSource="data" :pagination="false">
+        <a class="file_name_all" style="" slot="name" slot-scope="text">{{ text }}</a>
+        <span slot="customTitle"> 文件名</span>
+        <span slot="tags" slot-scope="tags, record">
+          <a-tag :color="record.color">{{ tags }}</a-tag>
+        </span>
+        <span slot="action" slot-scope="text, record">
+          <a :href="genDownLoadPath(record)" v-if="record.levels === '非密'">下载</a>
+        </span>
+      </a-table>
+      <a-pagination style="float: right" @change="onChanges" :total="total" />
+    </a-card>
   </div>
 </template>
 <script>
