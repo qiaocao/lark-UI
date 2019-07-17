@@ -1,13 +1,5 @@
 <template>
-  <div>
-    <!-- <input type="text" class="seek_inp" placeholder="输入要搜索内容" v-model="searchVal" >
-    <a-button type="primary" icon="search" style="border-radius:0"></a-button> -->
-
-    <!--
-      1 文本
-      2 文件
-      3 图片
-     -->
+  <div id="m_grabble" >
     <a-input-search
       placeholder="输入要搜索内容"
       @search="onSearch"
@@ -78,7 +70,10 @@
       </li>
     </ul>
     <a-button v-if="isShow" @click="getHistory" style="margin: auto; display: block;"> 加载失败，点击重试</a-button>
-    <div v-if="!isShow" class="login_img">
+    <div v-if="loading" class="example">
+      <a-spin />
+    </div>
+    <div v-if="noMessage" class="login_img">
       没有更多信息...
     </div>
   </div>
@@ -112,9 +107,10 @@ export default {
       userMessage: false,
       userId: '',
       page: 1,
-      Dowflag: false,
       fileId: '',
-      isShow: false
+      isShow: false,
+      loading: false,
+      noMessage: false
     }
   },
   created () {
@@ -143,23 +139,29 @@ export default {
     openNotification () {
       this.$notification.warning({
         message: '无法获取聊天内容，稍后再试',
-        description: '',
-        onClick: () => {
-          console.log('Notification Clicked!')
-        }
+        description: ''
+        // onClick: () => {
+        //   console.log('Notification Clicked!')
+        // }
       })
     },
     getHistory () {
+      this.loading = true
       this.userId = this.$store.getters.userId
       talkHistoryAll(this.userId, this.hisGrop, this.contactId, this.page).then(data => {
         this.isShow = false
         const datas = data.result.data
+        if (datas.length < 30) {
+          this.loading = false
+          this.noMessage = true
+        }
         datas.map((item) => {
           this.items.push(item)
         })
       }).catch(res => {
         this.isShow = true
         this.openNotification()
+        this.loading = false
       })
     },
     // 滚动获取数据
@@ -171,11 +173,13 @@ export default {
         clearTimeout(this.timer)
         this.timer = setTimeout(() => {
           this.page++
-
           if (this.activeOption === 'talkHistory') {
-            // this.getHistory()
             talkHistoryAll(this.userId, this.hisGrop, this.contactId, this.page).then(data => {
               const datas = data.result.data
+              if (datas.length < 30) {
+                this.loading = false
+                this.noMessage = true
+              }
               datas.map((item, index, array) => {
                 this.items.push(item)
               })
@@ -247,7 +251,6 @@ export default {
       width: 150px;
     }
     p {
-      // width: 250px;
       border-radius: 5px;
       cursor: pointer;
     }
@@ -273,12 +276,11 @@ export default {
   height: 30px;
   outline: none;
   border: 1px solid #cccccc;
-  // border-radius: 5px;
   margin-bottom: 20px;
 }
 .history_box{
   padding:0;
-  margin-bottom: 50px
+  margin-bottom: 35px
 }
 .down{
   margin: 10px 10px 0 0;
@@ -330,5 +332,22 @@ export default {
 .login_img{
   text-align: center;
   color: #cccccc;
+  margin-bottom: 20px
 }
+#m_grabble{
+  overflow: auto;
+  width: 105%;
+  margin-right: 24px;
+  height: 100%;
+  height: calc(88vh - 55px);
+}
+.ant-drawer .ant-drawer-content {
+    width: 100%;
+    height: 92%!important;
+}
+.example {
+    text-align: center;
+    border-radius: 4px;
+    margin: 10px 0 20px 0;
+  }
 </style>
