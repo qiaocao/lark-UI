@@ -10,7 +10,7 @@
         </span>
         <span class="flex">
           文件类型:
-          <a-select defaultValue="请选择" style="width: 90px" @change="handleChange">
+          <a-select defaultValue="请选择" v-model="value" :allowClear="true" style="width: 90px" @change="handleChange">
             <a-select-option value="">不限制</a-select-option>
             <a-select-option value="1">群文件</a-select-option>
             <a-select-option value="0">个人文件</a-select-option>
@@ -18,7 +18,7 @@
         </span>
         <span class="flex">
           密级:
-          <a-select defaultValue="请选择" style="width: 90px" @change="handleChanges">
+          <a-select defaultValue="请选择" v-model="values" :allowClear="true" style="width: 90px" @change="handleChanges">
             <a-select-option value="">不限制</a-select-option>
             <a-select-option value="30">非密</a-select-option>
             <a-select-option value="40">秘密</a-select-option>
@@ -31,6 +31,7 @@
         </span>
         <span class="flex" style="width: 10%">
           <a-button type="primary" @click="onChangeAll">查询</a-button>
+          <a-button style="margin-left: 5px" @click="onChangeclear">重置</a-button>
         </span>
       </div>
       <a-table :columns="columns" :loading="spinning" :dataSource="data" :pagination="false">
@@ -81,7 +82,7 @@ const columns = [{
   dataIndex: 'levels',
   scopedSlots: { customRender: 'tags' }
 }, {
-  title: '',
+  title: '操作',
   key: 'action',
   scopedSlots: { customRender: 'action' }
 }]
@@ -155,6 +156,15 @@ export default {
         this.current = 1
       }
       this.current = 1
+      this.getTable()
+    },
+    onChangeclear () {
+      this.userName = ''
+      this.fileName = ''
+      this.value = ''
+      this.values = ''
+      this.dateBegin = ''
+      this.dateEnd = ''
       this.getTable()
     },
     genDownLoadPath (fileId) {
