@@ -106,14 +106,14 @@ export default {
         },
         {
           title: '状态',
-          dataIndex: 'status',
-          key: 'status',
-          customRender: function (status) {
+          dataIndex: 'isSuccess',
+          key: 'isSuccess',
+          customRender: function (isSuccess) {
             const config = {
               '0': '失败',
               '1': '成功'
             }
-            return config[status]
+            return config[isSuccess]
           }
         },
         {
