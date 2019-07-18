@@ -118,7 +118,7 @@
         >
           <org-tree-select :values="orgCode" @ok="getOrgCode"></org-tree-select>
         </a-form-item>
-        <a-form-item
+        <!-- <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
           label="附件"
@@ -135,7 +135,7 @@
               <a-icon type="upload" />上传
             </a-button>
           </a-upload>
-        </a-form-item>
+        </a-form-item> -->
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"

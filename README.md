@@ -94,4 +94,7 @@
                             src\views\admin\LogList.vue
  20190717 push by fanjiao:filepath--【公告添加密级】                                         
                             src\views\admin\NotificationList.vue
-
+ 20190718 push by fanjiao:filepath--【1、公告隐藏上传信息2、用户添加人员排序3、网关日志添加状态】                                         
+                            src\views\admin\NotificationList.vue
+                            src\views\admin\LogList.vue
+                            src\views\admin\UserList.vue

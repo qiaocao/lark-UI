@@ -148,6 +148,15 @@
                 <a-form-item
                   :labelCol="labelCol"
                   :wrapperCol="wrapperCol"
+                  label="人员排序"
+                >
+                  <a-input-number :min="1" :max="99999" v-decorator="['orderId']" style="width:100%"/>
+                </a-form-item>
+              </a-col>
+              <a-col :span="10" :offset="1">
+                <a-form-item
+                  :labelCol="labelCol"
+                  :wrapperCol="wrapperCol"
                   label="状态"
                 >
                   <a-switch defaultChecked v-decorator="['status']"/>
@@ -463,7 +472,8 @@ export default {
             secretLevel: this.userinfo.secretLevel,
             pid: this.userinfo.pid,
             status: this.userinfo.status === '启用',
-            gender: this.userinfo.gender
+            gender: this.userinfo.gender,
+            orderId: this.userinfo.orderId
           })
         }, 0)
         this.orgid = item.orgCode === undefined ? '' : item.orgCode + 'select'
@@ -483,7 +493,8 @@ export default {
             secretLevel: '',
             pid: '',
             status: true,
-            gender: ''
+            gender: '',
+            orderId: ''
           })
         }, 0)
         this.orgid = ''
