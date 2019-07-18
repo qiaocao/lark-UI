@@ -10,23 +10,23 @@
         </span>
         <span class="flex">
           是否关闭:
-          <a-select defaultValue="请选择" style="width: 90px" @change="handleChange">
+          <a-select defaultValue="请选择" v-model="value" style="width: 90px" @change="handleChange">
             <a-select-option value="">不限制</a-select-option>
             <a-select-option value="1">已关闭</a-select-option>
             <a-select-option value="0">未关闭</a-select-option>
           </a-select>
         </span>
-        <span class="flex">
+        <!-- <span class="flex">
           是否跨越场所:
           <a-select defaultValue="请选择" style="width: 90px" @change="iscrossChange">
             <a-select-option value="">不限制</a-select-option>
             <a-select-option value="1">是</a-select-option>
             <a-select-option value="0">否</a-select-option>
           </a-select>
-        </span>
+        </span> -->
         <span class="flex">
           密级:
-          <a-select defaultValue="请选择" style="width: 90px" @change="handleChanges">
+          <a-select defaultValue="请选择" v-model="values" style="width: 90px" @change="handleChanges">
             <a-select-option value="">不限制</a-select-option>
             <a-select-option value="30">非密</a-select-option>
             <a-select-option value="40">秘密</a-select-option>
@@ -39,6 +39,7 @@
         </span>
         <span class="flex" style="width: 10%">
           <a-button type="primary" @click="onChangeAll">查询</a-button>
+          <a-button style="margin-left: 5px" @click="onChangeClear">重置</a-button>
         </span>
       </div>
       <a-table :columns="columns" :loading="spinning" :dataSource="data" :pagination="false">
@@ -242,6 +243,16 @@ export default {
         this.current = 1
       }
       this.current = 1
+      this.getTable()
+    },
+    onChangeClear () {
+      this.userName = ''
+      this.groupName = ''
+      this.value = ''
+      this.values = ''
+      this.dateBegin = ''
+      this.dateEnd = ''
+      this.iscross = ''
       this.getTable()
     },
     getTable () {
