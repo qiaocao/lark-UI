@@ -98,3 +98,7 @@
                             src\views\admin\NotificationList.vue
                             src\views\admin\LogList.vue
                             src\views\admin\UserList.vue
+ 20190718 push by fanjiao:filepath--【1、个人设置添加组织机构2、修改个人设置中常用链接设置几个tab页切换时，宽度不稳定问题】                                         
+                            src\views\account\settings\CommonTool.vue
+                            src\views\account\settings\BaseSetting.vue
+
