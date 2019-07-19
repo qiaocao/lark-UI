@@ -1,4 +1,5 @@
 <template>
+  <!-- 聊天内容 -->
   <div id="m_grabble" >
     <a-input-search
       placeholder="输入要搜索内容"
@@ -11,8 +12,7 @@
     <ul class="history_box">
       <li v-for="(item) in NewItems" class="history_cotent" :key="item.id" :value="item.value">
         <div class="borderDiv" v-if="item.content.type == 1" >
-          <!-- <img :src="item.avatar" class="content_l" :alt="item.username"> -->
-          <a-avatar class="content_l" shape="square" size="large" :src="item.avatar" >{{ item.username }}</a-avatar>
+          <a-avatar class="content_l" shape="square" size="large" :src="fileurl+''+item.avatar" >{{ item.username }}</a-avatar>
           <div class="content_r">
             <h3 class="user_name">{{ item.username }}</h3>
             <div @click="isCurrent(item.content.title)" :class="{'current':flag}" v-html="item.content.title"></div>
@@ -27,8 +27,7 @@
           </div>
         </div>
         <div class="borderDiv" v-if="item.content.type == 2" >
-          <!-- <img :src="item.avatar" class="content_l" :alt="item.username"> -->
-          <a-avatar class="content_l" shape="square" size="large" :src="item.avatar" >{{ item.username }}</a-avatar>
+          <a-avatar class="content_l" shape="square" size="large" :src="fileurl+''+item.avatar" >{{ item.username }}</a-avatar>
           <div class="content_r">
             <h3 class="user_name">{{ item.username }}</h3>
             <p></p>
@@ -46,7 +45,7 @@
           <a :href="genDownLoadPath(item.content.id)" class="down dow_height">下载</a>
         </div>
         <div class="borderDiv" v-if="item.content.type == 3">
-          <a-avatar class="content_l" shape="square" size="large" :src="item.avatar" >{{ item.username }}</a-avatar>
+          <a-avatar class="content_l" shape="square" size="large" :src="fileurl+''+item.avatar" >{{ item.username }}</a-avatar>
           <div class="content_r">
             <h3 class="user_name">{{ item.username }}</h3>
             <dir class="content_file">
@@ -81,6 +80,7 @@
 <script>
 import { talkHistoryAll } from '@/api/talk.js'
 import api from '@/api/talk'
+import { FILE_SERVER_IP } from '@/utils/constants'
 
 export default {
   name: 'Rabble',
@@ -103,13 +103,14 @@ export default {
       items: [],
       flag: true,
       activeOption: '',
-      userMessage: false,
       userId: '',
       page: 1,
       fileId: '',
       isShow: false,
       loading: false,
-      noMessage: false
+      noMessage: false,
+      send: true,
+      fileurl: FILE_SERVER_IP
     }
   },
   created () {
@@ -143,20 +144,25 @@ export default {
       this.$notification.warning({
         message: '无法获取聊天内容，稍后再试',
         description: ''
-        // onClick: () => {
-        //   console.log('Notification Clicked!')
-        // }
       })
     },
     getHistory () {
       this.loading = true
       this.userId = this.$store.getters.userId
-      talkHistoryAll(this.userId, this.hisGrop, this.contactId, this.page).then(data => {
+      const options = {
+        userId: this.userId,
+        isGroup: this.hisGrop,
+        contactId: this.contactId,
+        page: this.page,
+        size: 30
+      }
+      talkHistoryAll(options).then(data => {
         this.isShow = false
         const datas = data.result.data
         if (datas.length < 30) {
           this.loading = false
           this.noMessage = true
+          this.send = false
         }
         datas.map((item) => {
           this.items.push(item)
@@ -172,27 +178,12 @@ export default {
       const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
       const clientHeight = document.documentElement.clientHeight
       const scrollHeight = document.documentElement.scrollHeight
-      if (scrollTop + clientHeight === scrollHeight) {
+      if (scrollTop + clientHeight === scrollHeight && this.send === true && this.activeOption === 'talkHistory') {
         clearTimeout(this.timer)
         this.timer = setTimeout(() => {
           this.page++
-          if (this.activeOption === 'talkHistory') {
-            talkHistoryAll(this.userId, this.hisGrop, this.contactId, this.page).then(data => {
-              const datas = data.result.data
-              if (datas.length < 30) {
-                this.loading = false
-                this.noMessage = true
-              }
-              datas.map((item, index, array) => {
-                this.items.push(item)
-              })
-            }).catch((res) => {
-              this.isShow = true
-              this.openNotification()
-            })
-          }
+          this.getHistory()
         }, 1000)
-      } else {
       }
     }
   },
@@ -274,13 +265,7 @@ export default {
     }
   }
 }
-.seek_inp{
-  width: 90%;
-  height: 30px;
-  outline: none;
-  border: 1px solid #cccccc;
-  margin-bottom: 20px;
-}
+
 .history_box{
   padding:0;
   margin-bottom: 35px
@@ -291,13 +276,6 @@ export default {
   bottom: 10px;
   right: 0;
   height: 20px
-}
-.small{
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
-  text-align: center!important;
-  font-size: 3px
 }
 .content_img{
   max-width: 285px;

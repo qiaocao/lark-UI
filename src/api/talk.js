@@ -24,7 +24,7 @@ const api = {
   // 研讨文件上传地址
   fileUpload: '/zuul/api/chat/zzFileManage/singleFileUpload',
   // 图片预览地址
-  imgPrevie: '/chat/zzFileManage/GetFile',
+  imgPrevie: '/api/chat/zzFileManage/GetFile',
   // 文件下载地址
   fileDownload: '/api/chat/zzFileManage/downloadFile'
 }
@@ -232,21 +232,15 @@ export function fileDownload (parameter) {
 /**
  * 联系人判断历史消息
  */
-export function talkHistoryAll (userId, isGroup, id, page) {
+export function talkHistoryAll (parameter) {
   return axios({
     url: api.talkHistoryAll,
     method: 'get',
-    params: {
-      userId: userId,
-      isGroup: isGroup,
-      contactId: id,
-      page: page,
-      size: 30
-    }
+    params: parameter
   })
 }
 /**
- * 联系人判断历史消息
+ * 标记信息
  * ?userId?groupId?tagType=0?page?size
  */
 export function MarkMessageGrabble (userId, page, groupId) {

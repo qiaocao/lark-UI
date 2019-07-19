@@ -1,4 +1,5 @@
 <template>
+  <!-- 研讨组设置抽屉 -->
   <a-drawer
     class="unpop-modal"
     title="研讨组设置"
@@ -176,7 +177,7 @@
     </div>
     <ul class="setting_ul">
       <li v-for="(item) in userList" :key="item.key">
-        <a-avatar shape="square" :src="item.avartar" style="height: 50px; line-height: 50px" >{{ item.name }}</a-avatar>
+        <a-avatar shape="square" :src="fileurl+''+item.avatar" style="height: 50px; line-height: 50px" >{{ item.name }}</a-avatar>
         <a-tooltip :title="item.name">
           <span class="setting_ul_sp">{{ item.name }}</span>
         </a-tooltip>
@@ -186,14 +187,11 @@
 </template>
 <script>
 import { getTalksetting, getGroupMembers } from '@/api/talk.js'
+import { FILE_SERVER_IP } from '@/utils/constants'
 const data = ['1', '2', '1', '2', '1', '2']
 export default {
   name: 'MoreInfo',
   props: {
-    // talk: {
-    //   type: String,
-    //   default: ''
-    // },
     /** 抽屉挂载的元素 */
     // mountEle: {
     //   type: String,
@@ -218,15 +216,15 @@ export default {
       editable: false,
       text: 'caonima',
       data,
-      // visible: false,
+      visible: false,
       setting: [],
       items: [],
-      userList: []
+      userList: [],
+      fileurl: FILE_SERVER_IP
     }
   },
   watch: {
     activeOption (newValue) {
-      // const ary = []
       if (newValue === 'moreInfo') {
         getTalksetting(this.groupId).then(res => {
           const datas = res.result
@@ -241,7 +239,6 @@ export default {
   },
   methods: {
     handleChange (value) {
-      console.log(value)
       this.text = value
     },
     edit () {
@@ -274,7 +271,6 @@ export default {
 .float{
   width: 65px;
   float: left;
-  // margin-right: 20px;
   margin-bottom: 0;
 }
 .line_height{
@@ -295,7 +291,6 @@ export default {
   text-overflow: ellipsis;
 }
 .secret{
-  // width: 30px
   float: right;
   display: inline-block;
 }
