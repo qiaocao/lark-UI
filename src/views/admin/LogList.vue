@@ -2,7 +2,7 @@
   <div>
     <a-card>
       <div class="table-page-search-wrapper">
-        <a-form layout="inline">
+        <a-form layout="inline" :form="form">
           <a-row :gutter="32" type="flex">
             <a-col :span="6">
               <a-form-item label="菜单">
@@ -27,7 +27,7 @@
             <a-col :span="6">
               <span class="table-page-search-submitButtons">
                 <a-button type="primary" @click="search">查询</a-button>
-                <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
+                <a-button style="margin-left: 8px" @click="resetQueryParams">重置</a-button>
                 <a-button type="primary" style="margin-left: 15px" @click="exportData" :loading="loading" v-action:export>导出</a-button>
               </span>
             </a-col>
@@ -40,7 +40,7 @@
             </a-col>
             <a-col :span="6">
               <a-form-item label="操作时间">
-                <a-range-picker @change="onChange"/>
+                <a-range-picker @change="onChange" v-decorator="['timerange']"/>
               </a-form-item>
             </a-col>
             <a-col :span="6">
@@ -138,7 +138,8 @@ export default {
       },
       loading: false,
       dataStr: '',
-      totalCount: 0
+      totalCount: 0,
+      form: this.$form.createForm(this)
     }
   },
   methods: {
@@ -150,6 +151,13 @@ export default {
         this.queryParam.crtTime = this.dataStr.join(',')
       }
       this.$refs.stable.loadData({}, this.queryParam, {})
+    },
+    /**
+     * 查询项清空
+     */
+    resetQueryParams () {
+      this.queryParam = {}
+      this.form.setFieldsValue({ timerange: undefined })
     },
     onChange (date, datestr) {
       this.dataStr = datestr
