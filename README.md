@@ -94,4 +94,14 @@
                             src\views\admin\LogList.vue
  20190717 push by fanjiao:filepath--【公告添加密级】                                         
                             src\views\admin\NotificationList.vue
-
+ 20190718 push by fanjiao:filepath--【1、公告隐藏上传信息2、用户添加人员排序3、网关日志添加状态】                                         
+                            src\views\admin\NotificationList.vue
+                            src\views\admin\LogList.vue
+                            src\views\admin\UserList.vue
+ 20190718 push by fanjiao:filepath--【1、个人设置添加组织机构2、修改个人设置中常用链接设置几个tab页切换时，宽度不稳定问题】                                         
+                            src\views\account\settings\CommonTool.vue
+                            src\views\account\settings\BaseSetting.vue
+ 20190719 push by fanjiao:filepath--【修正日期控件不清空问题；样式调整】                                         
+                            src\views\admin\LogList.vue
+                            src\views\admin\FileTable.vue
+                            src\views\admin\GroupTable.vue

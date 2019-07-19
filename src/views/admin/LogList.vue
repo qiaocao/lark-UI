@@ -2,7 +2,7 @@
   <div>
     <a-card>
       <div class="table-page-search-wrapper">
-        <a-form layout="inline" ref="form">
+        <a-form layout="inline" :form="form">
           <a-row :gutter="32" type="flex">
             <a-col :span="6">
               <a-form-item label="菜单">
@@ -12,10 +12,10 @@
             <a-col :span="6">
               <a-form-item label="操作类型">
                 <a-select placeholder="请选择" v-model="queryParam.opt">
-                  <a-select-option value="GET">查询</a-select-option>
-                  <a-select-option value="POST">添加</a-select-option>
-                  <a-select-option value="PUT">修改</a-select-option>
-                  <a-select-option value="DELETE">删除</a-select-option>
+                  <a-select-option value="获取">获取</a-select-option>
+                  <a-select-option value="添加">添加</a-select-option>
+                  <a-select-option value="编辑">编辑</a-select-option>
+                  <a-select-option value="删除">删除</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
@@ -27,7 +27,7 @@
             <a-col :span="6">
               <span class="table-page-search-submitButtons">
                 <a-button type="primary" @click="search">查询</a-button>
-                <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
+                <a-button style="margin-left: 8px" @click="resetQueryParams">重置</a-button>
                 <a-button type="primary" style="margin-left: 15px" @click="exportData" :loading="loading" v-action:export>导出</a-button>
               </span>
             </a-col>
@@ -40,7 +40,7 @@
             </a-col>
             <a-col :span="6">
               <a-form-item label="操作时间">
-                <a-range-picker @change="onChange" />
+                <a-range-picker @change="onChange" v-decorator="['timerange']"/>
               </a-form-item>
             </a-col>
             <a-col :span="6">
@@ -105,6 +105,18 @@ export default {
           dataIndex: 'crtTime'
         },
         {
+          title: '状态',
+          dataIndex: 'isSuccess',
+          key: 'isSuccess',
+          customRender: function (isSuccess) {
+            const config = {
+              '0': '失败',
+              '1': '成功'
+            }
+            return config[isSuccess]
+          }
+        },
+        {
           title: '主机ip',
           dataIndex: 'crtHost'
         }
@@ -126,7 +138,8 @@ export default {
       },
       loading: false,
       dataStr: '',
-      totalCount: 0
+      totalCount: 0,
+      form: this.$form.createForm(this)
     }
   },
   methods: {
@@ -134,8 +147,17 @@ export default {
      * 搜索
      */
     search () {
-      this.queryParam.crtTime = this.dataStr
+      if (this.dataStr) {
+        this.queryParam.crtTime = this.dataStr.join(',')
+      }
       this.$refs.stable.loadData({}, this.queryParam, {})
+    },
+    /**
+     * 查询项清空
+     */
+    resetQueryParams () {
+      this.queryParam = {}
+      this.form.setFieldsValue({ timerange: undefined })
     },
     onChange (date, datestr) {
       this.dataStr = datestr

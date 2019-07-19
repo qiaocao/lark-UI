@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="commontool">
     <a-card
       style="margin-top: 24px"
       :bordered="false"
@@ -12,7 +12,7 @@
                 <a-input v-model="queryParam.title" placeholder="在此输入..." />
               </a-form-item>
             </a-col>
-            <a-col :span="4">
+            <a-col :span="6">
               <a-button-group>
                 <a-button @click="search">查询</a-button>
                 <a-button @click="() => queryParam = {}">重置</a-button>
@@ -137,7 +137,7 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
     .ant-avatar-lg {
         width: 48px;
         height: 48px;
@@ -158,5 +158,8 @@ export default {
             margin-bottom: 0;
             line-height: 22px;
         }
+    }
+    .commontool.layout.ant-layout.mobile .ant-table-wrapper .ant-table-body, .layout.ant-layout.tablet .ant-table-wrapper .ant-table-body {
+      min-width: 100px
     }
 </style>
