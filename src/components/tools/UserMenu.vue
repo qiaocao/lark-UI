@@ -19,9 +19,12 @@
           :offset="[-10, 23]"
           :numberStyle="{padding: '4px'}"
         >
-          <a-avatar class="avatar" size="small" :src="avatar" style="backgroundColor: #f49d2a">
-            <span>{{ nickname.slice(0,1) }}</span>
-          </a-avatar>
+          <a-avatar
+            class="avatar"
+            size="small"
+            :src="avatar"
+            style="backgroundColor: #f49d2a"
+          >{{ nickname.slice(0,1) }}</a-avatar>
         </a-badge>
         <span>{{ nickname }}</span>
       </span>
@@ -46,7 +49,7 @@
         <a-menu-item key="3">
           <a href="javascript:;" @click="handleLogout">
             <a-icon type="logout" />
-            <span>退出登录</span>
+            <span>注销</span>
           </a>
         </a-menu-item>
       </a-menu>
