@@ -20,19 +20,22 @@
       <div v-if="!isMe() && messageInfo.isGroup" class="message-nickname">
         <span>{{ messageInfo.username }}</span>
       </div>
+      <!-- 显示消息状态 -->
+      <div v-if="isMe()" class="message-status">
+
+      </div>
 
       <div class="message-bubble left right">
         <div class="bubble-content">
           <div class="plain">
             <!-- 纯文本信息 -->
-            <div v-if="messageInfo.content.type === 1">
+            <div v-if="messageInfo.content.type === 1" class="text-message">
               <div class="secret-tip">
                 <span
                   :class="'s-' + messageInfo.content.secretLevel"
                 >【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】</span>
               </div>
-              <!-- <pre>{{ faceTransform(messageInfo.content.title) }}</pre> -->
-              <div v-html="faceTransform(messageInfo.content.title)" style="display:inline"></div>
+              <div v-html="faceTransform(messageInfo.content.title)" class="text-content"></div>
             </div>
 
             <!-- 图片消息 -->
@@ -268,6 +271,15 @@ export default {
 
   .message-content {
     overflow: hidden;
+    // 为显示消息状态增加
+    display: flex;
+
+    .message-status {
+      margin-left: auto;
+      // 实现垂直居中
+      display: flex;
+      align-items: center;
+    }
 
     .message-nickname {
       height: 20px;
@@ -313,13 +325,10 @@ export default {
         .plain {
           padding: 9px 13px;
 
-          pre {
-            margin: 0;
-            display: inline;
-            font-family: inherit;
-            font-size: inherit;
-            white-space: pre-wrap;
-            word-break: normal;
+          .text-message {
+            .text-content {
+              display: inline;
+            }
           }
 
           .img-message {
