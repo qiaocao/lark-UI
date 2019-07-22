@@ -29,26 +29,40 @@
         <div v-if="groupResultList.length || contResultList.length">
           <!-- 群组匹配结果 -->
           <div class="group-result" v-if="groupResultList.length">
-            <p class="category-label">群组</p>
-            <GroupItem
-              v-for="(item, index) in groupResultList"
-              :groupInfo="item"
-              :key="index"
-              :activated="activated===item.groupId"
-              @select="toTalk(item)"
-            />
+            <p class="category-label" @click="groupExpand = !groupExpand">
+              <span>群组</span>
+              <a-icon class="option-btn" :type="groupExpand ? 'caret-down' : 'caret-left'"></a-icon>
+            </p>
+            <transition name="result">
+              <div v-if="groupExpand">
+                <GroupItem
+                  v-for="(item, index) in groupResultList"
+                  :groupInfo="item"
+                  :key="index"
+                  :activated="activated===item.groupId"
+                  @select="toTalk(item)"
+                />
+              </div>
+            </transition>
           </div>
 
           <!-- 联系人匹配结果 -->
           <div class="contact-result" v-if="contResultList.length">
-            <p class="category-label">联系人</p>
-            <ContactItem
-              v-for="(item, index) in contResultList"
-              :contactsInfo="item"
-              :key="index"
-              :activated="activated===item.key"
-              @select="toTalk(item)"
-            />
+            <p class="category-label" @click="contactExpand = !contactExpand">
+              <span>联系人</span>
+              <a-icon class="option-btn" :type="contactExpand ? 'caret-down' : 'caret-left'"></a-icon>
+            </p>
+            <transition name="result">
+              <div v-if="contactExpand">
+                <ContactItem
+                  v-for="(item, index) in contResultList"
+                  :contactsInfo="item"
+                  :key="index"
+                  :activated="activated===item.key"
+                  @select="toTalk(item)"
+                />
+              </div>
+            </transition>
           </div>
         </div>
 
@@ -85,7 +99,11 @@ export default {
       // 联系人的匹配结果
       contResultList: [],
       // 选中的id
-      activated: ''
+      activated: '',
+      // 展开群组搜索结果
+      groupExpand: true,
+      // 展开联系人搜索结果
+      contactExpand: true
     }
   },
   computed: {
@@ -103,8 +121,16 @@ export default {
   },
   methods: {
     exitSearch () {
-      [this.visible, this.activated, this.searchText, this.groupResultList, this.contResultList] =
-      [false, '', '', [], []]
+      [
+        this.visible,
+        this.activated,
+        this.searchText,
+        this.groupResultList,
+        this.contResultList,
+        this.groupExpand,
+        this.contactExpand
+      ] =
+      [false, '', '', [], [], true, true]
     },
     showDrawer () {
       this.visible = true
@@ -199,7 +225,19 @@ export default {
       color: #a0a1a5;
       background-color: #e6e9ed;
       border-bottom: 1px #d5d8de solid;
+      .option-btn {
+        cursor: pointer;
+        float: right;
+        margin-top: 3px;
+      }
     }
+  }
+
+  .result-enter-active, .result-leave-active {
+    transition: opacity .2s ease;
+  }
+  .result-enter, .result-leave-to {
+    opacity: 0;
   }
   .no-result-tip {
     p {
