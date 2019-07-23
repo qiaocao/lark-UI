@@ -146,6 +146,17 @@ function formatTree (target, todoList) {
   return target
 }
 
+/**
+ * 移除数组中的元素
+ * @param {Array} arr 目标数组
+ * @param {Function} func (value, index, array)
+ */
+const removeFromList = (arr, func) =>
+  Array.isArray(arr) ? arr.filter(func).reduce((acc, val) => {
+    arr.splice(arr.indexOf(val), 1); return acc.concat(val)
+  }, [])
+    : []
+
 const talk = {
   state: {
     /** 用户的在线状态
@@ -163,7 +174,11 @@ const talk = {
     /** 当前正在进行的研讨 */
     currentTalk: {},
     /** 草稿Map */
-    draftMap: new Map()
+    draftMap: new Map(),
+    /** 发送中的消息列表 */
+    sendingList: [],
+    /** 消息发送失败列表 */
+    sendFailList: []
   },
 
   mutations: {
@@ -225,6 +240,40 @@ const talk = {
      */
     SET_DRAFT_MAP (state, draft) {
       state.draftMap.set(draft[0], draft[1])
+    },
+    /**
+     * 向消息列表中新增消息
+     * @param {String} messageId 消息id
+     */
+    ADD_SENDING_LIST (state, messageId) {
+      state.sendingList.push(messageId)
+    },
+    /**
+     * 从发送列表中移除信息
+     * @param {String} messageId 消息id
+     */
+    DEL_SENDING_LIST (state, messageId) {
+      state.sendingList = removeFromList(
+        state.sendingList,
+        (item) => item !== messageId
+      )
+    },
+    /**
+     * 向消息列表中新增消息
+     * @param {String} messageId 消息id
+     */
+    ADD_SEND_FAIL_LIST (state, messageId) {
+      state.sendFailList.push(messageId)
+    },
+    /**
+     * 从发送列表中移除信息
+     * @param {String} messageId 消息id
+     */
+    DEl_SEND_FAIL_LIST (state, messageId) {
+      state.sendFailList = removeFromList(
+        state.sendFailList,
+        (item) => item !== messageId
+      )
     }
   },
 

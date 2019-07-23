@@ -11,18 +11,24 @@
       :class="['message-avatar', {send: isMe(), receive: !isMe()}]"
       shape="square"
       :src="isMe() ? avatar : messageInfo.avatar"
-      :size="40">
+      :size="40"
+    >
       {{ messageInfo.username.substr(0, 4) }}
     </a-avatar>
 
-    <div class="message-content">
+    <div :class="['message-content', {'show-status': isMe()}]">
       <!-- 显示发送人 -->
       <div v-if="!isMe() && messageInfo.isGroup" class="message-nickname">
         <span>{{ messageInfo.username }}</span>
       </div>
       <!-- 显示消息状态 -->
       <div v-if="isMe()" class="message-status">
-
+        <!-- 发送成功 100 -->
+        <span v-if="messageStatus === 100" class="send-success">已送达</span>
+        <!-- 发送失败 101 -->
+        <a-icon v-if="messageStatus === 101" class="send-fail" type="exclamation-circle" />
+        <!-- 正在发送 102 -->
+        <a-icon v-if="messageStatus === 102" class="sending" type="loading" />
       </div>
 
       <div class="message-bubble left right">
@@ -149,6 +155,9 @@ export default {
       const ext = extension === '0' || extension === '' ? '' : '.' + extension
       const sec = this.$options.filters.fileSecret(secretLevel)
       return '[' + sec + ']' + title + ext
+    },
+    messageStatus () {
+      return this.$store.getters.getMessageStatus(this.messageInfo.id)
     }
   },
   watch: {
@@ -269,16 +278,30 @@ export default {
     cursor: pointer;
   }
 
+  // 展示消息状态
+  .show-status {
+    display: flex;
+  }
   .message-content {
     overflow: hidden;
-    // 为显示消息状态增加
-    display: flex;
 
     .message-status {
       margin-left: auto;
       // 实现垂直居中
       display: flex;
       align-items: center;
+      .send-success {
+        color: #d3d6dc;
+        font-size: 10px;
+      }
+      .sending {
+        color: #1890ff;
+        font-size: 10px;
+      }
+      .send-fail {
+        color: #ff0000;
+        font-size: 16px;
+      }
     }
 
     .message-nickname {

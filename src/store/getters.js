@@ -24,7 +24,16 @@ const getters = {
   /** websocket连接状态 */
   onlineState: state => state.talk.onlineState,
   groupList: state => state.talk.groupList,
-  contactsTree: state => state.talk.contactsTree
+  contactsTree: state => state.talk.contactsTree,
+  /** 消息状态判断 */
+  getMessageStatus: (state) => (messageId) => {
+    if (!state.talk.sendingList.includes(messageId)) {
+      // 已发送成功
+      return 100
+    } else {
+      return state.talk.sendFailList.includes(messageId) ? 101 : 102
+    }
+  }
 }
 
 export default getters
