@@ -1,11 +1,7 @@
 <template>
   <div>
     <a-form :form="form" style="max-width: 500px; margin: 40px auto 0;">
-      <a-form-item
-        label="群组名称"
-        :labelCol="labelCol"
-        :wrapperCol="wrapperCol"
-      >
+      <a-form-item label="群组名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
         <a-input
           v-decorator="['groupName', {rules: [{
             required: true, message: '不能为空',
@@ -18,28 +14,22 @@
         />
       </a-form-item>
 
-      <a-form-item
-        label="群组密级"
-        :labelCol="labelCol"
-        :wrapperCol="wrapperCol"
-      >
+      <a-form-item label="群组密级" :labelCol="labelCol" :wrapperCol="wrapperCol">
         <a-select
           v-decorator="['levels', {rules: [{
             required: true, message: '不能为空',
           }]}]"
           placeholder="设置研讨组密级"
         >
-          <a-select-option v-for="item in secretOption" :key="item" :value="item">
-            {{ item | fileSecret }}
-          </a-select-option>
+          <a-select-option
+            v-for="item in secretOption"
+            :key="item"
+            :value="item"
+          >{{ item | fileSecret }}</a-select-option>
         </a-select>
       </a-form-item>
 
-      <a-form-item
-        label="所属项目"
-        :labelCol="labelCol"
-        :wrapperCol="wrapperCol"
-      >
+      <a-form-item label="所属项目" :labelCol="labelCol" :wrapperCol="wrapperCol">
         <a-input
           v-decorator="['pname', {rules: [{
             required: true, message: '不能为空',
@@ -50,30 +40,14 @@
         />
       </a-form-item>
 
-      <a-form-item
-        label="参与范围"
-        :labelCol="labelCol"
-        :wrapperCol="wrapperCol"
-      >
-        <a-input
-          v-decorator="['scop', {}]"
-          type="textarea"
-          placeholder="填写研讨组讨论范围（可选）"
-        />
+      <a-form-item label="参与范围" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-input v-decorator="['scop', {}]" type="textarea" placeholder="填写研讨组讨论范围（可选）" />
       </a-form-item>
 
-      <a-form-item
-        :label-col="labelCol"
-        :wrapper-col="wrapperCol"
-        label="描述信息"
-      >
-        <a-input
-          v-decorator="['groupDescribe', {}]"
-          type="textarea"
-          placeholder="研讨组的详细信息（可选）"
-        />
+      <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="描述信息">
+        <a-input v-decorator="['groupDescribe', {}]" type="textarea" placeholder="研讨组的详细信息（可选）" />
       </a-form-item>
-      <a-form-item :wrapperCol="{span: 19, offset: 5}">
+      <a-form-item :wrapperCol="{span: 20, offset: 4}">
         <a-button type="primary" @click="nextStep">下一步</a-button>
       </a-form-item>
     </a-form>
@@ -123,13 +97,7 @@ export default {
       })
     },
     setFormData (info) {
-      this.form.setFieldsValue(pick(
-        info,
-        'groupName',
-        'levels',
-        'pname',
-        'scop',
-        'groupDescribe'))
+      this.form.setFieldsValue(pick(info, 'groupName', 'levels', 'pname', 'scop', 'groupDescribe'))
     }
   }
 }
@@ -138,18 +106,18 @@ export default {
 <style lang="less" scoped>
 .step-form-style-desc {
   padding: 0 56px;
-  color: rgba(0,0,0,.45);
+  color: rgba(0, 0, 0, 0.45);
 
   h3 {
     margin: 0 0 12px;
-    color: rgba(0,0,0,.45);
+    color: rgba(0, 0, 0, 0.45);
     font-size: 16px;
     line-height: 32px;
   }
 
   h4 {
     margin: 0 0 4px;
-    color: rgba(0,0,0,.45);
+    color: rgba(0, 0, 0, 0.45);
     font-size: 14px;
     line-height: 22px;
   }
