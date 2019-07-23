@@ -69,7 +69,6 @@
         <div v-else class="no-result-tip">
           <p>无匹配结果</p>
         </div>
-
       </div>
     </a-drawer>
   </div>
@@ -121,7 +120,7 @@ export default {
   },
   methods: {
     exitSearch () {
-      [
+      ;[
         this.visible,
         this.activated,
         this.searchText,
@@ -129,8 +128,7 @@ export default {
         this.contResultList,
         this.groupExpand,
         this.contactExpand
-      ] =
-      [false, '', '', [], [], true, true]
+      ] = [false, '', '', [], [], true, true]
     },
     showDrawer () {
       this.visible = true
@@ -198,51 +196,53 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  .search-all {
-    .input-mask {
-      position: fixed;
-      width: 200px;
-      height: 31px;
-      border-radius: 4px;
-      z-index: 10;
-      background-color: #a9adb8;
-      opacity: 0.5;
-      pointer-events: none;
-      border: 1px solid #d1d2d4;
+.search-all {
+  .input-mask {
+    position: fixed;
+    width: 200px;
+    height: 31px;
+    border-radius: 4px;
+    z-index: 10;
+    background-color: #a9adb8;
+    opacity: 0.5;
+    pointer-events: none;
+    border: 1px solid #d1d2d4;
+  }
+}
+
+.result-container {
+  height: calc(100vh - 119px);
+  background-color: #ebeff5;
+  margin: -24px;
+  border-top: 1px #e4e8ec solid;
+  overflow: auto;
+
+  .category-label {
+    margin: 0;
+    padding-left: 17px;
+    color: #a0a1a5;
+    background-color: #e6e9ed;
+    border-bottom: 1px #eaecf1 solid;
+    .option-btn {
+      cursor: pointer;
+      float: right;
+      margin-top: 3px;
     }
   }
+}
 
-  .result-container {
-    height: calc(100vh - 119px);
-    background-color: #ebeff5;
-    margin: -24px;
-    border-top: 1px #d5d8de solid;
-    overflow: auto;
-
-    .category-label {
-      margin: 0;
-      padding-left: 17px;
-      color: #a0a1a5;
-      background-color: #e6e9ed;
-      border-bottom: 1px #d5d8de solid;
-      .option-btn {
-        cursor: pointer;
-        float: right;
-        margin-top: 3px;
-      }
-    }
+.result-enter-active,
+.result-leave-active {
+  transition: opacity 0.2s ease;
+}
+.result-enter,
+.result-leave-to {
+  opacity: 0;
+}
+.no-result-tip {
+  p {
+    text-align: center;
+    padding: 24px;
   }
-
-  .result-enter-active, .result-leave-active {
-    transition: opacity .2s ease;
-  }
-  .result-enter, .result-leave-to {
-    opacity: 0;
-  }
-  .no-result-tip {
-    p {
-      text-align: center;
-      padding: 24px;
-    }
-  }
+}
 </style>

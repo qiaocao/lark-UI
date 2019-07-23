@@ -74,14 +74,14 @@ module.exports = {
         modifyVars: {
           /* less 变量覆盖，用于自定义 ant design 主题 */
           // 'link-color': '#FFFFFF'
-          'padding-lg': '12px',
+          'padding-lg': '16px',
           'padding-md': '8px',
-          'padding-sm': '6px',
-          'padding-xs': '4px',
-          'card-head-padding': '8px',
-          'card-inner-head-padding': '6px',
-          'card-padding-base': '12px',
-          'card-padding-wider': '16px',
+          'padding-sm': '4px',
+          'padding-xs': '0px',
+          'card-head-padding': '4px',
+          'card-inner-head-padding': '4px',
+          'card-padding-base': '4px',
+          'card-padding-wider': '8px',
           'layout-sider-background': '#0246aa',
           'menu-dark-submenu-bg': '#0544a3',
           'menu-dark-bg': '#0246aa',
