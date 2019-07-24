@@ -86,7 +86,8 @@ module.exports = {
           'menu-dark-submenu-bg': '#0544a3',
           'menu-dark-bg': '#0246aa',
           'menu-item-height': '48px',
-          'menu-inline-toplevel-item-height': '48px'
+          'menu-inline-toplevel-item-height': '48px',
+          'form-item-margin-bottom': '16px'
         },
         javascriptEnabled: true
       }

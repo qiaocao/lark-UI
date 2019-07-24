@@ -13,6 +13,11 @@
     <user-file :contactId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <mark-message :groupId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <more-info :contactId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
+    <team-member
+      :contactId="chatInfo.id"
+      :activeOption="activeOption"
+      @closeDrawer="triggerDrawer"
+    />
     <a-layout-header class="conv-box-header">
       <div class="conv-title">
         <!-- 需要对名字的字数做限制 -->
@@ -109,15 +114,6 @@
         <div class="draft-input">
           <!-- 输入框 -->
           <div>
-            <!-- <wysiwyg
-              v-model="messageContent"
-              v-show="!Object.keys(fileUpload).length"
-              class="textarea-input"
-              @keydown.enter.stop.prevent.exact
-              @keyup.alt.enter.exact="messageContent += '\n'"
-              @keyup.ctrl.enter.exact="messageContent += '\n'"
-            /> -->
-            <!-- @keyup.enter.native="sendMessage(sendSecretLevel)" -->
             <textarea
               v-show="!Object.keys(fileUpload).length"
               size="large"
@@ -189,10 +185,7 @@
       :keyboard="false"
       :maskClosable="false"
     >
-      <a-progress
-        :percent="fileUpload.percent"
-        :status="uploadStatus[fileUpload.status]"
-      />
+      <a-progress :percent="fileUpload.percent" :status="uploadStatus[fileUpload.status]" />
     </a-modal>
   </a-layout>
 
@@ -214,7 +207,8 @@ import {
   TalkSetting,
   MarkMessage,
   TalkFile,
-  UserFile
+  UserFile,
+  TeamMember
 } from '@/components/Talk'
 import { LandingStatus } from '@/utils/constants'
 import api from '@/api/talk'
@@ -235,7 +229,8 @@ export default {
     MarkMessage,
     TalkFile,
     MoreInfo,
-    UserFile
+    UserFile,
+    TeamMember
   },
   props: {
     /** 聊天对话框的基本信息--结构同最近联系人 */
@@ -440,7 +435,8 @@ export default {
         // { group: true, name: 'markMessage', message: '标记信息', type: 'tags' },
         { group: false, name: 'talkHistory', message: '聊天历史', type: 'file-text' },
         { group: false, name: isGroup ? 'talkFile' : 'userFile', message: '文件', type: 'folder-open' },
-        { group: false, name: isGroup ? 'moreInfo' : 'personMoreInfo', message: '更多', type: 'ellipsis' }
+        { group: false, name: isGroup ? 'moreInfo' : 'personMoreInfo', message: '组信息', type: 'profile' },
+        { group: true, name: isGroup ? 'teamMember' : 'personMoreInfo', message: '组成员', type: 'team' }
       ]
 
       return isGroup ? optionList : optionList.filter(item => !item.group)
