@@ -216,7 +216,7 @@ import {
   TalkFile,
   UserFile
 } from '@/components/Talk'
-import { LandingStatus } from '@/utils/constants'
+import { ONLINE_STATUS } from '@/utils/constants'
 import api from '@/api/talk'
 import { SocketMessage, Tweet } from '@/utils/talk'
 import { mapGetters } from 'vuex'
@@ -308,7 +308,7 @@ export default {
     ...mapGetters(['onlineState', 'userSecretLevel', 'userId', 'avatar', 'nickname', 'token']),
     // 发送按钮的可用状态
     sendDisabled () {
-      if (this.onlineState === LandingStatus.ONLINE) {
+      if (this.onlineState === ONLINE_STATUS.ONLINE) {
         return this.fileUpload.status && this.fileUpload.status !== 'done'
       } else return true
     },

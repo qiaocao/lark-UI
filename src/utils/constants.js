@@ -44,7 +44,7 @@ const MESSAGE_TYPE = new Map([
 ])
 
 // 错误类型
-const ErrorType = {
+const ERROR_TYPE = {
   TIMEOUT_ERROR: 9, // 超时
   TOKEN_ERROR: 401, // token 失效错误
   PARAM_ERROR: 400, // 参数错误
@@ -53,7 +53,7 @@ const ErrorType = {
 }
 
 // 登录状态常量 同websocket的readyState
-const LandingStatus = {
+const ONLINE_STATUS = {
   /** 正在登录 */
   LANDING: 0,
   /** 在线 */
@@ -74,8 +74,8 @@ const WS_SERVER_IP = '127.0.0.1'
 export {
   SECRETLEVEL_ENUM,
   MESSAGE_TYPE,
-  ErrorType,
-  LandingStatus,
+  ERROR_TYPE,
+  ONLINE_STATUS,
   FILE_SERVER_IP,
   WS_SERVER_IP
 }

@@ -3,7 +3,7 @@
  */
 import store from '@/store'
 import notification from 'ant-design-vue/es/notification'
-import { LandingStatus } from '@/utils/constants'
+import { ONLINE_STATUS } from '@/utils/constants'
 import { messagePopup } from '@/utils/client'
 
 /** ws连通 */
@@ -15,7 +15,7 @@ function handleWsOpen () {
   store.dispatch('GetContactsTree')
 
   // 设置在线状态为已连接
-  store.commit('SET_ONLINE_STATE', LandingStatus.ONLINE)
+  store.commit('SET_ONLINE_STATE', ONLINE_STATUS.ONLINE)
 }
 
 /** 处理私聊和群组消息 */
@@ -160,7 +160,7 @@ class SocketApi {
     userId = userId || store.getters.userId
     const ws = new WebSocket(this.url + '?userId=' + userId)
     // 设置在线状态为连接中
-    store.commit('SET_ONLINE_STATE', LandingStatus.LANDING)
+    store.commit('SET_ONLINE_STATE', ONLINE_STATUS.LANDING)
     this.ws = ws
 
     ws.binaryType = this.binaryType
@@ -205,7 +205,7 @@ class SocketApi {
     ws.onclose = closeEvent => {
       clearInterval(self.pingIntervalId)
       // 设置在线状态为已断开
-      store.commit('SET_ONLINE_STATE', LandingStatus.OFFLINE)
+      store.commit('SET_ONLINE_STATE', ONLINE_STATUS.OFFLINE)
       // 重连的处理逻辑
       self.reconn()
     }
@@ -255,7 +255,7 @@ class SocketApi {
    */
   close (code, reason) {
     // 设置登录状态为正在断开
-    store.commit('SET_ONLINE_STATE', LandingStatus.EXITING)
+    store.commit('SET_ONLINE_STATE', ONLINE_STATUS.EXITING)
 
     if (this.ws) {
       this.ws.close(code, reason)

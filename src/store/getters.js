@@ -27,11 +27,15 @@ const getters = {
   contactsTree: state => state.talk.contactsTree,
   /** 消息状态判断 */
   getMessageStatus: (state) => (messageId) => {
-    if (!state.talk.sendingList.includes(messageId)) {
-      // 已发送成功
-      return 100
+    if (state.talk.sendingMap.has(messageId)) {
+      // 发送中
+      return 102
+    } else if (state.talk.failSet.has(messageId)) {
+      // 发送失败
+      return 101
     } else {
-      return state.talk.sendFailList.includes(messageId) ? 101 : 102
+      // 发送成功
+      return 100
     }
   }
 }

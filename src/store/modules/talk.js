@@ -7,7 +7,7 @@ import router from '@/router'
 import Vue from 'vue'
 import { getGroupList, getContactsTree, getRecentContacts, getTalkMap } from '@/api/talk'
 import { Tweet, RecentContact, SocketMessage } from '@/utils/talk'
-import { LandingStatus } from '@/utils/constants'
+import { ONLINE_STATUS } from '@/utils/constants'
 import { format } from '@/utils/util'
 
 /**
@@ -109,7 +109,7 @@ function syncUnread2Server (newUnreasNum, online, reviser, sender) {
 /**
  * 格式化联系人数据
  * @param {Array} target 目标数组
- * @param {Array} target 待处理数组
+ * @param {Array} todoList 待处理数组
  */
 function formatTree (target, todoList) {
   todoList.forEach(function (element) {
@@ -146,22 +146,9 @@ function formatTree (target, todoList) {
   return target
 }
 
-/**
- * 移除数组中的元素
- * @param {Array} arr 目标数组
- * @param {Function} func (value, index, array)
- */
-const removeFromList = (arr, func) =>
-  Array.isArray(arr) ? arr.filter(func).reduce((acc, val) => {
-    arr.splice(arr.indexOf(val), 1); return acc.concat(val)
-  }, [])
-    : []
-
 const talk = {
   state: {
-    /** 用户的在线状态
-     *  0-离线，1-重连，2-在线
-     */
+    /** 用户的在线状态 @/utils/constants.js->ONLINE_STATUS */
     onlineState: 3,
     /** 最新联系人列表 */
     recentContacts: [],
@@ -175,10 +162,17 @@ const talk = {
     currentTalk: {},
     /** 草稿Map */
     draftMap: new Map(),
-    /** 发送中的消息列表 */
-    sendingList: [],
-    /** 消息发送失败列表 */
-    sendFailList: []
+    // *****消息可靠性相关*****
+    /** 发送中的消息 Map<messageId, slotIndex> */
+    sendingMap: new Map(),
+    /** 发送失败的消息 Set<messageId> */
+    failSet: new Set(),
+    // *****超时定时器相关*****
+    /** 循环队列，长度=超时时间+1 */
+    listLoop: new Array(7),
+    /** 循环队列的当前位置 */
+    currentSlotIndex: 1,
+    messageTimer: 0
   },
 
   mutations: {
@@ -242,38 +236,76 @@ const talk = {
       state.draftMap.set(draft[0], draft[1])
     },
     /**
-     * 向消息列表中新增消息
-     * @param {String} messageId 消息id
+     * 新增发送中的消息
+     * @param {Object} item {messageId, slotIndex}
      */
-    ADD_SENDING_LIST (state, messageId) {
-      state.sendingList.push(messageId)
+    SET_SENDING_MAP (state, item) {
+      state.sendingMap.set(item.messageId, item.slotIndex)
     },
     /**
-     * 从发送列表中移除信息
+     * 移除发送中的信息
      * @param {String} messageId 消息id
      */
-    DEL_SENDING_LIST (state, messageId) {
-      state.sendingList = removeFromList(
-        state.sendingList,
-        (item) => item !== messageId
-      )
+    DEL_SENDING_MAP (state, messageId) {
+      state.sendingMap.delete(messageId)
     },
     /**
-     * 向消息列表中新增消息
+     * 新增发送失败的消息
      * @param {String} messageId 消息id
      */
-    ADD_SEND_FAIL_LIST (state, messageId) {
-      state.sendFailList.push(messageId)
+    ADD_FAIL_SET (state, messageId) {
+      state.failSet.add(messageId)
     },
     /**
-     * 从发送列表中移除信息
+     * 移除发送失败的消息
      * @param {String} messageId 消息id
      */
-    DEl_SEND_FAIL_LIST (state, messageId) {
-      state.sendFailList = removeFromList(
-        state.sendFailList,
-        (item) => item !== messageId
-      )
+    DEl_FAIL_SET (state, messageId) {
+      state.failSet.delete(messageId)
+    },
+    /**
+     * 设置定时器
+     * @param {Number} timer 定时器
+     */
+    SET_MESSAGE_TIMER (state, timer) {
+      state.messageTimer = timer
+    },
+    /**
+     * 设置循环队列的当前位置
+     * @param {Number} index 新位置标识
+     */
+    SET_CURRENT_SLOT_INDEX (state, index) {
+      state.currentSlotIndex = index
+    },
+    /**
+     * 增加定时任务
+     * @param {String} messageId 消息id
+     */
+    ADD_TIMING_TASK (state, messageId) {
+      // 如果循环队列中已存在该uid，需要先干掉，重新计时
+      let slotIndex = state.sendingMap.get(messageId)
+      slotIndex && state.listLoop[slotIndex].delete(messageId)
+      // 将该uid重现添加到循环队列中
+      // 周期7，新插入的置入当前的后一个（即，6s后可以扫描到它）
+      // 更新map中这个uid的最新slotIndex
+      slotIndex = state.currentSlotIndex - 1
+      const index = slotIndex < 0 ? 6 : slotIndex
+      state.listLoop[index] = state.listLoop[index]
+        ? state.listLoop[index].add(messageId)
+        : new Set().add(messageId)
+      state.sendingMap.set(messageId, index)
+    },
+    /**
+     * 删除定时任务
+     * @param {String} messageId 消息id
+     */
+    DEL_TIMING_TASK (state, messageId) {
+      const slotIndex = state.sendingMap.get(messageId)
+      // slotIndex && state.listLoop[slotIndex].delete(messageId)
+      if (slotIndex !== undefined) {
+        state.listLoop[slotIndex].delete(messageId)
+        state.sendingMap.delete(messageId)
+      }
     }
   },
 
@@ -355,7 +387,7 @@ const talk = {
       if (newItem.unreadNum === 0) {
         syncUnread2Server(
           newItem.unreadNum,
-          rootGetters.onlineState === LandingStatus.ONLINE,
+          rootGetters.onlineState === ONLINE_STATUS.ONLINE,
           rootGetters.userId,
           freshItem.id)
       }
@@ -423,6 +455,34 @@ const talk = {
       }).catch(error => {
         throw (error)
       })
+    },
+    /**
+     * 开启超时定时器
+     */
+    StartMessageTimer ({ state, commit, rootGetters }) {
+      const timer = setInterval(() => {
+        const slotSet = state.listLoop[state.currentSlotIndex]
+        if (slotSet && slotSet.size > 0) {
+          for (const uid of slotSet.values()) {
+            // 将执行完的uid从sendingMap中剔除
+            commit('DEL_SENDING_MAP', uid)
+            // 添加到失败列表中
+            commit('ADD_FAIL_SET', uid)
+            console.log(`消息：<${uid}>超时，发送失败！`)
+          }
+          // 置空该集合
+          slotSet.clear()
+        }
+        // 继续循环
+        commit('SET_CURRENT_SLOT_INDEX', (++state.currentSlotIndex) % 7)
+      }, 1000)
+      commit('SET_MESSAGE_TIMER', timer)
+    },
+    /**
+     * 清除消息定时器
+     */
+    ClearMessageTimer ({ state }) {
+      clearInterval(state.messageTimer)
     }
   },
   modules,
