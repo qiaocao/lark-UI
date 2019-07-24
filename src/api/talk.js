@@ -232,7 +232,7 @@ export function fileDownload (parameter) {
 /**
  * 联系人判断历史消息
  */
-export function talkHistoryAll (userId, isGroup, id, page) {
+export function talkHistoryAll (userId, isGroup, id, query, page) {
   return axios({
     url: api.talkHistoryAll,
     method: 'get',
@@ -240,6 +240,7 @@ export function talkHistoryAll (userId, isGroup, id, page) {
       userId: userId,
       isGroup: isGroup,
       contactId: id,
+      query: query,
       page: page,
       size: 30
     }
