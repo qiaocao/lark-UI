@@ -30,7 +30,6 @@ export default {
   props: {
     activeOption: {
       type: Object,
-      default: {},
       required: true
     },
     contactId: {
