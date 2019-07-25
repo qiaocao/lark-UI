@@ -80,7 +80,7 @@ import api from '@/api/talk'
 export default {
   name: 'Rabble',
   props: {
-    groupId: {
+    contactId: {
       type: String,
       default: ''
     }
@@ -128,7 +128,7 @@ export default {
       this.loading = true
       this.showLoadingMore = false
       const options = {
-        id: this.groupId,
+        id: this.contactId,
         state: this.state,
         page: this.pageNumber,
         size: 5

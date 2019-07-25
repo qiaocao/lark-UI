@@ -105,3 +105,10 @@
                             src\views\admin\LogList.vue
                             src\views\admin\FileTable.vue
                             src\views\admin\GroupTable.vue
+ 20190725 push by fanjiao:filepath--【研讨抽屉组件合并】                                         
+                            src\components\Talk\drawers\fileGrabble.vue
+                            src\components\Talk\drawers\messageGrabble.vue
+                            src\components\Talk\drawers\TalkDrawer.vue
+                            src\components\Talk\ConvBox.vue
+                            src\components\Talk\index.js
+

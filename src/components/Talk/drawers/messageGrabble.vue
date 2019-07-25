@@ -55,7 +55,7 @@ export default {
       default: '',
       required: true
     },
-    hisGrop: {
+    isGroup: {
       type: String,
       default: '',
       required: true
@@ -122,7 +122,7 @@ export default {
     getHistory () {
       this.loading = true
       this.userId = this.$store.getters.userId
-      talkHistoryAll(this.userId, this.hisGrop, this.contactId, this.searchVal, this.page).then(data => {
+      talkHistoryAll(this.userId, this.isGroup, this.contactId, this.searchVal, this.page).then(data => {
         this.isShow = false
         const datas = data.result.data
         if (datas.length < 30) {
@@ -148,7 +148,7 @@ export default {
           this.$nextTick(() => {
             this.page++
             if (this.activeOption === 'talkHistory') {
-              talkHistoryAll(this.userId, this.hisGrop, this.contactId, this.searchVal, this.page).then(data => {
+              talkHistoryAll(this.userId, this.isGroup, this.contactId, this.searchVal, this.page).then(data => {
                 const datas = data.result.data
                 if (datas.length < 30) {
                   this.loading = false
