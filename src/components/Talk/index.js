@@ -9,6 +9,7 @@ import MarkMessage from './drawers/MarkMessage'
 import MoreInfo from './drawers/MoreInfo'
 import TalkFile from './drawers/TalkFile'
 import UserFile from './drawers/UserFile'
+import TeamMember from './drawers/TeamMember'
 
 import ConvBox from './ConvBox'
 import RecentContactsItem from './RecentContactsItem'
@@ -58,6 +59,8 @@ export {
   SearchAll,
 
   // 表情插件
-  Face
+  Face,
+  // 群组成员管理
+  TeamMember
 
 }
