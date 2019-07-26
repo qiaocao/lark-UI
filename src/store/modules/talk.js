@@ -1,11 +1,13 @@
 /**
  * 研讨状态模块
- * @author jihainan
  */
 import modules from './conf'
 import router from '@/router'
 import Vue from 'vue'
-import { getGroupList, getContactsTree, getRecentContacts, getTalkMap } from '@/api/talk'
+import { getGroupList,
+  getContactsTree,
+  getRecentContacts,
+  getTalkMap } from '@/api/talk'
 import { Tweet, RecentContact, SocketMessage } from '@/utils/talk'
 import { ONLINE_STATUS } from '@/utils/constants'
 import { format } from '@/utils/util'
@@ -172,6 +174,7 @@ const talk = {
     listLoop: new Array(7),
     /** 循环队列的当前位置 */
     currentSlotIndex: 1,
+    /** 定时器标识 */
     messageTimer: 0
   },
 
@@ -224,6 +227,21 @@ const talk = {
         })
       }
     },
+    /**
+     * 将消息id重设为与服务端一致
+     * @param {Object} data {oId, nId, contactId}
+     */
+    RESET_MESSAGE_ID (state, data) {
+      const messageList = state.talkMap.get(data.contactId)
+      if (messageList) {
+        const index = messageList.findIndex(item =>
+          item.id === data.oId
+        )
+        if (index > -1) {
+          messageList[index].id = data.nId
+        }
+      }
+    },
     SET_CURRENT_TALK (state, currentTalk) {
       state.currentTalk = currentTalk
     },
@@ -237,31 +255,37 @@ const talk = {
     },
     /**
      * 新增发送中的消息
-     * @param {Object} item {messageId, slotIndex}
+     * @param {Object} item [messageId, slotIndex]
      */
     SET_SENDING_MAP (state, item) {
-      state.sendingMap.set(item.messageId, item.slotIndex)
+      state.sendingMap = new Map(state.sendingMap.set(
+        item[0], item[1]
+      ))
     },
     /**
      * 移除发送中的信息
      * @param {String} messageId 消息id
      */
     DEL_SENDING_MAP (state, messageId) {
-      state.sendingMap.delete(messageId)
+      const { sendingMap } = state
+      sendingMap.delete(messageId)
+      state.sendingMap = new Map(sendingMap)
     },
     /**
      * 新增发送失败的消息
      * @param {String} messageId 消息id
      */
     ADD_FAIL_SET (state, messageId) {
-      state.failSet.add(messageId)
+      state.failSet = new Set(state.failSet.add(messageId))
     },
     /**
      * 移除发送失败的消息
      * @param {String} messageId 消息id
      */
     DEl_FAIL_SET (state, messageId) {
-      state.failSet.delete(messageId)
+      const { failSet } = state
+      failSet.delete(messageId)
+      state.failSet = new Set(failSet)
     },
     /**
      * 设置定时器
@@ -278,13 +302,25 @@ const talk = {
       state.currentSlotIndex = index
     },
     /**
-     * 增加定时任务
+     * 清除循环队列中对应的插槽
+     * @param {Number} slotIndex 插槽序号
+     */
+    CLEAR_LIST_LOOP_SLOT (state, slotIndex) {
+      // 这里未进行数据类型的判断
+      // 使用该方法前需要进行判断
+      state.listLoop[slotIndex].clear()
+    },
+    /**
+     * 增加定时任务 (考虑做成action)
      * @param {String} messageId 消息id
      */
     ADD_TIMING_TASK (state, messageId) {
+      const { sendingMap } = state
       // 如果循环队列中已存在该uid，需要先干掉，重新计时
-      let slotIndex = state.sendingMap.get(messageId)
-      slotIndex && state.listLoop[slotIndex].delete(messageId)
+      let slotIndex = sendingMap.get(messageId)
+      if (typeof slotIndex !== 'undefined') {
+        state.listLoop[slotIndex].delete(messageId)
+      }
       // 将该uid重现添加到循环队列中
       // 周期7，新插入的置入当前的后一个（即，6s后可以扫描到它）
       // 更新map中这个uid的最新slotIndex
@@ -293,18 +329,22 @@ const talk = {
       state.listLoop[index] = state.listLoop[index]
         ? state.listLoop[index].add(messageId)
         : new Set().add(messageId)
-      state.sendingMap.set(messageId, index)
+      // 添加到发送中队列
+      sendingMap.set(messageId, index)
+      state.sendingMap = new Map(sendingMap)
     },
     /**
-     * 删除定时任务
+     * 删除定时任务 (考虑做成action)
      * @param {String} messageId 消息id
      */
     DEL_TIMING_TASK (state, messageId) {
-      const slotIndex = state.sendingMap.get(messageId)
-      // slotIndex && state.listLoop[slotIndex].delete(messageId)
-      if (slotIndex !== undefined) {
+      const { sendingMap } = state
+      const slotIndex = sendingMap.get(messageId)
+      if (typeof slotIndex !== 'undefined') {
         state.listLoop[slotIndex].delete(messageId)
-        state.sendingMap.delete(messageId)
+
+        sendingMap.delete(messageId)
+        state.sendingMap = new Map(sendingMap)
       }
     }
   },
@@ -432,7 +472,7 @@ const talk = {
       })
     },
     /**
-     * 更新缓存中的消息map
+     * 收到消息后 更新缓存中的消息map
      * @param {Tweet} newMessage 新消息
      */
     UpdateTalkMap ({ state, commit, rootGetters }, newMessage) {
@@ -459,24 +499,28 @@ const talk = {
     /**
      * 开启超时定时器
      */
-    StartMessageTimer ({ state, commit, rootGetters }) {
-      const timer = setInterval(() => {
-        const slotSet = state.listLoop[state.currentSlotIndex]
-        if (slotSet && slotSet.size > 0) {
-          for (const uid of slotSet.values()) {
-            // 将执行完的uid从sendingMap中剔除
-            commit('DEL_SENDING_MAP', uid)
-            // 添加到失败列表中
-            commit('ADD_FAIL_SET', uid)
-            console.log(`消息：<${uid}>超时，发送失败！`)
-          }
-          // 置空该集合
-          slotSet.clear()
-        }
-        // 继续循环
-        commit('SET_CURRENT_SLOT_INDEX', (++state.currentSlotIndex) % 7)
-      }, 1000)
-      commit('SET_MESSAGE_TIMER', timer)
+    StartMessageTimer ({ state, commit, dispatch }) {
+      dispatch('ClearMessageTimer')
+        .then(() => {
+          const timer = setInterval(() => {
+            const slotSet = state.listLoop[state.currentSlotIndex]
+            if (slotSet && slotSet.size > 0) {
+              for (const uid of slotSet.values()) {
+                // 将执行完的uid从sendingMap中剔除
+                commit('DEL_SENDING_MAP', uid)
+                // 添加到失败列表中
+                commit('ADD_FAIL_SET', uid)
+                console.log(`消息：<${uid}>超时，发送失败！`)
+              }
+              // 置空该集合
+              slotSet.clear()
+              commit('CLEAR_LIST_LOOP_SLOT', state.currentSlotIndex)
+            }
+            // 继续循环
+            commit('SET_CURRENT_SLOT_INDEX', (++state.currentSlotIndex) % 7)
+          }, 1000)
+          commit('SET_MESSAGE_TIMER', timer)
+        })
     },
     /**
      * 清除消息定时器

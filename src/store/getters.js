@@ -25,16 +25,13 @@ const getters = {
   onlineState: state => state.talk.onlineState,
   groupList: state => state.talk.groupList,
   contactsTree: state => state.talk.contactsTree,
-  /** 消息状态判断 */
+  /** 消息状态判断 100-成功 101-失败 102-发送中 */
   getMessageStatus: (state) => (messageId) => {
     if (state.talk.sendingMap.has(messageId)) {
-      // 发送中
       return 102
     } else if (state.talk.failSet.has(messageId)) {
-      // 发送失败
       return 101
     } else {
-      // 发送成功
       return 100
     }
   }

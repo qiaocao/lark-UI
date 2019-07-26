@@ -7,7 +7,7 @@ import { ONLINE_STATUS } from '@/utils/constants'
 import { messagePopup } from '@/utils/client'
 
 /** ws连通 */
-function handleWsOpen () {
+const handleWsOpen = () => {
   // 请求研讨相关的数据
   store.dispatch('GetTalkMap')
   store.dispatch('GetRecentContacts')
@@ -19,7 +19,7 @@ function handleWsOpen () {
 }
 
 /** 处理私聊和群组消息 */
-function handleMessage (data) {
+const handleMessage = (data) => {
   store
     .dispatch('UpdateTalkMap', data)
     .then(() => {
@@ -60,8 +60,8 @@ function handleMessage (data) {
   // 向客户端发送提醒
   messagePopup(data)
 }
-
-function handleCreateGroup (data) {
+// 处理创建群组的消息
+const handleCreateGroup = (data) => {
   // 接收到创建群组的消息-->更新最近联系人-->更新群组列表
   const {
     groupId,
@@ -111,6 +111,13 @@ function handleCreateGroup (data) {
         key
       })
     })
+}
+// 处理消息确认信息
+const handleMessageAck = (data) => {
+  // 删除定时任务 同时移出发送队列
+  store.commit('DEL_TIMING_TASK', data.oId)
+  // 更新消息id
+  store.commit('RESET_MESSAGE_ID', data)
 }
 
 class SocketApi {
@@ -184,6 +191,8 @@ class SocketApi {
       switch (received.code) {
         // 处理消息 更新消息缓存-->最近联系人列表
         case 0:
+          handleMessage(received.data)
+          break
         case 1:
           handleMessage(received.data)
           break
@@ -193,6 +202,9 @@ class SocketApi {
         case 4:
           // 创建群组时给服务端返回code为4的数据
           this.ws.send(messageEvent.data)
+          break
+        case 100:
+          handleMessageAck(received.data)
           break
         default:
           break

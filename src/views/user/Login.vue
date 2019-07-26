@@ -86,7 +86,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['Login', 'Logout']),
+    ...mapActions(['Login', 'StartMessageTimer']),
     // handler
     handleUsernameOrEmail (rule, value, callback) {
       const { state } = this
@@ -127,6 +127,8 @@ export default {
     },
     loginSuccess (res) {
       this.$router.push({ path: '/dashboard/workplace' })
+      // 开启消息超时定时器
+      this.StartMessageTimer()
       this.$nextTick(() => {
         this.$notification.success({
           message: '欢迎',

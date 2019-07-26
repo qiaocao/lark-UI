@@ -525,6 +525,8 @@ export default {
           data: tweet
         }).toString()
         this.SocketGlobal.send(baseMessage)
+        // 添加定时任务 添加到发送队列
+        this.$store.commit('ADD_TIMING_TASK', tweet.id)
         // 将消息放进当前的消息列表
         this.messageList.push(tweet)
         this.$store.dispatch('UpdateRecentContacts', {
