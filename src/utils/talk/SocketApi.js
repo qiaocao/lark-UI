@@ -113,11 +113,18 @@ const handleCreateGroup = (data) => {
     })
 }
 // 处理消息确认信息
-const handleMessageAck = (data) => {
+const handleMessageAck = (received) => {
   // 删除定时任务 同时移出发送队列
-  store.commit('DEL_TIMING_TASK', data.oId)
-  // 更新消息id
-  store.commit('RESET_MESSAGE_ID', data)
+  store.commit('DEL_TIMING_TASK', received.oId)
+  // 判断消息是否发送成功
+  if (received.status === 0) {
+    // 发送成功 更新消息id
+    store.commit('RESET_MESSAGE_ID', received)
+  }
+  if (received.status === 1) {
+    // 发送失败 添加到失败列表
+    store.commit('ADD_FAIL_SET', received.oId)
+  }
 }
 
 class SocketApi {
@@ -203,8 +210,8 @@ class SocketApi {
           // 创建群组时给服务端返回code为4的数据
           this.ws.send(messageEvent.data)
           break
-        case 100:
-          handleMessageAck(received.data)
+        case 11:
+          handleMessageAck(received)
           break
         default:
           break
