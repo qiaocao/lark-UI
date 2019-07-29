@@ -316,7 +316,7 @@ export default {
       return api.fileUpload
     },
     messageList () {
-      return this.$store.getters.getTalkHistory(chatInfo.id)
+      return this.$store.getters.getTalkHistory(this.chatInfo.id)
     }
   },
   watch: {
