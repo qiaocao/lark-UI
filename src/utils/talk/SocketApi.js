@@ -21,7 +21,7 @@ const handleWsOpen = () => {
 /** 处理私聊和群组消息 */
 const handleMessage = (data) => {
   store
-    .dispatch('UpdateTalkMap', data)
+    .dispatch('UpdateTalkMap', { direction: 'receive', message: data })
     .then(() => {
       store.dispatch('UpdateRecentContacts', {
         ...data.contactInfo,

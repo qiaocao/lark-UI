@@ -34,6 +34,13 @@ const getters = {
     } else {
       return 100
     }
+  },
+  /** 获取消息历史记录 */
+  getTalkHistory: (state) => (contactId) => {
+    console.log('===============================')
+    console.log(state.talk.talkMap.get(contactId))
+    console.log('===============================')
+    return state.talk.talkMap.get(contactId) || []
   }
 }
 

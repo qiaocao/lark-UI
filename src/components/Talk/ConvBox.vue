@@ -281,7 +281,7 @@ export default {
       },
       // 显示文件上传进度条
       progressVisible: false,
-      messageList: [],
+      // messageList: [],
 
       imgFormat: ['jpg', 'jpeg', 'png', 'gif'],
       fileFormat: [
@@ -314,6 +314,9 @@ export default {
     },
     fileUploadUrl () {
       return api.fileUpload
+    },
+    messageList () {
+      return this.$store.getters.getTalkHistory(chatInfo.id)
     }
   },
   watch: {
@@ -323,8 +326,8 @@ export default {
         this.$store.commit('SET_CURRENT_TALK', this.chatInfo)
         // TODO: 更新最近联系人列表的唯独消息数
         // ···
-        this.getCacheMessage()
-        this.scrollToBottom()
+        // this.getCacheMessage()
+        // this.scrollToBottom()
         this.handleSendSecretLevel()
 
         // 设置输入框信息
@@ -341,11 +344,11 @@ export default {
       },
       immediate: true
     },
-    messageList: function (newValue) {
-      this.$store.commit('SET_TALK_MAP', {
-        fromServer: false,
-        talkMapData: [[this.chatInfo.id, newValue]]
-      })
+    messageList: function () {
+      // this.$store.commit('SET_TALK_MAP', {
+      //   fromServer: false,
+      //   talkMapData: [[this.chatInfo.id, newValue]]
+      // })
       // 滚动到最下方
       this.scrollToBottom()
     }
@@ -465,14 +468,14 @@ export default {
      * 获取缓存消息
      */
     getCacheMessage () {
-      const hasCache = this.$store.state.talk.talkMap.has(this.chatInfo.id)
-      if (!hasCache) {
-        this.$store.commit('SET_TALK_MAP', {
-          fromServer: false,
-          talkMapData: [[this.chatInfo.id, []]]
-        })
-      }
-      this.messageList = this.$store.state.talk.talkMap.get(this.chatInfo.id)
+      // const hasCache = this.$store.state.talk.talkMap.has(this.chatInfo.id)
+      // if (!hasCache) {
+      //   this.$store.commit('SET_TALK_MAP', {
+      //     fromServer: false,
+      //     talkMapData: [[this.chatInfo.id, []]]
+      //   })
+      // }
+      // this.messageList = this.$store.state.talk.talkMap.get(this.chatInfo.id)
     },
     /**
      * 发送消息
@@ -528,7 +531,11 @@ export default {
         // 添加定时任务 添加到发送队列
         this.$store.commit('ADD_TIMING_TASK', tweet.id)
         // 将消息放进当前的消息列表
-        this.messageList.push(tweet)
+        // this.messageList.push(tweet)
+        this.$store.dispatch('UpdateTalkMap', {
+          direction: 'send',
+          message: tweet
+        })
         this.$store.dispatch('UpdateRecentContacts', {
           ...this.chatInfo,
           reOrder: true,

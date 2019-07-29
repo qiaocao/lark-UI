@@ -215,17 +215,19 @@ const talk = {
      * }
      */
     SET_TALK_MAP (state, talkMapObject) {
+      const { talkMap } = state
       if (talkMapObject.fromServer) {
         talkMapObject.talkMapData.forEach(function (item) {
-          state.talkMap.set(item[0], item.slice(1))
+          talkMap.set(item[0], item.slice(1))
         })
       } else {
         talkMapObject.talkMapData.forEach(function (item) {
           if (item[1] instanceof Array) {
-            state.talkMap.set(item[0], item[1])
+            talkMap.set(item[0], item[1])
           }
         })
       }
+      state.talkMap = new Map(talkMap)
     },
     /**
      * 将消息id重设为与服务端一致
@@ -472,17 +474,33 @@ const talk = {
       })
     },
     /**
-     * 收到消息后 更新缓存中的消息map
-     * @param {Tweet} newMessage 新消息
+     * 收到消息后 更新缓存中的talkMap
+     * @param {Object} messageObj {direction(send/receive), message}
      */
-    UpdateTalkMap ({ state, commit, rootGetters }, newMessage) {
-      if (newMessage.fromId === rootGetters.userId) return
-      const tempMessageList = state.talkMap.get(newMessage.contactInfo.id) || []
-      tempMessageList.push(new Tweet(newMessage))
-      commit('SET_TALK_MAP', {
-        fromServer: false,
-        talkMapData: [[newMessage.contactInfo.id, tempMessageList]]
-      })
+    UpdateTalkMap ({ state, commit, rootGetters }, messageObj) {
+      const { direction, message } = messageObj
+      if (direction === 'receive' && message.fromId === rootGetters.userId) return
+      const tempMessageList = state.talkMap.get(message.contactInfo.id) || []
+      tempMessageList.push(new Tweet(message))
+      if (direction === 'receive') {
+        commit('SET_TALK_MAP', {
+          fromServer: false,
+          talkMapData: [[message.contactInfo.id, tempMessageList]]
+        })
+      }
+      if (direction === 'send') {
+        commit('SET_TALK_MAP', {
+          fromServer: false,
+          talkMapData: [[message.toId, tempMessageList]]
+        })
+      }
+      // if (newMessage.fromId === rootGetters.userId) return
+      // const tempMessageList = state.talkMap.get(newMessage.contactInfo.id) || []
+      // tempMessageList.push(new Tweet(newMessage))
+      // commit('SET_TALK_MAP', {
+      //   fromServer: false,
+      //   talkMapData: [[newMessage.contactInfo.id, tempMessageList]]
+      // })
     },
     /**
      * 更新缓存中的草稿信息
