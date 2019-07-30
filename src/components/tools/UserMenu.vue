@@ -61,7 +61,7 @@
 import HeaderNotice from './HeaderNotice'
 import { mapActions, mapGetters } from 'vuex'
 import Utils from '../../../src/utils/utils.js'
-import { LandingStatus } from '@/utils/constants'
+import { ONLINE_STATUS } from '@/utils/constants'
 
 export default {
   name: 'UserMenu',
@@ -71,10 +71,10 @@ export default {
   data () {
     return {
       statusMap: new Map([
-        [LandingStatus.LANDING, 'warning'],
-        [LandingStatus.ONLINE, 'success'],
-        [LandingStatus.EXITING, 'error'],
-        [LandingStatus.OFFLINE, 'default']
+        [ONLINE_STATUS.LANDING, 'warning'],
+        [ONLINE_STATUS.ONLINE, 'success'],
+        [ONLINE_STATUS.EXITING, 'error'],
+        [ONLINE_STATUS.OFFLINE, 'default']
       ])
     }
   },

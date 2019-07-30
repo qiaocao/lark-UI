@@ -205,7 +205,7 @@ import {
   TalkFile,
   UserFile
 } from '@/components/Talk'
-import { LandingStatus } from '@/utils/constants'
+import { ONLINE_STATUS } from '@/utils/constants'
 import api from '@/api/talk'
 import { SocketMessage, Tweet } from '@/utils/talk'
 import { mapGetters } from 'vuex'
@@ -270,7 +270,6 @@ export default {
       },
       // 显示文件上传进度条
       progressVisible: false,
-      messageList: [],
 
       imgFormat: ['jpg', 'jpeg', 'png', 'gif'],
       fileFormat: [
@@ -297,12 +296,15 @@ export default {
     ...mapGetters(['onlineState', 'userSecretLevel', 'userId', 'avatar', 'nickname', 'token']),
     // 发送按钮的可用状态
     sendDisabled () {
-      if (this.onlineState === LandingStatus.ONLINE) {
+      if (this.onlineState === ONLINE_STATUS.ONLINE) {
         return this.fileUpload.status && this.fileUpload.status !== 'done'
       } else return true
     },
     fileUploadUrl () {
       return api.fileUpload
+    },
+    messageList () {
+      return this.$store.getters.getTalkHistory(this.chatInfo.id)
     }
   },
   watch: {
@@ -312,8 +314,7 @@ export default {
         this.$store.commit('SET_CURRENT_TALK', this.chatInfo)
         // TODO: 更新最近联系人列表的唯独消息数
         // ···
-        this.getCacheMessage()
-        this.scrollToBottom()
+        // this.scrollToBottom()
         this.handleSendSecretLevel()
 
         // 设置输入框信息
@@ -330,11 +331,7 @@ export default {
       },
       immediate: true
     },
-    messageList: function (newValue) {
-      this.$store.commit('SET_TALK_MAP', {
-        fromServer: false,
-        talkMapData: [[this.chatInfo.id, newValue]]
-      })
+    messageList: function () {
       // 滚动到最下方
       this.scrollToBottom()
     }
@@ -433,19 +430,6 @@ export default {
       this.sendSecretLevel = secretLevel
       this.sendSecretList = allSendMenu.filter(item => item <= curTalkSecret)
     },
-    /**
-     * 获取缓存消息
-     */
-    getCacheMessage () {
-      const hasCache = this.$store.state.talk.talkMap.has(this.chatInfo.id)
-      if (!hasCache) {
-        this.$store.commit('SET_TALK_MAP', {
-          fromServer: false,
-          talkMapData: [[this.chatInfo.id, []]]
-        })
-      }
-      this.messageList = this.$store.state.talk.talkMap.get(this.chatInfo.id)
-    },
     /** 发送消息 */
     sendMessage (secretLevel) {
       if (this.sendDisabled) {
@@ -494,8 +478,13 @@ export default {
           data: tweet
         }).toString()
         this.SocketGlobal.send(baseMessage)
-        // 将消息放进当前的消息列表
-        this.messageList.push(tweet)
+        // 添加定时任务 添加到发送队列
+        this.$store.commit('ADD_TIMING_TASK', tweet.id)
+        // 更新消息列表
+        this.$store.dispatch('UpdateTalkMap', {
+          direction: 'send',
+          message: tweet
+        })
         this.$store.dispatch('UpdateRecentContacts', {
           ...this.chatInfo,
           reOrder: true,

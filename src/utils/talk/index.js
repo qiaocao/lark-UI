@@ -82,7 +82,7 @@ class RecentContact {
     this.id = id
     this.name = name
     this.avatar = avatar || ''
-    this.secretLevel = secretLevel ? JSON.parse(secretLevel) : 60
+    this.secretLevel = secretLevel ? JSON.parse(secretLevel) : 30
     this.memberNum = memberNum ? JSON.parse(memberNum) : 0
     this.isGroup = isGroup ? JSON.parse(isGroup) : false
 

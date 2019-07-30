@@ -43,6 +43,8 @@ router.beforeEach((to, from, next) => {
             })
           })
           .then(() => {
+            // 开启消息超时定时器
+            store.dispatch('StartMessageTimer')
             // 进行websocket连接
             Vue.prototype.SocketGlobal.connect()
           })
