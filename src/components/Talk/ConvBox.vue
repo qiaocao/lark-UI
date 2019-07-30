@@ -73,7 +73,6 @@
                 <Face @insertFace="insertFace" />
               </template>
               <a-icon style="marginRight: 20px" type="smile" />
-              <!-- @click="getfocus(); insertHtmlAtCaret();" -->
             </a-popover>
           </a-tooltip>
         </div>
@@ -91,7 +90,6 @@
             :beforeUpload="beforeUpload"
             :openFileDialogOnClick="!Object.keys(fileUpload).length"
           >
-            <!-- :customRequest="customRequest" -->
             <a-tooltip
               placement="top"
               :title="Object.keys(fileUpload).length ? '有未发送文件' : '选择文件'"
@@ -109,15 +107,6 @@
         <div class="draft-input">
           <!-- 输入框 -->
           <div>
-            <!-- <wysiwyg
-              v-model="messageContent"
-              v-show="!Object.keys(fileUpload).length"
-              class="textarea-input"
-              @keydown.enter.stop.prevent.exact
-              @keyup.alt.enter.exact="messageContent += '\n'"
-              @keyup.ctrl.enter.exact="messageContent += '\n'"
-            /> -->
-            <!-- @keyup.enter.native="sendMessage(sendSecretLevel)" -->
             <textarea
               v-show="!Object.keys(fileUpload).length"
               size="large"
@@ -355,23 +344,6 @@ export default {
     // })
   },
   methods: {
-    /**
-     * 重写上传action方法
-     */
-    // customRequest (data) {
-    //   const formData = new FormData()
-    //   formData.append('file', data.file)
-    //   data.onProgress()
-    //   uploadFile(formData).then(res => {
-    //     if (res.status === 200) {
-    //       // const imageUrl = res.result
-    //       // vue-cropper插件img绑定url时，会有跨域问题，图片类型转base64传递到子组件
-    //       this.getBase64(data.file, (imageUrl) => {
-    //         this.$refs.modal.edit(imageUrl)
-    //       })
-    //     }
-    //   })
-    // },
     /** 给研讨界面添加水印 */
     printWaterMark (username) {
       const config = {
@@ -385,7 +357,7 @@ export default {
         yOffset: 1
       }
       const watermark = new Watermark(config)
-      watermark.embed('.conv-box-message', 'qqqqq')
+      watermark.embed('.conv-box-message', 'user-name-mask')
     },
     /**
      * 文件上传状态变化时触发
@@ -458,9 +430,7 @@ export default {
       this.sendSecretLevel = secretLevel
       this.sendSecretList = allSendMenu.filter(item => item <= curTalkSecret)
     },
-    /**
-     * 发送消息
-     */
+    /** 发送消息 */
     sendMessage (secretLevel) {
       if (this.sendDisabled) {
         this.$message.warning('还不能发送消息！')
@@ -502,8 +472,7 @@ export default {
       // 如果消息类型属性存在，消息内容创建成功
       if (tweet.content && tweet.content.type) {
         this.generateBaseInfo(tweet, secretLevel)
-        // this.updateChatInfo(tweet)
-        this.addSenderInfo(tweet)
+        this.addContactInfo(tweet)
         const baseMessage = new SocketMessage({
           code: this.chatInfo.isGroup ? 1 : 0,
           data: tweet
@@ -526,8 +495,8 @@ export default {
         tweet.content.type === 1 ? (this.messageContent = '') : (this.fileUpload = {})
       }
     },
-    /** 添加发信人信息或者群组信息 */
-    addSenderInfo (tweet) {
+    /** 添加联系人/群组信息 */
+    addContactInfo (tweet) {
       const { chatInfo, userId, nickname, avatar, userSecretLevel } = this
       tweet.contactInfo = {}
       if (tweet.isGroup) {
@@ -545,19 +514,6 @@ export default {
         tweet.contactInfo.memberNum = 2
         tweet.contactInfo.isGroup = false
       }
-    },
-    /** 更新当前联系人信息 */
-    // TODO: 这个地方可以不处理，在刷新最近联系人列表处统一处理
-    updateChatInfo (tweet) {
-      // this.chatInfo.time = format(tweet.time, 'hh:mm')
-      // if (tweet.content.type === 1) {
-      //   this.chatInfo.lastMessage.title = tweet.content.title
-      //   this.messageContent = ''
-      // } else if (tweet.type === 2) {
-      //   this.chatInfo.lastMessage = '[图片]:' + tweet.content.title
-      // } else if (tweet.type === 3) {
-      //   this.chatInfo.lastMessage = '[文件]:' + tweet.content.title
-      // }
     },
     /** 生成消息体中的基本信息 */
     generateBaseInfo (tweet, secretLevel) {

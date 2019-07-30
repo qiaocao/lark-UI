@@ -159,7 +159,7 @@ export function toWeiXinString (date) {
     else str = hour[parseInt(h / 6)]
     str = format(date, 'MM月dd ') + str
   }
-  str += format(date, 'HH:ss')
+  str += format(date, 'HH:mm')
   return str
 }
 
