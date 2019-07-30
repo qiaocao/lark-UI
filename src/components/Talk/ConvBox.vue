@@ -181,6 +181,7 @@
       <a-progress
         :percent="fileUpload.percent"
         :status="uploadStatus[fileUpload.status]"
+        :format="(percent)=>parseInt(percent) + '%'"
       />
     </a-modal>
   </a-layout>
@@ -312,9 +313,6 @@ export default {
       handler: function (newId, oldId) {
         // 设置当前联系人
         this.$store.commit('SET_CURRENT_TALK', this.chatInfo)
-        // TODO: 更新最近联系人列表的唯独消息数
-        // ···
-        // this.scrollToBottom()
         this.handleSendSecretLevel()
 
         // 设置输入框信息
@@ -339,9 +337,7 @@ export default {
   mounted () {
     // 页面创建时，消息滚动到最近一条
     this.scrollToBottom()
-    // this.$nextTick(() => {
     this.printWaterMark(this.nickname)
-    // })
   },
   methods: {
     /** 给研讨界面添加水印 */
@@ -353,8 +349,8 @@ export default {
         density: 0.8,
         rotate: (-1 / 6) * Math.PI,
         z_index: 999,
-        color: 'rgba(178, 178, 178, 0.3)',
-        yOffset: 1
+        color: 'rgba(252, 252, 252, 0.6)',
+        yOffset: 5
       }
       const watermark = new Watermark(config)
       watermark.embed('.conv-box-message', 'user-name-mask')
@@ -378,9 +374,7 @@ export default {
     beforeUpload () {
       this.headers.authorization = this.token
     },
-    /**
-     * 清除上传的文件
-     */
+    /** 清除上传的文件 */
     removeFile () {
       this.fileUpload = {}
       // TODO: 向后台发送请求
@@ -399,9 +393,7 @@ export default {
         }
       })
     },
-    /**
-     * 通过isGroup属性过滤聊天选项
-     */
+    /** 通过isGroup属性过滤聊天选项 */
     optionFilter (isGroup) {
       // 聊天操作选项
       const optionList = [
@@ -414,15 +406,11 @@ export default {
 
       return isGroup ? optionList : optionList.filter(item => !item.group)
     },
-    /**
-     * 根据drawerName打开对应的抽屉
-     */
+    /** 根据drawerName打开对应的抽屉 */
     triggerDrawer (drawerName) {
       this.activeOption = drawerName
     },
-    /**
-     * 设置发送消息的密级
-     */
+    /** 设置发送消息的密级 */
     handleSendSecretLevel (even) {
       const secretLevel = even ? parseInt(event.target.value) : 30
       const allSendMenu = [30, 40, 60].filter(item => item <= this.userSecretLevel)

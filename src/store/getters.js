@@ -23,6 +23,8 @@ const getters = {
 
   /** websocket连接状态 */
   onlineState: state => state.talk.onlineState,
+  currentTalk: state => state.talk.currentTalk,
+  recentContacts: state => state.talk.recentContacts,
   groupList: state => state.talk.groupList,
   contactsTree: state => state.talk.contactsTree,
   /** 消息状态判断 100-成功 101-失败 102-发送中 */
