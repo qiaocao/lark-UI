@@ -480,15 +480,18 @@ const talk = {
     UpdateTalkMap ({ state, commit, rootGetters }, messageObj) {
       const { direction, message } = messageObj
       if (direction === 'receive' && message.fromId === rootGetters.userId) return
-      const tempMessageList = state.talkMap.get(message.contactInfo.id) || []
-      tempMessageList.push(new Tweet(message))
+      let tempMessageList = []
       if (direction === 'receive') {
+        tempMessageList = state.talkMap.get(message.contactInfo.id) || []
+        tempMessageList.push(new Tweet(message))
         commit('SET_TALK_MAP', {
           fromServer: false,
           talkMapData: [[message.contactInfo.id, tempMessageList]]
         })
       }
       if (direction === 'send') {
+        tempMessageList = state.talkMap.get(message.toId) || []
+        tempMessageList.push(new Tweet(message))
         commit('SET_TALK_MAP', {
           fromServer: false,
           talkMapData: [[message.toId, tempMessageList]]

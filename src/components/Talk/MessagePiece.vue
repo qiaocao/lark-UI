@@ -69,7 +69,12 @@
                       :class="'s-' + messageInfo.content.secretLevel"
                     >【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】</span>
                   </div>
-                  <a :href="downloadUrl" class="download" download>下载</a>
+                  <a
+                    v-show="messageStatus === 100"
+                    :href="downloadUrl"
+                    class="download"
+                    download
+                  >下载</a>
                 </div>
               </a-spin>
 
@@ -99,7 +104,12 @@
                       :class="'s-' + messageInfo.content.secretLevel"
                     >【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】</span>
                   </div>
-                  <a :href="downloadUrl" class="download" download>下载</a>
+                  <a
+                    v-show="messageStatus === 100"
+                    :href="downloadUrl"
+                    class="download"
+                    download
+                  >下载</a>
                 </div>
               </div>
             </div>
