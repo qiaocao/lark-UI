@@ -72,7 +72,7 @@
 
 </template>
 <script>
-import { fileDownload, MarkMessageGrabble } from '@/api/talk.js'
+import { MarkMessageGrabble } from '@/api/talk.js'
 import api from '@/api/talk'
 
 export default {
@@ -148,11 +148,6 @@ export default {
       }).catch(res => {
         this.isShow = true
         this.openNotification()
-      })
-    },
-    down (id) {
-      fileDownload(id).then(item => {
-        window.open('/api/chat/zzFileManage/downloadFile' + '?file' + id, '_self')
       })
     },
     // 滚动获取数据
