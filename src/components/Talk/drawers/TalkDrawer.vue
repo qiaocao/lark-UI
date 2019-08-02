@@ -4,7 +4,7 @@
     :title="activeOption.drawerName"
     placement="right"
     :wrapStyle="{marginTop: '64px',overflow: 'auto', paddingBottom: '108px'}"
-    width="510px"
+    :width="width"
     :closable="false"
     @close="onClose"
     :visible="visibleMode(activeOption.drawerType)"
@@ -13,19 +13,21 @@
     <history-msg v-if="activeOption.drawerType=='talkHistory'" :contactId="contactId" :isGroup="isGroup"></history-msg><!-- 聊天内容 -->
     <user-file-grabble v-else-if="activeOption.drawerType=='userFile'" :contactId="contactId"></user-file-grabble><!-- 一对一对话文件 -->
     <file-grabble v-else-if="activeOption.drawerType=='talkFile'" :contactId="contactId"></file-grabble><!-- 群文件 -->
-    <!-- 组成员 -->
+    <team-member v-else-if="activeOption.drawerType=='teamMember'" :contactId="contactId"></team-member><!-- 组成员 -->
   </a-drawer>
 </template>
 <script>
 import historyMsg from './messageGrabble.vue'
 import fileGrabble from './fileGrabble.vue'
 import userFileGrabble from './UserFileGrabble.vue'
+import teamMember from './TeamMember'
 export default {
   name: 'TalkDrawer',
   components: {
     historyMsg,
     fileGrabble,
-    userFileGrabble
+    userFileGrabble,
+    teamMember
   },
   props: {
     activeOption: {
@@ -40,6 +42,11 @@ export default {
     isGroup: {
       type: String,
       default: '',
+      required: false
+    },
+    width: {
+      type: String,
+      default: '500px',
       required: false
     }
   },

@@ -35,7 +35,8 @@ export default {
       // 弹出框可见
       memberVisible: false,
       userArr: [],
-      returnUsers: []
+      returnUsers: [],
+      returnUserids: []
     }
   },
   props: {
@@ -50,11 +51,12 @@ export default {
         this.$refs.transfer.beginChooseUser(userArr)
       })
     },
-    handleOk (users) {
+    handleOk (users, userids) {
       this.returnUsers = users
+      this.returnUserids = userids
     },
     clickOk () {
-      this.$emit('ok', this.returnUsers)
+      this.$emit('ok', this.returnUsers, this.returnUserids)
       this.memberVisible = false
     },
     /**

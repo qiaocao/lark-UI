@@ -5,6 +5,7 @@
       :contactId="chatInfo.id"
       :activeOption="activeOption"
       :isGroup="JSON.stringify(chatInfo.isGroup)"
+      :width="drawerWidth"
       @closeDrawer="triggerDrawer"
     />
     <a-layout-header class="conv-box-header">
@@ -271,7 +272,9 @@ export default {
         'sql',
         'apk',
         'psd'
-      ]
+      ],
+      // 抽屉宽度
+      drawerWidth: ''
     }
   },
   computed: {
@@ -421,6 +424,12 @@ export default {
      */
     triggerDrawer (drawerType, drawerName) {
       this.activeOption = { 'drawerType': drawerType, 'drawerName': drawerName }
+      // 组成员抽屉
+      if (drawerType === 'teamMember') {
+        this.drawerWidth = '600px'
+      } else {
+        this.drawerWidth = '400px'
+      }
     },
     /**
      * 设置发送消息的密级

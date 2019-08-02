@@ -111,4 +111,12 @@
                             src\components\Talk\drawers\TalkDrawer.vue
                             src\components\Talk\ConvBox.vue
                             src\components\Talk\index.js
+ 20190802 push by fanjiao:filepath--【群成员抽屉组件】                                         
+                            src\components\Talk\ConvBox.vue
+                            src\components\Talk\drawers\TeamMember.vue
+                            src\components\Talk\drawers\TalkDrawer.vue
+                            src\api\talk.js
+                            src\components\admin\UserTransfer.vue
+                            src\components\admin\UserTransferModel.vue
+
 
