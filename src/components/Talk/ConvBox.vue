@@ -1,21 +1,11 @@
 <template>
   <a-layout v-if="Object.keys(chatInfo).length" class="conv-box">
     <!-- 聊天设置选项的抽屉组件 -->
-    <talk-history
-      :contactId="chatInfo.id"
-      :hisGrop="JSON.stringify(chatInfo.isGroup)"
-      :activeOption="activeOption"
-      @closeDrawer="triggerDrawer"
-    />
-    <group-notice :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-    <talk-setting :groupId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-    <talk-file :activeOption="activeOption" :groupId="chatInfo.id" @closeDrawer="triggerDrawer" />
-    <user-file :contactId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-    <mark-message :groupId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-    <more-info :contactId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-    <team-member
+    <talk-drawer
       :contactId="chatInfo.id"
       :activeOption="activeOption"
+      :isGroup="JSON.stringify(chatInfo.isGroup)"
+      :width="drawerWidth"
       @closeDrawer="triggerDrawer"
     />
     <a-layout-header class="conv-box-header">
@@ -39,7 +29,7 @@
             <template slot="title">
               <span>{{ item.message }}</span>
             </template>
-            <a-icon @click="triggerDrawer(item.name)" style="marginLeft: 20px" :type="item.type" />
+            <a-icon @click="triggerDrawer(item.name, item.message)" style="marginLeft: 20px" :type="item.type" />
           </a-tooltip>
         </div>
       </div>
@@ -203,14 +193,7 @@
 import {
   MessagePiece,
   Face,
-  TalkHistory,
-  MoreInfo,
-  GroupNotice,
-  TalkSetting,
-  MarkMessage,
-  TalkFile,
-  UserFile,
-  TeamMember
+  TalkDrawer
 } from '@/components/Talk'
 import { ONLINE_STATUS } from '@/utils/constants'
 import api from '@/api/talk'
@@ -225,14 +208,7 @@ export default {
   components: {
     MessagePiece,
     Face,
-    TalkHistory,
-    GroupNotice,
-    TalkSetting,
-    MarkMessage,
-    TalkFile,
-    MoreInfo,
-    UserFile,
-    TeamMember
+    TalkDrawer
   },
   props: {
     /** 聊天对话框的基本信息--结构同最近联系人 */
@@ -251,7 +227,7 @@ export default {
   data () {
     return {
       // 被激活的抽屉
-      activeOption: '',
+      activeOption: {},
       // 是否是群聊消息
       // isGroupMessage,
       // 所有被at用的id
@@ -297,7 +273,9 @@ export default {
         'sql',
         'apk',
         'psd'
-      ]
+      ],
+      // 抽屉宽度
+      drawerWidth: ''
     }
   },
   computed: {
@@ -414,9 +392,17 @@ export default {
 
       return isGroup ? optionList : optionList.filter(item => !item.group)
     },
-    /** 根据drawerName打开对应的抽屉 */
-    triggerDrawer (drawerName) {
-      this.activeOption = drawerName
+    /**
+     * 根据drawerName打开对应的抽屉
+     */
+    triggerDrawer (drawerType, drawerName) {
+      this.activeOption = { 'drawerType': drawerType, 'drawerName': drawerName }
+      // 组成员抽屉
+      if (drawerType === 'teamMember') {
+        this.drawerWidth = '600px'
+      } else {
+        this.drawerWidth = '400px'
+      }
     },
     /** 设置发送消息的密级 */
     handleSendSecretLevel (even) {

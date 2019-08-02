@@ -199,7 +199,7 @@ export default {
       this.targetKeys.forEach(item => {
         userarr.push(this.userMap.get(item))
       })
-      this.$emit('ok', userarr)
+      this.$emit('ok', userarr, this.targetKeys)
     },
     // 如需在人员信息上拼接其他人员信息 {item.title} - {item.orgname} - {item.secretLevel}
     renderItem (item) {

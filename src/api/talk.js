@@ -17,6 +17,9 @@ const api = {
   talkHistoryAll: 'chat/zzGroup/queryHistoryMessageForSingle',
   MarkMessageGrabble: 'chat/zzUserGroupMsgTag/getUserGroupMsgTagList',
   getGroupMembers: 'chat/zzGroup/getGroupUserList',
+  removeMember: 'chat/zzGroup/removeMember',
+  addMember: 'chat/zzGroup/addMember',
+  // getContent: 'https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/notice',
   // 下面的地址前面必须加/
   // 研讨文件上传地址
   fileUpload: '/zuul/api/chat/zzFileManage/singleFileUpload',
@@ -235,5 +238,35 @@ export function getGroupMembers (groupId) {
     params: {
       groupId
     }
+  })
+}
+/**
+ * 群成员列表（分页）TODO
+ */
+export function getGroupMembersPage (parameter) {
+  return axios({
+    url: api.getGroupMembers,
+    method: 'get',
+    params: parameter
+  })
+}
+/**
+ * 群组新增成员
+ */
+export function addMember (parameter) {
+  return axios({
+    url: api.addMember,
+    method: 'get',
+    params: parameter
+  })
+}
+/**
+ * 移出群组
+ */
+export function removeMember (parameter) {
+  return axios({
+    url: api.removeMember,
+    method: 'get',
+    params: parameter
   })
 }
