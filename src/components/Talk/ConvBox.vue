@@ -68,7 +68,6 @@
                 <Face @insertFace="insertFace" />
               </template>
               <a-icon style="marginRight: 20px" type="smile" />
-              <!-- @click="getfocus(); insertHtmlAtCaret();" -->
             </a-popover>
           </a-tooltip>
         </div>
@@ -86,7 +85,6 @@
             :beforeUpload="beforeUpload"
             :openFileDialogOnClick="!Object.keys(fileUpload).length"
           >
-            <!-- :customRequest="customRequest" -->
             <a-tooltip
               placement="top"
               :title="Object.keys(fileUpload).length ? '有未发送文件' : '选择文件'"
@@ -175,7 +173,11 @@
       :keyboard="false"
       :maskClosable="false"
     >
-      <a-progress :percent="fileUpload.percent" :status="uploadStatus[fileUpload.status]" />
+      <a-progress
+        :percent="fileUpload.percent"
+        :status="uploadStatus[fileUpload.status]"
+        :format="(percent)=>parseInt(percent) + '%'"
+      />
     </a-modal>
   </a-layout>
 
@@ -193,7 +195,7 @@ import {
   Face,
   TalkDrawer
 } from '@/components/Talk'
-import { LandingStatus } from '@/utils/constants'
+import { ONLINE_STATUS } from '@/utils/constants'
 import api from '@/api/talk'
 import { SocketMessage, Tweet } from '@/utils/talk'
 import { mapGetters } from 'vuex'
@@ -252,7 +254,6 @@ export default {
       },
       // 显示文件上传进度条
       progressVisible: false,
-      messageList: [],
 
       imgFormat: ['jpg', 'jpeg', 'png', 'gif'],
       fileFormat: [
@@ -281,12 +282,15 @@ export default {
     ...mapGetters(['onlineState', 'userSecretLevel', 'userId', 'avatar', 'nickname', 'token']),
     // 发送按钮的可用状态
     sendDisabled () {
-      if (this.onlineState === LandingStatus.ONLINE) {
+      if (this.onlineState === ONLINE_STATUS.ONLINE) {
         return this.fileUpload.status && this.fileUpload.status !== 'done'
       } else return true
     },
     fileUploadUrl () {
       return api.fileUpload
+    },
+    messageList () {
+      return this.$store.getters.getTalkHistory(this.chatInfo.id)
     }
   },
   watch: {
@@ -294,10 +298,6 @@ export default {
       handler: function (newId, oldId) {
         // 设置当前联系人
         this.$store.commit('SET_CURRENT_TALK', this.chatInfo)
-        // TODO: 更新最近联系人列表的唯独消息数
-        // ···
-        this.getCacheMessage()
-        this.scrollToBottom()
         this.handleSendSecretLevel()
 
         // 设置输入框信息
@@ -314,11 +314,7 @@ export default {
       },
       immediate: true
     },
-    messageList: function (newValue) {
-      this.$store.commit('SET_TALK_MAP', {
-        fromServer: false,
-        talkMapData: [[this.chatInfo.id, newValue]]
-      })
+    messageList: function () {
       // 滚动到最下方
       this.scrollToBottom()
     }
@@ -326,28 +322,9 @@ export default {
   mounted () {
     // 页面创建时，消息滚动到最近一条
     this.scrollToBottom()
-    // this.$nextTick(() => {
     this.printWaterMark(this.nickname)
-    // })
   },
   methods: {
-    /**
-     * 重写上传action方法
-     */
-    // customRequest (data) {
-    //   const formData = new FormData()
-    //   formData.append('file', data.file)
-    //   data.onProgress()
-    //   uploadFile(formData).then(res => {
-    //     if (res.status === 200) {
-    //       // const imageUrl = res.result
-    //       // vue-cropper插件img绑定url时，会有跨域问题，图片类型转base64传递到子组件
-    //       this.getBase64(data.file, (imageUrl) => {
-    //         this.$refs.modal.edit(imageUrl)
-    //       })
-    //     }
-    //   })
-    // },
     /** 给研讨界面添加水印 */
     printWaterMark (username) {
       const config = {
@@ -357,11 +334,11 @@ export default {
         density: 0.8,
         rotate: (-1 / 6) * Math.PI,
         z_index: 999,
-        color: 'rgba(178, 178, 178, 0.3)',
-        yOffset: 1
+        color: 'rgba(252, 252, 252, 0.6)',
+        yOffset: 5
       }
       const watermark = new Watermark(config)
-      watermark.embed('.conv-box-message', 'qqqqq')
+      watermark.embed('.conv-box-message', 'user-name-mask')
     },
     /**
      * 文件上传状态变化时触发
@@ -382,9 +359,7 @@ export default {
     beforeUpload () {
       this.headers.authorization = this.token
     },
-    /**
-     * 清除上传的文件
-     */
+    /** 清除上传的文件 */
     removeFile () {
       this.fileUpload = {}
       // TODO: 向后台发送请求
@@ -403,9 +378,7 @@ export default {
         }
       })
     },
-    /**
-     * 通过isGroup属性过滤聊天选项
-     */
+    /** 通过isGroup属性过滤聊天选项 */
     optionFilter (isGroup) {
       // 聊天操作选项
       const optionList = [
@@ -431,9 +404,7 @@ export default {
         this.drawerWidth = '400px'
       }
     },
-    /**
-     * 设置发送消息的密级
-     */
+    /** 设置发送消息的密级 */
     handleSendSecretLevel (even) {
       const secretLevel = even ? parseInt(event.target.value) : 30
       const allSendMenu = [30, 40, 60].filter(item => item <= this.userSecretLevel)
@@ -441,22 +412,7 @@ export default {
       this.sendSecretLevel = secretLevel
       this.sendSecretList = allSendMenu.filter(item => item <= curTalkSecret)
     },
-    /**
-     * 获取缓存消息
-     */
-    getCacheMessage () {
-      const hasCache = this.$store.state.talk.talkMap.has(this.chatInfo.id)
-      if (!hasCache) {
-        this.$store.commit('SET_TALK_MAP', {
-          fromServer: false,
-          talkMapData: [[this.chatInfo.id, []]]
-        })
-      }
-      this.messageList = this.$store.state.talk.talkMap.get(this.chatInfo.id)
-    },
-    /**
-     * 发送消息
-     */
+    /** 发送消息 */
     sendMessage (secretLevel) {
       if (this.sendDisabled) {
         this.$message.warning('还不能发送消息！')
@@ -498,15 +454,19 @@ export default {
       // 如果消息类型属性存在，消息内容创建成功
       if (tweet.content && tweet.content.type) {
         this.generateBaseInfo(tweet, secretLevel)
-        // this.updateChatInfo(tweet)
-        this.addSenderInfo(tweet)
+        this.addContactInfo(tweet)
         const baseMessage = new SocketMessage({
           code: this.chatInfo.isGroup ? 1 : 0,
           data: tweet
         }).toString()
         this.SocketGlobal.send(baseMessage)
-        // 将消息放进当前的消息列表
-        this.messageList.push(tweet)
+        // 添加定时任务 添加到发送队列
+        this.$store.commit('ADD_TIMING_TASK', tweet.id)
+        // 更新消息列表
+        this.$store.dispatch('UpdateTalkMap', {
+          direction: 'send',
+          message: tweet
+        })
         this.$store.dispatch('UpdateRecentContacts', {
           ...this.chatInfo,
           reOrder: true,
@@ -517,8 +477,8 @@ export default {
         tweet.content.type === 1 ? (this.messageContent = '') : (this.fileUpload = {})
       }
     },
-    /** 添加发信人信息或者群组信息 */
-    addSenderInfo (tweet) {
+    /** 添加联系人/群组信息 */
+    addContactInfo (tweet) {
       const { chatInfo, userId, nickname, avatar, userSecretLevel } = this
       tweet.contactInfo = {}
       if (tweet.isGroup) {
@@ -536,19 +496,6 @@ export default {
         tweet.contactInfo.memberNum = 2
         tweet.contactInfo.isGroup = false
       }
-    },
-    /** 更新当前联系人信息 */
-    // TODO: 这个地方可以不处理，在刷新最近联系人列表处统一处理
-    updateChatInfo (tweet) {
-      // this.chatInfo.time = format(tweet.time, 'hh:mm')
-      // if (tweet.content.type === 1) {
-      //   this.chatInfo.lastMessage.title = tweet.content.title
-      //   this.messageContent = ''
-      // } else if (tweet.type === 2) {
-      //   this.chatInfo.lastMessage = '[图片]:' + tweet.content.title
-      // } else if (tweet.type === 3) {
-      //   this.chatInfo.lastMessage = '[文件]:' + tweet.content.title
-      // }
     },
     /** 生成消息体中的基本信息 */
     generateBaseInfo (tweet, secretLevel) {

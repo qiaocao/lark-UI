@@ -5,7 +5,6 @@ const api = {
   groupInfo: 'chat/zzGroup/getGroupInfo',
   groupList: 'chat/zzGroup/queryGroupListByUserId',
   contactsInfo: 'admin/user/',
-  // contactsTree: 'chat/Initialization/getOrgTree',
   contactsTree: 'admin/org/orgUsers',
   recentContacts: 'chat/zzGroup/queryContactListById',
   talkMap: 'chat/zzGroup/queryHistoryMessageById',
@@ -15,7 +14,6 @@ const api = {
   getMoreInfo: '/talk/contacts/info',
   fileGrabble: 'chat/zzGroupFile/groupfile',
   userfileGrabble: 'chat/zzPrivateMsg/privateFile',
-  fileDown: '/chat/zzFileManage/downloadFile',
   talkHistoryAll: 'chat/zzGroup/queryHistoryMessageForSingle',
   MarkMessageGrabble: 'chat/zzUserGroupMsgTag/getUserGroupMsgTagList',
   getGroupMembers: 'chat/zzGroup/getGroupUserList',
@@ -125,21 +123,6 @@ export function getTalkMap (userId) {
 }
 
 /**
- * 获取未读消息
- * @param {String} userId 当前用户id
- */
-export function getFile (fileId) {
-  return axios({
-    url: api.getFile,
-    method: 'GET',
-    params: {
-      fileId: fileId,
-      t: new Date().getTime()
-    }
-  })
-}
-
-/**
  * 获取指定联系人的研讨记录
  * @param {String} userId 当前用户id
  * @param {String} contactId 指定联系人id
@@ -155,17 +138,6 @@ export function getTalkHistory (userId, contactId) {
   })
 }
 
-/**
- * 文件上传
- */
-export function uploadFile (parameter) {
-  return axios({
-    url: api.upload,
-    method: 'post',
-    data: parameter,
-    headers: { 'Content-Type': 'multipart/form-data' }
-  })
-}
 /**
  * 聊天历史记录
  */
@@ -189,15 +161,7 @@ export function getTalksetting (parameter) {
     }
   })
 }
-/**
- *  MoreInfo
- */
-// export function getMoreInfo (parameter) {
-//   return axios({
-//     url: api.getMoreInfo,
-//     method: 'get'
-//   })
-// }
+
 /**
  * fileGrabble
  */
@@ -215,19 +179,6 @@ export function getContent (parameter) {
   return axios({
     url: api.getContent,
     method: 'post'
-  })
-}
-
-/**
- * 全文件下载
- */
-export function fileDownload (parameter) {
-  return axios({
-    url: api.fileDown,
-    method: 'get',
-    params: {
-      fileId: parameter
-    }
   })
 }
 

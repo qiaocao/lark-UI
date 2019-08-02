@@ -11,28 +11,37 @@
       :class="['message-avatar', {send: isMe(), receive: !isMe()}]"
       shape="square"
       :src="isMe() ? avatar : messageInfo.avatar"
-      :size="40">
+      :size="40"
+    >
       {{ messageInfo.username.substr(0, 4) }}
     </a-avatar>
 
-    <div class="message-content">
+    <div :class="['message-content', {'show-status': isMe()}]">
       <!-- 显示发送人 -->
       <div v-if="!isMe() && messageInfo.isGroup" class="message-nickname">
         <span>{{ messageInfo.username }}</span>
+      </div>
+      <!-- 显示消息状态 -->
+      <div v-if="isMe()" class="message-status">
+        <!-- 发送成功 100 -->
+        <span v-if="messageStatus === 100" class="send-success">已送达</span>
+        <!-- 发送失败 101 -->
+        <a-icon v-if="messageStatus === 101" class="send-fail" type="exclamation-circle" />
+        <!-- 正在发送 102 -->
+        <a-icon v-if="messageStatus === 102" class="sending" type="loading" />
       </div>
 
       <div class="message-bubble left right">
         <div class="bubble-content">
           <div class="plain">
             <!-- 纯文本信息 -->
-            <div v-if="messageInfo.content.type === 1">
+            <div v-if="messageInfo.content.type === 1" class="text-message">
               <div class="secret-tip">
                 <span
                   :class="'s-' + messageInfo.content.secretLevel"
                 >【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】</span>
               </div>
-              <!-- <pre>{{ faceTransform(messageInfo.content.title) }}</pre> -->
-              <div v-html="faceTransform(messageInfo.content.title)" style="display:inline"></div>
+              <div v-html="faceTransform(messageInfo.content.title)" class="text-content"></div>
             </div>
 
             <!-- 图片消息 -->
@@ -60,7 +69,12 @@
                       :class="'s-' + messageInfo.content.secretLevel"
                     >【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】</span>
                   </div>
-                  <a :href="downloadUrl" class="download" download>下载</a>
+                  <a
+                    v-show="messageStatus === 100"
+                    :href="downloadUrl"
+                    class="download"
+                    download
+                  >下载</a>
                 </div>
               </a-spin>
 
@@ -90,7 +104,12 @@
                       :class="'s-' + messageInfo.content.secretLevel"
                     >【{{ JSON.parse(messageInfo.content.secretLevel) | fileSecret }}】</span>
                   </div>
-                  <a :href="downloadUrl" class="download" download>下载</a>
+                  <a
+                    v-show="messageStatus === 100"
+                    :href="downloadUrl"
+                    class="download"
+                    download
+                  >下载</a>
                 </div>
               </div>
             </div>
@@ -146,6 +165,9 @@ export default {
       const ext = extension === '0' || extension === '' ? '' : '.' + extension
       const sec = this.$options.filters.fileSecret(secretLevel)
       return '[' + sec + ']' + title + ext
+    },
+    messageStatus () {
+      return this.$store.getters.getMessageStatus(this.messageInfo.id)
     }
   },
   watch: {
@@ -266,8 +288,31 @@ export default {
     cursor: pointer;
   }
 
+  // 展示消息状态
+  .show-status {
+    display: flex;
+  }
   .message-content {
     overflow: hidden;
+
+    .message-status {
+      margin-left: auto;
+      // 实现垂直居中
+      display: flex;
+      align-items: center;
+      .send-success {
+        color: #d3d6dc;
+        font-size: 10px;
+      }
+      .sending {
+        color: #1890ff;
+        font-size: 10px;
+      }
+      .send-fail {
+        color: #ff0000;
+        font-size: 16px;
+      }
+    }
 
     .message-nickname {
       height: 20px;
@@ -313,13 +358,10 @@ export default {
         .plain {
           padding: 9px 13px;
 
-          pre {
-            margin: 0;
-            display: inline;
-            font-family: inherit;
-            font-size: inherit;
-            white-space: pre-wrap;
-            word-break: normal;
+          .text-message {
+            .text-content {
+              display: inline;
+            }
           }
 
           .img-message {
