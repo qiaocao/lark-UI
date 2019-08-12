@@ -44,7 +44,7 @@ function setIsMute (groupList, isGroup, id) {
  * @param {Array} recentContacts 最近联系人
  * @param {String} id 联系人id
  * @param {Boolean} addUnread 增加未读消息数
- * @param {String} currentId 当前联系人id
+ * @param {String} currentId 当前激活研讨的id
  * @returns {Boolean}
  */
 function setUnreadNum (recentContacts, id, addUnread, currentId) {
@@ -58,7 +58,7 @@ function setUnreadNum (recentContacts, id, addUnread, currentId) {
 }
 
 /**
- * 设置消息相关信息
+ * 设置最近联系人项中消息的相关信息
  * @param {Map} talkMap 存储研讨消息的Map
  * @param {String} id 联系人id
  * @param {Object} recentContact 要处理的项
@@ -109,7 +109,7 @@ function syncUnread2Server (newUnreasNum, online, reviser, sender) {
 }
 
 /**
- * 格式化联系人数据
+ * 格式化联系人结构树
  * @param {Array} target 目标数组
  * @param {Array} todoList 待处理数组
  */
@@ -244,8 +244,23 @@ const talk = {
         }
       }
     },
-    SET_CURRENT_TALK (state, currentTalk) {
-      state.currentTalk = currentTalk
+    /**
+     * 设置当前研讨
+     * @param {String} id 联系人ID
+     */
+    SET_CURRENT_TALK (state, id) {
+      const index = state.recentContacts.findIndex(element =>
+        element.id === id
+      )
+      if (index > -1) {
+        // 更新当前研讨
+        const {
+          id, name, avatar, secretLevel, memberNum, isGroup
+        } = state.recentContacts[index]
+        state.currentTalk = {
+          id, name, avatar, secretLevel, memberNum, isGroup
+        }
+      }
     },
     /**
      * 更新draftMap
@@ -423,7 +438,7 @@ const talk = {
         recentContacts,
         freshItem.id,
         freshItem.addUnread,
-        router.currentRoute.query.id)
+        router.currentRoute.params.id)
       // 告知服务器未读消息的状态
       // TODO: 告知服务器的条件还要再加判断
       if (newItem.unreadNum === 0) {

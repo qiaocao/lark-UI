@@ -211,12 +211,6 @@ export default {
     TalkDrawer
   },
   props: {
-    /** 聊天对话框的基本信息--结构同最近联系人 */
-    chatInfo: {
-      type: Object,
-      default: () => ({}),
-      required: true
-    },
     /** 是否为弹框式的聊天窗口 */
     isPopup: {
       type: Boolean,
@@ -279,7 +273,14 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['onlineState', 'userSecretLevel', 'userId', 'avatar', 'nickname', 'token']),
+    ...mapGetters({
+      onlineState: 'onlineState',
+      userSecretLevel: 'userSecretLevel',
+      userId: 'userId',
+      avatar: 'avatar',
+      nickname: 'nickname',
+      token: 'token',
+      chatInfo: 'currentTalk' }),
     // 发送按钮的可用状态
     sendDisabled () {
       if (this.onlineState === ONLINE_STATUS.ONLINE) {
@@ -296,10 +297,7 @@ export default {
   watch: {
     'chatInfo.id': {
       handler: function (newId, oldId) {
-        // 设置当前联系人
-        this.$store.commit('SET_CURRENT_TALK', this.chatInfo)
         this.handleSendSecretLevel()
-
         // 设置输入框信息
         this.$store
           .dispatch('UpdateDraftMap', [oldId + 'file', this.fileUpload])
@@ -464,11 +462,7 @@ export default {
       tweet.contactInfo = {}
       if (tweet.isGroup) {
         const { chatInfo: { id, name, avatar, secretLevel, memberNum } } = this
-        tweet.contactInfo.id = id
-        tweet.contactInfo.name = name
-        tweet.contactInfo.avatar = avatar
-        tweet.contactInfo.secretLevel = secretLevel
-        tweet.contactInfo.memberNum = memberNum
+        tweet.contactInfo = { id, name, avatar, secretLevel, memberNum }
         tweet.contactInfo.isGroup = true
       } else {
         const { userId, nickname, avatar, userSecretLevel } = this

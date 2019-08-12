@@ -61,11 +61,11 @@
 
 <script>
 import { getContactsInfo } from '@/api/talk'
-import { RecentContact } from '@/utils/talk'
+
 export default {
   name: 'ContactsInfo',
   props: {
-    // the selected group
+    // the selected contact
     selected: {
       type: String,
       default: '',
@@ -74,7 +74,7 @@ export default {
   },
   data () {
     return {
-      /** 群组信息 */
+      /** 联系人信息 */
       contactsInfo: {},
       /** 加载状态 */
       loadingState: false
@@ -102,16 +102,19 @@ export default {
         this.loadingState = false
       })
     },
+    /** 跳转到研讨页 */
     sendMessage () {
       this.$emit('clickSend')
       const contactItem = this.contactsInfo
       this.$router.push({
-        path: '/talk/ChatPanel/ChatBox',
-        query: new RecentContact(contactItem)
+        name: 'ChatBox', params: { id: contactItem.id }
       })
       contactItem.reOrder = true
       contactItem.addUnread = false
       this.$store.dispatch('UpdateRecentContacts', contactItem)
+        .then(() => {
+          this.$store.commit('SET_CURRENT_TALK', contactItem.id)
+        })
     }
   }
 }

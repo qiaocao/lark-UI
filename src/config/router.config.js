@@ -7,9 +7,6 @@ import {
   GeneralView,
   MonitorView
 } from '@/components/layouts'
-import {
-  RecentContact
-} from '@/utils/talk'
 
 export const asyncRouterMap = [
 
@@ -97,7 +94,7 @@ export const asyncRouterMap = [
             hidden: true
           },
           children: [{
-            path: 'chatbox',
+            path: 'chatbox/:id',
             name: 'ChatBox',
             component: () => import(/* webpackChunkName: "chatPanel" */ '@/views/talk/ChatBox'),
             meta: {
@@ -105,10 +102,7 @@ export const asyncRouterMap = [
               keepAlive: true,
               permission: ['talk'],
               hidden: true
-            },
-            props: (route) => ({
-              currentTalk: new RecentContact(route.query)
-            })
+            }
           }]
         }]
       },
