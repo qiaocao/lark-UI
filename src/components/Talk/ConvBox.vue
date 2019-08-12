@@ -419,7 +419,7 @@ export default {
         return
       }
       const tweet = new Tweet()
-      const { fileUpload, messageContent: content  } = this
+      const { fileUpload, messageContent: content } = this
       // 如果有文件消息，发送文件消息，忽略文字消息
       if (fileUpload.status === 'done') {
         const { fileId, fileName, readPath, fileExt } = fileUpload.response.result
@@ -461,8 +461,9 @@ export default {
     },
     /** 添加消息发送人或所在群组信息 */
     addContactInfo (tweet) {
+      tweet.contactInfo = {}
       if (tweet.isGroup) {
-        const { chatInfo: { id, name, avatar, secretLevel, memberNum }} = this
+        const { chatInfo: { id, name, avatar, secretLevel, memberNum } } = this
         tweet.contactInfo.id = id
         tweet.contactInfo.name = name
         tweet.contactInfo.avatar = avatar
