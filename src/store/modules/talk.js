@@ -2,7 +2,6 @@
  * 研讨状态模块
  */
 import modules from './conf'
-import router from '@/router'
 import Vue from 'vue'
 import { getGroupList,
   getContactsTree,
@@ -44,7 +43,7 @@ function setIsMute (groupList, isGroup, id) {
  * @param {Array} recentContacts 最近联系人
  * @param {String} id 联系人id
  * @param {Boolean} addUnread 增加未读消息数
- * @param {String} currentId 当前联系人id
+ * @param {String} currentId 当前激活研讨的id
  * @returns {Boolean}
  */
 function setUnreadNum (recentContacts, id, addUnread, currentId) {
@@ -58,7 +57,7 @@ function setUnreadNum (recentContacts, id, addUnread, currentId) {
 }
 
 /**
- * 设置消息相关信息
+ * 设置最近联系人项中消息的相关信息
  * @param {Map} talkMap 存储研讨消息的Map
  * @param {String} id 联系人id
  * @param {Object} recentContact 要处理的项
@@ -109,7 +108,7 @@ function syncUnread2Server (newUnreasNum, online, reviser, sender) {
 }
 
 /**
- * 格式化联系人数据
+ * 格式化联系人结构树
  * @param {Array} target 目标数组
  * @param {Array} todoList 待处理数组
  */
@@ -160,7 +159,7 @@ const talk = {
     contactsTree: [],
     /** 存储研讨消息的Map */
     talkMap: new Map(),
-    /** 当前正在进行的研讨 */
+    /** 当前研讨页面的相关信息 */
     currentTalk: {},
     /** 草稿Map */
     draftMap: new Map(),
@@ -244,8 +243,23 @@ const talk = {
         }
       }
     },
-    SET_CURRENT_TALK (state, currentTalk) {
-      state.currentTalk = currentTalk
+    /**
+     * 设置当前研讨相关信息
+     * @param {String} id 联系人ID
+     */
+    SET_CURRENT_TALK (state, id) {
+      const index = state.recentContacts.findIndex(element =>
+        element.id === id
+      )
+      if (index > -1) {
+        // 更新当前研讨
+        const {
+          id, name, avatar, secretLevel, memberNum, isGroup
+        } = state.recentContacts[index]
+        state.currentTalk = {
+          id, name, avatar, secretLevel, memberNum, isGroup
+        }
+      }
     },
     /**
      * 更新draftMap
@@ -412,7 +426,7 @@ const talk = {
      * addUnread: 增加未读消息数量
      */
     UpdateRecentContacts ({ commit, state, rootGetters }, freshItem) {
-      const { recentContacts, groupList, talkMap } = state
+      const { recentContacts, groupList, talkMap, currentTalk } = state
       const index = recentContacts.findIndex(element => element.id === freshItem.id)
       const newItem = new RecentContact(freshItem)
       // 设置状态
@@ -420,10 +434,7 @@ const talk = {
       newItem.isMute = setIsMute(groupList, freshItem.isGroup, freshItem.id)
       setMessageInfo(freshItem.id, talkMap, newItem)
       newItem.unreadNum = setUnreadNum(
-        recentContacts,
-        freshItem.id,
-        freshItem.addUnread,
-        router.currentRoute.query.id)
+        recentContacts, freshItem.id, freshItem.addUnread, currentTalk.id)
       // 告知服务器未读消息的状态
       // TODO: 告知服务器的条件还要再加判断
       if (newItem.unreadNum === 0) {
