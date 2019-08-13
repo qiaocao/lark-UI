@@ -159,7 +159,7 @@ export function toWeiXinString (date) {
     else str = hour[parseInt(h / 6)]
     str = format(date, 'MM月dd ') + str
   }
-  str += format(date, 'HH:ss')
+  str += format(date, 'HH:mm')
   return str
 }
 
@@ -231,4 +231,18 @@ export function extensionStr (file) {
  */
 export function cardDrag (i) {
   return 1(i % 2) + 5(i / 2)
+}
+/**
+ * 文件管理搜索
+ */
+export function debounce (func, delay) {
+  let timer
+  return function (...args) {
+    if (timer) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(() => {
+      func.apply(this, args)
+    }, delay)
+  }
 }

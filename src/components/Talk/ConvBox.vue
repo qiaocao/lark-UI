@@ -1,18 +1,13 @@
 <template>
   <a-layout v-if="Object.keys(chatInfo).length" class="conv-box">
     <!-- 聊天设置选项的抽屉组件 -->
-    <talk-history
+    <talk-drawer
       :contactId="chatInfo.id"
-      :hisGrop="JSON.stringify(chatInfo.isGroup)"
       :activeOption="activeOption"
+      :isGroup="JSON.stringify(chatInfo.isGroup)"
+      :width="drawerWidth"
       @closeDrawer="triggerDrawer"
     />
-    <group-notice :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-    <talk-setting :groupId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-    <talk-file :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-    <user-file :contactId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-    <mark-message :groupId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
-    <more-info :contactId="chatInfo.id" :activeOption="activeOption" @closeDrawer="triggerDrawer" />
     <a-layout-header class="conv-box-header">
       <div class="conv-title">
         <!-- 需要对名字的字数做限制 -->
@@ -34,7 +29,7 @@
             <template slot="title">
               <span>{{ item.message }}</span>
             </template>
-            <a-icon @click="triggerDrawer(item.name)" style="marginLeft: 20px" :type="item.type" />
+            <a-icon @click="triggerDrawer(item.name, item.message)" style="marginLeft: 20px" :type="item.type" />
           </a-tooltip>
         </div>
       </div>
@@ -70,10 +65,9 @@
               overlayClassName="emojis-picker"
             >
               <template slot="content">
-                <face @insertFace="insertFace" />
+                <Face @insertFace="insertFace" />
               </template>
               <a-icon style="marginRight: 20px" type="smile" />
-              <!-- @click="getfocus(); insertHtmlAtCaret();" -->
             </a-popover>
           </a-tooltip>
         </div>
@@ -91,7 +85,6 @@
             :beforeUpload="beforeUpload"
             :openFileDialogOnClick="!Object.keys(fileUpload).length"
           >
-            <!-- :customRequest="customRequest" -->
             <a-tooltip
               placement="top"
               :title="Object.keys(fileUpload).length ? '有未发送文件' : '选择文件'"
@@ -109,16 +102,7 @@
         <div class="draft-input">
           <!-- 输入框 -->
           <div>
-            <wysiwyg
-              v-model="messageContent"
-              v-show="!Object.keys(fileUpload).length"
-              class="textarea-input"
-              @keydown.enter.stop.prevent.exact
-              @keyup.alt.enter.exact="messageContent += '\n'"
-              @keyup.ctrl.enter.exact="messageContent += '\n'"
-            />
-            <!-- @keyup.enter.native="sendMessage(sendSecretLevel)" -->
-            <!-- <textarea
+            <textarea
               v-show="!Object.keys(fileUpload).length"
               size="large"
               class="textarea-input"
@@ -127,7 +111,7 @@
               @keyup.enter.stop.prevent.exact="sendMessage(sendSecretLevel)"
               @keyup.alt.enter.exact="messageContent += '\n'"
               @keyup.ctrl.enter.exact="messageContent += '\n'"
-            /> -->
+            />
           </div>
           <!-- 文件上传进度 -->
           <div v-show="Object.keys(fileUpload).length" class="upload-display">
@@ -157,6 +141,7 @@
 
           <!-- 发送键 -->
           <div class="send-toolbar">
+            <a-tag color="red">试运行阶段，请不要发送涉密信息。</a-tag>
             <div style="marginLeft: auto">
               <!-- 发送键 -->
               <a-radio-group @change="handleSendSecretLevel" v-model="sendSecretLevel">
@@ -179,6 +164,21 @@
         </div>
       </div>
     </a-layout-footer>
+
+    <!-- 文件上传进度条 -->
+    <a-modal
+      v-model="progressVisible"
+      :closable="false"
+      :footer="null"
+      :keyboard="false"
+      :maskClosable="false"
+    >
+      <a-progress
+        :percent="fileUpload.percent"
+        :status="uploadStatus[fileUpload.status]"
+        :format="(percent)=>parseInt(percent) + '%'"
+      />
+    </a-modal>
   </a-layout>
 
   <a-layout v-else style="height: 100%; textAlign: center;">
@@ -192,35 +192,23 @@
 <script>
 import {
   MessagePiece,
-  TalkHistory,
-  MoreInfo,
-  GroupNotice,
-  TalkSetting,
-  MarkMessage,
-  TalkFile,
-  UserFile
+  Face,
+  TalkDrawer
 } from '@/components/Talk'
-import { LandingStatus } from '@/utils/constants'
+import { ONLINE_STATUS } from '@/utils/constants'
 import api from '@/api/talk'
 import { SocketMessage, Tweet } from '@/utils/talk'
 import { mapGetters } from 'vuex'
 // 生成随机uuid
 import uuidv4 from 'uuid/v4'
-import Face from './Face'
 import Watermark from '@/utils/waterMark'
 
 export default {
   name: 'ConvBox',
   components: {
     MessagePiece,
-    TalkHistory,
-    GroupNotice,
-    TalkSetting,
-    MarkMessage,
-    TalkFile,
-    MoreInfo,
-    UserFile,
-    Face
+    Face,
+    TalkDrawer
   },
   props: {
     /** 聊天对话框的基本信息--结构同最近联系人 */
@@ -239,7 +227,7 @@ export default {
   data () {
     return {
       // 被激活的抽屉
-      activeOption: '',
+      activeOption: {},
       // 是否是群聊消息
       // isGroupMessage,
       // 所有被at用的id
@@ -264,7 +252,8 @@ export default {
         done: 'success',
         error: 'exception'
       },
-      messageList: [],
+      // 显示文件上传进度条
+      progressVisible: false,
 
       imgFormat: ['jpg', 'jpeg', 'png', 'gif'],
       fileFormat: [
@@ -284,19 +273,24 @@ export default {
         'sql',
         'apk',
         'psd'
-      ]
+      ],
+      // 抽屉宽度
+      drawerWidth: ''
     }
   },
   computed: {
     ...mapGetters(['onlineState', 'userSecretLevel', 'userId', 'avatar', 'nickname', 'token']),
     // 发送按钮的可用状态
     sendDisabled () {
-      if (this.onlineState === LandingStatus.ONLINE) {
+      if (this.onlineState === ONLINE_STATUS.ONLINE) {
         return this.fileUpload.status && this.fileUpload.status !== 'done'
       } else return true
     },
     fileUploadUrl () {
       return api.fileUpload
+    },
+    messageList () {
+      return this.$store.getters.getTalkHistory(this.chatInfo.id)
     }
   },
   watch: {
@@ -304,10 +298,6 @@ export default {
       handler: function (newId, oldId) {
         // 设置当前联系人
         this.$store.commit('SET_CURRENT_TALK', this.chatInfo)
-        // TODO: 更新最近联系人列表的唯独消息数
-        // ···
-        this.getCacheMessage()
-        this.scrollToBottom()
         this.handleSendSecretLevel()
 
         // 设置输入框信息
@@ -324,11 +314,7 @@ export default {
       },
       immediate: true
     },
-    messageList: function (newValue) {
-      this.$store.commit('SET_TALK_MAP', {
-        fromServer: false,
-        talkMapData: [[this.chatInfo.id, newValue]]
-      })
+    messageList: function () {
       // 滚动到最下方
       this.scrollToBottom()
     }
@@ -336,28 +322,9 @@ export default {
   mounted () {
     // 页面创建时，消息滚动到最近一条
     this.scrollToBottom()
-    // this.$nextTick(() => {
     this.printWaterMark(this.nickname)
-    // })
   },
   methods: {
-    /**
-     * 重写上传action方法
-     */
-    // customRequest (data) {
-    //   const formData = new FormData()
-    //   formData.append('file', data.file)
-    //   data.onProgress()
-    //   uploadFile(formData).then(res => {
-    //     if (res.status === 200) {
-    //       // const imageUrl = res.result
-    //       // vue-cropper插件img绑定url时，会有跨域问题，图片类型转base64传递到子组件
-    //       this.getBase64(data.file, (imageUrl) => {
-    //         this.$refs.modal.edit(imageUrl)
-    //       })
-    //     }
-    //   })
-    // },
     /** 给研讨界面添加水印 */
     printWaterMark (username) {
       const config = {
@@ -367,21 +334,24 @@ export default {
         density: 0.8,
         rotate: (-1 / 6) * Math.PI,
         z_index: 999,
-        color: 'rgba(178, 178, 178, 0.3)',
-        yOffset: 1
+        color: 'rgba(252, 252, 252, 0.6)',
+        yOffset: 5
       }
       const watermark = new Watermark(config)
-      watermark.embed('.conv-box-message', 'qqqqq')
+      watermark.embed('.conv-box-message', 'user-name-mask')
     },
     /**
      * 文件上传状态变化时触发
      * @param {Object} info {file, fileList}
      */
     handleUpload ({ file }) {
+      this.progressVisible = true
       this.fileUpload = file
       if (file.status === 'done') {
+        this.progressVisible = false
         this.$message.success(`${file.name} 上传成功`)
       } else if (file.status === 'error') {
+        this.progressVisible = false
         this.$message.error(`${file.name} 上传失败.`)
         this.fileUpload = {}
       }
@@ -389,9 +359,7 @@ export default {
     beforeUpload () {
       this.headers.authorization = this.token
     },
-    /**
-     * 清除上传的文件
-     */
+    /** 清除上传的文件 */
     removeFile () {
       this.fileUpload = {}
       // TODO: 向后台发送请求
@@ -410,17 +378,16 @@ export default {
         }
       })
     },
-    /**
-     * 通过isGroup属性过滤聊天选项
-     */
+    /** 通过isGroup属性过滤聊天选项 */
     optionFilter (isGroup) {
       // 聊天操作选项
       const optionList = [
         // { group: true, name: 'groupNotice', message: '群公告', type: 'notification' },
-        { group: true, name: 'markMessage', message: '标记信息', type: 'tags' },
-        { group: false, name: 'talkHistory', message: '聊天内容', type: 'file-text' },
+        // { group: true, name: 'markMessage', message: '标记信息', type: 'tags' },
+        { group: false, name: 'talkHistory', message: '聊天历史', type: 'file-text' },
         { group: false, name: isGroup ? 'talkFile' : 'userFile', message: '文件', type: 'folder-open' },
-        { group: false, name: isGroup ? 'moreInfo' : 'personMoreInfo', message: '更多', type: 'ellipsis' }
+        { group: false, name: isGroup ? 'moreInfo' : 'personMoreInfo', message: '组信息', type: 'profile' },
+        { group: true, name: isGroup ? 'teamMember' : 'personMoreInfo', message: '组成员', type: 'team' }
       ]
 
       return isGroup ? optionList : optionList.filter(item => !item.group)
@@ -428,12 +395,16 @@ export default {
     /**
      * 根据drawerName打开对应的抽屉
      */
-    triggerDrawer (drawerName) {
-      this.activeOption = drawerName
+    triggerDrawer (drawerType, drawerName) {
+      this.activeOption = { 'drawerType': drawerType, 'drawerName': drawerName }
+      // 组成员抽屉
+      if (drawerType === 'teamMember') {
+        this.drawerWidth = '600px'
+      } else {
+        this.drawerWidth = '400px'
+      }
     },
-    /**
-     * 设置发送消息的密级
-     */
+    /** 设置发送消息的密级 */
     handleSendSecretLevel (even) {
       const secretLevel = even ? parseInt(event.target.value) : 30
       const allSendMenu = [30, 40, 60].filter(item => item <= this.userSecretLevel)
@@ -441,22 +412,7 @@ export default {
       this.sendSecretLevel = secretLevel
       this.sendSecretList = allSendMenu.filter(item => item <= curTalkSecret)
     },
-    /**
-     * 获取缓存消息
-     */
-    getCacheMessage () {
-      const hasCache = this.$store.state.talk.talkMap.has(this.chatInfo.id)
-      if (!hasCache) {
-        this.$store.commit('SET_TALK_MAP', {
-          fromServer: false,
-          talkMapData: [[this.chatInfo.id, []]]
-        })
-      }
-      this.messageList = this.$store.state.talk.talkMap.get(this.chatInfo.id)
-    },
-    /**
-     * 发送消息
-     */
+    /** 发送消息 */
     sendMessage (secretLevel) {
       if (this.sendDisabled) {
         this.$message.warning('还不能发送消息！')
@@ -498,15 +454,19 @@ export default {
       // 如果消息类型属性存在，消息内容创建成功
       if (tweet.content && tweet.content.type) {
         this.generateBaseInfo(tweet, secretLevel)
-        // this.updateChatInfo(tweet)
-        this.addSenderInfo(tweet)
+        this.addContactInfo(tweet)
         const baseMessage = new SocketMessage({
           code: this.chatInfo.isGroup ? 1 : 0,
           data: tweet
         }).toString()
         this.SocketGlobal.send(baseMessage)
-        // 将消息放进当前的消息列表
-        this.messageList.push(tweet)
+        // 添加定时任务 添加到发送队列
+        this.$store.commit('ADD_TIMING_TASK', tweet.id)
+        // 更新消息列表
+        this.$store.dispatch('UpdateTalkMap', {
+          direction: 'send',
+          message: tweet
+        })
         this.$store.dispatch('UpdateRecentContacts', {
           ...this.chatInfo,
           reOrder: true,
@@ -517,8 +477,8 @@ export default {
         tweet.content.type === 1 ? (this.messageContent = '') : (this.fileUpload = {})
       }
     },
-    /** 添加发信人信息或者群组信息 */
-    addSenderInfo (tweet) {
+    /** 添加联系人/群组信息 */
+    addContactInfo (tweet) {
       const { chatInfo, userId, nickname, avatar, userSecretLevel } = this
       tweet.contactInfo = {}
       if (tweet.isGroup) {
@@ -536,19 +496,6 @@ export default {
         tweet.contactInfo.memberNum = 2
         tweet.contactInfo.isGroup = false
       }
-    },
-    /** 更新当前联系人信息 */
-    // TODO: 这个地方可以不处理，在刷新最近联系人列表处统一处理
-    updateChatInfo (tweet) {
-      // this.chatInfo.time = format(tweet.time, 'hh:mm')
-      // if (tweet.content.type === 1) {
-      //   this.chatInfo.lastMessage.title = tweet.content.title
-      //   this.messageContent = ''
-      // } else if (tweet.type === 2) {
-      //   this.chatInfo.lastMessage = '[图片]:' + tweet.content.title
-      // } else if (tweet.type === 3) {
-      //   this.chatInfo.lastMessage = '[文件]:' + tweet.content.title
-      // }
     },
     /** 生成消息体中的基本信息 */
     generateBaseInfo (tweet, secretLevel) {
@@ -575,10 +522,10 @@ export default {
     },
     /** 生成图片和文件类消息 */
     generateFileMsg (tweet, id, url, extension, title, secretLevel) {
-      const index = this.imgFormat.indexOf(extension)
+      const index = this.imgFormat.indexOf(extension.toLowerCase())
       tweet.content = {
         id: id,
-        url: '/api/chat/zzFileManage/GetFile?fileId=eVN8UWex&t=1561193135178',
+        url: url,
         type: index < 0 ? 3 : 2,
         extension: extension,
         title: title,
@@ -590,7 +537,8 @@ export default {
     },
     /** 插入表情 */
     insertFace (item) {
-      this.messageContent = this.messageContent + `<img src="${item}" style="height: 1.5em">`
+      this.messageContent = this.messageContent + 'face' + item
+      this.faceVisible = false
     }
   },
   directives: {
@@ -722,7 +670,7 @@ export default {
         cursor: text;
         // 输入框
         .textarea-input {
-          height: 120px;
+          height: 90px;
           width: 100%;
           line-height: 20px;
           color: black;
@@ -730,7 +678,7 @@ export default {
           outline: none;
           border: none;
           z-index: 2;
-          margin-top: -40px;
+          // margin-top: -40px;
         }
         // 文件上传展示
         .upload-display {

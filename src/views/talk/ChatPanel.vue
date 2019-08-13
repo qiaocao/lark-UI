@@ -14,7 +14,7 @@
         @change="changePane"
         :tabBarGutter="0"
         :tabBarStyle="{ margin: '0 20px' }"
-        :animated="false"
+        animated
       >
         <a-tab-pane key="1" forceRender>
           <span slot="tab">
@@ -42,7 +42,7 @@
           </div>
         </a-tab-pane>
 
-        <a-tab-pane key="2">
+        <a-tab-pane key="2" forceRender>
           <span slot="tab">
             <a-icon type="team" style="{fontSize: 16px}" />群组
           </span>
@@ -68,7 +68,7 @@
           </div>
         </a-tab-pane>
 
-        <a-tab-pane key="3">
+        <a-tab-pane key="3" forceRender>
           <span slot="tab">
             <a-icon type="user" style="{fontSize: 18px, margin: 0}" />联系人
           </span>
@@ -119,8 +119,14 @@
 </template>
 
 <script>
-import { ContactsTree, ContactsInfo, GroupInfo, RecentContactsItem, GroupItem, CreateTalk, SearchAll } from '@/components/Talk'
-
+import { ContactsTree,
+  ContactsInfo,
+  GroupInfo,
+  RecentContactsItem,
+  GroupItem,
+  CreateTalk,
+  SearchAll } from '@/components/Talk'
+import { mapGetters } from 'vuex'
 export default {
   name: 'ChatPanel',
   components: {
@@ -157,23 +163,12 @@ export default {
     }
   },
   computed: {
-    currentTalk () {
-      return this.$store.state.talk.currentTalk
-    },
-    recentContacts: {
-      get: function () {
-        return this.$store.state.talk.recentContacts
-      },
-      set: function (recentContacts) {
-        this.$store.commit('SET_RECENT_CONTACTS', recentContacts)
-      }
-    },
-    groupList () {
-      return this.$store.state.talk.groupList
-    },
-    contactsTree () {
-      return this.$store.state.talk.contactsTree
-    }
+    ...mapGetters([
+      'currentTalk',
+      'recentContacts',
+      'groupList',
+      'contactsTree'
+    ])
   },
   watch: {
     currentTalk (newValue) {
@@ -279,7 +274,7 @@ export default {
   max-width: 280px !important;
   flex: 0 0 280px !important;
 
-  background: rgb(230, 232, 235);
+  background-color: #ebeff5;
   border-right: 1px solid #dcdee0;
 
   // 聊天搜索栏样式 该部分高度为48px
@@ -290,7 +285,7 @@ export default {
       margin-left: 10px;
       width: 31px;
       height: 31px;
-      background: #d1d2d4;
+      background-color: #d3d6dc;
       color: #7c7a7a;
       font-size: 18px;
     }

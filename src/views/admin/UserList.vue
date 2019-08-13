@@ -130,20 +130,29 @@
                     v-decorator="['pid',{rules: [{ required: true, message: '请输入身份证号' },{pattern: /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/, message: '身份证输入格式有误'}]}]"/>
                 </a-form-item>
               </a-col>
-              <!-- <a-col :span="10" :offset="1">
+              <a-col :span="10" :offset="1">
                 <a-form-item
                   :labelCol="labelCol"
                   :wrapperCol="wrapperCol"
-                  label="在职状态"
+                  label="性别"
                 >
-                  <a-select placeholder="请选择" v-decorator="['inservice',{rules: [{ required: true, message: '请选择在职状态' }]}]">
-                    <a-select-option value="1">在职</a-select-option>
-                    <a-select-option value="2">离职</a-select-option>
+                  <a-select placeholder="请选择" v-decorator="['gender',{rules: [{ required: true, message: '请选择性别' }]}]">
+                    <a-select-option value="1">男</a-select-option>
+                    <a-select-option value="2">女</a-select-option>
                   </a-select>
                 </a-form-item>
-              </a-col> -->
+              </a-col>
             </a-row>
             <a-row>
+              <a-col :span="10" :offset="1">
+                <a-form-item
+                  :labelCol="labelCol"
+                  :wrapperCol="wrapperCol"
+                  label="人员排序"
+                >
+                  <a-input-number :min="1" :max="99999" v-decorator="['orderId']" style="width:100%"/>
+                </a-form-item>
+              </a-col>
               <a-col :span="10" :offset="1">
                 <a-form-item
                   :labelCol="labelCol"
@@ -462,7 +471,9 @@ export default {
             inservice: this.userinfo.inservice,
             secretLevel: this.userinfo.secretLevel,
             pid: this.userinfo.pid,
-            status: this.userinfo.status === '启用'
+            status: this.userinfo.status === '启用',
+            gender: this.userinfo.gender,
+            orderId: this.userinfo.orderId
           })
         }, 0)
         this.orgid = item.orgCode === undefined ? '' : item.orgCode + 'select'
@@ -481,7 +492,9 @@ export default {
             inservice: '',
             secretLevel: '',
             pid: '',
-            status: true
+            status: true,
+            gender: '',
+            orderId: ''
           })
         }, 0)
         this.orgid = ''

@@ -184,7 +184,9 @@ export default {
   color: #ffb500;
 }
 .s-60,
-.s-70 {
+.s-70,
+.s-80,
+.s-90 {
   font-size: 14px;
   color: #ff0000;
 }
@@ -554,7 +556,7 @@ body {
     padding-left: 24px;
     -webkit-transition: all 0.3s;
     transition: all 0.3s;
-    background: #0052cc;
+    background: #0246aa;
     overflow: hidden;
 
     img,

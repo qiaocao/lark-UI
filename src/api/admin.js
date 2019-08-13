@@ -38,6 +38,7 @@ const api = {
   usercard: '/portal/userCard/myself',
   // 网关日志
   gatelog: '/admin/gateLog/page',
+  exportgatelog: '/admin/gateLog/export',
   // 敏感词
   getwordpage: '/chat/zzDictionaryWords/query',
   dicword_add: '/chat/zzDictionaryWords/create',
@@ -49,7 +50,11 @@ const api = {
   commontools: '/portal/commonTools',
   // 临时增加，方便测试
   getUserBySecret: 'admin/user/list',
-  deleteId: '/workplace/card'
+  deleteId: '/workplace/card',
+  // 文件管理
+  fileAll: 'chat/zzGroupFile/fileMonitoring',
+  // 群组管理
+  groupAll: 'chat/zzGroup/groupListMonitoring'
 }
 
 export default api
@@ -429,6 +434,17 @@ export function getGateLog (parameter) {
   })
 }
 /**
+ * 导出网关日志
+ */
+export function exportGateLog (parameter) {
+  return axios({
+    url: api.exportgatelog,
+    method: 'get',
+    params: parameter,
+    responseType: 'blob'
+  })
+}
+/**
  * 获取涉密词汇
  */
 export function getWordList (parameter) {
@@ -540,5 +556,25 @@ export function deleteId (parameter) {
       cardId: parameter,
       userId: this.$store.state.user.name
     }
+  })
+}
+/**
+ * 文件管理
+ */
+export function fileAll (parameter) {
+  return axios({
+    url: api.fileAll,
+    method: 'post',
+    params: parameter
+  })
+}
+/**
+ * 群组管理
+ */
+export function groupAll (parameter) {
+  return axios({
+    url: api.groupAll,
+    method: 'get',
+    params: parameter
   })
 }

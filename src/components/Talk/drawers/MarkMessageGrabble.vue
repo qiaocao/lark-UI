@@ -43,7 +43,7 @@
             </div>
 
           </div>
-          <a-button class="down dow_height" type="primary" icon="download" @click="down( item.content.url.match(/Id=([a-zA-Z0-9]+)/g))" :disabled="Dowflag"></a-button>
+          <a :href="genDownLoadPath(newItem.fileId)" class="down dow_height" download>下载</a>
         </div>
         <div class="borderDiv" v-if="item.content.type == 2">
           <!-- <img :src="item.avatar" class="content_l" alt> -->
@@ -63,7 +63,7 @@
               <a-tag color="" v-if="item.content.secretLevel == '60'">非密</a-tag>
             </div>
           </div>
-          <a-button class="down dow_height" type="primary" icon="download" @click="down( item.content.url.match(/Id=([a-zA-Z0-9]+)/g))" :disabled="Dowflag"></a-button>
+          <a :href="genDownLoadPath(newItem.fileId)" class="down dow_height" download>下载</a>
         </div>
       </li>
     </ul>
@@ -72,7 +72,9 @@
 
 </template>
 <script>
-import { fileDownload, MarkMessageGrabble } from '@/api/talk.js'
+import { MarkMessageGrabble } from '@/api/talk.js'
+import api from '@/api/talk'
+
 export default {
   name: 'Rabble',
   directives: { scroll },
@@ -112,6 +114,10 @@ export default {
   },
 
   methods: {
+    /** 生成下载路径 */
+    genDownLoadPath (fileId) {
+      return api.fileDownload + '?fileId=' + fileId
+    },
     onSearch (value) {
       console.log(value)
     },
@@ -133,8 +139,8 @@ export default {
     },
     getMark () {
       this.userId = this.$store.getters.userId
-      // this.userId, this.contactId, this.page
       MarkMessageGrabble(this.userId, this.page, this.groupId).then(data => {
+        this.isShow = false
         const datas = data.result.data
         datas.map((item, index, array) => {
           this.items.push(item)
@@ -142,14 +148,6 @@ export default {
       }).catch(res => {
         this.isShow = true
         this.openNotification()
-      })
-    },
-    down (id) {
-      fileDownload(id).then(item => {
-        // if (item === 1) {
-        //   this.flag = true
-        // }
-        window.open('/api/chat/zzFileManage/downloadFile' + '?file' + id, '_self')
       })
     },
     // 滚动获取数据
@@ -268,9 +266,6 @@ export default {
   margin-bottom: 50px
 }
 .down{
-  // height: 55px;
-  // line-height: 55px;
-  // display: block
   margin: 10px 10px 0 0;
   position: absolute;
   bottom: 10px;

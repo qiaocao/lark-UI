@@ -3,159 +3,51 @@
     class="unpop-modal"
     title="研讨组设置"
     wrapClassName="talk-setting"
-    :width="448"
+    :width="400"
     @close="onClose"
     :visible="activeOption=='moreInfo'"
-    :wrapStyle="{overflow: 'auto',paddingBottom: '108px', marginTop: '64px' }"
+    :wrapStyle="{overflow: 'auto', marginTop: '64px' }"
     :destroyOnClose="true"
+    :closable="false"
   >
     <div class="talk-setting" ref="settingDrawer">
-      <!-- <a-row :gutter="8" class="group-setting-row">
-        <a-col :span="6">
-          <span class="group-setting-title">组名称:</span>
-        </a-col>
-        <span class="group-setting-content">{{ setting.title }}</span>
+      <a-form :form="form" @submit="handleSubmit" class="group-setting">
+        <a-form-item label="名称" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+          <a-input :defaultValue="setting.name" disabled />
+        </a-form-item>
+        <a-form-item label="密级" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+          <a-tag color="orange" v-if="setting.securityClass === '40'">秘密</a-tag>
+          <a-tag color="tomato" v-if="setting.securityClass === '60'">机密</a-tag>
+          <a-tag color v-if="setting.securityClass === '30'">非密</a-tag>
+        </a-form-item>
+        <a-form-item label="创建时间" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+          <a-input :defaultValue="setting.createTime" disabled />
+        </a-form-item>
+        <a-form-item label="管理员" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+          <a-input :defaultValue="setting.creatorName" disabled />
+        </a-form-item>
+        <a-form-item label="主题" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+          <a-textarea
+            :defaultValue="setting.subject"
+            placeholder="在这输入研讨主题..."
+            :autosize="{ minRows: 2, maxRows: 4 }"
+          />
+        </a-form-item>
+        <a-form-item label="描述" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+          <a-textarea
+            :defaultValue="setting.description"
+            placeholder="在这输入研讨组描述信息..."
+            :autosize="{ minRows: 4, maxRows: 8 }"
+          />
+        </a-form-item>
+      </a-form>
+      <element-footer>
+        <a-button type="default" html-type="submit" block>保存修改</a-button>
+        <a-button type="danger" html-type="submit" block>退出研讨组</a-button>
+      </element-footer>
+    </div>
 
-        <a-col :span="10">
-          <span class="group-setting-content">
-            <a-input
-              v-if="editable"
-              :value="text"
-              class="group-setting-edit-box"
-              @change="e => handleChange(e.target.value)"
-            />
-            <template v-else class="setting_name">{{ setting.name }}ssssssssssssssssss</template>
-          </span>
-        </a-col>
-
-        <a-col :span="8">
-          <span v-if="editable">
-            <a @click="() => save()">保存</a>
-            <a-divider type="vertical" />
-            <a @click="() => cancel()">取消</a>
-          </span>
-          <span v-else>
-            <a class="edit" @click="() => edit()"></a>
-          </span>
-        </a-col>
-        <div class="secret" style="margin: 6px 0 0 20px, width:30px">
-          <a-tag color="orange" v-if="setting.secretLevel === '40'">秘密</a-tag>
-          <a-tag color="tomato" v-if="setting.secretLevel === '60'">机密</a-tag>
-          <a-tag color="" v-if="setting.secretLevel === '30'">非密</a-tag>
-        </div>
-      </a-row> -->
-      <div style="margin-top: 30px">
-        <h4 class="float">组名称:</h4>
-        <p class="line_height setting_name">{{ setting.name }}</p>
-        <div class="secret" style="margin: 6px 0 0 20px,width:30px">
-          <a-tag color="orange" v-if="setting.secretLevel === '40'">秘密</a-tag>
-          <a-tag color="tomato" v-if="setting.secretLevel === '60'">机密</a-tag>
-          <a-tag color="" v-if="setting.secretLevel === '30'">非密</a-tag>
-        </div>
-      </div>
-      <div style="margin-top: 30px">
-        <h4 class="float">创建人:</h4>
-        <p class="line_height">{{ setting.creator }}</p>
-      </div>
-      <div style="margin-top: 30px">
-        <h4 class="float">描述:</h4>
-        <p class="line_height">{{ setting.description }}</p>
-      </div>
-      <div style="margin-top: 30px">
-        <h4 class="float">主题:</h4>
-        <p class="line_height">{{ setting.subject }}</p>
-      </div>
-
-      <div style="margin-top: 30px">
-        <h4 class="float">创建时间:</h4>
-        <p class="line_height">{{ setting.createTime }}</p>
-      </div>
-      <!-- <a-row :gutter="8" class="group-setting-row">
-        <a-col :span="6">
-          <span class="group-setting-title">管理员:</span>
-        </a-col>
-        <a-col :span="10">
-          {{ setting.user }}
-        </a-col>
-        <a-col :span="8">
-          <span v-if="editable">
-            <a @click="() => save()">保存</a>
-            <a-divider type="vertical" />
-            <a @click="() => cancel()">取消</a>
-          </span>
-          <span v-else>
-            <a class="edit" @click="() => edit()"></a>
-          </span>
-        </a-col>
-      </a-row> -->
-      <a-row :gutter="8" class="group-setting-row">
-        <a-col :span="6">
-          <!-- <span class="group-setting-title">组类型:</span> -->
-        </a-col>
-        <a-col :span="18">
-          <!-- <a-select defaultValue="研发" style="width: 160px">
-            <a-select-option value="研发">研发</a-select-option>
-            <a-select-option value="管理">管理</a-select-option>
-            <a-select-option value="生活">生活</a-select-option>
-          </a-select> -->
-        </a-col>
-      </a-row>
-      <a-row :gutter="8" class="group-setting-row">
-        <!-- <a-col :span="16">
-          <span class="group-setting-title">消息免打扰:</span>
-        </a-col>
-        <a-col :span="8">
-          <a-switch checkedChildren="开" unCheckedChildren="关" defaultChecked/>
-        </a-col>
-      </a-row>
-      <a-row :gutter="8" class="group-setting-row">
-        <a-col :span="16">
-          <span class="group-setting-title">研讨组置顶:</span>
-        </a-col>
-        <a-col :span="8">
-          <a-switch checkedChildren="开" unCheckedChildren="关" defaultChecked/>
-        </a-col>
-      </a-row>
-      <a-row :gutter="8" class="group-setting-row">
-        <a-col :span="16">
-          <span class="group-setting-title">加入验证:</span>
-        </a-col>
-        <a-col :span="8">
-          <a-switch checkedChildren="开" unCheckedChildren="关" defaultChecked/>
-        </a-col>
-      </a-row>
-      <a-row :gutter="8" class="group-setting-row">
-        <a-col :span="16">
-          <span class="group-setting-title">新成员可查看研讨历史:</span>
-        </a-col>
-        <a-col :span="8">
-          <a-switch checkedChildren="开" unCheckedChildren="关" defaultChecked/>
-        </a-col>
-      </a-row> -->
-        <a-row :gutter="8" class="group-setting-row">
-          <a-col :span="10">
-            <span class="group-setting-title">组成员:{{ setting.memberNum }}人</span><!-- 人数 -->
-          </a-col>
-          <a-col :span="10">
-            <!-- <a @click="() => addMember()">+添加新成员</a> -->
-          </a-col>
-          <a-col :span="4">
-
-          </a-col>
-        </a-row>
-        <!-- <div class="group-setting-person">
-        <a-list
-          :grid="{ gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 3 }"
-          :dataSource="setting.members"
-        >
-          <a-list-item slot="renderItem" slot-scope="item" class="group-setting-people">
-            <a-avatar size="large" style="color: #f56a00; backgroundColor: #fde3cf">{{ item.name }}</a-avatar>
-            <div class="user-name">{{ item.name }}</div>
-          </a-list-item>
-        </a-list>
-      </div> -->
-      </a-row></div>
-    <div
+    <!-- <div
       :style="{
         position: 'absolute',
         left: 0,
@@ -168,34 +60,31 @@
       }"
     >
       <a-button type="danger" @click="onClose" block>退出研讨组</a-button>
-    </div>
-    <ul class="setting_ul">
+    </div>-->
+    <!-- <ul class="setting_ul">
       <li v-for="(item) in userList" :key="item.key">
-        <a-avatar shape="square" :src="item.avartar" style="height: 50px" >{{ item.name }}</a-avatar>
-        <a-tooltip title="setting.userName">
+        <a-avatar
+          shape="square"
+          :src="item.avartar"
+          style="height: 50px; line-height: 50px"
+        >{{ item.name }}</a-avatar>
+        <a-tooltip :title="item.name">
           <span class="setting_ul_sp">{{ item.name }}</span>
         </a-tooltip>
       </li>
-    </ul>
+    </ul>-->
   </a-drawer>
 </template>
 <script>
-import { getTalksetting, getGroupMembers } from '@/api/talk.js'
+import { getTalksetting } from '@/api/talk.js'
+import ElementFooter from '@/components/FooterToolbar/ElementFooter'
 const data = ['1', '2', '1', '2', '1', '2']
 export default {
   name: 'MoreInfo',
+  components: {
+    ElementFooter
+  },
   props: {
-    // talk: {
-    //   type: String,
-    //   default: ''
-    // },
-    /** 抽屉挂载的元素 */
-    // mountEle: {
-    //   type: String,
-    //   default: '.conv-box',
-    //   required: false
-    // },
-    // :getContainer="mountEle"
     activeOption: {
       type: String,
       default: '',
@@ -209,9 +98,10 @@ export default {
   },
   data () {
     return {
+      formLayout: 'horizontal',
+      form: this.$form.createForm(this),
       showMask: false,
       editable: false,
-      text: 'caonima',
       data,
       // visible: false,
       setting: [],
@@ -227,10 +117,10 @@ export default {
           const datas = res.result
           this.setting = datas
         })
-        getGroupMembers(this.groupId).then(res => {
-          const data = res.result.data
-          this.userList = data
-        })
+        // getGroupMembers(this.groupId).then(res => {
+        //   const data = res.result.data
+        //   this.userList = data
+        // })
       }
     }
   },
@@ -253,31 +143,37 @@ export default {
       this.visible = false
       this.$emit('closeDrawer')
     },
-    addMember () {
-
+    handleSubmit (e) {
+      e.preventDefault()
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          console.log('修改成功 ', values)
+        }
+      })
     }
   }
 }
 </script>
 <style lang="less" scoped>
-.group-setting-content{
-  width: 100px;
+.group-setting {
+  line-height: 16px;
+}
+.float {
+  width: 65px;
+  float: left;
+  // margin-right: 20px;
+  margin-bottom: 0;
+}
+.line_height {
+  display: inline-block;
+  text-align: left;
+  text-indent: 2em;
+  width: 320px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.float{
-  float: left;
-  margin-right: 20px;
-  margin-bottom: 0;
-}
-.line_height{
-  line-height: 25px;
-  display: inline-block;
-  text-align:left;
-  text-indent:2em;
-}
-.setting_name{
+.setting_name {
   display: inline-block;
   width: 200px;
   margin-right: 50px;
@@ -285,63 +181,65 @@ export default {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.secret{
+.secret {
   // width: 30px
   float: right;
   display: inline-block;
 }
-.one-line{
+.one-line {
   display: inline;
 }
-.group-setting-title{
+.group-setting-title {
+  display: inline-block;
+  width: 65px;
   font-size: 14px;
   color: rgba(0, 0, 0, 0.85);
 }
-.group-setting-row{
+.group-setting-row {
   position: relative;
   padding: 16px 0 0;
   min-height: 18px;
 }
-.group-setting-person{
+.group-setting-person {
   clear: both;
-  padding: 20px 9.5px
+  padding: 20px 9.5px;
 }
-.group-setting-people{
+.group-setting-people {
   position: relative;
-    margin-right: 8px;
-    margin-left: 7px;
-    margin-bottom: 1em;
-    float: left;
-    text-align: center;
-    cursor: pointer;
-    width: 48px;
-    height: 64px;
+  margin-right: 8px;
+  margin-left: 7px;
+  margin-bottom: 1em;
+  float: left;
+  text-align: center;
+  cursor: pointer;
+  width: 48px;
+  height: 64px;
+  overflow: hidden;
+  .user-name {
+    display: block;
+    max-width: 40px;
+    margin: 2px auto 0;
+    font-size: 12px;
     overflow: hidden;
-    .user-name{
-      display: block;
-      max-width: 40px;
-      margin: 2px auto 0;
-      font-size: 12px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      line-height: 16px;
-    }
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    line-height: 16px;
+  }
 }
-.setting_ul{
+.setting_ul {
   width: 360px;
   margin: 50px auto 100px;
   box-sizing: border-box;
   overflow: hidden;
-  li{
+  li {
     list-style: none;
     float: left;
     padding-right: 10px;
-    img{
+    img {
       width: 60px;
       height: 60px;
     }
-    span{
+    span {
       display: block;
       text-align: center;
       margin-bottom: 5px;
@@ -351,7 +249,7 @@ export default {
       text-overflow: ellipsis;
     }
   }
-  .setting_ul_sp{
+  .setting_ul_sp {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -359,5 +257,14 @@ export default {
     width: 50px;
   }
 }
-
+.number_of {
+  display: inline-block;
+  display: inline-block;
+  text-align: left;
+  text-indent: 2em;
+}
+.setting_list {
+  margin-top: 10px;
+  height: 40px;
+}
 </style>

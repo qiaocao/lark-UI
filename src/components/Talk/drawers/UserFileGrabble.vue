@@ -1,24 +1,32 @@
 <template>
   <div>
-    <!-- <input type="text" class="seek_inp" placeholder="输入要搜索内容" v-model="searchVal" >
-    <a-button type="primary" icon="search" style="border-radius:0 5px 5px 0"></a-button> -->
-    <a-input-search
-      placeholder="输入要搜索内容"
-      @search="onSearch"
-      enterButton
-      type="text"
-      v-model="searchVal"
-      style="margin-bottom: 20px"
-    />
+    <div style="width: 100%">
+      <a-input-search
+        placeholder="输入要搜索内容"
+        @search="onSearch"
+        enterButton
+        type="text"
+        v-model="searchVal"
+        style="margin-bottom: 20px; width: 49%"
+      />
+      <!-- <span style="width: 49%;margin-left:20px">
+        <a-button class="button_ma" @click="fileAll">全部</a-button>
+        <a-button class="button_ma" @click="finish">已上传</a-button>
+        <a-button class="button_ma" @click="padding">待审核</a-button>
+      </span> -->
+    </div>
     <ul class="history_box">
       <li>
         <div class="nav_box">
-          <ul>
-            <li>文件名</li>
-            <li>上传者</li>
-            <li>上传时间</li>
+          <ul style="display: flex ">
+            <li class="flex" style="flex:1.2">文件名</li>
+            <li class="flex">上传者</li>
+            <li class="flex">上传时间</li>
+            <li class="flex">密级</li>
+            <li class="flex" style="flex:0.8">操作</li>
           </ul>
         </div>
+        <p></p>
       </li>
       <li v-for="(newItem,index) in NewItems" class="history_cotent" :key="index" :value="newItem.value">
         <!-- {{ NewItems }} -->
@@ -43,8 +51,7 @@
             <a-tag color v-if="newItem.levels === '30'">非密</a-tag>
           </div>
         </a>
-        <!-- <a class="down" :href="'/chat/zzFileManage/downloadFile'" onclick="return false">下载</a> -->
-        <a-button class="down" type="primary" icon="download" @click="down(newItem.fileId)" :disabled="flag"></a-button>
+        <a :href="genDownLoadPath(newItem.fileId)" class="down" download>下载</a>
       </li>
       <li>
         <div
@@ -53,7 +60,15 @@
           :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }"
         >
           <a-spin v-if="loadingMore"/>
-          <a-button v-else @click="onLoadMore">loading more</a-button>
+          <a-button v-else @click="onLoadMore">加载更多文件</a-button>
+        </div>
+      </li>
+      <li>
+        <div v-if="loading" class="example">
+          <a-spin />
+        </div>
+        <div v-if="noFile" class="login_img">
+          没有更多文件...
         </div>
       </li>
     </ul>
@@ -62,7 +77,9 @@
 
 </template>
 <script>
-import { userfileGrabble, fileDownload } from '@/api/talk.js'
+import { userfileGrabble } from '@/api/talk.js'
+import api from '@/api/talk'
+
 export default {
   name: 'Rabble',
   props: {
@@ -83,33 +100,63 @@ export default {
       item: [],
       pageNumber: 1,
       flag: false,
-      userId: ''
+      userId: '',
+      noFile: false,
+      state: ''
     }
   },
   created () {
   },
   mounted () {
-    this.getData(res => {
-      this.loading = false
-      this.data = res.results
-    })
+    this.getData()
   },
   methods: {
+    /** 生成下载路径 */
+    genDownLoadPath (fileId) {
+      return api.fileDownload + '?fileId=' + fileId
+    },
     onSearch (value) {
       console.log(value)
     },
+    openNotification () {
+      this.$notification.warning({
+        message: '无法获取文件，稍后再试',
+        description: '',
+        onClick: () => {
+          console.log('Notification Clicked!')
+        }
+      })
+    },
 
     getData (callback) {
+      this.loading = true
+      this.showLoadingMore = false
       this.userId = this.$store.getters.userId
-      userfileGrabble(this.userId, this.contactId, this.pageNumber).then(data => {
+      const options = {
+        userId: this.userId,
+        receiver: this.contactId,
+        page: this.pageNumber,
+        state: this.state,
+        size: 5
+      }
+      // userfileGrabble(this.userId, this.contactId, this.pageNumber).then(data => {
+      userfileGrabble(options).then(data => {
+        this.loading = false
+        this.showLoadingMore = true
         if (data.result.data.length < 5) {
           this.showLoadingMore = false
+          this.noFile = true
+          this.loading = false
         }
         // callback(data.result.data)
         const datas = data.result.data
         datas.map(item => {
           this.data.push(item)
         })
+      }).catch(res => {
+        this.openNotification()
+        this.showLoadingMore = true
+        this.loading = false
       })
     },
     onLoadMore () {
@@ -127,13 +174,17 @@ export default {
     onClose () {
       this.$emit('closeDrawer')
     },
-    down (id) {
-      fileDownload(id).then(item => {
-        // if (item === 1) {
-        //   this.flag = true
-        // }
-        window.open('/api/chat/zzFileManage/downloadFile' + '?fileId=' + id, '_self')
-      })
+    fileAll () {
+      this.state = ''
+      this.getData()
+    },
+    finish () {
+      this.state = '1'
+      this.getData()
+    },
+    padding () {
+      this.state = '0'
+      this.getData()
     }
   },
   computed: {
@@ -222,10 +273,7 @@ export default {
 }
 .down{
   float:right;
-  // height: 55px;
-  // line-height: 55px;
-  // display: block
-  margin-top: 10px
+  line-height: 50px;
 }
 .nav_box {
   width: 100%;
@@ -234,17 +282,43 @@ export default {
     width: 100%;
     li {
       list-style: none;
-      width: 50px;
-      float: left;
-      font-size: 5px;
+      text-align: right;
+      // width: 50px;
+      // float: left;
+      // font-size: 15px;
       &:nth-child(1) {
-        margin-right: 55px;
-      }
+        text-align: left
+      };
       &:nth-child(2) {
-        margin-right: 50px;
+        text-align: left
       }
+      // &:nth-child(3) {
+      //   text-align: right
+      // }
+      // &:nth-child(4) {
+      //  text-align: right
+      // }
     }
   }
 }
+.login_img{
+  text-align: center;
+  color: #cccccc;
+}
+.example {
+    text-align: center;
+    border-radius: 4px;
+    margin: 10px 0 20px 0;
+}
+.button_ma{
+  flex: 1;
+  margin: 0 10px 0 0;
+  &:nth-child(3){
+    margin: 0
+  }
 
+}
+.flex{
+  flex: 1
+}
 </style>
