@@ -20,6 +20,8 @@ const handleWsOpen = () => {
 
 /** 处理私聊和群组消息 */
 const handleMessage = (data) => {
+  // 自己发送的消息，不处理
+  if (data.fromId === store.getters.userId) return
   store
     .dispatch('UpdateTalkMap', { direction: 'receive', message: data })
     .then(() => {

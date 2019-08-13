@@ -106,9 +106,7 @@ export default {
     sendMessage () {
       this.$emit('clickSend')
       const contactItem = this.contactsInfo
-      this.$router.push({
-        name: 'ChatBox', params: { id: contactItem.id }
-      })
+      this.$router.push({ name: 'ChatBox' })
       contactItem.reOrder = true
       contactItem.addUnread = false
       this.$store.dispatch('UpdateRecentContacts', contactItem)

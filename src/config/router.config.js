@@ -74,7 +74,7 @@ export const asyncRouterMap = [
         path: 'talk',
         name: 'Talk',
         component: RouteView,
-        redirect: '/talk/chatpanel',
+        redirect: '/talk/chatpanel/chatbox',
         meta: {
           title: '研讨',
           icon: 'message',
@@ -94,7 +94,7 @@ export const asyncRouterMap = [
             hidden: true
           },
           children: [{
-            path: 'chatbox/:id',
+            path: 'chatbox',
             name: 'ChatBox',
             component: () => import(/* webpackChunkName: "chatPanel" */ '@/views/talk/ChatBox'),
             meta: {

@@ -272,6 +272,9 @@ export default {
       drawerWidth: ''
     }
   },
+  activated () {
+    this.scrollToBottom()
+  },
   computed: {
     ...mapGetters({
       onlineState: 'onlineState',

@@ -189,7 +189,7 @@ export default {
      */
     showConvBox (selectedItem) {
       // 路由跳转
-      this.$router.push({ name: 'ChatBox', params: { id: selectedItem.id } })
+      this.$router.push({ name: 'ChatBox' })
       this.$store.dispatch('UpdateRecentContacts', { ...selectedItem, reOrder: false, addUnread: false })
         .then(() => {
           this.$store.commit('SET_CURRENT_TALK', selectedItem.id)

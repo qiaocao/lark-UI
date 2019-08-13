@@ -117,9 +117,7 @@ export default {
         reOrder: true,
         addUnread: false
       }
-      this.$router.push({
-        name: 'ChatBox', params: { id }
-      })
+      this.$router.push({ name: 'ChatBox' })
       this.$store.dispatch('UpdateRecentContacts', groupItem)
         .then(() => {
           this.$store.commit('SET_CURRENT_TALK', id)
