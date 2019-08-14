@@ -86,7 +86,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['Login', 'Logout']),
+    ...mapActions(['Login']),
     // handler
     handleUsernameOrEmail (rule, value, callback) {
       const { state } = this

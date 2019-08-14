@@ -42,7 +42,7 @@ class SocketMessage {
  * }
  * @param {Date} time 消息发送时间
  * @param {Boolean} isGroup 消息分类 ture - 群消息， - 私聊消息
- * @param {Object} contactInfo 联系人信息
+ * @param {Object} contactInfo 消息发送人信息或消息发送人所在群组信息 （用于更新最近联系人）
  * {
  *  id-String-联系人或者群组id,
  *  name-String-联系人或者群组名称,
@@ -82,7 +82,7 @@ class RecentContact {
     this.id = id
     this.name = name
     this.avatar = avatar || ''
-    this.secretLevel = secretLevel ? JSON.parse(secretLevel) : 60
+    this.secretLevel = secretLevel ? JSON.parse(secretLevel) : 30
     this.memberNum = memberNum ? JSON.parse(memberNum) : 0
     this.isGroup = isGroup ? JSON.parse(isGroup) : false
 

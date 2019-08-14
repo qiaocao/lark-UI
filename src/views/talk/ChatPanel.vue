@@ -119,8 +119,14 @@
 </template>
 
 <script>
-import { ContactsTree, ContactsInfo, GroupInfo, RecentContactsItem, GroupItem, CreateTalk, SearchAll } from '@/components/Talk'
-
+import { ContactsTree,
+  ContactsInfo,
+  GroupInfo,
+  RecentContactsItem,
+  GroupItem,
+  CreateTalk,
+  SearchAll } from '@/components/Talk'
+import { mapGetters } from 'vuex'
 export default {
   name: 'ChatPanel',
   components: {
@@ -157,23 +163,12 @@ export default {
     }
   },
   computed: {
-    currentTalk () {
-      return this.$store.state.talk.currentTalk
-    },
-    recentContacts: {
-      get: function () {
-        return this.$store.state.talk.recentContacts
-      },
-      set: function (recentContacts) {
-        this.$store.commit('SET_RECENT_CONTACTS', recentContacts)
-      }
-    },
-    groupList () {
-      return this.$store.state.talk.groupList
-    },
-    contactsTree () {
-      return this.$store.state.talk.contactsTree
-    }
+    ...mapGetters([
+      'currentTalk',
+      'recentContacts',
+      'groupList',
+      'contactsTree'
+    ])
   },
   watch: {
     currentTalk (newValue) {
