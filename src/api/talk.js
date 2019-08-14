@@ -13,6 +13,10 @@ const api = {
   getTalksetting: 'chat/zzGroup/getGroupInfo',
   getMoreInfo: '/talk/contacts/info',
   fileGrabble: 'chat/zzGroupFile/groupfile',
+  setFileApproveFLg: 'chat/zzFileManage/setFileApproveFLg',
+  groupFileListByMe: 'chat/zzGroupFile/groupFileListByMe',
+  groupFileListByPass: 'chat/zzGroupFile/groupFileListByPass',
+  groupFileListByOwner: 'chat/zzGroupFile/groupFileListByOwner',
   getPrivateFile: 'chat/zzPrivateMsg/privateFile',
   getGroupFile: 'chat/zzPrivateMsg/privateFile',
   fileDown: '/chat/zzFileManage/downloadFile',
@@ -236,6 +240,46 @@ export function getPrivateFile (parameter) {
 export function getGroupFile (parameter) {
   return axios({
     url: api.getGroupFile,
+    method: 'post',
+    params: parameter
+  })
+}
+/**
+ * 我的文件(群组)
+ */
+export function groupFileListByMe (parameter) {
+  return axios({
+    url: api.groupFileListByMe,
+    method: 'post',
+    params: parameter
+  })
+}
+/**
+ * 我的审批(群组)
+ */
+export function groupFileListByOwner (parameter) {
+  return axios({
+    url: api.groupFileListByOwner,
+    method: 'post',
+    params: parameter
+  })
+}
+/**
+ * 已审批(群组)
+ */
+export function groupFileListByPass (parameter) {
+  return axios({
+    url: api.groupFileListByPass,
+    method: 'post',
+    params: parameter
+  })
+}
+/**
+ * 审批文件
+ */
+export function setFileApproveFLg (parameter) {
+  return axios({
+    url: api.setFileApproveFLg,
     method: 'post',
     params: parameter
   })

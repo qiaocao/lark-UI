@@ -126,3 +126,14 @@
                             src\components\Talk\drawers\TeamMember.vue
                             src\components\Talk\drawers\UserFileGrabble.vue
                             src\components\Talk\ConvBox.vue
+- 201908014 push by fanjiao:filepath--【1、日志列表去掉uri2、用户管理注销角色管理】                                         
+                            src\views\admin\LogList.vue
+                            src\views\admin\UserList.vue
+- 201908014 push by fanjiao:filepath--【添加菜单模块：个人消息审计和群组消息审计】                                         
+                            src\views\admin\groupMsg.vue
+                            src\views\admin\privateMsg.vue
+                            src\api\admin.js
+- 201908014 push by fanjiao:filepath--【研讨抽屉组件：群文件查看及审批后台联调完成】                                         
+                            src\api\talk.js
+                            src\components\Talk\drawers\fileGrabble.vue
+

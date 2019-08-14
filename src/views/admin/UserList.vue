@@ -185,8 +185,13 @@
               </a-form-item>
             </a-col>
           </a-row>
+          <a-row type="flex" justify="end">
+            <a-col>
+              <a-button type="primary" @click="saveUserInfo">保存</a-button>
+            </a-col>
+          </a-row>
         </a-card>
-        <a-card :bordered="true" title="角色信息" v-show="editvisible">
+        <!-- <a-card :bordered="true" title="角色信息" v-show="editvisible">
           <a-row>
             <a-col :span="10" :offset="1">
               <a-form-item
@@ -203,7 +208,7 @@
               <a-button type="primary" @click="saveUserInfo">保存</a-button>
             </a-col>
           </a-row>
-        </a-card>
+        </a-card> -->
       </a-spin>
     </a-row>
   </div>
