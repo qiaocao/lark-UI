@@ -1,7 +1,6 @@
 /**
  * 研讨状态模块
  */
-import modules from './conf'
 import Vue from 'vue'
 import { getGroupList,
   getContactsTree,
@@ -508,13 +507,6 @@ const talk = {
           talkMapData: [[message.toId, tempMessageList]]
         })
       }
-      // if (newMessage.fromId === rootGetters.userId) return
-      // const tempMessageList = state.talkMap.get(newMessage.contactInfo.id) || []
-      // tempMessageList.push(new Tweet(newMessage))
-      // commit('SET_TALK_MAP', {
-      //   fromServer: false,
-      //   talkMapData: [[newMessage.contactInfo.id, tempMessageList]]
-      // })
     },
     /**
      * 更新缓存中的草稿信息
@@ -561,7 +553,6 @@ const talk = {
       clearInterval(state.messageTimer)
     }
   },
-  modules,
   strict: process.env.NODE_ENV !== 'production'
 }
 
