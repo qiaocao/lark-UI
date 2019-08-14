@@ -13,6 +13,9 @@ const api = {
   getTalksetting: 'chat/zzGroup/getGroupInfo',
   getMoreInfo: '/talk/contacts/info',
   fileGrabble: 'chat/zzGroupFile/groupfile',
+  getPrivateFile: 'chat/zzPrivateMsg/privateFile',
+  getGroupFile: 'chat/zzPrivateMsg/privateFile',
+  fileDown: '/chat/zzFileManage/downloadFile',
   userfileGrabble: 'chat/zzPrivateMsg/privateFile',
   talkHistoryAll: 'chat/zzGroup/queryHistoryMessageForSingle',
   MarkMessageGrabble: 'chat/zzUserGroupMsgTag/getUserGroupMsgTagList',
@@ -221,9 +224,19 @@ export function MarkMessageGrabble (userId, page, groupId) {
  * 联系人文件
  * userd receiver page size
  */
-export function userfileGrabble (parameter) {
+export function getPrivateFile (parameter) {
   return axios({
-    url: api.userfileGrabble,
+    url: api.getPrivateFile,
+    method: 'post',
+    params: parameter
+  })
+}
+/**
+ * 我的文件(群组)
+ */
+export function getGroupFile (parameter) {
+  return axios({
+    url: api.getGroupFile,
     method: 'post',
     params: parameter
   })

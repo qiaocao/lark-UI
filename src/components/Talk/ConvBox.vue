@@ -386,7 +386,7 @@ export default {
         // { group: true, name: 'groupNotice', message: '群公告', type: 'notification' },
         // { group: true, name: 'markMessage', message: '标记信息', type: 'tags' },
         { group: false, name: 'talkHistory', message: '聊天历史', type: 'file-text' },
-        { group: false, name: isGroup ? 'talkFile' : 'userFile', message: '文件', type: 'folder-open' },
+        { group: false, name: isGroup ? 'groupFile' : 'userFile', message: '文件', type: 'folder-open' },
         { group: false, name: isGroup ? 'moreInfo' : 'personMoreInfo', message: '组信息', type: 'profile' },
         { group: true, name: isGroup ? 'teamMember' : 'personMoreInfo', message: '组成员', type: 'team' }
       ]
@@ -398,11 +398,12 @@ export default {
      */
     triggerDrawer (drawerType, drawerName) {
       this.activeOption = { 'drawerType': drawerType, 'drawerName': drawerName }
+      // this.drawerWidth = '500px'
       // 组成员抽屉
-      if (drawerType === 'teamMember') {
-        this.drawerWidth = '600px'
+      if (drawerType === 'groupFile') {
+        this.drawerWidth = '650px'
       } else {
-        this.drawerWidth = '400px'
+        this.drawerWidth = '450px'
       }
     },
     /** 设置发送消息的密级 */
