@@ -106,9 +106,8 @@
                   </div>
                   <a
                     v-show="messageStatus === 100"
-                    :href="downloadUrl"
                     class="download"
-                    download
+                    @click="handleFileDownload(messageInfo.content.id)"
                   >下载</a>
                 </div>
               </div>
@@ -121,8 +120,11 @@
 </template>
 
 <script>
-import { toWeiXinString } from '@/utils/util'
+import { toWeiXinString, download } from '@/utils/util'
+// eslint-disable-next-line
 import api from '@/api/talk'
+// eslint-disable-next-line
+import { getFilePermission } from '@/api/talk'
 import { mapGetters } from 'vuex'
 import { transform } from '@/utils/face'
 
@@ -217,6 +219,21 @@ export default {
     },
     faceTransform (content) {
       return transform(content)
+    },
+    /**
+     * 文件下载
+     * @param {String} fileId 文件ID
+     */
+    handleFileDownload (fileId) {
+      getFilePermission(fileId).then(res => {
+        if (res.status === 200 && res.result === '1') {
+          download(this.downloadUrl, this.fileTitle)
+        } else {
+          this.$message.warning('未通过审批，不能下载')
+        }
+      }).catch(() => {
+        this.$message.error('下载失败，请稍后再试')
+      })
     }
   }
 }

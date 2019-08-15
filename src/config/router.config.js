@@ -7,9 +7,6 @@ import {
   GeneralView,
   MonitorView
 } from '@/components/layouts'
-import {
-  RecentContact
-} from '@/utils/talk'
 
 export const asyncRouterMap = [
 
@@ -77,7 +74,7 @@ export const asyncRouterMap = [
         path: 'talk',
         name: 'Talk',
         component: RouteView,
-        redirect: '/talk/chatpanel',
+        redirect: '/talk/chatpanel/chatbox',
         meta: {
           title: '研讨',
           icon: 'message',
@@ -105,10 +102,7 @@ export const asyncRouterMap = [
               keepAlive: true,
               permission: ['talk'],
               hidden: true
-            },
-            props: (route) => ({
-              currentTalk: new RecentContact(route.query)
-            })
+            }
           }]
         }]
       },

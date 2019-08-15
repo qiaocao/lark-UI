@@ -26,6 +26,7 @@ const api = {
   getGroupMembers: 'chat/zzGroup/getGroupUserList',
   removeMember: 'chat/zzGroup/removeMember',
   addMember: 'chat/zzGroup/addMember',
+  filePermission: 'chat/zzFileManage/getFilesStatus',
   // getContent: 'https://www.easy-mock.com/mock/5cef9a806bbb7d72047ec887/drawer/notice/drawer/notice',
   // 下面的地址前面必须加/
   // 研讨文件上传地址
@@ -325,5 +326,16 @@ export function removeMember (parameter) {
     url: api.removeMember,
     method: 'get',
     params: parameter
+  })
+}
+/**
+ * 获取文件下载权限
+ * @param {String} fileIds 文件ID，多个以逗号分割
+ */
+export function getFilePermission (fileIds) {
+  return axios({
+    url: api.filePermission,
+    method: 'get',
+    params: { fileIds: fileIds }
   })
 }
