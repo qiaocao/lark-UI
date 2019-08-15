@@ -28,7 +28,7 @@
           size="small"
           :columns="columns"
           :rowKey="record => record.id"
-          :dataSource="myFile"
+          :dataSource="myApprovalFile"
           :loading="loading"
           :pagination="false"
         >
@@ -44,8 +44,8 @@
               <a-popconfirm title="请确认是否审批通过该文件?" @confirm="confirmPass(record)" okText="是" cancelText="否">
                 <a href="#">通过</a>
               </a-popconfirm>
-              <a-divider type="vertical" />
-              <a @click="reject(record)">驳回</a>
+              <!-- <a-divider type="vertical" />
+              <a @click="reject(record)">驳回</a> -->
             </template>
           </span>
         </a-table>
@@ -56,7 +56,7 @@
           size="small"
           :columns="columns"
           :rowKey="record => record.id"
-          :dataSource="myFile"
+          :dataSource="approvaledFile"
           :loading="loading"
           :pagination="false"
         >
@@ -85,7 +85,7 @@
   </div>
 </template>
 <script>
-import { getGroupFile } from '@/api/talk.js'
+import { setFileApproveFLg, groupFileListByMe, groupFileListByPass, groupFileListByOwner } from '@/api/talk.js'
 import api from '@/api/talk'
 export default {
   name: 'FileGrabble',
@@ -125,7 +125,7 @@ export default {
         },
         {
           title: '上传者',
-          dataIndex: 'reviserName'
+          dataIndex: 'reviser'
         },
         {
           title: '密级',
@@ -175,10 +175,10 @@ export default {
     loadMyfile (params) {
       let options = {
         userId: this.$store.getters.userId,
-        receiver: this.contactId
+        groupId: this.contactId
       }
       options = Object.assign(options, params)
-      getGroupFile(options).then(res => {
+      groupFileListByMe(options).then(res => {
         this.myFile = res.result.data
         this.total_myfile = res.result.totalCount
       }).catch(() =>
@@ -196,11 +196,11 @@ export default {
     loadMyApproval (params) {
       let options = {
         userId: this.$store.getters.userId,
-        receiver: this.contactId
+        groupId: this.contactId
       }
       options = Object.assign(options, params)
-      getGroupFile(options).then(res => {
-        this.myFile = res.result.data
+      groupFileListByOwner(options).then(res => {
+        this.myApprovalFile = res.result.data
         this.total_myapproval = res.result.totalCount
       }).catch(() =>
         this.$notification['error']({
@@ -217,11 +217,11 @@ export default {
     loadApprovaled (params) {
       let options = {
         userId: this.$store.getters.userId,
-        receiver: this.contactId
+        groupId: this.contactId
       }
       options = Object.assign(options, params)
-      getGroupFile(options).then(res => {
-        this.myFile = res.result.data
+      groupFileListByPass(options).then(res => {
+        this.approvaledFile = res.result.data
         this.total_approvaled = res.result.totalCount
       }).catch(() =>
         this.$notification['error']({
@@ -237,29 +237,42 @@ export default {
      */
     handleChange_myfile (page, pageSize) {
       this.loadMyfile({
-        pageSize: pageSize,
-        pageNo: page
+        size: pageSize,
+        page: page
       })
     },
     handleChange_myApproval (page, pageSize) {
       this.loadMyApproval({
-        pageSize: pageSize,
-        pageNo: page
+        size: pageSize,
+        page: page
       })
     },
     handleChange_approvaled (page, pageSize) {
       this.loadApprovaled({
-        pageSize: pageSize,
-        pageNo: page
+        size: pageSize,
+        page: page
       })
     },
     /**
      * 审批通过
      */
     confirmPass (record) {
-      // fileId
-      // 回调函数
-      this.loadData()
+      const options = {
+        userId: this.$store.getters.userId,
+        fileId: record.fileId + ',',
+      }
+      setFileApproveFLg(options).then(res => {
+        this.$notification['success']({
+          message: '审批通过',
+          duration: 2
+        })
+        this.loadData()
+      }).catch(() =>
+        this.$notification['error']({
+          message: '出现异常，请联系系统管理员',
+          duration: 4
+        })
+      )
     },
     /**
      * 审批驳回

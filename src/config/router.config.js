@@ -236,6 +236,28 @@ export const asyncRouterMap = [
             keepAlive: false,
             permission: ['groupmaneger']
           }
+        },
+        {
+          path: '/list/privateMsg',
+          name: 'privateMsg',
+          component: () => import(/* webpackChunkName: "logList" */ '@/views/admin/privateMsg'),
+          meta: {
+            title: '个人消息审计',
+            icon: 'reconciliation',
+            keepAlive: false,
+            permission: ['gatelog']
+          }
+        },
+        {
+          path: '/list/groupMsg',
+          name: 'groupMsg',
+          component: () => import(/* webpackChunkName: "logList" */ '@/views/admin/groupMsg'),
+          meta: {
+            title: '群组消息审计',
+            icon: 'reconciliation',
+            keepAlive: false,
+            permission: ['gatelog']
+          }
         }
         ]
       },
