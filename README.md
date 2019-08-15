@@ -136,4 +136,7 @@
 - 201908014 push by fanjiao:filepath--【研讨抽屉组件：群文件查看及审批后台联调完成】                                         
                             src\api\talk.js
                             src\components\Talk\drawers\fileGrabble.vue
-
+- 201908015 push by fanjiao:filepath--【小铃铛系统消息查看全部页添加密级】                                         
+                            src\views\dashboard\NotificationList.vue
+- 201908015 push by fanjiao:filepath--【用户管理注释操作列】                                         
+                            src\views\admin\UserList.vue
