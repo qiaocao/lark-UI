@@ -138,3 +138,5 @@
                             src\components\Talk\drawers\fileGrabble.vue
 - 201908015 push by fanjiao:filepath--【小铃铛系统消息查看全部页添加密级】                                         
                             src\views\dashboard\NotificationList.vue
+- 201908015 push by fanjiao:filepath--【用户管理注释操作列】                                         
+                            src\views\admin\UserList.vue

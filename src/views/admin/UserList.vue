@@ -284,12 +284,12 @@ export default {
           title: '状态',
           dataIndex: 'status'
         },
-        {
-          title: '操作',
-          width: '120px',
-          dataIndex: 'action',
-          scopedSlots: { customRender: 'action' }
-        }
+        // {
+        //   title: '操作',
+        //   width: '120px',
+        //   dataIndex: 'action',
+        //   scopedSlots: { customRender: 'action' }
+        // }
       ],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
