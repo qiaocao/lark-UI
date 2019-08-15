@@ -259,7 +259,7 @@ export default {
     confirmPass (record) {
       const options = {
         userId: this.$store.getters.userId,
-        fileId: record.fileId + ',',
+        fileId: record.fileId + ','
       }
       setFileApproveFLg(options).then(res => {
         this.$notification['success']({
