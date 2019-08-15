@@ -140,3 +140,5 @@
                             src\views\dashboard\NotificationList.vue
 - 201908015 push by fanjiao:filepath--【用户管理注释操作列】                                         
                             src\views\admin\UserList.vue
+- 201908015 push by fanjiao:filepath--【添加orgCode参数】  
+                            src\views\dashboard\NotificationList.vue

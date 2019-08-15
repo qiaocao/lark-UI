@@ -97,10 +97,15 @@ export default {
       ],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        return getNoticePage(Object.assign(parameter, this.queryParam)).then(res => {
+        return getNoticePage(Object.assign(parameter, this.queryParam, {'orgCode': this.userInfo.orgCode})).then(res => {
           return res.result
         })
       }
+    }
+  },
+  computed: {
+    userInfo () {
+      return this.$store.getters.userInfo
     }
   },
   methods: {
